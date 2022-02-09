@@ -4,15 +4,30 @@ Utils to pre-process data for [Vitessce](http://github.com/hms-dbmi/vitessce/#re
 
 ## Install
 
-Users may install the dependencies with pip:
+Clone the repository
 
 ```sh
-pip install -r requirements.txt
+$ git clone git@github.com:haniffalab/sci-spatial-data.git
+$ cd sci-spatial-data
 ```
 
-## Run
+Create a virtualenv and activate it
 
-Process data files
+```sh
+$ python -m venv venv
+$ . venv/bin/activate
+```
+
+Install the requirements
+
+```sh
+$ pip install -r requirements.txt
+```
+
+Run
+---
+
+Run the process.sh shell script
 
 ```sh
 bash process.sh
