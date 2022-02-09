@@ -27,7 +27,7 @@ $ pip install -r requirements.txt
 Run
 ---
 
-Run the process.sh shell script
+Run the `process.sh` shell script
 
 ```sh
 bash process.sh
