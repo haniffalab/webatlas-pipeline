@@ -4,11 +4,10 @@ import argparse
 import json
 from collections import defaultdict
 
-import scanpy as sc
+import anndata as ad
 from shapely import wkt
 from shapely.geos import WKTReadingError
 
-from cell_reader import get_genes
 from cluster import cluster as get_clusters
 
 def cells_dict(adata):
@@ -20,10 +19,6 @@ def cells_dict(adata):
         pca_x, pca_y, *rest = adata.obsm["X_pca"][index]
         umap_x, umap_y = adata.obsm["X_umap"][index]
         try:
-            # calculate centroid
-            # centroid = wkt.loads(polygon).centroid.coords[0]
-            # poly = []
-            # poly.append([centroid])
             poly = list(wkt.loads(simpler).coords)
             cells_dict[cell] = {
                 "mappings": {
@@ -186,7 +181,7 @@ if __name__ == '__main__':
         help='Write a list of genes to this file.')
     args = parser.parse_args()
 
-    adata = sc.read(args.h5ad_file)
+    adata = ad.read(args.h5ad_file)
 
     metadata = cells_dict(adata)
 
