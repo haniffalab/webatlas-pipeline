@@ -9,7 +9,10 @@ import argparse
 
 
 def tile_zarr(
-    zarr_pyramid_base, max_level=None, compressor=None, dtype=None,
+    zarr_pyramid_base,
+    max_level=None,
+    compressor=None,
+    dtype=None,
 ):
     img = da.from_zarr(zarr_pyramid_base)
     pyramid_path = Path(zarr_pyramid_base).parent
@@ -20,9 +23,7 @@ def tile_zarr(
         dtype = img.dtype
     if max_level is None:
         # create all levels up to 512 x 512
-        max_level = (
-            int(np.ceil(np.log2(np.maximum(img.shape[1], img.shape[2])))) - 9
-        )
+        max_level = int(np.ceil(np.log2(np.maximum(img.shape[1], img.shape[2])))) - 9
     if compressor is None:
         compressor = Zlib(level=1)
 
@@ -55,9 +56,7 @@ def tile_zarr(
         out_path = str(pyramid_path / str(i))
 
         # Write to zarr store
-        img.astype(dtype).rechunk(chunks).to_zarr(
-            out_path, compressor=compressor
-        )
+        img.astype(dtype).rechunk(chunks).to_zarr(out_path, compressor=compressor)
 
         # Read from last store so dask doesn't need to re-compute
         # task graph starting at base.

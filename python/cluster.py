@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def _order_rows(dataframe):
-    '''
+    """
     >>> df = pd.DataFrame({
     ...   'cell-1': {'a':8, 'b':1, 'c': 7, 'd': 2},
     ...   'cell-2': {'a':1, 'b':1, 'c': 1, 'd': 1},
@@ -16,10 +16,10 @@ def _order_rows(dataframe):
     >>> _order_rows(df)
     ['a', 'c', 'b', 'd']
 
-    '''
+    """
     row_labels = dataframe.index.tolist()
     if len(row_labels) > 1:
-        rows_linkage = linkage(dataframe, 'ward')
+        rows_linkage = linkage(dataframe, "ward")
         rows_order = leaves_list(rows_linkage).tolist()
         return [row_labels[i] for i in rows_order]
     else:
@@ -27,7 +27,7 @@ def _order_rows(dataframe):
 
 
 def _order(dataframe):
-    '''
+    """
     >>> df = pd.DataFrame({
     ...   'cell-1': {'a':8, 'b':1, 'c': 7},
     ...   'cell-2': {'a':1, 'b':1, 'c': 1},
@@ -38,14 +38,14 @@ def _order(dataframe):
     >>> _order(df)['cols']
     ['cell-2', 'cell-1', 'cell-3']
 
-    '''
+    """
     col_label_order = _order_rows(dataframe.T)
     row_label_order = _order_rows(dataframe)
-    return {'rows': row_label_order, 'cols': col_label_order}
+    return {"rows": row_label_order, "cols": col_label_order}
 
 
 def _to_dataframe(cells):
-    '''
+    """
     >>> cells = {
     ...   'cell-1': { 'genes': {'a':8, 'b':1, 'c': 7}, 'extra': 'f'},
     ...   'cell-2': { 'genes': {'a':1, 'b':1, 'c': 1}, 'extra': 'field'},
@@ -57,10 +57,10 @@ def _to_dataframe(cells):
     b     0.1     0.1     0.1
     c     0.7     0.1     1.0
 
-    '''
+    """
     clean = {}
     for k, v in cells.items():
-        clean[k] = v['genes']
+        clean[k] = v["genes"]
     df = pd.DataFrame(clean)
     df_max = df.values.max()
     # If we don't round, small differences in the floating point representation
@@ -69,7 +69,7 @@ def _to_dataframe(cells):
 
 
 def _row_norm(df):
-    '''
+    """
     >>> df = pd.DataFrame({
     ...   'cell-1': {'a':8, 'b':1, 'c': 7},
     ...   'cell-2': {'a':1, 'b':1, 'c': 1},
@@ -80,13 +80,13 @@ def _row_norm(df):
     a     0.8     0.1     1.0
     b     1.0     1.0     1.0
     c     0.7     0.1     1.0
-    '''
+    """
     t = df.T
     return (t / t.max()).T
 
 
 def cluster(cells):
-    '''
+    """
     >>> cells = {
     ...   'cell-1': { 'genes': {'a':8, 'b':2, 'c': 7}, 'extra': 'field'},
     ...   'cell-2': { 'genes': {'a':1, 'b':1, 'c': 1}, 'extra': 'field'},
@@ -100,12 +100,12 @@ def cluster(cells):
     >>> clustered['matrix']
     [[0.5, 1.0, 1.0], [0.1, 0.8, 1.0], [0.1, 0.7, 1.0]]
 
-    '''
+    """
     df = _to_dataframe(cells)
     rows_cols = _order(df)
-    clustered = df[rows_cols['cols']].loc[rows_cols['rows']]
+    clustered = df[rows_cols["cols"]].loc[rows_cols["rows"]]
     return {
-        'rows': rows_cols['rows'],
-        'cols': rows_cols['cols'],
-        'matrix': _row_norm(clustered).round(3).values.tolist()
+        "rows": rows_cols["rows"],
+        "cols": rows_cols["cols"],
+        "matrix": _row_norm(clustered).round(3).values.tolist(),
     }

@@ -74,7 +74,7 @@ def write_raster_json(
     name,
     dimensions,
     is_pyramid,
-    transform={"translate": {"y": 0, "x": 0}, "scale": 1}
+    transform={"translate": {"y": 0, "x": 0}, "scale": 1},
 ):
     image_json = {
         "name": name,
@@ -93,12 +93,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Convert OME-TIFF image to full resolution zarr"
     )
-    parser.add_argument(
-        "--input_tiff", required=True, help="Path to input OME-TIFF"
-    )
-    parser.add_argument(
-        "--output_zarr", required=True, help="Path or zarr output"
-    )
+    parser.add_argument("--input_tiff", required=True, help="Path to input OME-TIFF")
+    parser.add_argument("--output_zarr", required=True, help="Path or zarr output")
     parser.add_argument(
         "--image_json",
         type=argparse.FileType("x"),
@@ -106,7 +102,9 @@ if __name__ == "__main__":
         help="Write the metadata about the IMS zarr store on S3.",
     )
     parser.add_argument(
-        "--image_name", required=True, help="Image name for metadata.",
+        "--image_name",
+        required=True,
+        help="Image name for metadata.",
     )
     parser.add_argument(
         "--dest_url",
