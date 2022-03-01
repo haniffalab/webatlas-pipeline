@@ -7,6 +7,9 @@ nextflow.enable.dsl=2
 /*params.h5ad = "/nfs/team283_imaging/playground_Tong/Webaltas_data/h5ad_with_cell_contours/N1234F_OB10037_x20_GMMdecoding_shift_sep3_cutoff-11_doublet.h5ad"*/
 params.h5ad = "./data-files/visium.h5ad"
 params.outdir = "./test"
+params.img = "/lustre/scratch117/cellgen/team283/tl10/HZ_HLB/nuclei_seg_63x/HZ_HLB_KR0105_C59-FLEG_Nucleus_b1G_b1A_b1T_b1C_Meas6_A2_F1T1_max.ome_DAPI.tif"
+
+params.max_n_worker = 30
 
 
 process Preprocess_h5ad{
@@ -33,7 +36,29 @@ process Preprocess_h5ad{
     """
 }
 
+process to_zarr {
+    tag "${img}"
+    echo true
+
+    conda "zarr_convert.yaml"
+    publishDir params.outdir, mode: "copy"
+
+    input:
+    file(img)
+
+    output:
+    tuple val(stem), file("$stem")
+
+    script:
+    stem = img.baseName
+    """
+    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $img "${stem}"
+    consolidate_md.py "${stem}/data.zarr"
+    """
+}
+
 workflow {
-    Preprocess_h5ad(Channel.fromPath(params.h5ad))
+    /*Preprocess_h5ad(Channel.fromPath(params.h5ad))*/
+    to_zarr(Channel.fromPath(params.img))
 }
 

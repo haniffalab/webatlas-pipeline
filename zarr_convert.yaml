@@ -1,0 +1,10 @@
+name: image_convert
+channels:
+  - conda-forge
+  - ome
+dependencies:
+  - bioformats2raw == 0.2.6
+  - pip
+  - pip:
+    - fire
+    - zarr

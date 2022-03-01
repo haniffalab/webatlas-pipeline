@@ -10,7 +10,7 @@
 
 """
 import fire
-from zarr import consolidate_metadata, save
+from zarr import consolidate_metadata
 from pathlib import Path
 import zarr
 
@@ -18,11 +18,8 @@ import zarr
 def main(file_in):
     stem = Path(file_in).stem
     print(stem)
-    # store = zarr.open(file_in)
-    # print(store)
     consolidated = consolidate_metadata(file_in)
     print(consolidated.info)
-    # save(f'./test_{stem}.zarr', consolidated)
 
 
 if __name__ == "__main__":
