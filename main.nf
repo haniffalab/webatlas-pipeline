@@ -7,7 +7,7 @@ nextflow.enable.dsl=2
 /*params.h5ad = "/nfs/team283_imaging/playground_Tong/Webaltas_data/h5ad_with_cell_contours/N1234F_OB10037_x20_GMMdecoding_shift_sep3_cutoff-11_doublet.h5ad"*/
 params.h5ad = "./data-files/visium.h5ad"
 params.outdir = "./test"
-params.img = "/lustre/scratch117/cellgen/team283/tl10/HZ_HLB/nuclei_seg_63x/HZ_HLB_KR0105_C59-FLEG_Nucleus_b1G_b1A_b1T_b1C_Meas6_A2_F1T1_max.ome_DAPI.tif"
+params.img = "/home/ubuntu/Documents/planer-nf/test/out_opt_flow_registered_DAPI_flow_lab.tif"
 
 params.max_n_worker = 30
 
@@ -58,7 +58,10 @@ process to_zarr {
 }
 
 workflow {
-    /*Preprocess_h5ad(Channel.fromPath(params.h5ad))*/
+    Preprocess_h5ad(Channel.fromPath(params.h5ad))
+}
+
+workflow To_ZARR {
     to_zarr(Channel.fromPath(params.img))
 }
 
