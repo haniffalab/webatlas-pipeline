@@ -16,7 +16,7 @@ process Preprocess_h5ad{
     tag "${h5ad}"
     echo true
 
-    container "portal:latest"
+    container "hamat/web-altas-data-conversion:latest"
     publishDir params.outdir, mode: "copy"
 
     input:
