@@ -18,7 +18,7 @@ $ cd sci-spatial-data
 Run
 ---
 
-Create an yaml(todo: add path to the file once merged) file for your datasets.
+Create an [yaml file](https://github.com/haniffalab/sci-spatial-data/blob/nextflow/template.yaml) for your datasets.
 
 To convert h5ad to jsons:
 
