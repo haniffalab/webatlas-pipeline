@@ -111,3 +111,11 @@ venv.bak/
 
 # IDE
 .idea/
+
+# Vim
+*.swp
+*.un~
+
+# nextflow
+*.nextflow*
+work/
