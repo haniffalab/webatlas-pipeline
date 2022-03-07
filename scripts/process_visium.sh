@@ -9,11 +9,25 @@ main() {
 
     get_CLI_args "$@"
 
-    # Sample image data
-    TIFF_IN="$INPUT/out.tif"
-    ZARR_OUT="$OUTPUT/out.zarr"
-    JSON_OUT="$OUTPUT/visium.raster.json"
-    IMAGE_NAME="Visium Image Data"
+    # Single cell data
+    H5AD_IN="$INPUT/data.h5ad"
+    CELLS_OUT="$OUTPUT/cells.json"
+    CELL_SETS_OUT="$OUTPUT/cell-sets.json"
+    MATRIX_OUT="$OUTPUT/clusters.json"
+
+    if [ -e "$CELLS_OUT" ]
+    then
+        echo "Skipping cells -- output already exists: $CELLS_OUT"
+    else
+        echo 'Generating cells JSON may take a while...'
+        CMD="$BASE/python/spot_reader.py
+            --h5ad_file $H5AD_IN
+            --cells_file $CELLS_OUT
+            --cell_sets_file $CELL_SETS_OUT
+            --matrix_file $MATRIX_OUT"
+        echo "Running: $CMD"
+        eval $CMD
+    fi   
 }
 
 ### Main
