@@ -28,3 +28,4 @@ typing-extensions==4.1.1
 xlrd==1.2.0
 zarr==2.11.0
 zipp==3.7.0
+fire==0.4.0

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import argparse
+# import argparse
+import fire
 import json
 from collections import defaultdict
 
@@ -18,14 +19,14 @@ def cells_dict(adata):
         # polygon = adata.obsm["polys"][index]
         # simpler = adata.obsm["simpler"][index]
         spatial = adata.obsm["spatial"][index]
-        pca_x, pca_y, *rest = adata.obsm["X_pca"][index]
-        umap_x, umap_y = adata.obsm["X_umap"][index]
+        # pca_x, pca_y, *rest = adata.obsm["X_pca"][index]
+        # umap_x, umap_y = adata.obsm["X_umap"][index]
         try:
             # poly = list(wkt.loads(simpler).coords)
             cells_dict[cell] = {
                 "mappings": {
-                    "X_pca": [float(pca_x), float(pca_y)],
-                    "X_umap": [float(umap_x), float(umap_y)],
+                    # "X_pca": [float(pca_x), float(pca_y)],
+                    # "X_umap": [float(umap_x), float(umap_y)],
                 },
                 "genes": get_genes(adata, cell),
                 "xy": list(spatial),
@@ -46,20 +47,7 @@ def cells_dict(adata):
 
 
 def get_genes(adata, cell):
-    genes_list = [
-        "NPY_N1C",
-        "RELN",
-        "TAC3",
-        "CSF1R",
-        "SST_N4F",
-        "PENK",
-        "CALB2",
-        "NPY_N4F",
-        "VIP_N1C",
-        "ACTA2",
-        "NTS",
-        "SOX9",
-    ]
+    genes_list = adata.var.index[:10]
     output = {}
 
     for gene in genes_list:
@@ -118,6 +106,7 @@ def cell_sets_json(data):
     >>> sorted([ n['name'] for n in cell_sets['tree'] ])
     ['Leiden Clustering', 'k-means Clustering']
     """
+
     clustering_dict = {"sample": defaultdict(list), "total_counts": defaultdict(list)}
     nice_names = {"sample": "Sample", "total_counts": "Total Counts"}
     for cell_id in data.keys():
@@ -148,42 +137,17 @@ def cell_sets_json(data):
     return cell_sets
 
 
+def main(h5ad_file, cells_file=None, cell_sets_file=None, matrix_file=None):
+    metadata = cells_dict(ad.read(h5ad_file))
+    # print(metadata)
+
+    if cells_file:
+        json.dump(metadata, open(cells_file, "w"), indent=1)
+    if cell_sets_file:
+        json.dump(cell_sets_json(metadata), open(cell_sets_file, "w"), indent=1)
+    if matrix_file:
+        json.dump(get_clusters(metadata), open(matrix_file, "w"), indent=1)
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Create JSON with cell metadata from H5AD file."
-    )
-    parser.add_argument("--h5ad_file", required=True, help="H5AD input file.")
-    parser.add_argument(
-        "--cells_file",
-        type=argparse.FileType("x"),
-        help="Write the cell data to this file.",
-    )
-    parser.add_argument(
-        "--cell_sets_file",
-        type=argparse.FileType("x"),
-        help="Write the cell-sets data to this file.",
-    )
-    parser.add_argument(
-        "--matrix_file",
-        type=argparse.FileType("x"),
-        help="Write the cell-sets data to this file.",
-    )
-    parser.add_argument(
-        "--genes_file",
-        type=argparse.FileType("x"),
-        help="Write a list of genes to this file.",
-    )
-    args = parser.parse_args()
-
-    adata = ad.read(args.h5ad_file)
-
-    metadata = cells_dict(adata)
-
-    if args.cells_file:
-        json.dump(metadata, args.cells_file, indent=1)
-    if args.cell_sets_file:
-        setmetadata = cell_sets_json(metadata)
-        json.dump(setmetadata, args.cell_sets_file, indent=1)
-    if args.matrix_file:
-        clustermetadata = get_clusters(metadata)
-        json.dump(clustermetadata, args.matrix_file, indent=1)
+    fire.Fire(main)
