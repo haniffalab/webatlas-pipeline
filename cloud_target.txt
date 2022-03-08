@@ -1,1 +1,0 @@
-webatlas-vitessce-data/0.0.4/master_release
