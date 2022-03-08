@@ -117,5 +117,8 @@ venv.bak/
 *.un~
 
 # nextflow
-*.nextflow*
+nextflow
+.nextflow.log*
+.nextflow/
 work/
+output/
