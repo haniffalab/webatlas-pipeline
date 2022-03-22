@@ -32,6 +32,12 @@ To convert images to zarrs:
 nextflow run main.nf -params-file [your_params].yaml -entry To_ZARR
 ```
 
+To build a config file:
+
+```
+nextflow run main.nf -params-file [your_params].yaml -entry config
+```
+
 Further reading:
 --- 
 
