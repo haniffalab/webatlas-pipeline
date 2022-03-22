@@ -116,7 +116,7 @@ venv.bak/
 *.swp
 *.un~
 
-# nextflow
+# Nextflow
 nextflow
 .nextflow.log*
 .nextflow/
