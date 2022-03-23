@@ -29,14 +29,13 @@ nextflow run main.nf -params-file [your_params].yaml
 To convert images to zarrs:
 
 ```
-nextflow run main.nf -params-file [your_params].yaml -entry Image
-nextflow run main.nf -params-file [your_params].yaml -entry Labels
+nextflow run main.nf -params-file [your_params].yaml -entry To_ZARR
 ```
 
 To build a config file:
 
 ```
-nextflow run main.nf -params-file [your_params].yaml -entry Config
+nextflow run main.nf -params-file [your_params].yaml -entry Config # or [TODO]Full_pipeline
 ```
 
 Further reading:
