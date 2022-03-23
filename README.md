@@ -18,7 +18,7 @@ $ cd sci-spatial-data
 Run
 ---
 
-Create an [yaml file](https://github.com/haniffalab/sci-spatial-data/blob/nextflow/template.yaml) for your datasets.
+Create an [yaml file](template.yaml) for your datasets.
 
 To convert h5ad to jsons:
 
@@ -29,13 +29,14 @@ nextflow run main.nf -params-file [your_params].yaml
 To convert images to zarrs:
 
 ```
-nextflow run main.nf -params-file [your_params].yaml -entry To_ZARR
+nextflow run main.nf -params-file [your_params].yaml -entry Image
+nextflow run main.nf -params-file [your_params].yaml -entry Labels
 ```
 
 To build a config file:
 
 ```
-nextflow run main.nf -params-file [your_params].yaml -entry config
+nextflow run main.nf -params-file [your_params].yaml -entry Config
 ```
 
 Further reading:

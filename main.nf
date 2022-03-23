@@ -4,11 +4,10 @@
 
 nextflow.enable.dsl=2
 
-params.outdir = "output/name"
+params.title = ""
 params.h5ad = ""
 params.image = ""
-params.cells = ""
-params.spots = ""
+params.labels = ""
 params.max_n_worker = "30"
 
 process Preprocess_h5ad{
@@ -31,76 +30,26 @@ process Preprocess_h5ad{
         --cells_file cells.json \
         --cell_sets_file cell_sets.json \
         --matrix_file matrix.json \
-        #--genes_file ${stem}_genes.json
     """
 }
 
-process image_to_zarr {
-    tag "${image}"
+process To_zarr {
+    tag "${params.zarr_type}"
     echo true
 
     conda "zarr_convert.yaml"
     publishDir params.outdir, mode: "copy"
 
     input:
-        file(image)
+        file(source)
 
     output:
-        tuple val(image), file("image")
-
-    when:
-        params.image
+        tuple val(source), file("${params.zarr_type}")
 
     script:
     """
-    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $image "image"
-    consolidate_md.py "image/data.zarr"
-    """
-}
-
-process cells_to_zarr {
-    tag "${cells}"
-    echo true
-
-    conda "zarr_convert.yaml"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-        file(cells)
-
-    output:
-        tuple val(cells), file("cells")
-
-    when:
-        params.cells
-
-    script:
-    """
-    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $cells "cells"
-    consolidate_md.py "cells/data.zarr"
-    """
-}
-
-process spots_to_zarr {
-    tag "${spots}"
-    echo true
-
-    conda "zarr_convert.yaml"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-        file(spots)
-
-    output:
-        tuple val(spots), file("spots")
-
-    when:
-        params.spots
-
-    script:
-    """
-    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $spots "spots"
-    consolidate_md.py "spots/data.zarr"
+    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $source "${params.zarr_type}"
+    consolidate_md.py "${params.zarr_type}/data.zarr"
     """
 }
 
@@ -123,17 +72,20 @@ workflow {
     Preprocess_h5ad(Channel.fromPath(params.h5ad))
 }
 
-workflow To_ZARR {
+workflow Image {
     if( params.image )
-        image_to_zarr(channel.fromPath(params.image))
-
-    if( params.cells )
-        cells_to_zarr(channel.fromPath(params.cells))
-
-    if( params.spots )
-        spots_to_zarr(channel.fromPath(params.spots))                
+        params.zarr_type = "image"
+        To_zarr(channel.fromPath(params.image))   
+             
 }
 
-workflow config {
+workflow Labels {
+    if( params.labels )
+        params.zarr_type = "labels"
+        To_zarr(channel.fromPath(params.labels))   
+             
+}
+
+workflow Config {
     Build_config()
 }
