@@ -19,17 +19,17 @@ def cells_dict(adata):
         # polygon = adata.obsm["polys"][index]
         # simpler = adata.obsm["simpler"][index]
         spatial = adata.obsm["spatial"][index]
-        # pca_x, pca_y, *rest = adata.obsm["X_pca"][index]
-        # umap_x, umap_y = adata.obsm["X_umap"][index]
+        pca_x, pca_y, *rest = adata.obsm["X_pca"][index]
+        umap_x, umap_y = adata.obsm["X_umap"][index]
         try:
             # poly = list(wkt.loads(simpler).coords)
             cells_dict[cell] = {
                 "mappings": {
-                    # "X_pca": [float(pca_x), float(pca_y)],
-                    # "X_umap": [float(umap_x), float(umap_y)],
+                    "X_pca": [float(pca_x), float(pca_y)],
+                    "X_umap": [float(umap_x), float(umap_y)],
                 },
                 "genes": get_genes(adata, cell),
-                "xy": list(spatial),
+                "xy": list(map(int, spatial)),
                 "factors": get_factors(adata, index),
                 # "poly": poly,
             }
