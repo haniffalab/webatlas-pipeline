@@ -75,7 +75,7 @@ process Build_config{
 /*
  * TODO: Build the config from from processed jsons and zarrs; Pseudo code for now
  */
-process Build_config{
+process Build_config_with_md {
     tag "config"
     echo verbose_log
 
