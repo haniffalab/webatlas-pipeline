@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 
-# import argparse
+import anndata as ad
+from collections import defaultdict
 import fire
 import json
-from collections import defaultdict
-
-import anndata as ad
-
-# from shapely import wkt
-# from shapely.geos import WKTReadingError
 
 from cluster import cluster as get_clusters
 
@@ -16,31 +11,23 @@ from cluster import cluster as get_clusters
 def cells_dict(adata):
     cells_dict = {}
     for index, cell in enumerate(adata.obs.index):
-        # polygon = adata.obsm["polys"][index]
-        # simpler = adata.obsm["simpler"][index]
-        spatial = adata.obsm["spatial"][index]
-        # pca_x, pca_y, *rest = adata.obsm["X_pca"][index]
-        # umap_x, umap_y = adata.obsm["X_umap"][index]
+        mappings = {}
+        for i in adata.obsm:
+            try:
+                x, y, *rest = adata.obsm[i][index]
+                mappings[i] = [float(x),float(y)]
+            except ValueError as e:
+                print(e) # @todo
+                pass
         try:
-            # poly = list(wkt.loads(simpler).coords)
             cells_dict[cell] = {
-                "mappings": {
-                    # "X_pca": [float(pca_x), float(pca_y)],
-                    # "X_umap": [float(umap_x), float(umap_y)],
-                },
+                "mappings": mappings,
                 "genes": get_genes(adata, cell),
-                "xy": list(spatial),
+                "xy": list(mappings["spatial"] if "spatial" in mappings else [0,0]),
                 "factors": get_factors(adata, index),
-                # "poly": poly,
             }
         except ValueError as e:
-            print(e)
-            pass
-        except WKTReadingError as e:
-            print(e)
-            pass
-        except NotImplementedError as e:
-            print(e)
+            print(e) # @todo
             pass
 
     return cells_dict
@@ -55,10 +42,10 @@ def get_genes(adata, cell):
             expression = adata[cell, gene].X
             output[gene] = float(expression[0, 0])
         except KeyError as e:
-            print(e)  # @todo
+            print(e) # @todo
             output[gene] = float(0)
         except IndexError as e:
-            print(e)  # @todo
+            print(e) # @todo
             output[gene] = float(0)
 
     return output
