@@ -23,7 +23,7 @@ def cells_dict(adata):
             cells_dict[cell] = {
                 "mappings": mappings,
                 "genes": get_genes(adata, cell),
-                "xy": list(mappings["spatial"] if "spatial" in mappings else [0,0]),
+                "xy": list(map(int, mappings["spatial"]) if "spatial" in mappings else [0,0]),
                 "factors": get_factors(adata, index),
             }
         except ValueError as e:

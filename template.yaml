@@ -1,6 +1,9 @@
 title: ""
 outdir: "output/visium"
 h5ad: "/home/user/sample/visium.h5ad"
-image: "/home/user/sample/image.tif"
-labels: "/home/user/sample/label-data.tif"
+images:
+  - ["iss_image", "path-to-iss-raw.tif"]
+  - ["visium_image", "path-to-visium-raw.tif"]
+  - ["iss_label", "path-to-iss-label.tif"]
+  - ["visium_label", "path-to-visium-label.tif"]
 max_n_worker: 30

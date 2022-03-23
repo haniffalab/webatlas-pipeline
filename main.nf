@@ -6,13 +6,17 @@ nextflow.enable.dsl=2
 
 params.title = ""
 params.h5ad = ""
-params.image = ""
-params.labels = ""
+params.images = [
+    ["image", "path-to-raw.tif"],
+    ["label", "path-to-label.tif"],
+]
 params.max_n_worker = "30"
+
+verbose_log = false
 
 process Preprocess_h5ad{
     tag "${h5ad}"
-    echo true
+    echo verbose_log
 
     container "hamat/web-altas-data-conversion:latest"
     publishDir params.outdir, mode: "copy"
@@ -33,29 +37,29 @@ process Preprocess_h5ad{
     """
 }
 
-process To_zarr {
-    tag "${params.zarr_type}"
-    echo true
+process image_to_zarr {
+    tag "${image}"
+    echo verbose_log
 
     conda "zarr_convert.yaml"
     publishDir params.outdir, mode: "copy"
 
     input:
-        file(source)
+    tuple val(img_type), file(image)
 
     output:
-        tuple val(source), file("${params.zarr_type}")
+    file(img_type)
 
     script:
     """
-    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $source "${params.zarr_type}"
-    consolidate_md.py "${params.zarr_type}/data.zarr"
+    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $image "${img_type}"
+    consolidate_md.py "${img_type}/data.zarr"
     """
 }
 
 process Build_config{
     tag "config"
-    echo true
+    echo verbose_log
 
     publishDir params.outdir, mode: "copy"
 
@@ -68,22 +72,47 @@ process Build_config{
     """
 }
 
+/*
+ * TODO: Build the config from from processed jsons and zarrs; Pseudo code for now
+ */
+process Build_config{
+    tag "config"
+    echo verbose_log
+
+    publishDir params.outdir, mode: "copy"
+
+    input:
+        tuple val(stem), file(jsons)
+        tuple file("*") //zarrs
+
+    output:
+        file("config.json")
+
+    script:
+    """
+    build_config.py --outdir ${params.outdir} # --jsons ${jsons} --zarrs ${zarrs}
+    """
+}
+
 workflow {
     Preprocess_h5ad(Channel.fromPath(params.h5ad))
 }
 
-workflow Image {
-    if( params.image )
-        params.zarr_type = "image"
-        To_zarr(channel.fromPath(params.image))   
-             
+workflow To_ZARR {
+    channel.from(params.images)
+        .map{it -> [it[0], file(it[1])]}
+        .set{image_to_convert}
+    image_to_zarr(image_to_convert)
 }
 
-workflow Labels {
-    if( params.labels )
-        params.zarr_type = "labels"
-        To_zarr(channel.fromPath(params.labels))   
-             
+//TODO: a one-liner to generate the json and zarr, along with the config file based on their content
+workflow Full_pipeline {
+    Preprocess_h5ad(Channel.fromPath(params.h5ad))
+    channel.from(params.images)
+        .map{it -> [it[0], file(it[1])]}
+        .set{image_to_convert}
+    image_to_zarr(image_to_convert)
+    Build_config(Preprocess_h5ad.out, image_to_zarr.out.collect())
 }
 
 workflow Config {
