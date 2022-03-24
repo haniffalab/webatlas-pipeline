@@ -14,23 +14,43 @@ params.max_n_worker = "30"
 
 verbose_log = false
 
-process Preprocess_h5ad{
+process h5ad_to_dict{
     tag "${h5ad}"
+    echo verbose_log
+
+    container "hamat/web-altas-data-conversion:latest"
+    /*publishDir params.outdir, mode: "copy"*/
+    storeDir params.outdir
+
+    input:
+        file(h5ad)
+
+    output:
+        tuple val(stem), file("*.pickle")
+
+    script:
+    stem = h5ad.baseName
+    """
+    h5ad_2_json.py --h5ad_file ${h5ad}
+    """
+}
+
+process dict_to_jsons {
+    tag "${dict}"
     echo verbose_log
 
     container "hamat/web-altas-data-conversion:latest"
     publishDir params.outdir, mode: "copy"
 
     input:
-        file(h5ad)
+        tuple val(stem), file(dict)
 
     output:
         tuple val(stem), file("*.json")
 
     script:
-    stem = h5ad.baseName
     """
-    h5ad_2_json.py --h5ad_file ${h5ad} \
+    dict_2_jsons.py --dict_file ${dict} \
         --cells_file cells.json \
         --cell_sets_file cell_sets.json \
         --matrix_file matrix.json \
@@ -95,7 +115,8 @@ process Build_config_with_md {
 }
 
 workflow {
-    Preprocess_h5ad(Channel.fromPath(params.h5ad))
+    h5ad_to_dict(Channel.fromPath(params.h5ad))
+    dict_to_jsons(h5ad_to_dict.out)
 }
 
 workflow To_ZARR {
@@ -112,9 +133,17 @@ workflow Full_pipeline {
         .map{it -> [it[0], file(it[1])]}
         .set{image_to_convert}
     image_to_zarr(image_to_convert)
-    Build_config(Preprocess_h5ad.out, image_to_zarr.out.collect())
+    Build_config_with_md(Preprocess_h5ad.out, image_to_zarr.out.collect())
 }
 
 workflow Config {
     Build_config()
+}
+
+//TODO: a one-liner to generate the config file with provided jsons and zarrs
+workflow Generate_config_with_processed_data {
+    channel.from(params.jsons)
+        .map{it -> [params.title, it]} //open to any suggestions here
+        .set{jsons_with_ids}
+    Build_config_with_md(jsons_with_ids, channel.fromPath(params.zarrs).collect())
 }
