@@ -4,6 +4,7 @@ import anndata as ad
 from collections import defaultdict
 import fire
 import json
+import pickle
 
 from cluster import cluster as get_clusters
 
@@ -127,6 +128,8 @@ def cell_sets_json(data):
 def main(h5ad_file, cells_file=None, cell_sets_file=None, matrix_file=None):
     metadata = cells_dict(ad.read(h5ad_file))
     # print(metadata)
+    with open('metadata.pickle', 'wb') as handle:
+        pickle.dump(metadata, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     if cells_file:
         json.dump(metadata, open(cells_file, "w"), indent=1)
@@ -137,4 +140,4 @@ def main(h5ad_file, cells_file=None, cell_sets_file=None, matrix_file=None):
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+   fire.Fire(main)
