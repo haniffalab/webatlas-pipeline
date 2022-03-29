@@ -87,6 +87,8 @@ process Build_config{
 
     input:
         val(dir)
+        val(title)
+        val(dataset)
         file(zarr_dirs)
 
     output:
@@ -95,7 +97,7 @@ process Build_config{
     script:
     concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --dataset ${params.dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
     """
 }
 
@@ -110,6 +112,7 @@ process Build_config_with_md {
 
     input:
         val(dir)
+        val(title)
         tuple val(stem), file(jsons)
         file(zarr_dirs)
 
@@ -119,7 +122,7 @@ process Build_config_with_md {
     script:
     concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --dataset ${stem} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
+    build_config.py --title "${title}" --dataset ${stem} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
     """
 }
 
@@ -148,6 +151,7 @@ workflow Full_pipeline {
 
     Build_config_with_md(
         Channel.fromPath(params.outdir),
+        params.title,
         dict_to_jsons.out,
         zarr_dirs
     )
@@ -160,7 +164,7 @@ workflow Config {
     else {
         zarr_dirs = []
     }
-    Build_config(Channel.fromPath(params.outdir), zarr_dirs)
+    Build_config(Channel.fromPath(params.outdir), params.title, params.dataset, zarr_dirs)
 }
 
 //TODO: a one-liner to generate the config file with provided jsons and zarrs

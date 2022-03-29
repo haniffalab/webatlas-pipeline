@@ -35,6 +35,7 @@ DATA_TYPES = {
 }
 
 def write_raster_json(
+    title='',
     dataset='',
     files_dir='',
     zarr_dirs=None,
@@ -43,7 +44,7 @@ def write_raster_json(
     config_filename='config.json',
     ):
     config_json = {
-        "name": dataset,
+        "name": title,
         "version": "1.0.0",
         "description": "",
         "public": True,
