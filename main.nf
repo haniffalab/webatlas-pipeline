@@ -82,7 +82,7 @@ process image_to_zarr {
 process Build_config{
     tag "config"
     echo verbose_log
-
+    containerOptions "-v ${params.outdir}:${params.outdir}"
     publishDir params.outdir, mode: "copy"
 
     input:
@@ -107,7 +107,7 @@ process Build_config{
 process Build_config_with_md {
     tag "config"
     echo verbose_log
-
+    containerOptions "-v ${params.outdir}:${params.outdir}"
     publishDir params.outdir, mode: "copy"
 
     input:
