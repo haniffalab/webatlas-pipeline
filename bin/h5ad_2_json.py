@@ -93,20 +93,19 @@ def cell_sets_json(data):
     >>> sorted([ n['name'] for n in cell_sets['tree'] ])
     ['Leiden Clustering', 'k-means Clustering']
     """
-
-    clustering_dict = {"sample": defaultdict(list), "total_counts": defaultdict(list)}
-    nice_names = {"sample": "Sample", "total_counts": "Total Counts"}
+    clustering_dict = defaultdict(dict)
+    
     for cell_id in data.keys():
         factors = data[cell_id]["factors"]
+
         factors_dict = {}
-        if "sample" in factors:
-            factors_dict["sample"] = "Cluster {}".format(factors["sample"][0])
-        if "total_counts" in factors:
-            factors_dict["total_counts"] = "Cluster {}".format(factors["total_counts"][0])
+        for factor in factors:
+            factors_dict[factor] = "Cluster {}".format(factors[factor][0])
+
         # For each cluster assignment, append this cell ID to the
         # appropriate clustering_dict list.
         for factor_type, factor_cluster in factors_dict.items():
-            clustering_dict[factor_type][factor_cluster].append(cell_id)
+            clustering_dict[factor_type].setdefault(factor_cluster, []).append(cell_id)
 
     # Construct the tree, according to the following schema:
     # https://github.com/hubmapconsortium/vitessce/blob/d5f63aa1d08aa61f6b20f6ad6bbfba5fceb6b5ef/src/schemas/cell_sets.schema.json
@@ -119,7 +118,10 @@ def cell_sets_json(data):
                 {"name": cluster_name, "set": factor_clusters[cluster_name]}
             )
         cell_sets["tree"].append(
-            {"name": nice_names[factor_type], "children": factor_type_children}
+            {
+                "name": " ".join(w.capitalize() for w in factor_type.split("_")),
+                "children": factor_type_children
+            }
         )
 
     return cell_sets
