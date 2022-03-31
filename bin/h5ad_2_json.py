@@ -9,7 +9,7 @@ import pickle
 from cluster import cluster as get_clusters
 
 
-def cells_dict(adata):
+def cells_dict(adata, factors):
     cells_dict = {}
     for index, cell in enumerate(adata.obs.index):
         mappings = {}
@@ -25,7 +25,7 @@ def cells_dict(adata):
                 "mappings": mappings,
                 "genes": get_genes(adata, cell),
                 "xy": list(map(int, mappings["spatial"]) if "spatial" in mappings else [0,0]),
-                "factors": get_factors(adata, index),
+                "factors": get_factors(adata, index, factors),
             }
         except ValueError as e:
             print(e) # @todo
@@ -52,8 +52,7 @@ def get_genes(adata, cell):
     return output
 
 
-def get_factors(adata, index):
-    factors_list = ["sample", "total_counts", "n_genes_by_counts", "doublet_scores"]
+def get_factors(adata, index, factors_list):
     output = {}
 
     for factor in factors_list:
@@ -99,10 +98,11 @@ def cell_sets_json(data):
     nice_names = {"sample": "Sample", "total_counts": "Total Counts"}
     for cell_id in data.keys():
         factors = data[cell_id]["factors"]
-        factors_dict = {
-            "sample": "Cluster {}".format(factors["sample"][0]),
-            "total_counts": "Cluster {}".format(factors["total_counts"][0]),
-        }
+        factors_dict = {}
+        if "sample" in factors:
+            factors_dict["sample"] = "Cluster {}".format(factors["sample"][0])
+        if "total_counts" in factors:
+            factors_dict["total_counts"] = "Cluster {}".format(factors["total_counts"][0])
         # For each cluster assignment, append this cell ID to the
         # appropriate clustering_dict list.
         for factor_type, factor_cluster in factors_dict.items():
@@ -125,8 +125,12 @@ def cell_sets_json(data):
     return cell_sets
 
 
-def main(h5ad_file, cells_file=None, cell_sets_file=None, matrix_file=None):
-    metadata = cells_dict(ad.read(h5ad_file))
+def main(h5ad_file, factors=[], cells_file=None, cell_sets_file=None, matrix_file=None):
+    if type(factors) == bool:
+        factors = []
+    elif type(factors) not in [list, tuple]:
+        factors = [factors]
+    metadata = cells_dict(ad.read(h5ad_file), factors)
     # print(metadata)
     with open('metadata.pickle', 'wb') as handle:
         pickle.dump(metadata, handle, protocol=pickle.HIGHEST_PROTOCOL)
