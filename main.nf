@@ -11,6 +11,8 @@ params.images = [
     ["label", "path-to-label.tif"],
 ]
 params.max_n_worker = "30"
+params.dataset = ""
+params.zarr_dirs = []
 
 verbose_log = false
 
@@ -52,8 +54,8 @@ process dict_to_jsons {
     """
     dict_2_jsons.py --dict_file ${dict} \
         --cells_file cells.json \
-        --cell_sets_file cell_sets.json \
-        --matrix_file matrix.json \
+        --cell_sets_file cell-sets.json \
+        --matrix_file clusters.json \
     """
 }
 
@@ -80,15 +82,22 @@ process image_to_zarr {
 process Build_config{
     tag "config"
     echo verbose_log
-
+    containerOptions "-v ${params.outdir}:${params.outdir}"
     publishDir params.outdir, mode: "copy"
+
+    input:
+        val(dir)
+        val(title)
+        val(dataset)
+        file(zarr_dirs)
 
     output:
         file("config.json")
 
     script:
+    concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --outdir ${params.outdir}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
     """
 }
 
@@ -98,19 +107,22 @@ process Build_config{
 process Build_config_with_md {
     tag "config"
     echo verbose_log
-
+    containerOptions "-v ${params.outdir}:${params.outdir}"
     publishDir params.outdir, mode: "copy"
 
     input:
+        val(dir)
+        val(title)
         tuple val(stem), file(jsons)
-        tuple file("*") //zarrs
+        file(zarr_dirs)
 
     output:
         file("config.json")
 
     script:
+    concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --outdir ${params.outdir} # --jsons ${jsons} --zarrs ${zarrs}
+    build_config.py --title "${title}" --dataset ${stem} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
     """
 }
 
@@ -128,16 +140,31 @@ workflow To_ZARR {
 
 //TODO: a one-liner to generate the json and zarr, along with the config file based on their content
 workflow Full_pipeline {
-    Preprocess_h5ad(Channel.fromPath(params.h5ad))
+    h5ad_to_dict(Channel.fromPath(params.h5ad))
+    dict_to_jsons(h5ad_to_dict.out)
+
     channel.from(params.images)
         .map{it -> [it[0], file(it[1])]}
         .set{image_to_convert}
     image_to_zarr(image_to_convert)
-    Build_config_with_md(Preprocess_h5ad.out, image_to_zarr.out.collect())
+    zarr_dirs = image_to_zarr.out.collect()
+
+    Build_config_with_md(
+        Channel.fromPath(params.outdir),
+        params.title,
+        dict_to_jsons.out,
+        zarr_dirs
+    )
 }
 
 workflow Config {
-    Build_config()
+    if (params.zarr_dirs.size > 0){
+        zarr_dirs = Channel.fromPath(params.zarr_dirs).collect()
+    }
+    else {
+        zarr_dirs = []
+    }
+    Build_config(Channel.fromPath(params.outdir), params.title, params.dataset, zarr_dirs)
 }
 
 //TODO: a one-liner to generate the config file with provided jsons and zarrs
