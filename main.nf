@@ -10,9 +10,11 @@ params.images = [
     ["image", "path-to-raw.tif"],
     ["label", "path-to-label.tif"],
 ]
+params.factors = []
 params.max_n_worker = "30"
 params.dataset = ""
 params.zarr_dirs = []
+params.additional_data = []
 
 verbose_log = false
 
@@ -21,19 +23,21 @@ process h5ad_to_dict{
     echo verbose_log
 
     container "hamat/web-altas-data-conversion:latest"
-    /*publishDir params.outdir, mode: "copy"*/
-    storeDir params.outdir
+    publishDir params.outdir, mode: "copy"
+    // storeDir params.outdir
 
     input:
         file(h5ad)
+        val(factors)
 
     output:
         tuple val(stem), file("*.pickle")
 
     script:
     stem = h5ad.baseName
+    concat_factors = factors.join(',')
     """
-    h5ad_2_json.py --h5ad_file ${h5ad}
+    h5ad_2_json.py --h5ad_file ${h5ad} --factors ${concat_factors}
     """
 }
 
@@ -79,6 +83,25 @@ process image_to_zarr {
     """
 }
 
+process molecules_json {
+    tag "${tsv}"
+    echo true
+
+    // TODO: define conda env
+    publishDir params.outdir, mode: "copy"
+
+    input:
+    file(tsv)
+
+    output:
+    file("molecules.json")
+
+    script:
+    """
+    molecules_tsv_2_json.py --tsv_file ${tsv}
+    """
+}
+
 process Build_config{
     tag "config"
     echo verbose_log
@@ -115,6 +138,7 @@ process Build_config_with_md {
         val(title)
         tuple val(stem), file(jsons)
         file(zarr_dirs)
+        val(done_other_data)
 
     output:
         file("config.json")
@@ -127,7 +151,7 @@ process Build_config_with_md {
 }
 
 workflow {
-    h5ad_to_dict(Channel.fromPath(params.h5ad))
+    h5ad_to_dict(Channel.fromPath(params.h5ad), params.factors.collect())
     dict_to_jsons(h5ad_to_dict.out)
 }
 
@@ -138,9 +162,17 @@ workflow To_ZARR {
     image_to_zarr(image_to_convert)
 }
 
+workflow Process_additional_data {
+    if (params.additional_data.molecules){
+        molecules_json(Channel.fromPath(params.additional_data.molecules.tsv_file))
+    }
+    emit:
+        done = true
+}
+
 //TODO: a one-liner to generate the json and zarr, along with the config file based on their content
 workflow Full_pipeline {
-    h5ad_to_dict(Channel.fromPath(params.h5ad))
+    h5ad_to_dict(Channel.fromPath(params.h5ad), params.factors.collect())
     dict_to_jsons(h5ad_to_dict.out)
 
     channel.from(params.images)
@@ -149,11 +181,14 @@ workflow Full_pipeline {
     image_to_zarr(image_to_convert)
     zarr_dirs = image_to_zarr.out.collect()
 
+    Process_additional_data()
+
     Build_config_with_md(
         Channel.fromPath(params.outdir),
         params.title,
         dict_to_jsons.out,
-        zarr_dirs
+        zarr_dirs,
+        Process_additional_data.out.done
     )
 }
 
@@ -164,7 +199,12 @@ workflow Config {
     else {
         zarr_dirs = []
     }
-    Build_config(Channel.fromPath(params.outdir), params.title, params.dataset, zarr_dirs)
+    Build_config(
+        Channel.fromPath(params.outdir),
+        params.title,
+        params.dataset,
+        zarr_dirs
+    )
 }
 
 //TODO: a one-liner to generate the config file with provided jsons and zarrs
