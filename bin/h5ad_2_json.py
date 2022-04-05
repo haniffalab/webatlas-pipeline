@@ -52,7 +52,7 @@ def get_genes(adata, cell):
     return output
 
 
-def get_factors(adata, index, factors_list):
+def get_factors(adata, index, factors_list, default_val="0"):
     output = {}
 
     for factor in factors_list:
@@ -60,10 +60,10 @@ def get_factors(adata, index, factors_list):
             output[factor] = str(adata.obs[factor][index])
         except KeyError as e:
             print(e)  # @todo
-            output[factor] = 0
+            output[factor] = default_val
         except IndexError as e:
             print(e)  # @todo
-            output[factor] = 0
+            output[factor] = default_val
 
     return output
 
