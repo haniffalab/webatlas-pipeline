@@ -1,6 +1,8 @@
-# sci-spatial-data
+## SINGLE CELL INSIGHTS
 
-Utils to pre-process data for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme).
+# Spatial Data Pipeline
+
+Nextflow pipeline to pre-process In-Situ Sequencing and 10x Visium data for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
 
 ## Install
 
@@ -41,4 +43,4 @@ nextflow run main.nf -params-file [your_params].yaml -entry Config # or [TODO]Fu
 Further reading:
 --- 
 
-Docker image pulling/local conda env creation are handled by nextflow. Please refer to [this](https://www.nextflow.io/docs/latest/getstarted.html) for detailed informtion.
+Docker image pulling/local conda env creation are handled by nextflow. Please refer to [this](https://www.nextflow.io/docs/latest/getstarted.html) for detailed information.
