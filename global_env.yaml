@@ -1,0 +1,7 @@
+name: file_convert
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - pip:
+    - fire
