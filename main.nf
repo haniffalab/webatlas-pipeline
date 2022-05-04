@@ -14,7 +14,7 @@ params.factors = []
 params.max_n_worker = "30"
 params.dataset = ""
 params.zarr_dirs = []
-params.additional_data = []
+params.data = []
 
 verbose_log = false
 
@@ -83,22 +83,67 @@ process image_to_zarr {
     """
 }
 
-process molecules_json {
-    tag "${tsv}"
+process any_file {
     echo true
+    tag "${type}"
 
-    // TODO: define conda env
-    publishDir params.outdir, mode: "copy"
+    conda "${type}.yaml" // conditional conda env
 
     input:
-    file(tsv)
+    tuple val(type), val(args)
 
     output:
-    file("molecules.json")
+    val(type)
 
     script:
+    args_strs = []
+    if (args) {
+        args.each { arg, value ->
+            if (value instanceof Collection){
+                value = value.collect { it instanceof String ? /\'/ + it.replace(" ",/\ /) + /\'/ : it }
+                concat_args = value.join(',')
+            }
+            else
+                concat_args = value
+            args_strs.add("--$arg $concat_args")
+        }
+    }
+    args_str = args_strs.join(' ')
+
     """
-    molecules_tsv_2_json.py --tsv_file ${tsv}
+    process_${type}.py ${args_str}
+    """
+}
+
+process route_file {
+    echo true
+    tag "${type}"
+
+    conda "global_env.yaml" // or conditional conda env?
+
+    input:
+    tuple val(type), val(args)
+
+    output:
+    val(type)
+
+    script:
+    args_strs = []
+    if (args) {
+        args.each { arg, value ->
+            if (value instanceof Collection){
+                value = value.collect { it instanceof String ? /\'/ + it.replace(" ",/\ /) + /\'/ : it }
+                concat_args = value.join(',')
+            }
+            else
+                concat_args = value
+            args_strs.add("--$arg $concat_args")
+        }
+    }
+    args_str = args_strs.join(' ')
+
+    """
+    router.py --type ${type} ${args_str}
     """
 }
 
@@ -162,10 +207,13 @@ workflow To_ZARR {
     image_to_zarr(image_to_convert)
 }
 
-workflow Process_additional_data {
-    if (params.additional_data.molecules){
-        molecules_json(Channel.fromPath(params.additional_data.molecules.tsv_file))
+workflow Process_files {
+    data_list = []
+    params.data.each { data_type, data_map ->
+        data_list.add([data_type, data_map.args])
     }
+    
+    route_file(Channel.from(data_list))
     emit:
         done = true
 }
@@ -181,14 +229,14 @@ workflow Full_pipeline {
     image_to_zarr(image_to_convert)
     zarr_dirs = image_to_zarr.out.collect()
 
-    Process_additional_data()
+    Process_files()
 
     Build_config_with_md(
         Channel.fromPath(params.outdir),
         params.title,
         dict_to_jsons.out,
         zarr_dirs,
-        Process_additional_data.out.done
+        Process_files.out.done
     )
 }
 

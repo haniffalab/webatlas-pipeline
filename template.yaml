@@ -7,3 +7,35 @@ images:
   - ["iss_label", "path-to-iss-label.tif"]
   - ["visium_label", "path-to-visium-label.tif"]
 max_n_worker: 30
+dataset: "visium"
+zarr_dirs:
+  - "visium_label"
+factors:
+  - "sample"
+  - "total_counts"
+  - "n_genes_by_counts"
+  - "doublet_scores"
+data:
+  h5ad:
+    file: "data.h5ad"
+    args:
+      arg_1: "argument_1"
+      arg_2: 
+        - "argument_2-1"
+        - "argument_2-2"
+  molecules:
+    file: "molecules.tsv"
+    args:
+      arg_3:
+        - "arg3.1"
+        - "arg3.2"
+      arg_4: "argument_4"
+      arg_5:
+        - 1
+        - 2
+        - 3
+        - "text"
+        - 4
+        - "more text"
+  genes:
+    file: "genes.json"
