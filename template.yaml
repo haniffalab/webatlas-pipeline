@@ -1,11 +1,8 @@
 title: ""
 outdir: "output/visium"
-h5ad: "/home/user/sample/visium.h5ad"
 images:
-  - ["iss_image", "path-to-iss-raw.tif"]
-  - ["visium_image", "path-to-visium-raw.tif"]
-  - ["iss_label", "path-to-iss-label.tif"]
-  - ["visium_label", "path-to-visium-label.tif"]
+  - ["raw_image", "path-to-raw-image.tif"]
+  - ["label_image", "path-to-label-image.tif"]
 max_n_worker: 30
 dataset: "visium"
 zarr_dirs:
@@ -19,23 +16,8 @@ data:
   h5ad:
     file: "data.h5ad"
     args:
-      arg_1: "argument_1"
-      arg_2: 
-        - "argument_2-1"
-        - "argument_2-2"
+      zarr_file: "data.zarr"
   molecules:
     file: "molecules.tsv"
     args:
-      arg_3:
-        - "arg3.1"
-        - "arg3.2"
-      arg_4: "argument_4"
-      arg_5:
-        - 1
-        - 2
-        - 3
-        - "text"
-        - 4
-        - "more text"
-  genes:
-    file: "genes.json"
+      json_file: "molecules.json"

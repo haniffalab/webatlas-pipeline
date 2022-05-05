@@ -127,7 +127,7 @@ def cell_sets_json(data):
     return cell_sets
 
 
-def main(h5ad_file, factors=[], cells_file=None, cell_sets_file=None, matrix_file=None):
+def write_json(h5ad_file, factors=[], cells_file=None, cell_sets_file=None, matrix_file=None):
     if type(factors) == bool:
         factors = []
     elif type(factors) not in [list, tuple]:
@@ -146,4 +146,4 @@ def main(h5ad_file, factors=[], cells_file=None, cell_sets_file=None, matrix_fil
 
 
 if __name__ == "__main__":
-   fire.Fire(main)
+   fire.Fire(write_json)

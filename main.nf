@@ -5,7 +5,6 @@
 nextflow.enable.dsl=2
 
 params.title = ""
-params.h5ad = ""
 params.images = [
     ["image", "path-to-raw.tif"],
     ["label", "path-to-label.tif"],
@@ -18,50 +17,6 @@ params.data = []
 
 verbose_log = false
 
-process h5ad_to_dict{
-    tag "${h5ad}"
-    echo verbose_log
-
-    container "hamat/web-altas-data-conversion:latest"
-    publishDir params.outdir, mode: "copy"
-    // storeDir params.outdir
-
-    input:
-        file(h5ad)
-        val(factors)
-
-    output:
-        tuple val(stem), file("*.pickle")
-
-    script:
-    stem = h5ad.baseName
-    concat_factors = factors.join(',')
-    """
-    h5ad_2_json.py --h5ad_file ${h5ad} --factors ${concat_factors}
-    """
-}
-
-process dict_to_jsons {
-    tag "${dict}"
-    echo verbose_log
-
-    container "hamat/web-altas-data-conversion:latest"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-        tuple val(stem), file(dict)
-
-    output:
-        tuple val(stem), file("*.json")
-
-    script:
-    """
-    dict_2_jsons.py --dict_file ${dict} \
-        --cells_file cells.json \
-        --cell_sets_file cell-sets.json \
-        --matrix_file clusters.json \
-    """
-}
 
 process image_to_zarr {
     tag "${image}"
@@ -87,13 +42,14 @@ process any_file {
     echo true
     tag "${type}"
 
-    conda "${type}.yaml" // conditional conda env
+    conda "global_env.yaml" // or conditional conda env
+    publishDir params.outdir, mode: "copy"
 
     input:
-    tuple val(type), val(args)
+    tuple val(type), file(file), val(args)
 
     output:
-    val(type)
+    file("*")
 
     script:
     args_strs = []
@@ -111,7 +67,7 @@ process any_file {
     args_str = args_strs.join(' ')
 
     """
-    process_${type}.py ${args_str}
+    process_${type}.py --file ${file} ${args_str}
     """
 }
 
@@ -119,13 +75,14 @@ process route_file {
     echo true
     tag "${type}"
 
-    conda "global_env.yaml" // or conditional conda env?
+    conda "global_env.yaml" // or conditional conda env
+    publishDir params.outdir, mode: "copy"
 
     input:
-    tuple val(type), val(args)
+    tuple val(type), file(file), val(args)
 
     output:
-    val(type)
+    tuple val(type), file("*")
 
     script:
     args_strs = []
@@ -143,7 +100,7 @@ process route_file {
     args_str = args_strs.join(' ')
 
     """
-    router.py --type ${type} ${args_str}
+    router.py --type ${type} --file ${file} ${args_str}
     """
 }
 
@@ -169,9 +126,6 @@ process Build_config{
     """
 }
 
-/*
- * TODO: Build the config from from processed jsons and zarrs; Pseudo code for now
- */
 process Build_config_with_md {
     tag "config"
     echo verbose_log
@@ -196,8 +150,8 @@ process Build_config_with_md {
 }
 
 workflow {
-    h5ad_to_dict(Channel.fromPath(params.h5ad), params.factors.collect())
-    dict_to_jsons(h5ad_to_dict.out)
+    Process_files()
+    // Process_files.out.files.toList().view()
 }
 
 workflow To_ZARR {
@@ -205,29 +159,26 @@ workflow To_ZARR {
         .map{it -> [it[0], file(it[1])]}
         .set{image_to_convert}
     image_to_zarr(image_to_convert)
+
+    emit:
+        zarr_dirs = image_to_zarr.out.collect()
 }
 
 workflow Process_files {
     data_list = []
     params.data.each { data_type, data_map ->
-        data_list.add([data_type, data_map.args])
+        data_list.add([data_type, file(data_map.file), data_map.args])
     }
     
     route_file(Channel.from(data_list))
+
     emit:
         done = true
+        files = route_file.out
 }
 
-//TODO: a one-liner to generate the json and zarr, along with the config file based on their content
 workflow Full_pipeline {
-    h5ad_to_dict(Channel.fromPath(params.h5ad), params.factors.collect())
-    dict_to_jsons(h5ad_to_dict.out)
-
-    channel.from(params.images)
-        .map{it -> [it[0], file(it[1])]}
-        .set{image_to_convert}
-    image_to_zarr(image_to_convert)
-    zarr_dirs = image_to_zarr.out.collect()
+    To_ZARR()
 
     Process_files()
 
@@ -235,7 +186,7 @@ workflow Full_pipeline {
         Channel.fromPath(params.outdir),
         params.title,
         dict_to_jsons.out,
-        zarr_dirs,
+        To_ZARR.out.zarr_dirs,
         Process_files.out.done
     )
 }
@@ -253,12 +204,4 @@ workflow Config {
         params.dataset,
         zarr_dirs
     )
-}
-
-//TODO: a one-liner to generate the config file with provided jsons and zarrs
-workflow Generate_config_with_processed_data {
-    channel.from(params.jsons)
-        .map{it -> [params.title, it]} //open to any suggestions here
-        .set{jsons_with_ids}
-    Build_config_with_md(jsons_with_ids, channel.fromPath(params.zarrs).collect())
 }
