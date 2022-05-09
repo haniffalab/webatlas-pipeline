@@ -64,6 +64,7 @@ def build_options(file_type, file_path, file_options=None, check_exist=True):
 def write_raster_json(
     title='',
     dataset='',
+    file_paths=None,
     files_dir='',
     zarr_dirs=None,
     url='',
@@ -86,9 +87,19 @@ def write_raster_json(
     files = []
     for data_type in DATA_TYPES:
         for file_name, file_type in DATA_TYPES[data_type]:
+            
             # first file found will be used in the config file
-            file_path = os.path.join(files_dir, file_name)
-            if os.path.exists(file_path):
+            file_exists = False
+            if file_paths is not None:
+                if file_name in [ os.path.basename(x) for x in file_paths ]:
+                    idx = [ os.path.basename(x) for x in file_paths ].index(file_name)
+                    file_path = file_paths[idx]
+                    file_exists = True
+            else:
+                file_path = os.path.join(files_dir, file_name)
+                file_exists = os.path.exists(file_path)
+
+            if file_exists:
                 file_entry = {
                     "url": os.path.join(url, file_name),
                     "type": data_type,

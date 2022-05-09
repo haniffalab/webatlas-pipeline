@@ -24,7 +24,7 @@ verbose_log = true
 
 process image_to_zarr {
     tag "${image}"
-    echo false
+    debug false
 
     conda "zarr_convert.yaml"
     publishDir params.outdir, mode: "copy"
@@ -43,7 +43,7 @@ process image_to_zarr {
 }
 
 process any_file {
-    echo verbose_log
+    debug verbose_log
     tag "${type}"
 
     conda "global_env.yaml" // or conditional conda env
@@ -76,7 +76,7 @@ process any_file {
 }
 
 process route_file {
-    echo verbose_log
+    debug verbose_log
     tag "${type}"
 
     conda "global_env.yaml" // or conditional conda env
@@ -86,7 +86,7 @@ process route_file {
     tuple val(type), file(file), val(args)
 
     output:
-    tuple val(type), file("*")
+    file("*")
 
     script:
     args_strs = []
@@ -110,7 +110,7 @@ process route_file {
 
 process Build_config{
     tag "config"
-    echo verbose_log
+    debug verbose_log
     containerOptions "-v ${params.outdir}:${params.outdir}"
     publishDir params.outdir, mode: "copy"
 
@@ -119,16 +119,23 @@ process Build_config{
         val(title)
         val(dataset)
         file(zarr_dirs)
-        val(files)
+        file(files)
         val(options)
 
     output:
         file("config.json")
 
     script:
+    // Use target to get List from nextflow.utils.BlankSeparatedList
+    files = files.target
+    file_paths = ""
+    if (files.size > 0) {
+        files = files.collect{ /\'/ + it + /\'/ }
+        file_paths = "--file_paths " + files.join(',')
+    }
     concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs} --options ${options}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs} --options ${options} ${file_paths}
     """
 }
 
@@ -166,12 +173,14 @@ workflow Full_pipeline {
 
     options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
 
+    // Build config from files generated from Process_files
+    // Ignores files in params.outdir
     Build_config(
-        Channel.fromPath(params.outdir),
+        "''",
         params.title,
         params.dataset,
         To_ZARR.out.zarr_dirs,
-        Process_files.out.files.toList(),
+        Process_files.out.files.collect(),
         options_str
     )
 }
@@ -186,8 +195,9 @@ workflow Config {
 
     options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
 
+    // Build config from files in params.outdir
     Build_config(
-        Channel.fromPath(params.outdir),
+        params.outdir,
         params.title,
         params.dataset,
         zarr_dirs,
