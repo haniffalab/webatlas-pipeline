@@ -7,9 +7,6 @@ max_n_worker: 30
 dataset: "visium"
 zarr_dirs:
   - "visium_label"
-factors:
-  - "sample"
-  - "total_counts"
 data:
   h5ad:
     file: "data.h5ad"
