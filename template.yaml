@@ -10,14 +10,25 @@ zarr_dirs:
 factors:
   - "sample"
   - "total_counts"
-  - "n_genes_by_counts"
-  - "doublet_scores"
 data:
   h5ad:
     file: "data.h5ad"
     args:
-      zarr_file: "data.zarr"
+      compute_embeddings: "True"
   molecules:
     file: "molecules.tsv"
-    args:
-      json_file: "molecules.json"
+options:
+  anndata-cells.zarr:
+    spatial:
+      xy: "obsm/spatial"
+    mappings:
+      obsm/X_umap: [0,1]
+      obsm/spatial: null
+    factors:
+      - "obsm/sample"
+      - "obsm/total_counts"
+  anndata-cell-sets.zarr:
+    sets:
+      - "obs/sample"
+  anndata-expression-matrix.zarr:
+    matrix: "X"

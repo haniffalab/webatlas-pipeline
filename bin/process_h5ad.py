@@ -10,12 +10,15 @@ import scipy
 import warnings
 warnings.filterwarnings("ignore")
 
+ZARR_FILE = 'anndata.zarr'
 
-def h5ad_to_zarr(file, zarr_file=None, compute_embeddings=False, chunk_size=10):
+def h5ad_to_zarr(
+    file,
+    compute_embeddings=False,
+    chunk_size=10
+    ):
+
     adata = ad.read(file)
-
-    if zarr_file is None:
-        zarr_file = os.path.splitext(file)[0] + '.zarr'
 
     # compute embeddings if not already stored in object
     if compute_embeddings:
@@ -41,7 +44,7 @@ def h5ad_to_zarr(file, zarr_file=None, compute_embeddings=False, chunk_size=10):
     # remove unnecessary data
     del adata.raw
 
-    adata.write_zarr(zarr_file, [adata.shape[0], chunk_size])
+    adata.write_zarr(ZARR_FILE, [adata.shape[0], chunk_size])
 
 
 if __name__ == "__main__":

@@ -1,9 +1,11 @@
 #!/usr/bin/env/ nextflow
 
 // Copyright (C) 2022 Tong LI <tongli.bioinfo@protonmail.com>
+import groovy.json.*
 
 nextflow.enable.dsl=2
 
+// Default params
 params.title = ""
 params.images = [
     ["image", "path-to-raw.tif"],
@@ -14,13 +16,15 @@ params.max_n_worker = "30"
 params.dataset = ""
 params.zarr_dirs = []
 params.data = []
+params.options = []
 
-verbose_log = false
+
+verbose_log = true
 
 
 process image_to_zarr {
     tag "${image}"
-    echo verbose_log
+    echo false
 
     conda "zarr_convert.yaml"
     publishDir params.outdir, mode: "copy"
@@ -39,7 +43,7 @@ process image_to_zarr {
 }
 
 process any_file {
-    echo true
+    echo verbose_log
     tag "${type}"
 
     conda "global_env.yaml" // or conditional conda env
@@ -72,7 +76,7 @@ process any_file {
 }
 
 process route_file {
-    echo true
+    echo verbose_log
     tag "${type}"
 
     conda "global_env.yaml" // or conditional conda env
@@ -115,6 +119,8 @@ process Build_config{
         val(title)
         val(dataset)
         file(zarr_dirs)
+        val(files)
+        val(options)
 
     output:
         file("config.json")
@@ -122,30 +128,7 @@ process Build_config{
     script:
     concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
-    """
-}
-
-process Build_config_with_md {
-    tag "config"
-    echo verbose_log
-    containerOptions "-v ${params.outdir}:${params.outdir}"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-        val(dir)
-        val(title)
-        tuple val(stem), file(jsons)
-        file(zarr_dirs)
-        val(done_other_data)
-
-    output:
-        file("config.json")
-
-    script:
-    concat_zarr_dirs = zarr_dirs.join(',')
-    """
-    build_config.py --title "${title}" --dataset ${stem} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs} --options ${options}
     """
 }
 
@@ -173,7 +156,6 @@ workflow Process_files {
     route_file(Channel.from(data_list))
 
     emit:
-        done = true
         files = route_file.out
 }
 
@@ -182,12 +164,15 @@ workflow Full_pipeline {
 
     Process_files()
 
-    Build_config_with_md(
+    options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
+
+    Build_config(
         Channel.fromPath(params.outdir),
         params.title,
-        dict_to_jsons.out,
+        params.dataset,
         To_ZARR.out.zarr_dirs,
-        Process_files.out.done
+        Process_files.out.files.toList(),
+        options_str
     )
 }
 
@@ -198,10 +183,15 @@ workflow Config {
     else {
         zarr_dirs = []
     }
+
+    options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
+
     Build_config(
         Channel.fromPath(params.outdir),
         params.title,
         params.dataset,
-        zarr_dirs
+        zarr_dirs,
+        [],
+        options_str
     )
 }
