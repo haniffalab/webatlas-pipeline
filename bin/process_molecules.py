@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+import os
 import csv
 import json
 import fire
 
-def main(
-    tsv_file='',
+JSON_FILE = 'molecules.json'
+
+def tsv_to_json(
+    file='',
     has_header=True,
     gene_col_name='Name',
     x_col_name='x_int',
@@ -15,7 +18,8 @@ def main(
     y_col_idx=None
     ):
 
-    with open(tsv_file) as f:
+
+    with open(file) as f:
         reader = csv.reader(f, delimiter='\t')
 
         if has_header:
@@ -38,9 +42,9 @@ def main(
             except ValueError as e:
                 print(e)
 
-    with open('molecules.json', 'w') as out_file:
+    with open(JSON_FILE, 'w') as out_file:
         json.dump(molecules_json, out_file)
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(tsv_to_json)

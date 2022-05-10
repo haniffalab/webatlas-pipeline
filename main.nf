@@ -1,11 +1,12 @@
 #!/usr/bin/env/ nextflow
 
 // Copyright (C) 2022 Tong LI <tongli.bioinfo@protonmail.com>
+import groovy.json.*
 
 nextflow.enable.dsl=2
 
+// Default params
 params.title = ""
-params.h5ad = ""
 params.images = [
     ["image", "path-to-raw.tif"],
     ["label", "path-to-label.tif"],
@@ -14,58 +15,16 @@ params.factors = []
 params.max_n_worker = "30"
 params.dataset = ""
 params.zarr_dirs = []
-params.additional_data = []
+params.data = []
+params.options = []
 
-verbose_log = false
 
-process h5ad_to_dict{
-    tag "${h5ad}"
-    echo verbose_log
+verbose_log = true
 
-    container "hamat/web-altas-data-conversion:latest"
-    publishDir params.outdir, mode: "copy"
-    // storeDir params.outdir
-
-    input:
-        file(h5ad)
-        val(factors)
-
-    output:
-        tuple val(stem), file("*.pickle")
-
-    script:
-    stem = h5ad.baseName
-    concat_factors = factors.join(',')
-    """
-    h5ad_2_json.py --h5ad_file ${h5ad} --factors ${concat_factors}
-    """
-}
-
-process dict_to_jsons {
-    tag "${dict}"
-    echo verbose_log
-
-    container "hamat/web-altas-data-conversion:latest"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-        tuple val(stem), file(dict)
-
-    output:
-        tuple val(stem), file("*.json")
-
-    script:
-    """
-    dict_2_jsons.py --dict_file ${dict} \
-        --cells_file cells.json \
-        --cell_sets_file cell-sets.json \
-        --matrix_file clusters.json \
-    """
-}
 
 process image_to_zarr {
     tag "${image}"
-    echo verbose_log
+    debug false
 
     conda "zarr_convert.yaml"
     publishDir params.outdir, mode: "copy"
@@ -83,28 +42,75 @@ process image_to_zarr {
     """
 }
 
-process molecules_json {
-    tag "${tsv}"
-    echo true
+process any_file {
+    debug verbose_log
+    tag "${type}"
 
-    // TODO: define conda env
+    conda "global_env.yaml" // or conditional conda env
     publishDir params.outdir, mode: "copy"
 
     input:
-    file(tsv)
+    tuple val(type), file(file), val(args)
 
     output:
-    file("molecules.json")
+    file("*")
 
     script:
+    args_strs = []
+    if (args) {
+        args.each { arg, value ->
+            if (value instanceof Collection){
+                value = value.collect { it instanceof String ? /\'/ + it.replace(" ",/\ /) + /\'/ : it }
+                concat_args = value.join(',')
+            }
+            else
+                concat_args = value
+            args_strs.add("--$arg $concat_args")
+        }
+    }
+    args_str = args_strs.join(' ')
+
     """
-    molecules_tsv_2_json.py --tsv_file ${tsv}
+    process_${type}.py --file ${file} ${args_str}
+    """
+}
+
+process route_file {
+    debug verbose_log
+    tag "${type}"
+
+    conda "global_env.yaml" // or conditional conda env
+    publishDir params.outdir, mode: "copy"
+
+    input:
+    tuple val(type), file(file), val(args)
+
+    output:
+    file("*")
+
+    script:
+    args_strs = []
+    if (args) {
+        args.each { arg, value ->
+            if (value instanceof Collection){
+                value = value.collect { it instanceof String ? /\'/ + it.replace(" ",/\ /) + /\'/ : it }
+                concat_args = value.join(',')
+            }
+            else
+                concat_args = value
+            args_strs.add("--$arg $concat_args")
+        }
+    }
+    args_str = args_strs.join(' ')
+
+    """
+    router.py --type ${type} --file ${file} ${args_str}
     """
 }
 
 process Build_config{
     tag "config"
-    echo verbose_log
+    debug verbose_log
     containerOptions "-v ${params.outdir}:${params.outdir}"
     publishDir params.outdir, mode: "copy"
 
@@ -113,46 +119,29 @@ process Build_config{
         val(title)
         val(dataset)
         file(zarr_dirs)
+        file(files)
+        val(options)
 
     output:
         file("config.json")
 
     script:
+    // Use target to get List from nextflow.utils.BlankSeparatedList
+    files = files.target
+    file_paths = ""
+    if (files.size > 0) {
+        files = files.collect{ /\'/ + it + /\'/ }
+        file_paths = "--file_paths " + files.join(',')
+    }
     concat_zarr_dirs = zarr_dirs.join(',')
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
-    """
-}
-
-/*
- * TODO: Build the config from from processed jsons and zarrs; Pseudo code for now
- */
-process Build_config_with_md {
-    tag "config"
-    echo verbose_log
-    containerOptions "-v ${params.outdir}:${params.outdir}"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-        val(dir)
-        val(title)
-        tuple val(stem), file(jsons)
-        file(zarr_dirs)
-        val(done_other_data)
-
-    output:
-        file("config.json")
-
-    script:
-    concat_zarr_dirs = zarr_dirs.join(',')
-    """
-    build_config.py --title "${title}" --dataset ${stem} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs} --options ${options} ${file_paths}
     """
 }
 
 workflow {
-    h5ad_to_dict(Channel.fromPath(params.h5ad), params.factors.collect())
-    dict_to_jsons(h5ad_to_dict.out)
+    Process_files()
+    // Process_files.out.files.toList().view()
 }
 
 workflow To_ZARR {
@@ -160,35 +149,39 @@ workflow To_ZARR {
         .map{it -> [it[0], file(it[1])]}
         .set{image_to_convert}
     image_to_zarr(image_to_convert)
-}
 
-workflow Process_additional_data {
-    if (params.additional_data.molecules){
-        molecules_json(Channel.fromPath(params.additional_data.molecules.tsv_file))
-    }
     emit:
-        done = true
+        zarr_dirs = image_to_zarr.out.collect()
 }
 
-//TODO: a one-liner to generate the json and zarr, along with the config file based on their content
+workflow Process_files {
+    data_list = []
+    params.data.each { data_type, data_map ->
+        data_list.add([data_type, file(data_map.file), data_map.args])
+    }
+    
+    route_file(Channel.from(data_list))
+
+    emit:
+        files = route_file.out
+}
+
 workflow Full_pipeline {
-    h5ad_to_dict(Channel.fromPath(params.h5ad), params.factors.collect())
-    dict_to_jsons(h5ad_to_dict.out)
+    To_ZARR()
 
-    channel.from(params.images)
-        .map{it -> [it[0], file(it[1])]}
-        .set{image_to_convert}
-    image_to_zarr(image_to_convert)
-    zarr_dirs = image_to_zarr.out.collect()
+    Process_files()
 
-    Process_additional_data()
+    options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
 
-    Build_config_with_md(
-        Channel.fromPath(params.outdir),
+    // Build config from files generated from Process_files
+    // Ignores files in params.outdir
+    Build_config(
+        "''",
         params.title,
-        dict_to_jsons.out,
-        zarr_dirs,
-        Process_additional_data.out.done
+        params.dataset,
+        To_ZARR.out.zarr_dirs,
+        Process_files.out.files.collect(),
+        options_str
     )
 }
 
@@ -199,18 +192,16 @@ workflow Config {
     else {
         zarr_dirs = []
     }
+
+    options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
+
+    // Build config from files in params.outdir
     Build_config(
-        Channel.fromPath(params.outdir),
+        params.outdir,
         params.title,
         params.dataset,
-        zarr_dirs
+        zarr_dirs,
+        [],
+        options_str
     )
-}
-
-//TODO: a one-liner to generate the config file with provided jsons and zarrs
-workflow Generate_config_with_processed_data {
-    channel.from(params.jsons)
-        .map{it -> [params.title, it]} //open to any suggestions here
-        .set{jsons_with_ids}
-    Build_config_with_md(jsons_with_ids, channel.fromPath(params.zarrs).collect())
 }

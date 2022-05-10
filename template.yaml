@@ -1,9 +1,31 @@
 title: ""
 outdir: "output/visium"
-h5ad: "/home/user/sample/visium.h5ad"
 images:
-  - ["iss_image", "path-to-iss-raw.tif"]
-  - ["visium_image", "path-to-visium-raw.tif"]
-  - ["iss_label", "path-to-iss-label.tif"]
-  - ["visium_label", "path-to-visium-label.tif"]
+  - ["raw_image", "path-to-raw-image.tif"]
+  - ["label_image", "path-to-label-image.tif"]
 max_n_worker: 30
+dataset: "visium"
+zarr_dirs:
+  - "visium_label"
+data:
+  h5ad:
+    file: "data.h5ad"
+    args:
+      compute_embeddings: "True"
+  molecules:
+    file: "molecules.tsv"
+options:
+  anndata-cells.zarr:
+    spatial:
+      xy: "obsm/spatial"
+    mappings:
+      obsm/X_umap: [0,1]
+      obsm/spatial: null
+    factors:
+      - "obs/sample"
+      - "obs/total_counts"
+  anndata-cell-sets.zarr:
+    sets:
+      - "obs/sample"
+  anndata-expression-matrix.zarr:
+    matrix: "X"

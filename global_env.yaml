@@ -1,0 +1,10 @@
+name: file_convert
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - anndata
+  - scanpy
+  - zarr
+  - pip:
+    - fire
