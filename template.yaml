@@ -17,17 +17,14 @@ data:
     args:
       delimiter : "'\t'" # or "','"
 options:
-  anndata-cells.zarr:
-    spatial:
-      xy: "obsm/spatial"
-    mappings:
-      obsm/X_umap: [0,1]
-      obsm/spatial: null
-    factors:
-      - "obs/sample"
-      - "obs/total_counts"
-  anndata-cell-sets.zarr:
-    sets:
-      - "obs/sample"
-  anndata-expression-matrix.zarr:
-    matrix: "X"
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0,1]
+    obsm/spatial: [0,1]
+  factors:
+    - "obs/sample"
+    - "obs/total_counts"
+  sets:
+    - "obs/sample"
+  matrix: "X"

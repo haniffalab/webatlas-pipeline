@@ -7,15 +7,13 @@ nextflow.enable.dsl=2
 
 // Default params
 params.title = ""
-params.images = [
-    ["image", "path-to-raw.tif"],
-    ["label", "path-to-label.tif"],
-]
+params.images = []
 params.factors = []
 params.max_n_worker = "30"
 params.dataset = ""
 params.zarr_dirs = []
 params.data = []
+params.url = ""
 params.options = []
 
 
@@ -118,6 +116,7 @@ process Build_config{
         val(dir)
         val(title)
         val(dataset)
+        val(url)
         file(zarr_dirs)
         file(files)
         val(options)
@@ -126,16 +125,14 @@ process Build_config{
         file("config.json")
 
     script:
-    // Use target to get List from nextflow.utils.BlankSeparatedList
-    files = files.target
-    file_paths = ""
-    if (files.size > 0) {
-        files = files.collect{ /\'/ + it + /\'/ }
-        file_paths = "--file_paths " + files.join(',')
-    }
-    concat_zarr_dirs = zarr_dirs.join(',')
+    files = files.collect{ /\'/ + it + /\'/ }
+    zarr_dirs = zarr_dirs.collect{ /\'/ + it + /\'/ }
+
+    file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
+    zarr_dirs_str = zarr_dirs ? "--zarr_dirs [" + zarr_dirs.join(',') + "]" : ""
+    url_str = url?.trim() ? "--url ${url}" : ""
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} --zarr_dirs ${concat_zarr_dirs} --options ${options} ${file_paths}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} ${zarr_dirs_str} --options ${options} ${file_paths} ${url_str}
     """
 }
 
@@ -145,25 +142,34 @@ workflow {
 }
 
 workflow To_ZARR {
-    channel.from(params.images)
-        .map{it -> [it[0], file(it[1])]}
-        .set{image_to_convert}
-    image_to_zarr(image_to_convert)
-
-    emit:
+    if (params.images) {
+        channel.from(params.images)
+            .map{it -> [it[0], file(it[1])]}
+            .set{image_to_convert}
+        image_to_zarr(image_to_convert)
         zarr_dirs = image_to_zarr.out.collect()
+    }
+    else
+        zarr_dirs = []
+    
+    emit:
+        zarr_dirs = zarr_dirs
 }
 
 workflow Process_files {
-    data_list = []
-    params.data.each { data_type, data_map ->
-        data_list.add([data_type, file(data_map.file), data_map.args])
+    if (params.data){
+        data_list = []
+        params.data.each { data_type, data_map ->
+            data_list.add([data_type, file(data_map.file), data_map.args])
+        }
+        route_file(Channel.from(data_list))
+        files = route_file.out.collect()
     }
+    else
+        files = []
     
-    route_file(Channel.from(data_list))
-
     emit:
-        files = route_file.out
+        files = files
 }
 
 workflow Full_pipeline {
@@ -179,14 +185,16 @@ workflow Full_pipeline {
         "''",
         params.title,
         params.dataset,
+        params.url,
         To_ZARR.out.zarr_dirs,
-        Process_files.out.files.collect(),
+        Process_files.out.files,
         options_str
     )
 }
 
 workflow Config {
-    if (params.zarr_dirs.size > 0){
+    // TODO: use params.images
+    if (params.zarr_dirs){
         zarr_dirs = Channel.fromPath(params.zarr_dirs).collect()
     }
     else {
@@ -200,6 +208,7 @@ workflow Config {
         params.outdir,
         params.title,
         params.dataset,
+        params.url,
         zarr_dirs,
         [],
         options_str

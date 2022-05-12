@@ -8,8 +8,8 @@ from constants import DATA_TYPES, DEFAULT_OPTIONS
 
 def build_options(file_type, file_path, file_options=None, check_exist=True):
     options = None
-    if file_options is None and file_type in DEFAULT_OPTIONS:
-        file_options = DEFAULT_OPTIONS[file_type]
+    if file_options is None:
+        file_options = DEFAULT_OPTIONS
     
     if file_type == 'anndata-cells.zarr':
         options = {}
@@ -28,8 +28,8 @@ def build_options(file_type, file_path, file_options=None, check_exist=True):
                     continue
                 m_key = k_name.upper()
                 mapping = { "key": k }
-                if v is not None and v != 'null':
-                    mapping["dims"] = v
+                v = v if v is not None and v != 'null' else [0,1]
+                mapping["dims"] = v
                 options.setdefault('mappings', {})[m_key] = mapping
         
         if 'factors' in file_options:
@@ -53,8 +53,9 @@ def build_options(file_type, file_path, file_options=None, check_exist=True):
 
     elif file_type == 'anndata-expression-matrix.zarr':
         options = {}
+        ematrix_ops = set(["matrix","matrixGeneFilter","geneAlias"])
         for k, v in file_options.items():
-            if check_exist and not os.path.exists(os.path.join(file_path, v)):
+            if k not in ematrix_ops or (check_exist and not os.path.exists(os.path.join(file_path, v))):
                 continue
             options[k]= v
     
@@ -105,16 +106,15 @@ def write_raster_json(
                     "type": data_type,
                     "fileType": file_type
                 }
-                file_options = build_options(file_type, file_path, options[file_type] if file_type in options else None)
+                file_options = build_options(file_type, file_path, options)
                 if file_options is not None:
                     file_entry["options"] = file_options
                 files.append(file_entry)
                 break
 
     # TODO: add image zarr data
-    if zarr_dirs and type(zarr_dirs) != bool:
-        if type(zarr_dirs) not in [list, tuple]:
-            zarr_dirs = [zarr_dirs]
+    if zarr_dirs:
+        print(zarr_dirs)
     
     config_json["datasets"].append({
         "uid": dataset,
