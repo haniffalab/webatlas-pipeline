@@ -24,7 +24,7 @@ process image_to_zarr {
     tag "${image}"
     debug false
 
-    conda "zarr_convert.yaml"
+    container "openmicroscopy/bioformats2raw:0.4.0"
     publishDir params.outdir, mode: "copy"
 
     input:
@@ -35,8 +35,7 @@ process image_to_zarr {
 
     script:
     """
-    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $image "${img_type}"
-    consolidate_md.py "${img_type}/data.zarr"
+    /opt/bioformats2raw/bin/bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 $image "${img_type}"
     """
 }
 
@@ -136,8 +135,29 @@ process Build_config{
     """
 }
 
+process generate_label_image {
+    tag "${h5ad}"
+    debug verbose_log
+    container "generate_label:latest"
+    publishDir params.outdir, mode: "copy"
+
+    input:
+        path h5ad
+
+    output:
+        file("${stem}_with_label.zarr")
+
+    script:
+    stem = h5ad.baseName
+    """
+    generate_label.py --stem "${stem}" --h5ad ${h5ad}
+    """
+
+}
+
 workflow {
-    Process_files()
+    generate_label_image(channel.fromPath(params.h5ad))
+    /*Process_files()*/
     // Process_files.out.files.toList().view()
 }
 
@@ -151,7 +171,7 @@ workflow To_ZARR {
     }
     else
         zarr_dirs = []
-    
+
     emit:
         zarr_dirs = zarr_dirs
 }
@@ -167,7 +187,7 @@ workflow Process_files {
     }
     else
         files = []
-    
+
     emit:
         files = files
 }
