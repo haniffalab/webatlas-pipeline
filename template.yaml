@@ -28,3 +28,4 @@ options:
   sets:
     - "obs/sample"
   matrix: "X"
+layout: 'advanced'
