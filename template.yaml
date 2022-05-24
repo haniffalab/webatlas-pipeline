@@ -28,3 +28,5 @@ options:
   sets:
     - "obs/sample"
   matrix: "X"
+layout: 'advanced'
+# custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
