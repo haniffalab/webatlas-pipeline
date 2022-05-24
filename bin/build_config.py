@@ -4,13 +4,14 @@ from collections import defaultdict
 import os
 import fire
 import json
+import re
 from itertools import chain, cycle
 
 from vitessce import (
     VitessceConfig,
     FileType as ft,
     CoordinationType as ct,
-    hconcat, vconcat
+    Component as cm
 )
 from constants import (
     DATA_TYPES, 
@@ -84,7 +85,8 @@ def write_json(
     outdir='',
     config_filename='config.json',
     options={},
-    layout='minimal'
+    layout='minimal',
+    custom_layout=None
     ):
 
     config = VitessceConfig()
@@ -108,6 +110,7 @@ def write_json(
 
             if file_exists:
                 file_options = build_options(file_type, file_path, options)
+                # Set a coordination scope for any 'mapping'
                 if 'mappings' in file_options:
                     coordination_types[ct.EMBEDDING_TYPE] = cycle(chain(
                         coordination_types[ct.EMBEDDING_TYPE],
@@ -123,25 +126,39 @@ def write_json(
     
     
     # Get layout components/views
-    config_layout = []
-    for col in DEFAULT_LAYOUTS[layout]:
-        new_col = []
-        for component in col:
-            if component in COMPONENTS_DATA_TYPES and COMPONENTS_DATA_TYPES[component].isdisjoint(dts):
-                continue
-            view = config.add_view(component, dataset=config_dataset)
+    # Set layout with alternative syntax https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
+    config_layout = custom_layout if custom_layout and len(custom_layout) else DEFAULT_LAYOUTS[layout]
+    views, views_indx = [], []
+    for m in re.finditer("[a-zA-Z]+", config_layout):
+        # TODO: catch error
+        component = cm(m.group())
 
-            if component in COMPONENTS_COORDINATION_TYPES:
-                for coordination_type in COMPONENTS_COORDINATION_TYPES[component]:
-                    # TODO: catch error
-                    view.use_coordination(next(coordination_types[coordination_type]))
+        # Remove component from layout if its required data type is not present
+        if component in COMPONENTS_DATA_TYPES and COMPONENTS_DATA_TYPES[component].isdisjoint(dts):
+            # Remove trailing or leading operators along with component
+            trail = m.end() < len(config_layout) and config_layout[m.end()] in ["|","/"]
+            lead = not trail and m.start() > 0 and config_layout[m.start()-1] in ["|","/"]
+            views_indx.append((m.start()-1*lead, m.end()+1*trail, ""))
+            continue
+        
+        view = config.add_view(component, dataset=config_dataset)
 
-            new_col.append(view)
-        if len(new_col): config_layout.append(new_col)
-    
+        if component in COMPONENTS_COORDINATION_TYPES:
+            for coordination_type in COMPONENTS_COORDINATION_TYPES[component]:
+                # Cycle through coordination scopes with the required coordination type
+                # TODO: catch error
+                view.use_coordination(next(coordination_types[coordination_type]))
+
+        views.append(view)
+        views_indx.append((m.start(), m.end(), "views[{}]".format(len(views)-1)))
+
+    # Replace components names in layout string with the corresponding view object
+    for (start, end, view) in sorted(views_indx, key=lambda x: x[0], reverse=True):
+        config_layout = config_layout[:start] + view + config_layout[end:]
+
     # Concatenate views
-    config.layout(hconcat(*[vconcat(*[view for view in col]) for col in config_layout]))
-    
+    exec("config.layout({})".format(config_layout))
+
     # Make sure views' grid coordinates are integers
     config_json = config.to_dict()
     for l in config_json["layout"]:

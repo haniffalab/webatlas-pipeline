@@ -16,6 +16,7 @@ params.data = []
 params.url = ""
 params.options = []
 params.layout = "minimal"
+params.custom_layout = ""
 
 
 verbose_log = true
@@ -122,6 +123,7 @@ process Build_config{
         file(files)
         val(options)
         val(layout)
+        val(custom_layout)
 
     output:
         file("config.json")
@@ -133,8 +135,9 @@ process Build_config{
     file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
     zarr_dirs_str = zarr_dirs ? "--zarr_dirs [" + zarr_dirs.join(',') + "]" : ""
     url_str = url?.trim() ? "--url ${url}" : ""
+    clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} ${zarr_dirs_str} --options ${options} ${file_paths} ${url_str} --layout ${layout}
+    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} ${zarr_dirs_str} --options ${options} ${file_paths} ${url_str} --layout ${layout} ${clayout_str}
     """
 }
 
@@ -191,7 +194,8 @@ workflow Full_pipeline {
         To_ZARR.out.zarr_dirs,
         Process_files.out.files,
         options_str,
-        params.layout
+        params.layout,
+        params.custom_layout
     )
 }
 
@@ -215,6 +219,7 @@ workflow Config {
         zarr_dirs,
         [],
         options_str,
-        params.layout
+        params.layout,
+        params.custom_layout
     )
 }

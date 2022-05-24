@@ -61,24 +61,35 @@ DEFAULT_OPTIONS = {
     }
 }
 
+
+def hconcat(*cms):
+    return "({})".format(("|").join(cms))
+def vconcat(*cms):
+    return "({})".format(("/").join(cms))
+
 DEFAULT_LAYOUTS = {
-    'minimal': [
-        [cm.SPATIAL],
-        [cm.LAYER_CONTROLLER]
-    ],
-    'simple': [
-        [cm.SPATIAL],
-        [cm.LAYER_CONTROLLER],
-        [cm.GENES],
-        [cm.CELL_SETS]
-    ],
-    'advanced': [
-        [cm.LAYER_CONTROLLER],
-        [cm.SPATIAL],
-        [cm.SCATTERPLOT, cm.SCATTERPLOT],
-        [cm.GENES, cm.CELL_SETS],
-        [cm.GENOMIC_PROFILES]
-    ]
+    'minimal':
+        hconcat(
+            cm.SPATIAL.value, cm.LAYER_CONTROLLER.value
+        ),
+    'simple':
+        hconcat(
+            cm.SPATIAL.value,
+            hconcat(
+                cm.LAYER_CONTROLLER.value,
+                vconcat(cm.GENES.value, cm.CELL_SETS.value)
+            )
+        ),
+    'advanced':
+        hconcat(
+            cm.LAYER_CONTROLLER.value,
+            cm.SPATIAL.value,
+            hconcat(
+                vconcat(cm.SCATTERPLOT.value, cm.SCATTERPLOT.value),
+                vconcat(cm.GENES.value, cm.CELL_SETS.value),
+            ),
+            cm.GENOMIC_PROFILES.value
+        )
 }
 
 # Coordination Types required by Components/Views
