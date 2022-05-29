@@ -54,7 +54,7 @@ process image_to_zarr {
 
 process condolidate_metadata{
     tag "${zarr}"
-    debug verbose_log
+    /*debug verbose_log*/
     container "hamat/webatlas-zarr:${version}"
 
     input:
@@ -161,7 +161,13 @@ process Build_config{
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} ${zarr_dirs_str} --options ${options} ${file_paths} ${url_str} --layout ${layout} ${clayout_str}
+    build_config.py \
+        --title "${title}" \
+        --dataset ${dataset} \
+        --files_dir ${dir} ${zarr_dirs_str} \
+        --options ${options} \
+        ${file_paths} ${url_str} \
+        --layout ${layout} ${clayout_str}
     """
 }
 
