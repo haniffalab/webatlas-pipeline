@@ -93,19 +93,19 @@ def write_json(
     custom_layout=None
     ):
 
-    assert "raw_image" in zarr_dirs
+    # assert "raw_image" in zarr_dirs
 
     # node = Node(parse_url("raw_image"), list())
     # bf2raw_obj = spec.bioformats2raw(node)
     # md = bf2raw_obj.handle(node)
     # print(type(md))
-    import ome_types
-    print(ome_types.__version__)
-    md = ome_types.from_xml("full_label_image/OME/METADATA.ome.xml",
-            # validate=False
-            )
-    channel_names = [c.name for c in md.images[0].pixels.channels]
-    print(channel_names)
+    # import ome_types
+    # print(ome_types.__version__)
+    # md = ome_types.from_xml("label_image/OME/METADATA.ome.xml",
+            # # validate=False
+            # )
+    # channel_names = [c.name for c in md.images[0].pixels.channels]
+    # print(channel_names)
 
     config = VitessceConfig()
     config_dataset = config.add_dataset(title, dataset)
