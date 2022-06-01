@@ -7,6 +7,10 @@ import json
 import re
 from itertools import chain, cycle
 
+from ome_zarr_metadata import spec
+from ome_zarr.reader import Node
+from ome_zarr.io import parse_url
+
 from vitessce import (
     VitessceConfig,
     FileType as ft,
@@ -14,8 +18,8 @@ from vitessce import (
     Component as cm
 )
 from constants import (
-    DATA_TYPES, 
-    DEFAULT_OPTIONS, DEFAULT_LAYOUTS, 
+    DATA_TYPES,
+    DEFAULT_OPTIONS, DEFAULT_LAYOUTS,
     COMPONENTS_COORDINATION_TYPES, COMPONENTS_DATA_TYPES
 )
 
@@ -23,7 +27,7 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
     options = None
     if file_options is None:
         file_options = DEFAULT_OPTIONS
-    
+
     if file_type == ft.ANNDATA_CELLS_ZARR:
         options = {}
         if 'spatial' in file_options:
@@ -44,12 +48,12 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
                 v = v if v is not None and v != 'null' else [0,1]
                 mapping["dims"] = v
                 options.setdefault('mappings', {})[m_key] = mapping
-        
+
         if 'factors' in file_options:
             for factor in file_options['factors']:
                 values_path = os.path.join(file_path, factor)
                 if check_exist and not os.path.exists(values_path):
-                    continue    
+                    continue
                 options.setdefault('factors', []).append( factor )
 
     elif file_type == ft.ANNDATA_CELL_SETS_ZARR:
@@ -58,7 +62,7 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
             for cell_set in file_options['sets']:
                 cell_set_name = cell_set.split('/')[-1]
                 if check_exist and not os.path.exists(os.path.join(file_path, cell_set)):
-                    continue    
+                    continue
                 options.append({
                     "groupName": "".join(w.capitalize() for w in cell_set_name.split("_")),
                     "setName": cell_set
@@ -71,7 +75,7 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
             if k not in ematrix_ops or (check_exist and not os.path.exists(os.path.join(file_path, v))):
                 continue
             options[k]= v
-    
+
     return options
 
 
@@ -89,6 +93,20 @@ def write_json(
     custom_layout=None
     ):
 
+    # assert "raw_image" in zarr_dirs
+
+    # node = Node(parse_url("raw_image"), list())
+    # bf2raw_obj = spec.bioformats2raw(node)
+    # md = bf2raw_obj.handle(node)
+    # print(type(md))
+    # import ome_types
+    # print(ome_types.__version__)
+    # md = ome_types.from_xml("label_image/OME/METADATA.ome.xml",
+            # # validate=False
+            # )
+    # channel_names = [c.name for c in md.images[0].pixels.channels]
+    # print(channel_names)
+
     config = VitessceConfig()
     config_dataset = config.add_dataset(title, dataset)
 
@@ -97,7 +115,7 @@ def write_json(
     dts = set([])
     for data_type in DATA_TYPES:
         for file_name, file_type in DATA_TYPES[data_type]:
-            
+
             # first file type found will be used in the config file
             file_exists = False
             if file_paths is not None:
@@ -123,8 +141,8 @@ def write_json(
                 )
                 dts.add(data_type)
                 break
-    
-    
+
+
     # Get layout components/views
     # Set layout with alternative syntax https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
     config_layout = custom_layout if custom_layout and len(custom_layout) else DEFAULT_LAYOUTS[layout]
@@ -140,7 +158,7 @@ def write_json(
             lead = not trail and m.start() > 0 and config_layout[m.start()-1] in ["|","/"]
             views_indx.append((m.start()-1*lead, m.end()+1*trail, ""))
             continue
-        
+
         view = config.add_view(component, dataset=config_dataset)
 
         if component in COMPONENTS_COORDINATION_TYPES:
@@ -164,7 +182,7 @@ def write_json(
     for l in config_json["layout"]:
         for k in ("x","y","w","h"):
             l[k] = round(l[k])
-            
+
 
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)

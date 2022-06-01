@@ -9,7 +9,7 @@ nextflow.enable.dsl=2
 params.title = ""
 params.images = []
 params.factors = []
-params.max_n_worker = "30"
+params.max_n_worker = 30
 params.dataset = ""
 params.zarr_dirs = []
 params.data = []
@@ -17,28 +17,52 @@ params.url = ""
 params.options = []
 params.layout = "minimal"
 params.custom_layout = ""
+params.outdir = ""
+
+// if directly writing to s3
+params.s3_keys = ["YOUR_ACCESS_KEY", "YOUR_SECRETE_KEY"]
+params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
 
 verbose_log = true
-
+version = "0.0.1"
 
 process image_to_zarr {
     tag "${image}"
     debug false
 
-    conda "zarr_convert.yaml"
-    publishDir params.outdir, mode: "copy"
+    container "openmicroscopy/bioformats2raw:0.4.0"
+    storeDir params.outdir
 
     input:
     tuple val(img_type), file(image)
+    tuple val(accessKey), val(secretKey)
+    val output_s3
 
     output:
-    file(img_type)
+    /*val out_s3, emit: s3_path*/
+    path img_type
+
+    script:
+    out_s3 = "${output_s3}/${img_type}"
+    """
+    #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" \
+        #${image} s3://${out_s3}
+    /opt/bioformats2raw/bin/bioformats2raw ${image} ${img_type}
+    """
+}
+
+process condolidate_metadata{
+    tag "${zarr}"
+    /*debug verbose_log*/
+    container "hamat/webatlas-zarr:${version}"
+
+    input:
+    path zarr
 
     script:
     """
-    bioformats2raw --max_workers ${params.max_n_worker} --resolutions 7 --file_type zarr $image "${img_type}"
-    consolidate_md.py "${img_type}/data.zarr"
+    consolidate_md.py ${zarr}
     """
 }
 
@@ -111,7 +135,7 @@ process route_file {
 process Build_config{
     tag "config"
     debug verbose_log
-    containerOptions "-v ${params.outdir}:${params.outdir}"
+    container "hamat/webatlas-build-config:${version}"
     publishDir params.outdir, mode: "copy"
 
     input:
@@ -137,12 +161,39 @@ process Build_config{
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
     """
-    build_config.py --title "${title}" --dataset ${dataset} --files_dir ${dir} ${zarr_dirs_str} --options ${options} ${file_paths} ${url_str} --layout ${layout} ${clayout_str}
+    build_config.py \
+        --title "${title}" \
+        --dataset ${dataset} \
+        --files_dir ${dir} ${zarr_dirs_str} \
+        --options ${options} \
+        ${file_paths} ${url_str} \
+        --layout ${layout} ${clayout_str}
     """
 }
 
+process generate_label_image {
+    tag "${h5ad}"
+    debug verbose_log
+    container "generate_label:latest"
+    publishDir params.outdir, mode: "copy"
+
+    input:
+        path h5ad
+
+    output:
+        file("${stem}_with_label.zarr")
+
+    script:
+    stem = h5ad.baseName
+    """
+    generate_label.py --stem "${stem}" --h5ad ${h5ad}
+    """
+
+}
+
 workflow {
-    Process_files()
+    generate_label_image(channel.fromPath(params.h5ad))
+    /*Process_files()*/
     // Process_files.out.files.toList().view()
 }
 
@@ -151,12 +202,13 @@ workflow To_ZARR {
         channel.from(params.images)
             .map{it -> [it[0], file(it[1])]}
             .set{image_to_convert}
-        image_to_zarr(image_to_convert)
+        image_to_zarr(image_to_convert, params.s3_keys, params.outdir_s3)
+        condolidate_metadata(image_to_zarr.out)
         zarr_dirs = image_to_zarr.out.collect()
     }
     else
         zarr_dirs = []
-    
+
     emit:
         zarr_dirs = zarr_dirs
 }
@@ -172,7 +224,7 @@ workflow Process_files {
     }
     else
         files = []
-    
+
     emit:
         files = files
 }
