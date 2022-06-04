@@ -1,5 +1,6 @@
 title: ""
 outdir: "output/visium"
+codebook: ""
 images:
   - ["raw_image", "path-to-raw-image.tif"]
   - ["label_image", "path-to-label-image.tif"]

@@ -7,9 +7,8 @@ import json
 import re
 from itertools import chain, cycle
 
-from ome_zarr_metadata import spec
-from ome_zarr.reader import Node
-from ome_zarr.io import parse_url
+from xml.etree import ElementTree as ET
+import pandas as pd
 
 from vitessce import (
     VitessceConfig,
@@ -90,22 +89,20 @@ def write_json(
     config_filename='config.json',
     options={},
     layout='minimal',
-    custom_layout=None
+    custom_layout=None,
+    codebook='',
     ):
 
-    # assert "raw_image" in zarr_dirs
+    print(f"zarr paths : {zarr_dirs}")
 
-    # node = Node(parse_url("raw_image"), list())
-    # bf2raw_obj = spec.bioformats2raw(node)
-    # md = bf2raw_obj.handle(node)
-    # print(type(md))
-    # import ome_types
-    # print(ome_types.__version__)
-    # md = ome_types.from_xml("label_image/OME/METADATA.ome.xml",
-            # # validate=False
-            # )
-    # channel_names = [c.name for c in md.images[0].pixels.channels]
-    # print(channel_names)
+    NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
+
+    ome_metadata = ET.parse("raw_image/OME/METADATA.ome.xml")
+    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
+    print(channels)
+
+    codebook = pd.read_csv(codebook)
+    print(codebook)
 
     config = VitessceConfig()
     config_dataset = config.add_dataset(title, dataset)
