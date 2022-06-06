@@ -78,6 +78,20 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
     return options
 
 
+def get_image_basic_metadata(xml_path):
+    NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
+
+    ome_metadata = ET.parse(xml_path)
+    dimOrder = ome_metadata.find("./*/ome:Pixels", NS).attrib["DimensionOrder"]
+    X = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeX"]
+    Y = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeY"]
+    Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
+    C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
+    T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
+    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
+    return dimOrder, channels, X, Y, Z, C, T
+
+
 def write_json(
     title='',
     dataset='',
@@ -95,20 +109,11 @@ def write_json(
 
     print(f"zarr paths : {zarr_dirs}")
 
-    NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
-
-    ome_metadata = ET.parse("raw_image/OME/METADATA.ome.xml")
-    dimOrder = ome_metadata.find("./*/ome:Pixels", NS).attrib["DimensionOrder"]
+    xml_path = "raw_image/OME/METADATA.ome.xml"
+    dimOrder, channel_names, X, Y, Z, C, T = get_image_basic_metadata(xml_path)
     print(dimOrder)
-    X = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeX"]
-    Y = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeY"]
-    Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
-    C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
-    T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
     print(X, Y, Z, C, T)
-    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
-    print(channels)
-
+    print(channel_names)
     codebook = pd.read_csv(codebook)
     print(codebook)
 
