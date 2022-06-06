@@ -98,6 +98,14 @@ def write_json(
     NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
 
     ome_metadata = ET.parse("raw_image/OME/METADATA.ome.xml")
+    dimOrder = ome_metadata.find("./*/ome:Pixels", NS).attrib["DimensionOrder"]
+    print(dimOrder)
+    X = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeX"]
+    Y = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeY"]
+    Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
+    C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
+    T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
+    print(X, Y, Z, C, T)
     channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
     print(channels)
 
