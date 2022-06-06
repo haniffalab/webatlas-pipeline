@@ -31,3 +31,5 @@ options:
   matrix: "X"
 layout: 'advanced'
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
+# config_files:
+#   - "anndata.zarr"

@@ -45,6 +45,8 @@ def tsv_to_json(
 
     with open(JSON_FILE, 'w') as out_file:
         json.dump(molecules_json, out_file)
+    
+    return JSON_FILE
 
 
 if __name__ == "__main__":

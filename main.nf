@@ -20,8 +20,10 @@ params.options = []
 params.layout = "minimal"
 params.custom_layout = ""
 params.outdir = ""
+params.config_files = []
 
 // if directly writing to s3
+params.s3 = false
 params.s3_keys = ["YOUR_ACCESS_KEY", "YOUR_SECRETE_KEY"]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
@@ -68,39 +70,6 @@ process condolidate_metadata{
     """
 }
 
-process any_file {
-    debug verbose_log
-    tag "${type}"
-
-    container "hamat/webatlas-router"
-    publishDir params.outdir, mode: "copy"
-
-    input:
-    tuple val(type), file(file), val(args)
-
-    output:
-    file("*")
-
-    script:
-    args_strs = []
-    if (args) {
-        args.each { arg, value ->
-            if (value instanceof Collection){
-                value = value.collect { it instanceof String ? /\'/ + it.replace(" ",/\ /) + /\'/ : it }
-                concat_args = value.join(',')
-            }
-            else
-                concat_args = value
-            args_strs.add("--$arg $concat_args")
-        }
-    }
-    args_str = args_strs.join(' ')
-
-    """
-    process_${type}.py --file ${file} ${args_str}
-    """
-}
-
 process route_file {
     debug verbose_log
     tag "${type}"
@@ -112,7 +81,8 @@ process route_file {
     tuple val(type), file(file), val(args)
 
     output:
-    file("*")
+    stdout emit: out_file_paths
+    path("*"), emit: out_files, optional: true
 
     script:
     args_strs = []
@@ -145,8 +115,49 @@ process Build_config{
         val(title)
         val(dataset)
         val(url)
-        file(zarr_dirs)
-        file(files)
+        val(zarr_dirs)
+        val(files)
+        val(options)
+        val(layout)
+        val(custom_layout)
+        file(codebook)
+
+    output:
+        file("config.json")
+
+    script:
+    files = files.collect{ /\'/ + it.trim() + /\'/ }
+    zarr_dirs = zarr_dirs.collect{ /\'/ + it.trim() + /\'/ }
+
+    file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
+    zarr_dirs_str = zarr_dirs ? "--zarr_dirs [" + zarr_dirs.join(',') + "]" : ""
+    url_str = url?.trim() ? "--url ${url}" : ""
+    clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
+    """
+    build_config.py \
+        --title "${title}" \
+        --dataset ${dataset} \
+        --files_dir ${dir} ${zarr_dirs_str} \
+        --options ${options} \
+        ${file_paths} ${url_str} \
+        --layout ${layout} ${clayout_str} \
+        --codebook ${codebook}
+    """
+}
+
+process Build_config_local{
+    tag "config"
+    debug verbose_log
+    container "hamat/webatlas-build-config:${version}"
+    publishDir params.outdir, mode: "copy"
+
+    input:
+        path(dir)
+        val(title)
+        val(dataset)
+        val(url)
+        path(zarr_dirs)
+        path(files)
         val(options)
         val(layout)
         val(custom_layout)
@@ -224,13 +235,17 @@ workflow Process_files {
             data_list.add([data_type, file(data_map.file), data_map.args])
         }
         route_file(Channel.from(data_list))
-        files = route_file.out.collect()
+        files = route_file.out.out_files.collect{ it.flatten() }
+        file_paths = route_file.out.out_file_paths.collect{ it.split('\n').flatten() }
     }
-    else
+    else {
         files = []
+        file_paths = []
+    }
 
     emit:
         files = files
+        file_paths = file_paths
 }
 
 workflow Full_pipeline {
@@ -242,42 +257,71 @@ workflow Full_pipeline {
 
     // Build config from files generated from Process_files
     // Ignores files in params.outdir
-    Build_config(
-        "''",
-        params.title,
-        params.dataset,
-        params.url,
-        To_ZARR.out.zarr_dirs,
-        Process_files.out.files,
-        options_str,
-        params.layout,
-        params.custom_layout,
-        channel.fromPath(params.codebook)
-    )
-}
-
-workflow Config {
-    // TODO: use params.images
-    if (params.zarr_dirs){
-        zarr_dirs = Channel.fromPath(params.zarr_dirs).collect()
+    if (!params.s3){
+        Build_config_local(
+            file("''"),
+            params.title,
+            params.dataset,
+            params.url,
+            To_ZARR.out.zarr_dirs,
+            Process_files.out.files,
+            options_str,
+            params.layout,
+            params.custom_layout,
+            channel.fromPath(params.codebook)
+        )
     }
     else {
-        zarr_dirs = []
+        Build_config(
+            "''",
+            params.title,
+            params.dataset,
+            params.url,
+            To_ZARR.out.zarr_dirs,
+            Process_files.out.file_paths,
+            options_str,
+            params.layout,
+            params.custom_layout,
+            channel.fromPath(params.codebook)
+        )
     }
+}
 
+workflow Config_from_paths {
+    if (params.config_files){
+
+        options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
+
+        Build_config(
+            params.outdir,
+            params.title,
+            params.dataset,
+            params.url,
+            params.zarr_dirs,
+            params.config_files,
+            options_str,
+            params.layout,
+            params.custom_layout
+        )
+    }
+}
+
+workflow Config_from_dir {
     options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
 
-    // Build config from files in params.outdir
-    Build_config(
-        params.outdir,
-        params.title,
-        params.dataset,
-        params.url,
-        zarr_dirs,
-        [],
-        options_str,
-        params.layout,
-        params.custom_layout,
-        channel.fromPath(params.codebook)
-    )
+    if (!params.s3){
+        // Build config from files in params.outdir
+        Build_config_local(
+            params.outdir,
+            params.title,
+            params.dataset,
+            params.url,
+            [],
+            [],
+            options_str,
+            params.layout,
+            params.custom_layout,
+            channel.fromPath(params.codebook)
+        )
+    }
 }
