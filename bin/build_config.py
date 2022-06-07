@@ -7,9 +7,8 @@ import json
 import re
 from itertools import chain, cycle
 
-from ome_zarr_metadata import spec
-from ome_zarr.reader import Node
-from ome_zarr.io import parse_url
+from xml.etree import ElementTree as ET
+import pandas as pd
 
 from vitessce import (
     VitessceConfig,
@@ -79,6 +78,20 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
     return options
 
 
+def get_image_basic_metadata(xml_path):
+    NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
+
+    ome_metadata = ET.parse(xml_path)
+    dimOrder = ome_metadata.find("./*/ome:Pixels", NS).attrib["DimensionOrder"]
+    X = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeX"]
+    Y = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeY"]
+    Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
+    C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
+    T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
+    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
+    return dimOrder, channels, X, Y, Z, C, T
+
+
 def write_json(
     title='',
     dataset='',
@@ -90,22 +103,19 @@ def write_json(
     config_filename='config.json',
     options={},
     layout='minimal',
-    custom_layout=None
+    custom_layout=None,
+    codebook='',
     ):
 
-    # assert "raw_image" in zarr_dirs
+    print(f"zarr paths : {zarr_dirs}")
 
-    # node = Node(parse_url("raw_image"), list())
-    # bf2raw_obj = spec.bioformats2raw(node)
-    # md = bf2raw_obj.handle(node)
-    # print(type(md))
-    # import ome_types
-    # print(ome_types.__version__)
-    # md = ome_types.from_xml("label_image/OME/METADATA.ome.xml",
-            # # validate=False
-            # )
-    # channel_names = [c.name for c in md.images[0].pixels.channels]
-    # print(channel_names)
+    xml_path = "raw_image/OME/METADATA.ome.xml"
+    dimOrder, channel_names, X, Y, Z, C, T = get_image_basic_metadata(xml_path)
+    print(dimOrder)
+    print(X, Y, Z, C, T)
+    print(channel_names)
+    codebook = pd.read_csv(codebook)
+    print(codebook)
 
     config = VitessceConfig()
     config_dataset = config.add_dataset(title, dataset)

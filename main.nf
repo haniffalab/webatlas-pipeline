@@ -9,11 +9,13 @@ nextflow.enable.dsl=2
 params.title = ""
 params.images = []
 params.factors = []
+params.codebook = ""
 params.max_n_worker = 30
 params.dataset = ""
 params.zarr_dirs = []
 params.data = []
 params.url = ""
+
 params.options = []
 params.layout = "minimal"
 params.custom_layout = ""
@@ -70,7 +72,7 @@ process any_file {
     debug verbose_log
     tag "${type}"
 
-    conda "global_env.yaml" // or conditional conda env
+    container "hamat/webatlas-router"
     publishDir params.outdir, mode: "copy"
 
     input:
@@ -103,7 +105,7 @@ process route_file {
     debug verbose_log
     tag "${type}"
 
-    conda "global_env.yaml" // or conditional conda env
+    container "hamat/webatlas-router"
     publishDir params.outdir, mode: "copy"
 
     input:
@@ -148,6 +150,7 @@ process Build_config{
         val(options)
         val(layout)
         val(custom_layout)
+        file(codebook)
 
     output:
         file("config.json")
@@ -167,7 +170,8 @@ process Build_config{
         --files_dir ${dir} ${zarr_dirs_str} \
         --options ${options} \
         ${file_paths} ${url_str} \
-        --layout ${layout} ${clayout_str}
+        --layout ${layout} ${clayout_str} \
+        --codebook ${codebook}
     """
 }
 
@@ -247,7 +251,8 @@ workflow Full_pipeline {
         Process_files.out.files,
         options_str,
         params.layout,
-        params.custom_layout
+        params.custom_layout,
+        channel.fromPath(params.codebook)
     )
 }
 
@@ -272,6 +277,7 @@ workflow Config {
         [],
         options_str,
         params.layout,
-        params.custom_layout
+        params.custom_layout,
+        channel.fromPath(params.codebook)
     )
 }
