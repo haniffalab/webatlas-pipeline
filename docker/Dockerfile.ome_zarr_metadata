@@ -7,4 +7,8 @@ RUN apt-get update && \
 
 RUN python -m pip install --upgrade pip --no-cache-dir
 
-RUN pip3 install fire vitessce regex
+RUN pip install pre-commit fire
+RUN git clone https://github.com/ome/ome-zarr-metadata.git /opt/ome-zarr-metadata && \
+	cd /opt/ome-zarr-metadata && \
+	pre-commit install && \
+	pip install -e .

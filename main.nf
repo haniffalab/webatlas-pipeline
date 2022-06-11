@@ -12,7 +12,7 @@ params.factors = []
 params.codebook = ""
 params.max_n_worker = 30
 params.dataset = ""
-params.zarr_dirs = []
+params.zarr_md = []
 params.data = []
 params.url = ""
 
@@ -33,19 +33,19 @@ version = "0.0.1"
 
 process image_to_zarr {
     tag "${image}"
-    debug false
+    debug verbose_log
 
     container "openmicroscopy/bioformats2raw:0.4.0"
     storeDir params.outdir
 
     input:
-    tuple val(img_type), file(image)
+    tuple val(img_type), path(image)
     tuple val(accessKey), val(secretKey)
     val output_s3
 
     output:
     /*val out_s3, emit: s3_path*/
-    path img_type
+    path(img_type)
 
     script:
     out_s3 = "${output_s3}/${img_type}"
@@ -62,7 +62,7 @@ process condolidate_metadata{
     container "hamat/webatlas-zarr:${version}"
 
     input:
-    path zarr
+    path(zarr)
 
     script:
     """
@@ -70,15 +70,32 @@ process condolidate_metadata{
     """
 }
 
-process route_file {
+process ome_zarr_metadata{
+    tag "${zarr}"
     debug verbose_log
+    container "hamat/webatlas-ome-zarr-metadata:${version}"
+
+    input:
+    path(zarr)
+
+    output:
+    tuple val(zarr), stdout
+
+    script:
+    """
+    ome_zarr_metadata.py --ome-zarr ${zarr}
+    """
+}
+
+process route_file {
     tag "${type}"
+    debug verbose_log
 
     container "hamat/webatlas-router"
     publishDir params.outdir, mode: "copy"
 
     input:
-    tuple val(type), file(file), val(args)
+    tuple val(type), path(file), val(args)
 
     output:
     stdout emit: out_file_paths
@@ -111,78 +128,39 @@ process Build_config{
     publishDir params.outdir, mode: "copy"
 
     input:
-        val(dir)
-        val(title)
-        val(dataset)
-        val(url)
-        val(zarr_dirs)
-        val(files)
-        val(options)
-        val(layout)
-        val(custom_layout)
-        file(codebook)
-
-    output:
-        file("config.json")
-
-    script:
-    files = files.collect{ /\'/ + it.trim() + /\'/ }
-    zarr_dirs = zarr_dirs.collect{ /\'/ + it.trim() + /\'/ }
-
-    file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
-    zarr_dirs_str = zarr_dirs ? "--zarr_dirs [" + zarr_dirs.join(',') + "]" : ""
-    url_str = url?.trim() ? "--url ${url}" : ""
-    clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
-    """
-    build_config.py \
-        --title "${title}" \
-        --dataset ${dataset} \
-        --files_dir ${dir} ${zarr_dirs_str} \
-        --options ${options} \
-        ${file_paths} ${url_str} \
-        --layout ${layout} ${clayout_str} \
-        --codebook ${codebook}
-    """
-}
-
-process Build_config_local{
-    tag "config"
-    debug verbose_log
-    container "hamat/webatlas-build-config:${version}"
-    publishDir params.outdir, mode: "copy"
-
-    input:
         path(dir)
         val(title)
         val(dataset)
         val(url)
-        path(zarr_dirs)
-        path(files)
+        val(zarr_md)
+        val(files)
         val(options)
         val(layout)
         val(custom_layout)
-        file(codebook)
 
     output:
-        file("config.json")
+        path("config.json")
 
     script:
-    files = files.collect{ /\'/ + it + /\'/ }
-    zarr_dirs = zarr_dirs.collect{ /\'/ + it + /\'/ }
+    files = files.collect{ /\'/ + it.trim() + /\'/ }
 
     file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
-    zarr_dirs_str = zarr_dirs ? "--zarr_dirs [" + zarr_dirs.join(',') + "]" : ""
+    files_dir_str = dir ? "--files_dir " + dir : ""
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
+    zarr_md_str = zarr_md ? "--image_zarr " + /"/ + new JsonBuilder(zarr_md).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
+    options_str = options ? "--options " + /"/ + new JsonBuilder(options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
+
     """
     build_config.py \
         --title "${title}" \
         --dataset ${dataset} \
-        --files_dir ${dir} ${zarr_dirs_str} \
-        --options ${options} \
-        ${file_paths} ${url_str} \
-        --layout ${layout} ${clayout_str} \
-        --codebook ${codebook}
+        ${files_dir_str} \
+        ${zarr_md_str} \
+        ${options_str} \
+        ${file_paths} \
+        ${url_str} \
+        --layout ${layout} ${clayout_str}
     """
 }
 
@@ -193,10 +171,10 @@ process generate_label_image {
     publishDir params.outdir, mode: "copy"
 
     input:
-        path h5ad
+        path(h5ad)
 
     output:
-        file("${stem}_with_label.zarr")
+        path("${stem}_with_label.zarr")
 
     script:
     stem = h5ad.baseName
@@ -220,12 +198,17 @@ workflow To_ZARR {
         image_to_zarr(image_to_convert, params.s3_keys, params.outdir_s3)
         condolidate_metadata(image_to_zarr.out)
         zarr_dirs = image_to_zarr.out.collect()
+        ome_zarr_metadata(image_to_zarr.out)
+        zarr_md = ome_zarr_metadata.out.collect{ [[(it[0]): new JsonSlurper().parseText(it[1].replace('\n',''))]] }
     }
-    else
+    else {
         zarr_dirs = []
+        zarr_md = []
+    }
 
     emit:
         zarr_dirs = zarr_dirs
+        zarr_md = zarr_md
 }
 
 workflow Process_files {
@@ -253,61 +236,40 @@ workflow Full_pipeline {
 
     Process_files()
 
-    options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
-
     // Build config from files generated from Process_files
     // Ignores files in params.outdir
-    if (!params.s3){
-        Build_config_local(
-            file("''"),
-            params.title,
-            params.dataset,
-            params.url,
-            To_ZARR.out.zarr_dirs,
-            Process_files.out.files,
-            options_str,
-            params.layout,
-            params.custom_layout,
-            channel.fromPath(params.codebook)
-        )
-    }
-    else {
-        Build_config(
-            "''",
-            params.title,
-            params.dataset,
-            params.url,
-            To_ZARR.out.zarr_dirs,
-            Process_files.out.file_paths,
-            options_str,
-            params.layout,
-            params.custom_layout,
-            channel.fromPath(params.codebook)
-        )
-    }
+    Build_config(
+        file("''"),
+        params.title,
+        params.dataset,
+        params.url,
+        To_ZARR.out.zarr_md.collectEntries(),
+        Process_files.out.file_paths,
+        params.options,
+        params.layout,
+        params.custom_layout
+    )
 }
 
 workflow Config_from_paths {
     if (params.config_files){
-
-        options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
 
         Build_config(
             params.outdir,
             params.title,
             params.dataset,
             params.url,
-            params.zarr_dirs,
+            params.zarr_md,
             params.config_files,
-            options_str,
+            params.options,
             params.layout,
             params.custom_layout
         )
     }
 }
 
+
 workflow Config_from_dir {
-    options_str = /"/ + new JsonBuilder(params.options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/
 
     if (!params.s3){
         // Build config from files in params.outdir
@@ -318,10 +280,9 @@ workflow Config_from_dir {
             params.url,
             [],
             [],
-            options_str,
+            params.options,
             params.layout,
-            params.custom_layout,
-            channel.fromPath(params.codebook)
+            params.custom_layout
         )
     }
 }
