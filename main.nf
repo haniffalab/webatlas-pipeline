@@ -128,7 +128,6 @@ process Build_config{
     publishDir params.outdir, mode: "copy"
 
     input:
-        path(dir)
         val(title)
         val(dataset)
         val(url)
@@ -145,7 +144,6 @@ process Build_config{
     files = files.collect{ /\'/ + it.trim() + /\'/ }
 
     file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
-    files_dir_str = dir ? "--files_dir " + dir : ""
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
     zarr_md_str = zarr_md ? "--image_zarr " + /"/ + new JsonBuilder(zarr_md).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
@@ -155,7 +153,6 @@ process Build_config{
     build_config.py \
         --title "${title}" \
         --dataset ${dataset} \
-        ${files_dir_str} \
         ${zarr_md_str} \
         ${options_str} \
         ${file_paths} \
@@ -236,10 +233,7 @@ workflow Full_pipeline {
 
     Process_files()
 
-    // Build config from files generated from Process_files
-    // Ignores files in params.outdir
     Build_config(
-        file("''"),
         params.title,
         params.dataset,
         params.url,
@@ -251,35 +245,14 @@ workflow Full_pipeline {
     )
 }
 
-workflow Config_from_paths {
-    if (params.config_files){
-
+workflow Config {
+    if (params.config_files || params.zarr_md){
         Build_config(
-            params.outdir,
             params.title,
             params.dataset,
             params.url,
             params.zarr_md,
             params.config_files,
-            params.options,
-            params.layout,
-            params.custom_layout
-        )
-    }
-}
-
-
-workflow Config_from_dir {
-
-    if (!params.s3){
-        // Build config from files in params.outdir
-        Build_config_local(
-            params.outdir,
-            params.title,
-            params.dataset,
-            params.url,
-            [],
-            [],
             params.options,
             params.layout,
             params.custom_layout

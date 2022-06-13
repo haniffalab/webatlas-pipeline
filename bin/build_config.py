@@ -118,8 +118,7 @@ def build_raster_options(image_zarr, url):
 def write_json(
     title='',
     dataset='',
-    file_paths=None,
-    files_dir='',
+    file_paths=[],
     image_zarr={},
     url='',
     outdir='',
@@ -135,7 +134,7 @@ def write_json(
     config_dataset = config.add_dataset(title, dataset)
 
     coordination_types = defaultdict(list)
-    file_paths_names = { os.path.basename(x):x for x in file_paths or [] }
+    file_paths_names = { os.path.basename(x):x for x in file_paths }
     dts = set([])
 
     if len(image_zarr.items()):
@@ -151,13 +150,9 @@ def write_json(
 
             # first file type found will be used in the config file
             file_exists = False
-            if file_paths is not None:
-                if file_name in file_paths_names:
-                    file_path = file_paths_names[file_name]
-                    file_exists = True
-            else:
-                file_path = os.path.join(files_dir, file_name)
-                file_exists = os.path.exists(file_path)
+            if file_name in file_paths_names:
+                file_path = file_paths_names[file_name]
+                file_exists = True
 
             if file_exists:
                 has_files = True

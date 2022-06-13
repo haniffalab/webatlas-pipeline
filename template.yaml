@@ -30,7 +30,7 @@ options:
 layout: 'advanced'
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
 # Already processed files to generate config file
-# zarr_dirs:
+# zarr_md:
 #   "visium_label":
 #     "channel_names": ["channel_1", "channel_2"]
 # config_files:
