@@ -8,11 +8,15 @@ from process_molecules import tsv_to_json
 def main(**args):
     file_type = args.pop('type')
     file_path = args.pop('file')
+
+    out_file = None
     
     if file_type == 'h5ad':
-        h5ad_to_zarr(file=file_path, **args)
+        out_file = h5ad_to_zarr(file=file_path, **args)
     if file_type == 'molecules':
-        tsv_to_json(file=file_path, **args)
+        out_file = tsv_to_json(file=file_path, **args)
+    
+    return out_file
 
 if __name__ == "__main__":
     fire.Fire(main)

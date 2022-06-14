@@ -4,14 +4,13 @@ from collections import defaultdict
 import os
 import fire
 import json
-import re
+import regex
+import logging
 from itertools import chain, cycle
-
-from xml.etree import ElementTree as ET
-import pandas as pd
 
 from vitessce import (
     VitessceConfig,
+    DataType as dt,
     FileType as ft,
     CoordinationType as ct,
     Component as cm
@@ -78,65 +77,85 @@ def build_options(file_type, file_path, file_options=None, check_exist=False):
     return options
 
 
-def get_image_basic_metadata(xml_path):
-    NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
-
-    ome_metadata = ET.parse(xml_path)
-    dimOrder = ome_metadata.find("./*/ome:Pixels", NS).attrib["DimensionOrder"]
-    X = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeX"]
-    Y = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeY"]
-    Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
-    C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
-    T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
-    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
-    return dimOrder, channels, X, Y, Z, C, T
+def build_raster_options(image_zarr, url):
+    raster_options = {
+        "renderLayers": [],
+        "schemaVersion": "0.0.2",
+        "images": []
+    }
+    for image in image_zarr.keys():
+            raster_options["renderLayers"].append(image)
+            raster_options["images"].append({
+                "name": image,
+                "url": os.path.join(url, image),
+                "type": "zarr",
+                "metadata": {
+                    "isBitmask": True,
+                    "dimensions": [
+                        {"field": "t",
+                          "type": "quantitative",
+                          "values": None },
+                        {"field": "channel",
+                          "type": "nominal",
+                          "values": image_zarr[image]["channel_names"] },
+                        {"field": "y",
+                          "type": "quantitative",
+                          "values": None },
+                        {"field": "x",
+                          "type": "quantitative",
+                          "values": None }
+                    ],
+                    "isPyramid": True,
+                        "transform": {
+                            "translate": { "y": 0, "x": 0 },
+                        "scale": 1
+                    }
+                }
+            })
+    return raster_options
 
 
 def write_json(
     title='',
     dataset='',
-    file_paths=None,
-    files_dir='',
-    zarr_dirs=None,
+    file_paths=[],
+    image_zarr={},
     url='',
     outdir='',
     config_filename='config.json',
     options={},
     layout='minimal',
-    custom_layout=None,
-    codebook='',
+    custom_layout=None
     ):
 
-    print(f"zarr paths : {zarr_dirs}")
-
-    xml_path = "raw_image/OME/METADATA.ome.xml"
-    dimOrder, channel_names, X, Y, Z, C, T = get_image_basic_metadata(xml_path)
-    print(dimOrder)
-    print(X, Y, Z, C, T)
-    print(channel_names)
-    codebook = pd.read_csv(codebook)
-    print(codebook)
+    has_files = False
 
     config = VitessceConfig()
     config_dataset = config.add_dataset(title, dataset)
 
     coordination_types = defaultdict(list)
-    file_paths_names = { os.path.basename(x):x for x in file_paths or [] }
+    file_paths_names = { os.path.basename(x):x for x in file_paths }
     dts = set([])
+
+    if len(image_zarr.items()):
+        has_files = True
+        config_dataset.add_file(
+            dt.RASTER, ft.RASTER_JSON,
+            options = build_raster_options(image_zarr, url)
+        )
+        dts.add(dt.RASTER)
+
     for data_type in DATA_TYPES:
         for file_name, file_type in DATA_TYPES[data_type]:
 
             # first file type found will be used in the config file
             file_exists = False
-            if file_paths is not None:
-                if file_name in file_paths_names:
-                    file_path = file_paths_names[file_name]
-                    file_exists = True
-            else:
-                file_path = os.path.join(files_dir, file_name)
-                file_exists = os.path.exists(file_path)
+            if file_name in file_paths_names:
+                file_path = file_paths_names[file_name]
+                file_exists = True
 
             if file_exists:
+                has_files = True
                 file_options = build_options(file_type, file_path, options)
                 # Set a coordination scope for any 'mapping'
                 if 'mappings' in file_options:
@@ -152,21 +171,21 @@ def write_json(
                 dts.add(data_type)
                 break
 
+    if not has_files:
+        logging.error("No files to add to config file")
+        quit(1)
 
     # Get layout components/views
     # Set layout with alternative syntax https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
     config_layout = custom_layout if custom_layout and len(custom_layout) else DEFAULT_LAYOUTS[layout]
     views, views_indx = [], []
-    for m in re.finditer("[a-zA-Z]+", config_layout):
+    for m in regex.finditer("[a-zA-Z]+", config_layout):
         # TODO: catch error
         component = cm(m.group())
 
         # Remove component from layout if its required data type is not present
         if component in COMPONENTS_DATA_TYPES and COMPONENTS_DATA_TYPES[component].isdisjoint(dts):
-            # Remove trailing or leading operators along with component
-            trail = m.end() < len(config_layout) and config_layout[m.end()] in ["|","/"]
-            lead = not trail and m.start() > 0 and config_layout[m.start()-1] in ["|","/"]
-            views_indx.append((m.start()-1*lead, m.end()+1*trail, ""))
+            views_indx.append((m.start(), m.end(), ""))
             continue
 
         view = config.add_view(component, dataset=config_dataset)
@@ -184,6 +203,14 @@ def write_json(
     for (start, end, view) in sorted(views_indx, key=lambda x: x[0], reverse=True):
         config_layout = config_layout[:start] + view + config_layout[end:]
 
+    # Remove remaining | and / operators and empty parenthesis
+    empty_par = r'\((?>[^\(\)a-zA-Z]|(?R))*\)'
+    unbalanced_op = r'(?<=\()([\/\|]+)|([\/\|]+)(?=\))|(?<=^)([\/\|]+)|([\/\|]+)(?=$)'
+    repeated_op = r'(?<=[\/\|])([\/\|]+)'
+    config_layout = regex.sub(empty_par, '', config_layout)
+    config_layout = regex.sub(unbalanced_op, '', config_layout)
+    config_layout = regex.sub(repeated_op, '', config_layout)
+
     # Concatenate views
     exec("config.layout({})".format(config_layout))
 
@@ -192,7 +219,6 @@ def write_json(
     for l in config_json["layout"]:
         for k in ("x","y","w","h"):
             l[k] = round(l[k])
-
 
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)
