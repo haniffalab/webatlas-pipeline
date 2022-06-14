@@ -10,17 +10,7 @@ from itertools import chain, cycle
 from xml.etree import ElementTree as ET
 import pandas as pd
 
-from vitessce import (
-    VitessceConfig,
-    FileType as ft,
-    CoordinationType as ct,
-    Component as cm
-)
-from constants import (
-    DATA_TYPES,
-    DEFAULT_OPTIONS, DEFAULT_LAYOUTS,
-    COMPONENTS_COORDINATION_TYPES, COMPONENTS_DATA_TYPES
-)
+
 
 def build_options(file_type, file_path, file_options=None, check_exist=False):
     options = None
@@ -106,6 +96,17 @@ def write_json(
     custom_layout=None,
     codebook='',
     ):
+    from vitessce import (
+        VitessceConfig,
+        FileType as ft,
+        CoordinationType as ct,
+        Component as cm
+    )
+    from constants import (
+        DATA_TYPES,
+        DEFAULT_OPTIONS, DEFAULT_LAYOUTS,
+        COMPONENTS_COORDINATION_TYPES, COMPONENTS_DATA_TYPES
+    )
 
     print(f"zarr paths : {zarr_dirs}")
 
