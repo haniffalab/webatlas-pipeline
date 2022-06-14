@@ -10,12 +10,13 @@ import scipy
 import warnings
 warnings.filterwarnings("ignore")
 
-ZARR_FILE = 'anndata.zarr'
+SUFFIX = 'anndata.zarr'
 
 def h5ad_to_zarr(
     file,
+    stem,
     compute_embeddings=False,
-    chunk_size=10
+    chunk_size=10,
     ):
 
     adata = ad.read(file)
@@ -27,12 +28,12 @@ def h5ad_to_zarr(
         if not 'X_umap' in adata.obsm:
             sc.pp.neighbors(adata)
             sc.tl.umap(adata)
-    
+
     for col in adata.obs:
         # if data type is categorical vitessce will throw "path X contains a group" and won't find .zarray
         if adata.obs[col].dtype == 'category':
             adata.obs[col] = adata.obs[col].cat.codes
-    
+
     if 'spatial' in adata.obsm:
         adata.obsm['spatial'] = adata.obsm['spatial'].astype('int32')
 
@@ -44,7 +45,7 @@ def h5ad_to_zarr(
     # remove unnecessary data
     del adata.raw
 
-    adata.write_zarr(ZARR_FILE, [adata.shape[0], chunk_size])
+    adata.write_zarr(f"{stem}_{SUFFIX}", [adata.shape[0], chunk_size])
 
 
 if __name__ == "__main__":
