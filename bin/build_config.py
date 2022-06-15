@@ -11,21 +11,8 @@ from xml.etree import ElementTree as ET
 import pandas as pd
 
 
-def get_image_basic_metadata(xml_path):
-    NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
-
-    ome_metadata = ET.parse(xml_path)
-    dimOrder = ome_metadata.find("./*/ome:Pixels", NS).attrib["DimensionOrder"]
-    X = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeX"]
-    Y = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeY"]
-    Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
-    C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
-    T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
-    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
-    return dimOrder, channels, X, Y, Z, C, T
-
-
 def build_options(file_type, file_path, file_options=None, check_exist=False):
+    from vitessce import FileType as ft
     options = None
     if file_options is None:
         file_options = DEFAULT_OPTIONS
@@ -125,8 +112,8 @@ def write_json(
     file_paths=[],
     image_zarr={},
     url='',
-    outdir='',
-    config_filename='config.json',
+    outdir='./',
+    config_filename_suffix='config.json',
     options={},
     layout='minimal',
     custom_layout=None
@@ -151,7 +138,7 @@ def write_json(
     config_dataset = config.add_dataset(title, dataset)
 
     coordination_types = defaultdict(list)
-    file_paths_names = { os.path.basename(x):x for x in file_paths }
+    file_paths_names = { x.split("_")[-1]:x for x in file_paths }
     dts = set([])
 
     if len(image_zarr.items()):
@@ -239,7 +226,7 @@ def write_json(
 
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)
-    with open(os.path.join(outdir or '', config_filename), "w") as out_file:
+    with open(os.path.join(outdir or '', f"{title}_{dataset}_{config_filename_suffix}"), "w") as out_file:
         json.dump(config_json, out_file, indent=2)
 
 

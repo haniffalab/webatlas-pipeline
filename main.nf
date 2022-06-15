@@ -29,7 +29,7 @@ params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
 params.tsv = "./template.tsv"
 
-verbose_log = false
+verbose_log = true
 version = "0.0.1"
 
 process image_to_zarr {
@@ -134,32 +134,29 @@ process Build_config{
     publishDir params.outdir, mode: "copy"
 
     input:
-        tuple val(stem), val(title), val(dataset), val(url), val(options)
-        val(zarr_md)
-        val(files)
+        tuple val(stem), val(anndata), val(raster), val(label), val(raster_md), val(label_md), val(title), val(dataset), val(url), val(options)
         val(layout)
         val(custom_layout)
 
     output:
-        path("config.json")
+        path("${stem}_config.json")
 
     script:
-    files = files.collect{ /\'/ + it.trim() + /\'/ }
-
-    file_paths = files ? "--file_paths [" + files.join(',') + "]": ""
+    anndata = file(anndata).name
+    raster = file(raster).name
+    lab = file(label).name
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
-    zarr_md_str = zarr_md ? "--image_zarr " + /"/ + new JsonBuilder(zarr_md).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
     options_str = options ? "--options " + /"/ + new JsonBuilder(options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
 
     """
     build_config.py \
         --title "${title}" \
         --dataset ${dataset} \
-        ${zarr_md_str} \
-        ${options_str} \
-        ${file_paths} \
+        --image_zarr '{"${raster}":${raster_md}, "${lab}":${label_md}}' \
+        --file_paths '["${anndata}"]' \
         ${url_str} \
+        ${options_str} \
         --layout ${layout} ${clayout_str}
     """
 }
@@ -204,23 +201,20 @@ workflow {
     _label_to_ZARR(Generate_label_image.out)
 
     Process_files.out.files
-            .join(To_ZARR.out.zarr_dirs)//.groupTuple(by:0) if several images
+            .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
             .join(_label_to_ZARR.out.label_zarr)
             .join(To_ZARR.out.ome_md_json)
+            .join(_label_to_ZARR.out.ome_md_json)
             .join(data_with_md.config_params)
-        .view()
-        /*.set(img_data_for_config)*/
+            .set{img_data_for_config}
+        /*.view()*/
 
 
-    /*Build_config(*/
-/*[>=======<]*/
-        /*[>To_ZARR.out.zarr_md.collectEntries(),<]*/
-        /*[>Process_files.out.file_paths,<]*/
-        /*[>params.options,<]*/
-/*[>>>>>>>> 289bad4a006659aa186569f79edf04bd58dde61d<]*/
-        /*params.layout,*/
-        /*params.custom_layout*/
-    /*)*/
+    Build_config(
+        img_data_for_config,
+        params.layout,
+        params.custom_layout
+    )
 }
 
 workflow To_ZARR {
@@ -249,13 +243,17 @@ workflow _label_to_ZARR {
         image_to_zarr(label_images, params.s3_keys, params.outdir_s3)
         consolidate_metadata(image_to_zarr.out.raw_zarr) // this will create .zmetadata in-place
         label_zarr = image_to_zarr.out.raw_zarr
+        ome_zarr_metadata(image_to_zarr.out.ome_xml)
+        ome_md_json = ome_zarr_metadata.out
 
     } else {
         label_zarr = []
+        ome_md_json = []
     }
 
     emit:
         label_zarr = label_zarr
+        ome_md_json = ome_md_json
 }
 
 workflow Process_files {
