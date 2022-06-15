@@ -30,12 +30,15 @@ def h5ad_to_zarr(
             sc.tl.umap(adata)
 
     for col in adata.obs:
-        # if data type is categorical vitessce will throw "path X contains a group" and won't find .zarray
+        # if data type is categorical vitessce will throw "path obs/X contains a group" and won't find .zarray
         if adata.obs[col].dtype == 'category':
             adata.obs[col] = adata.obs[col].cat.codes
+        elif adata.obs[col].dtype == 'int8':
+            adata.obs[col] = adata.obs[col].astype('int32')
 
-    if 'spatial' in adata.obsm:
-        adata.obsm['spatial'] = adata.obsm['spatial'].astype('int32')
+    for col in adata.obsm:
+        if col == 'spatial' or adata.obsm[col].dtype == 'int8':
+            adata.obsm[col] = adata.obsm[col].astype('int32')
 
     # matrix sparse to dense
     if isinstance(adata.X, scipy.sparse.spmatrix):
@@ -45,8 +48,10 @@ def h5ad_to_zarr(
     # remove unnecessary data
     del adata.raw
 
-    adata.write_zarr(f"{stem}_{SUFFIX}", [adata.shape[0], chunk_size])
+    zarr_file = f"{stem}_{SUFFIX}"
+    adata.write_zarr(zarr_file, [adata.shape[0], chunk_size])
 
+    return zarr_file
 
 if __name__ == "__main__":
    fire.Fire(h5ad_to_zarr)
