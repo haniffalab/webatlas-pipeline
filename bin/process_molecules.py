@@ -5,10 +5,11 @@ import csv
 import json
 import fire
 
-JSON_FILE = 'molecules.json'
+SUFFIX = 'molecules.json'
 
 def tsv_to_json(
-    file='',
+    file,
+    stem,
     has_header=True,
     gene_col_name='Name',
     x_col_name='x_int',
@@ -43,10 +44,12 @@ def tsv_to_json(
             except ValueError as e:
                 print(e)
 
-    with open(JSON_FILE, 'w') as out_file:
+    json_file = f"{stem}_{SUFFIX}"
+
+    with open(json_file, 'w') as out_file:
         json.dump(molecules_json, out_file)
     
-    return JSON_FILE
+    return json_file
 
 
 if __name__ == "__main__":

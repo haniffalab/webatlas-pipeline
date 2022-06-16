@@ -7,15 +7,10 @@ import json
 import logging
 from itertools import chain, cycle
 
-from xml.etree import ElementTree as ET
-import pandas as pd
 
-
-def build_options(file_type, file_path, file_options=None, check_exist=False):
+def build_options(file_type, file_path, file_options, check_exist=False):
     from vitessce import FileType as ft
     options = None
-    if file_options is None:
-        file_options = DEFAULT_OPTIONS
 
     if file_type == ft.ANNDATA_CELLS_ZARR:
         options = {}
@@ -75,34 +70,37 @@ def build_raster_options(image_zarr, url):
         "images": []
     }
     for image in image_zarr.keys():
-            raster_options["renderLayers"].append(image)
-            raster_options["images"].append({
-                "name": image,
-                "url": os.path.join(url, image),
-                "type": "zarr",
-                "metadata": {
-                    "isBitmask": True,
-                    "dimensions": [
-                        {"field": "t",
-                          "type": "quantitative",
-                          "values": None },
-                        {"field": "channel",
-                          "type": "nominal",
-                          "values": image_zarr[image]["channel_names"] },
-                        {"field": "y",
-                          "type": "quantitative",
-                          "values": None },
-                        {"field": "x",
-                          "type": "quantitative",
-                          "values": None }
-                    ],
-                    "isPyramid": True,
-                        "transform": {
-                            "translate": { "y": 0, "x": 0 },
-                        "scale": 1
-                    }
+        image_name = os.path.splitext(image)[0]
+        channel_names = image_zarr[image]["channel_names"] if "channel_names" in image_zarr[image] else []
+        channel_names = ["Labels"] if image_name.split("_")[-1] == "label" and not len(channel_names) else channel_names
+        raster_options["renderLayers"].append(image_name)
+        raster_options["images"].append({
+            "name": image_name,
+            "url": os.path.join(url, image),
+            "type": "zarr",
+            "metadata": {
+                "isBitmask": True,
+                "dimensions": [
+                    {"field": "t",
+                        "type": "quantitative",
+                        "values": None },
+                    {"field": "channel",
+                        "type": "nominal",
+                        "values": channel_names },
+                    {"field": "y",
+                        "type": "quantitative",
+                        "values": None },
+                    {"field": "x",
+                        "type": "quantitative",
+                        "values": None }
+                ],
+                "isPyramid": True,
+                    "transform": {
+                        "translate": { "y": 0, "x": 0 },
+                    "scale": 1
                 }
-            })
+            }
+        })
     return raster_options
 
 
@@ -114,7 +112,7 @@ def write_json(
     url='',
     outdir='./',
     config_filename_suffix='config.json',
-    options={},
+    options=None,
     layout='minimal',
     custom_layout=None
     ):
@@ -137,7 +135,7 @@ def write_json(
     config = VitessceConfig()
     config_dataset = config.add_dataset(title, dataset)
 
-    coordination_types = defaultdict(list)
+    coordination_types = defaultdict(lambda: cycle(iter([])))
     file_paths_names = { x.split("_")[-1]:x for x in file_paths }
     dts = set([])
 
@@ -160,7 +158,7 @@ def write_json(
 
             if file_exists:
                 has_files = True
-                file_options = build_options(file_type, file_path, options)
+                file_options = build_options(file_type, file_path, options or DEFAULT_OPTIONS[file_type])
                 # Set a coordination scope for any 'mapping'
                 if 'mappings' in file_options:
                     coordination_types[ct.EMBEDDING_TYPE] = cycle(chain(
@@ -169,7 +167,7 @@ def write_json(
                     ))
                 config_dataset.add_file(
                     data_type, file_type,
-                    url = os.path.join(url, file_name),
+                    url = os.path.join(url, os.path.basename(file_path)),
                     options = file_options
                 )
                 dts.add(data_type)
@@ -184,21 +182,34 @@ def write_json(
     config_layout = custom_layout if custom_layout and len(custom_layout) else DEFAULT_LAYOUTS[layout]
     views, views_indx = [], []
     for m in regex.finditer("[a-zA-Z]+", config_layout):
-        # TODO: catch error
-        component = cm(m.group())
+        try:
+            component = cm(m.group())
+        except ValueError:
+            logging.warning("{} is not a valid component".format(m.group()))
+            views_indx.append((m.start(), m.end(), ""))
+            continue
 
         # Remove component from layout if its required data type is not present
         if component in COMPONENTS_DATA_TYPES and COMPONENTS_DATA_TYPES[component].isdisjoint(dts):
+            logging.warning("No file of data type required by component {}".format(component))
             views_indx.append((m.start(), m.end(), ""))
             continue
 
         view = config.add_view(component, dataset=config_dataset)
 
         if component in COMPONENTS_COORDINATION_TYPES:
+            has_ctype = True
             for coordination_type in COMPONENTS_COORDINATION_TYPES[component]:
                 # Cycle through coordination scopes with the required coordination type
-                # TODO: catch error
-                view.use_coordination(next(coordination_types[coordination_type]))
+                try:
+                    view.use_coordination(next(coordination_types[coordination_type]))
+                except StopIteration:
+                    logging.warning("No coordination scope with coordination type {} for component {}".format(coordination_type, component))
+                    has_ctype = False
+                    break
+            if not has_ctype:
+                views_indx.append((m.start(), m.end(), ""))
+                continue
 
         views.append(view)
         views_indx.append((m.start(), m.end(), "views[{}]".format(len(views)-1)))
@@ -216,7 +227,12 @@ def write_json(
     config_layout = regex.sub(repeated_op, '', config_layout)
 
     # Concatenate views
-    exec("config.layout({})".format(config_layout))
+    try:
+        exec("config.layout({})".format(config_layout))
+    except Exception as e:
+        logging.error("Error building config layout")
+        logging.error(e)
+        quit(1)
 
     # Make sure views' grid coordinates are integers
     config_json = config.to_dict()

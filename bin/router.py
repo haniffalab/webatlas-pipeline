@@ -8,13 +8,14 @@ from process_molecules import tsv_to_json
 def main(**args):
     file_type = args.pop('type')
     file_path = args.pop('file')
+    stem = args.pop('stem')
 
     out_file = None
     
     if file_type == 'h5ad':
-        out_file = h5ad_to_zarr(file=file_path, **args)
+        out_file = h5ad_to_zarr(file=file_path, stem=stem, **args)
     if file_type == 'molecules':
-        out_file = tsv_to_json(file=file_path, **args)
+        out_file = tsv_to_json(file=file_path, stem=stem, **args)
     
     return out_file
 
