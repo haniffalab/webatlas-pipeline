@@ -1,0 +1,3 @@
+h5ad	image_type	image_path	args	title	codebook	dataset	molecule	url	options_str
+WSSS_THYst9383359.h5ad	raw	/nfs/team283_imaging/KM_LNG/playground_Tong/20220511_fLNG/20220511_registration/20220513_opt_flow_registered.tif	compute_embeddings:False|delimiter:'\t'	Hindlimb_ISS_1		ISS_1		s3://hindlimb/datasets/	
+WSSS_THYst9383359.h5ad	label	/nfs/team283_imaging/KM_LNG/playground_Tong/20220511_fLNG/20220524_segmentation/20220513_opt_flow_registered_label_expanded.tif	compute_embeddings:False|delimiter:'\t'	Hindlimb_ISS_1		ISS_1		s3://hindlimb/datasets/	

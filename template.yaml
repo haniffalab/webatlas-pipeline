@@ -1,5 +1,6 @@
-outdir: "output/visium"
+outdir: "output/ISS"
 max_n_worker: 30
+tsv : "./ISS_template.txt"
 options:
   spatial:
     xy: "obsm/spatial"
