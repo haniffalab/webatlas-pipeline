@@ -259,8 +259,8 @@ workflow _label_to_ZARR {
 workflow Process_files {
     if (data_with_md.data){
         route_file(data_with_md.data)
-        // TODO why need these two variables?
         files = route_file.out.converted_files
+        /*TODO: not needed?*/
         file_paths = route_file.out.out_file_paths//.collect{ it.split('\n').flatten() }
     } else {
         files = []
@@ -272,37 +272,40 @@ workflow Process_files {
         file_paths = file_paths
 }
 
-workflow Full_pipeline {
+workflow Visium_pipeline {
 
     To_ZARR()
 
     Process_files()
 
+    Generate_label_image(To_ZARR.out.ome_md_json.join(data_with_md.data))
+
+    _label_to_ZARR(Generate_label_image.out)
+
+    Process_files.out.files
+            .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
+            .join(_label_to_ZARR.out.label_zarr)
+            .join(To_ZARR.out.ome_md_json)
+            .join(_label_to_ZARR.out.ome_md_json)
+            .join(data_with_md.config_params)
+            .set{img_data_for_config}
+        /*.view()*/
+
+
     Build_config(
-        data_with_md.config_params,
-        To_ZARR.out.zarr_dirs.collect(),
-        Process_files.out.files.collect(),
-/*=======*/
-        /*To_ZARR.out.zarr_md.collectEntries(),*/
-        /*Process_files.out.file_paths,*/
-        /*params.options,*/
-/*>>>>>>> 289bad4a006659aa186569f79edf04bd58dde61d*/
+        img_data_for_config,
         params.layout,
         params.custom_layout
     )
 }
 
 workflow Config {
+    /*TODO: need to give an example of how to construct the args here*/
     if (params.config_files || params.zarr_md){
         Build_config(
         data_with_md.config_params,
         To_ZARR.out.zarr_dirs.collect(),
         Process_files.out.files.collect(),
-/*=======*/
-        /*To_ZARR.out.zarr_md.collectEntries(),*/
-        /*Process_files.out.file_paths,*/
-        /*params.options,*/
-/*>>>>>>> 289bad4a006659aa186569f79edf04bd58dde61d*/
         params.layout,
         params.custom_layout
         )
