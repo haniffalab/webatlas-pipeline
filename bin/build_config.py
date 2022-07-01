@@ -72,14 +72,14 @@ def build_raster_options(image_zarr, url):
     for image in image_zarr.keys():
         image_name = os.path.splitext(image)[0]
         channel_names = image_zarr[image]["channel_names"] if "channel_names" in image_zarr[image] else []
-        channel_names = ["Labels"] if image_name.split("_")[-1] == "label" and not len(channel_names) else channel_names
+        channel_names, isBitmask = (["Labels"], True) if image_name.split("_")[-1] == "label" and not len(channel_names) else (channel_names,False)
         raster_options["renderLayers"].append(image_name)
         raster_options["images"].append({
             "name": image_name,
             "url": os.path.join(url, image),
             "type": "zarr",
             "metadata": {
-                "isBitmask": True,
+                "isBitmask": isBitmask,
                 "dimensions": [
                     {"field": "t",
                         "type": "quantitative",
@@ -158,13 +158,16 @@ def write_json(
 
             if file_exists:
                 has_files = True
-                file_options = build_options(file_type, file_path, options or DEFAULT_OPTIONS[file_type])
-                # Set a coordination scope for any 'mapping'
-                if 'mappings' in file_options:
-                    coordination_types[ct.EMBEDDING_TYPE] = cycle(chain(
-                        coordination_types[ct.EMBEDDING_TYPE],
-                        [config.set_coordination_value(ct.EMBEDDING_TYPE.value, k, k) for k in file_options['mappings']]
-                    ))
+                if file_type in DEFAULT_OPTIONS:
+                    file_options = build_options(file_type, file_path, options or DEFAULT_OPTIONS[file_type])
+                    # Set a coordination scope for any 'mapping'
+                    if 'mappings' in file_options:
+                        coordination_types[ct.EMBEDDING_TYPE] = cycle(chain(
+                            coordination_types[ct.EMBEDDING_TYPE],
+                            [config.set_coordination_value(ct.EMBEDDING_TYPE.value, k, k) for k in file_options['mappings']]
+                        ))
+                else:
+                    file_options = None
                 config_dataset.add_file(
                     data_type, file_type,
                     url = os.path.join(url, os.path.basename(file_path)),
