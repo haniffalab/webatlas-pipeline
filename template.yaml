@@ -1,6 +1,11 @@
 outdir: "output/ISS"
 max_n_worker: 30
 tsv : "./ISS_template.txt"
+args:
+  h5ad:
+    compute_embeddings: "True"
+  # molecules:
+  #   delimiter: "','"
 options:
   spatial:
     xy: "obsm/spatial"

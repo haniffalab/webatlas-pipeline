@@ -1,2 +1,2 @@
-h5ad	image_type	image_path	args	title	codebook	dataset	molecule	url	options_str
-WSSS_THYst9383359.h5ad	raw	S3269_C42FLEGFO1_V19S16-066-A1-WSSS_THYst9383359.ome.tiff	compute_embeddings:False|delimiter:'\t'	Hindlimb_visium_1		Visium_1		s3://hindlimb/datasets/
+h5ad	image_type	image_path	title	codebook	dataset	molecule	url	options_str
+WSSS_THYst9383359.h5ad	raw	S3269_C42FLEGFO1_V19S16-066-A1-WSSS_THYst9383359.ome.tiff	Hindlimb_visium_1		Visium_1		s3://hindlimb/datasets/

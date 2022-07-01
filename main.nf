@@ -13,7 +13,7 @@ params.codebook = ""
 params.max_n_worker = 30
 params.dataset = ""
 params.zarr_md = []
-params.data = []
+params.args = []
 params.url = ""
 
 params.options = []
@@ -60,7 +60,7 @@ process image_to_zarr {
 
 process consolidate_metadata{
     tag "${zarr}"
-    /*debug verbose_log*/
+    debug verbose_log
     container "hamat/webatlas-zarr:${version}"
 
     input:
@@ -94,7 +94,7 @@ process route_file {
     tag "${file}"
     debug verbose_log
 
-    container "hamat/webatlas-router"
+    container "hamat/webatlas-router:${version}"
     /*storeDir params.outdir*/
     publishDir params.outdir, mode:"copy"
 
@@ -102,27 +102,13 @@ process route_file {
     tuple val(stem), path(file), val(type), val(args)
 
     output:
-    /*TODO*/
-    stdout emit: out_file_paths
-    /*path("*"), emit: out_files, */
-    tuple val(stem), path("${stem}*zarr"), emit: converted_files, optional: true
+    tuple val(stem), stdout, emit: out_file_paths
+    tuple val(stem), path("${stem}*"), emit: converted_files, optional: true
 
     script:
-    args_strs = []
-    if (args) {
-        args.each { arg, value ->
-            if (value instanceof Collection){
-                value = value.collect { it instanceof String ? /\'/ + it.replace(" ",/\ /) + /\'/ : it }
-                concat_args = value.join(',')
-            }
-            else
-                concat_args = value
-            args_strs.add("--$arg $concat_args")
-        }
-    }
-    args_str = args_strs.join(' ')
+    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    router.py --type ${type} --file ${file} --stem ${stem} ${args_str}
+    router.py --file_type ${type} --file_path ${file} --stem ${stem} ${args_str}
     """
 }
 
@@ -134,7 +120,7 @@ process Build_config{
     publishDir params.outdir, mode: "copy"
 
     input:
-        tuple val(stem), val(anndata), val(raster), val(label), val(raster_md), val(label_md), val(title), val(dataset), val(url), val(options)
+        tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(label_md), val(title), val(dataset), val(url), val(options)
         val(layout)
         val(custom_layout)
 
@@ -142,9 +128,9 @@ process Build_config{
         path("${stem}_config.json")
 
     script:
-    anndata = file(anndata).name
     raster = file(raster).name
-    lab = file(label).name
+    label = file(label).name
+    file_paths = files.collect{ /"/ + it + /"/ }.join(",")
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
     options_str = options ? "--options " + /"/ + new JsonBuilder(options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
@@ -153,8 +139,8 @@ process Build_config{
     build_config.py \
         --title "${title}" \
         --dataset ${dataset} \
-        --image_zarr '{"${raster}":${raster_md}, "${lab}":${label_md}}' \
-        --file_paths '["${anndata}"]' \
+        --image_zarr '{"${raster}":${raster_md}, "${label}":${label_md}}' \
+        --file_paths '[${file_paths}]' \
         ${url_str} \
         ${options_str} \
         --layout ${layout} ${clayout_str}
@@ -165,11 +151,11 @@ process Generate_label_image {
     tag "${stem}"
     debug verbose_log
 
-    container "generate_label:latest"
+    container "hamat/webatlas-generate-label:${version}"
     storeDir params.outdir
 
     input:
-        tuple val(stem), val(ome_md_json), path(h5ad), val(data_type), val(args)
+        tuple val(stem), val(ome_md_json), path(h5ad)
 
     output:
         tuple val(stem), val("label"), file("${stem}.tif")
@@ -185,8 +171,10 @@ Channel.fromPath(params.tsv)
     .splitCsv(header:true, sep:"\t")
     .multiMap { l ->
         images: [l.title + "_" + l.dataset, l.image_type, file(l.image_path)]
-        /*data: [l.title + "_" + l.dataset, l.h5ad, file(l.h5ad).extension, l.args]*/
-        data: [l.title + "_" + l.dataset, l.h5ad, file(l.h5ad).extension, ""]
+        data: [
+            h5ad: [l.title + "_" + l.dataset, l.h5ad, params.args.h5ad],
+            molecules: [l.title + "_" + l.dataset, l.molecule, params.args.molecules]
+        ]
         config_params: [l.title + "_" + l.dataset, l.title, l.dataset, l.url, l.options_str]
     }
     .set { data_with_md }
@@ -196,11 +184,14 @@ workflow {
 
     Process_files()
 
-    Generate_label_image(To_ZARR.out.ome_md_json.join(data_with_md.data))
+    h5ads = data_with_md.data.flatMap{ it ->
+            it.collectMany{ data_type, data_map ->
+                data_type == "h5ad" ? [[data_map[0], file(data_map[1])]] : [] }}
+    Generate_label_image(To_ZARR.out.ome_md_json.join(h5ads))
 
     _label_to_ZARR(Generate_label_image.out)
 
-    Process_files.out.files
+    Process_files.out.file_paths
             .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
             .join(_label_to_ZARR.out.label_zarr)
             .join(To_ZARR.out.ome_md_json)
@@ -258,10 +249,14 @@ workflow _label_to_ZARR {
 
 workflow Process_files {
     if (data_with_md.data){
-        route_file(data_with_md.data)
-        files = route_file.out.converted_files
-        /*TODO: not needed?*/
-        file_paths = route_file.out.out_file_paths//.collect{ it.split('\n').flatten() }
+        data_list = data_with_md.data.flatMap{ it ->
+            it.collectMany{ data_type, data_map ->
+                data_map[1] ? [[data_map[0], file(data_map[1]), data_type, data_map[2]]] : []
+            }
+        }
+        route_file(data_list)
+        files = route_file.out.converted_files.groupTuple(by:0)
+        file_paths = route_file.out.out_file_paths.map{ it -> [it[0], it[1].split('\n').flatten()].flatten() }.groupTuple(by:0)
     } else {
         files = []
         file_paths = []
@@ -278,11 +273,14 @@ workflow Visium_pipeline {
 
     Process_files()
 
-    Generate_label_image(To_ZARR.out.ome_md_json.join(data_with_md.data))
+    h5ads = data_with_md.data.flatMap{ it ->
+            it.collectMany{ data_type, data_map ->
+                data_type == "h5ad" ? [[data_map[0], file(data_map[1])]] : [] }}
+    Generate_label_image(To_ZARR.out.ome_md_json.join(h5ads))
 
     _label_to_ZARR(Generate_label_image.out)
 
-    Process_files.out.files
+    Process_files.out.file_paths
             .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
             .join(_label_to_ZARR.out.label_zarr)
             .join(To_ZARR.out.ome_md_json)
