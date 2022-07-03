@@ -56,7 +56,7 @@ def main(stem, ome_md, h5ad):
     # print(labelImg.shape)
     # print(np.max(spot_coords))
     for spId, (y, x) in zip(adata.obs[label_id_col_name], spot_coords):
-        labelImg[disk((y, x), spot_diameter_fullres/2)] = spId
+        labelImg[disk((x, y), spot_diameter_fullres/2)] = spId
 
     tf.imwrite(f"{stem}.tif", labelImg)
 
