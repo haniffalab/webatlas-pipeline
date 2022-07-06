@@ -1,2 +1,2 @@
-h5ad	image_type	image_path	title	codebook	dataset	molecule	url	options_str
-WSSS_THYst9383359.h5ad	raw	S3269_C42FLEGFO1_V19S16-066-A1-WSSS_THYst9383359.ome.tiff	Hindlimb_visium_1		Visium_1		s3://hindlimb/datasets/
+h5ad	image_type	image_path	title	codebook	dataset	molecule	url	options
+WSSS_THYst9383359.h5ad	raw	S3269_C42FLEGFO1_V19S16-066-A1-WSSS_THYst9383359.ome.tiff	Hindlimb_visium_1		Visium_1		s3://hindlimb/datasets/	{"spatial":{"xy":"obsm/spatial"},"mappings":{"obsm/spatial":[0,1]},"factors":["obs/sample"],"sets":["obs/sample"],"matrix":"X"}

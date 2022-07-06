@@ -47,7 +47,7 @@ DEFAULT_OPTIONS = {
             'xy': 'obsm/spatial',
         },
         'mappings': {
-            'spatial' : None,
+            'obsm/spatial' : [0,1],
         },
         'factors': [
             'obs/sample',

@@ -133,8 +133,7 @@ process Build_config{
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
-    options_str = options ? "--options " + /"/ + new JsonBuilder(options).toString().replace(/"/,/\"/).replace(/'/,/\'/) + /"/ : ""
-
+    options_str = options ? "--options '" + (options instanceof String ? options : new JsonBuilder(options).toString()) + "'" : ""
     """
     build_config.py \
         --title "${title}" \
@@ -175,7 +174,7 @@ Channel.fromPath(params.tsv)
             h5ad: [l.title + "_" + l.dataset, l.h5ad, params.args.h5ad],
             molecules: [l.title + "_" + l.dataset, l.molecule, params.args.molecules]
         ]
-        config_params: [l.title + "_" + l.dataset, l.title, l.dataset, l.url, l.options_str]
+        config_params: [l.title + "_" + l.dataset, l.title, l.dataset, l.url, l.options?.trim() ? l.options : params.options]
     }
     .set { data_with_md }
 
