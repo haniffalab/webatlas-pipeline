@@ -47,7 +47,7 @@ process image_to_zarr {
     output:
     /*val out_s3, emit: s3_path*/
     tuple val(stem), path("${stem}_${img_type}.zarr"), emit: raw_zarr
-    tuple val(stem), path("${stem}_${img_type}.zarr/OME/METADATA.ome.xml"), emit: ome_xml
+    tuple val(stem), path("${stem}_${img_type}.zarr/OME/METADATA.ome.xml"), val(img_type), emit: ome_xml
 
     script:
     out_s3 = "${output_s3}/${img_type}.zarr"
@@ -78,10 +78,10 @@ process ome_zarr_metadata{
     container "hamat/webatlas-ome-zarr-metadata:${version}"
 
     input:
-    tuple val(stem), path(zarr)
+    tuple val(stem), path(zarr), val(img_type)
 
     output:
-    tuple val(stem), stdout
+    tuple val(stem), stdout, val(img_type)
     /*[>tuple val(zarr), stdout<]*/
 
     script:
@@ -120,7 +120,7 @@ process Build_config{
     publishDir params.outdir, mode: "copy"
 
     input:
-        tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(label_md), val(title), val(dataset), val(url), val(options)
+        tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(raw_str), val(label_md), val(label_str), val(title), val(dataset), val(url), val(options)
         val(layout)
         val(custom_layout)
 
@@ -155,7 +155,7 @@ process Generate_label_image {
     storeDir params.outdir
 
     input:
-        tuple val(stem), val(ome_md_json), path(h5ad)
+        tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
 
     output:
         tuple val(stem), val("label"), file("${stem}.tif")
@@ -179,23 +179,38 @@ Channel.fromPath(params.tsv)
     }
     .set { data_with_md }
 
-workflow {
+workflow ISS_pipeline {
     To_ZARR()
+    /*To_ZARR.out.zarr_dirs.view()*/
 
     Process_files()
 
-    h5ads = data_with_md.data.flatMap{ it ->
-            it.collectMany{ data_type, data_map ->
-                data_type == "h5ad" ? [[data_map[0], file(data_map[1])]] : [] }}
-    Generate_label_image(To_ZARR.out.ome_md_json.join(h5ads))
+    To_ZARR.out.zarr_dirs
+        .branch{ it ->
+            raw : it[1] =~ /raw.zarr/
+            label : it[1] =~ /label.zarr/
+        }
+        .set{zarrs}
 
-    _label_to_ZARR(Generate_label_image.out)
+    zarrs.raw.view()
+    zarrs.label.view()
+
+    To_ZARR.out.ome_md_json
+        .branch{ it ->
+            raw : it[2] ==~ /raw/
+            label : it[2] ==~ /label/
+        }
+        .set{zarr_mds}
+
+    /*zarr_mds.others.view()*/
+    zarr_mds.raw.view()
+    zarr_mds.label.view()
 
     Process_files.out.file_paths
-            .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
-            .join(_label_to_ZARR.out.label_zarr)
-            .join(To_ZARR.out.ome_md_json)
-            .join(_label_to_ZARR.out.ome_md_json)
+            .join(zarrs.raw)
+            .join(zarrs.label)
+            .join(zarr_mds.raw)
+            .join(zarr_mds.label)
             .join(data_with_md.config_params)
             .set{img_data_for_config}
         /*.view()*/
@@ -254,7 +269,7 @@ workflow Process_files {
                 data_map[1] ? [[data_map[0], file(data_map[1]), data_type, data_map[2]]] : []
             }
         }
-        route_file(data_list)
+        route_file(data_list.unique())
         files = route_file.out.converted_files.groupTuple(by:0)
         file_paths = route_file.out.out_file_paths.map{ it -> [it[0], it[1].split('\n').flatten()].flatten() }.groupTuple(by:0)
     } else {
