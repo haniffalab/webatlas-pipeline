@@ -151,7 +151,7 @@ process Generate_label_image {
     debug verbose_log
 
     container "hamat/webatlas-generate-label:${version}"
-    storeDir params.outdir
+    publishDir params.outdir, mode:"copy"
 
     input:
         tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
