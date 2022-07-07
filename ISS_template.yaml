@@ -11,14 +11,15 @@ options:
     xy: "obsm/spatial"
   mappings:
     obsm/X_umap: [0,1]
-    obsm/spatial: [0,1]
+    obsm/X_pca: [0,1]
   factors:
     - "obs/sample"
-    - "obs/total_counts"
+    #- "obs/total_counts"
   sets:
-    - "obs/sample"
+    - "obs/cluster"
+    - "obs/cell_type"
   matrix: "X"
-layout: 'advanced'
+layout: 'advanced' # advanced, minimal
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
 # Already processed files to generate config file
 # zarr_md:
