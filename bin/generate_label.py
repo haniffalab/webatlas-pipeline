@@ -45,17 +45,13 @@ def main(stem, ome_md, h5ad):
     spot_coords = adata.obsm["spatial"]
     # print(spot_coords, X, Y, Z, C, T)
     assert adata.obs.shape[0] == spot_coords.shape[0]
-    label_ids = np.arange(1, adata.obs.shape[0] + 1)
-    label_id_col_name = "label_id"
-    if label_id_col_name not in adata.obs.columns:
-        adata.obs[label_id_col_name] = label_ids
 
     X = ome_md["X"]
     Y = ome_md["Y"]
     labelImg = np.zeros((int(Y), int(X)), dtype=np.uint16)
     # print(labelImg.shape)
     # print(np.max(spot_coords))
-    for spId, (y, x) in zip(adata.obs[label_id_col_name], spot_coords):
+    for spId, (y, x) in zip(adata.obs.index, spot_coords):
         labelImg[disk((x, y), spot_diameter_fullres/2)] = spId
 
     tf.imwrite(f"{stem}.tif", labelImg)
