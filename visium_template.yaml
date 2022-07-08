@@ -1,31 +1,21 @@
-title: ""
 outdir: "output/visium"
-codebook: ""
-images:
-  - ["raw_image", "path-to-raw-image.tif"]
-  - ["label_image", "path-to-label-image.tif"]
 max_n_worker: 30
-dataset: "visium"
-data:
+tsv : "./visium_template.tsv"
+args:
   h5ad:
-    file: "data.h5ad"
-    args:
-      compute_embeddings: "True"
-  molecules:
-    file: "molecules.tsv"
-    args:
-      delimiter : "'\t'" # or "','"
+    compute_embeddings: "True"
+  # molecules:
+  #   delimiter: "','"
 options:
   spatial:
     xy: "obsm/spatial"
   mappings:
     obsm/X_umap: [0,1]
-    obsm/spatial: [0,1]
+    obsm/X_pca: [0,1]
   factors:
     - "obs/sample"
-    - "obs/total_counts"
   sets:
-    - "obs/sample"
+    - "obs/clustering"
   matrix: "X"
 layout: 'advanced'
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"

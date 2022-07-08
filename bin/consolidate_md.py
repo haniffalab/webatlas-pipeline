@@ -9,6 +9,7 @@
 """
 
 """
+import logging
 import fire
 from zarr import consolidate_metadata
 from pathlib import Path
@@ -17,9 +18,9 @@ import zarr
 
 def main(file_in):
     stem = Path(file_in).stem
-    print(stem)
+    logging.info(stem)
     consolidated = consolidate_metadata(file_in)
-    print(consolidated.info)
+    logging.info(consolidated.info)
 
 
 if __name__ == "__main__":

@@ -19,8 +19,7 @@ def get_image_basic_metadata(xml_path):
     return dimOrder, channels, X, Y, Z, C, T
 
 
-def main(ome_zarr):
-    xml_path = os.path.join(ome_zarr, "OME/METADATA.ome.xml")
+def main(xml_path):
     dimOrder, channel_names, X, Y, Z, C, T = get_image_basic_metadata(xml_path)
     md = {
         "dimOrder": dimOrder,
