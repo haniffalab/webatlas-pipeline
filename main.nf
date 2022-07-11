@@ -128,8 +128,8 @@ process Build_config{
         path("${stem}_config.json")
 
     script:
-    raster = file(raster).name
-    label = file(label).name
+    zarrs = [] + raster ? "${raster.name}:${raster_md}" : [] + label ? "${label.name}:${label_md}" : []
+    zarrs_str = zarrs ? "--image_zarr '{" + zarrs.join(",") + "}'" : ""
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
     url_str = url?.trim() ? "--url ${url}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
@@ -138,7 +138,7 @@ process Build_config{
     build_config.py \
         --title "${title}" \
         --dataset ${dataset} \
-        --image_zarr '{"${raster}":${raster_md}, "${label}":${label_md}}' \
+        ${zarrs_str} \
         --file_paths '[${file_paths}]' \
         ${url_str} \
         ${options_str} \
@@ -169,7 +169,7 @@ process Generate_label_image {
 Channel.fromPath(params.tsv)
     .splitCsv(header:true, sep:"\t")
     .multiMap { l ->
-        images: [l.title + "_" + l.dataset, l.image_type, file(l.image_path)]
+        images: [l.title + "_" + l.dataset, l.image_type, l.image_path]
         data: [
             h5ad: [l.title + "_" + l.dataset, l.h5ad, params.args.h5ad],
             molecules: [l.title + "_" + l.dataset, l.molecule, params.args.molecules]
@@ -178,49 +178,6 @@ Channel.fromPath(params.tsv)
     }
     .set { data_with_md }
 
-workflow ISS_pipeline {
-    To_ZARR()
-    /*To_ZARR.out.zarr_dirs.view()*/
-
-    Process_files()
-
-    To_ZARR.out.zarr_dirs
-        .branch{ it ->
-            raw : it[1] =~ /raw.zarr/
-            label : it[1] =~ /label.zarr/
-        }
-        .set{zarrs}
-
-    zarrs.raw.view()
-    zarrs.label.view()
-
-    To_ZARR.out.ome_md_json
-        .branch{ it ->
-            raw : it[2] ==~ /raw/
-            label : it[2] ==~ /label/
-        }
-        .set{zarr_mds}
-
-    /*zarr_mds.others.view()*/
-    zarr_mds.raw.view()
-    zarr_mds.label.view()
-
-    Process_files.out.file_paths
-            .join(zarrs.raw)
-            .join(zarrs.label)
-            .join(zarr_mds.raw)
-            .join(zarr_mds.label)
-            .join(data_with_md.config_params)
-            .set{img_data_for_config}
-        /*.view()*/
-
-
-    Build_config(
-        img_data_for_config,
-        params.layout,
-        params.custom_layout
-    )
-}
 
 workflow To_ZARR {
     if (data_with_md.images) {
@@ -279,6 +236,69 @@ workflow Process_files {
     emit:
         files = files
         file_paths = file_paths
+}
+
+workflow scRNAseq_pipeline {
+    Process_files()
+
+    Process_files.out.file_paths
+            .map{
+                it -> it + [null, null, null, null, null, null] // null image paths
+            }
+            .join(data_with_md.config_params)
+            .set{img_data_for_config}
+    
+    img_data_for_config.view()
+
+    Build_config(
+        img_data_for_config,
+        params.layout,
+        params.custom_layout
+    )
+}
+
+workflow ISS_pipeline {
+    To_ZARR()
+    /*To_ZARR.out.zarr_dirs.view()*/
+
+    Process_files()
+
+    To_ZARR.out.zarr_dirs
+        .branch{ it ->
+            raw : it[1] =~ /raw.zarr/
+            label : it[1] =~ /label.zarr/
+        }
+        .set{zarrs}
+
+    zarrs.raw.view()
+    zarrs.label.view()
+
+    To_ZARR.out.ome_md_json
+        .branch{ it ->
+            raw : it[2] ==~ /raw/
+            label : it[2] ==~ /label/
+        }
+        .set{zarr_mds}
+
+    /*zarr_mds.others.view()*/
+    zarr_mds.raw.view()
+    zarr_mds.label.view()
+
+    Process_files.out.file_paths
+            .join(zarrs.raw)
+            .join(zarrs.label)
+            .join(zarr_mds.raw)
+            .join(zarr_mds.label)
+            .join(data_with_md.config_params)
+            .set{img_data_for_config}
+        /*.view()*/
+
+
+    Build_config(
+        img_data_for_config,
+        params.layout,
+        params.custom_layout
+    )
 }
 
 workflow Visium_pipeline {
