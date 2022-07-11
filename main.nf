@@ -128,7 +128,7 @@ process Build_config{
         path("${stem}_config.json")
 
     script:
-    zarrs = [] + raster ? "${raster.name}:${raster_md}" : [] + label ? "${label.name}:${label_md}" : []
+    zarrs = [] + (raster ? "${raster.name}:${raster_md}" : []) + (label ? "${label.name}:${label_md}" : [])
     zarrs_str = zarrs ? "--image_zarr '{" + zarrs.join(",") + "}'" : ""
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
     url_str = url?.trim() ? "--url ${url}" : ""
@@ -248,8 +248,6 @@ workflow scRNAseq_pipeline {
             .join(data_with_md.config_params)
             .set{img_data_for_config}
     
-    img_data_for_config.view()
-
     Build_config(
         img_data_for_config,
         params.layout,
