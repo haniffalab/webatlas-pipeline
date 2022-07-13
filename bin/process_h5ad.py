@@ -30,10 +30,11 @@ def h5ad_to_zarr(
             sc.tl.umap(adata)
 
     for col in adata.obs:
+        # anndata >= 0.8.0
         # if data type is categorical vitessce will throw "path obs/X contains a group" and won't find .zarray
-        if adata.obs[col].dtype == 'category':
-            adata.obs[col] = adata.obs[col].cat.codes
-        elif adata.obs[col].dtype == 'int8':
+        # if adata.obs[col].dtype == 'category':
+        #     adata.obs[col] = adata.obs[col].cat.codes
+        if adata.obs[col].dtype == 'int8':
             adata.obs[col] = adata.obs[col].astype('int32')
 
     for col in adata.obsm:
