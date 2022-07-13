@@ -1,24 +1,21 @@
-outdir: "output/visium"
+outdir: "output/scrnaseq"
 max_n_worker: 30
-tsv : "./visium_template.tsv"
+tsv : "./templates/scrnaseq_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
   # molecules:
   #   delimiter: "','"
 options:
-  spatial:
-    xy: "obsm/spatial"
   mappings:
     obsm/X_umap: [0,1]
     obsm/X_pca: [0,1]
-  factors:
-    - "obs/sample"
   sets:
-    - "obs/clustering"
+    - "obs/tissue"
+    - "obs/celltype"
   matrix: "X"
-layout: 'advanced'
-# custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
+# layout: 'advanced' # advanced, minimal
+custom_layout: "((scatterplot/scatterplot)|(genes/cellSets))"
 # Already processed files to generate config file
 # zarr_md:
 #   "visium_label":
