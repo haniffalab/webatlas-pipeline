@@ -128,7 +128,7 @@ process Build_config{
         path("${stem}_config.json")
 
     script:
-    zarrs = [] + (raster ? "\"${raster.name}\":${raster_md}" : []) + (label ? "\"${label.name}\":${label_md}" : [])
+    zarrs = [] + (raster && raster.toString() ? "\"${raster.name}\":${raster_md}" : []) + (label && label.toString() ? "\"${label.name}\":${label_md}" : [])
     zarrs_str = zarrs ? "--image_zarr '{" + zarrs.join(",") + "}'" : ""
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
     url_str = url?.trim() ? "--url ${url}" : ""
@@ -330,14 +330,15 @@ workflow Visium_pipeline {
 }
 
 workflow Config {
-    /*TODO: need to give an example of how to construct the args here*/
-    if (params.config_files || params.zarr_md){
-            Build_config(
-            data_with_md.config_params,
-            To_ZARR.out.zarr_dirs.collect(),
-            Process_files.out.files.collect(),
-            params.layout,
-            params.custom_layout
-        )
-    }
+    Build_config(
+        [
+            params.title + "_" + params.dataset, params.files,
+            new File(params.raw.zarr), new File(params.label.zarr),
+            new JsonBuilder(params.raw.md).toString(), "raw",
+            new JsonBuilder(params.label.md).toString(), "label",
+            params.title, params.dataset, params.url, params.options
+        ],
+        params.layout,
+        params.custom_layout
+    )
 }
