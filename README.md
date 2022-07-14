@@ -19,7 +19,7 @@ cd sci-spatial-data
 
 ## Setup
 
-General configuration options are specified with a [yaml file](template.yaml). While dataset-specific configurations are written in a [tsv file](ISS_template.txt)
+General configuration options are specified with a [yaml file](templates/visium_template.yaml). While dataset-specific configurations are written in a [tsv file](templates/visium_template.tsv)
 
 ### yaml file
 
@@ -59,7 +59,7 @@ Where `spatial` specifies where the Anndata object holds spatial coordinates. `m
 
 ### tsv file
 
-Each dataset to be processed is defined as a line in a [tsv file](template.tsv)
+Each dataset to be processed is defined as a line in a [tsv file](templates/visium_template.tsv)
 
 `h5ad` is the path to the h5ad file
 

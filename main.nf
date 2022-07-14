@@ -31,13 +31,14 @@ params.tsv = "./template.tsv"
 
 verbose_log = true
 version = "0.0.1"
+outdir_with_version = params.outdir + "/" + version
 
 process image_to_zarr {
     tag "${image}"
     debug verbose_log
 
     container "openmicroscopy/bioformats2raw:0.4.0"
-    storeDir params.outdir
+    storeDir outdir_with_version
 
     input:
     tuple val(stem), val(img_type), path(image)
@@ -95,8 +96,7 @@ process route_file {
     debug verbose_log
 
     container "hamat/webatlas-router:${version}"
-    /*storeDir params.outdir*/
-    publishDir params.outdir, mode:"copy"
+    publishDir outdir_with_version, mode:"copy"
 
     input:
     tuple val(stem), path(file), val(type), val(args)
@@ -117,7 +117,7 @@ process Build_config{
     debug verbose_log
 
     container "hamat/webatlas-build-config:${version}"
-    publishDir params.outdir, mode: "copy"
+    publishDir outdir_with_version, mode: "copy"
 
     input:
         tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(raw_str), val(label_md), val(label_str), val(title), val(dataset), val(url), val(options)
@@ -151,7 +151,7 @@ process Generate_label_image {
     debug verbose_log
 
     container "hamat/webatlas-generate-label:${version}"
-    publishDir params.outdir, mode:"copy"
+    publishDir outdir_with_version, mode:"copy"
 
     input:
         tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
@@ -247,7 +247,7 @@ workflow scRNAseq_pipeline {
             }
             .join(data_with_md.config_params)
             .set{img_data_for_config}
-    
+
     Build_config(
         img_data_for_config,
         params.layout,

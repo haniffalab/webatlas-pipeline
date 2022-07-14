@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this repo, please cite it"
+authors:
+  family-names: "LI"
+  given-names: "Tong"
+  orcid: "https://orcid.org/0000-0002-8240-4476"
+
+  family-names: "Horsfall"
+  given-names: "Dave"
+  orcid: "https://orcid.org/0000-0002-8086-812x"
+
+  family-names: "Basurto Lozada"
+  given-names: "Daniela"
+  orcid: "https://orcid.org/0000-0003-3943-8424"
+
+title: "A nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium, scRNAseq) for Vitessce. The pipeline generates data files for supported data types, and builds a view config."
+version: 0.0.1
+date-released: 2022-07-14
+license: Apache-2.0
+url: "https://github.com/haniffalab/sci-spatial-data/"
