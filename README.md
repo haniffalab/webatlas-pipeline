@@ -51,6 +51,7 @@ options:
     matrix: "X"
 ```
 Where `spatial` specifies where the Anndata object holds spatial coordinates. `mappings` is a list of embeddings and the index of the dimensions to be used in a scatterplot. `factors` is a list of useful metadata to be shown per cell when hovering over them in the visualization. `sets` is a list of metadata that defines different cell sets. `matrix` is the expression matrix to use, which will typically be `X`. These values are applied to all datasets unless a dataset has its own `options` specified within the `tsv` file.
+**Note** that the pipeline does not check for the existence of these metadata within the h5ad file. It is written directly to the Vitessce config file.
 
 `layout` is the predefined Vitessce layout to use, it can be either `minimal`, `simple` or `advanced`
 
@@ -77,10 +78,16 @@ Each dataset to be processed is defined as a line in a [tsv file](templates/visi
 
 ## Run
 
-To run the full pipeline which will process files (h5ad files, csv/tsv files), convert images to Zarrs and build a Vitessce config file from the generated files:
+The pipeline contains workflows to process files (h5ad files, csv/tsv files), convert images to Zarrs and build a Vitessce config file from the generated files.
+
+The `scRNAseq_pipeline` entry point handles datasets with no image data. Thus, process files and builds a Vitessce config file.
+The `ISS_pipeline` entry point handles datasets that contain both raw and label images.
+The `Visium_pipeline` entry point handles datasets that contain a raw image and generates a label image from the specified h5ad file where it expects to have a `spatial` key within `uns`.
+
+Each dataset in a tsv file should belong to the same modality so they can all be run through the corresponding pipeline. 
 
 ```
-nextflow run main.nf -params-file [your_params].yaml -entry Full_pipeline
+nextflow run main.nf -params-file [your_params].yaml -entry [modality]_pipeline
 ```
 
 You can also just convert the images to Zarrs:
@@ -95,7 +102,7 @@ Or just process files:
 nextflow run main.nf -params-file [your_params].yaml -entry Process_files
 ```
 
-You can build a config file without processing files nor images, providing the required information within the yaml file:
+Additionally, you can build a config file without processing files nor images, using a slightly different [yaml file](templates/config_template.yaml), per dataset, where you would provide filenames and necessary metadata:
 
 ```
 nextflow run main.nf -params-file [your_params].yaml -entry Config

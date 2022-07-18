@@ -16,9 +16,3 @@ options:
   matrix: "X"
 # layout: 'advanced' # advanced, minimal
 custom_layout: "((scatterplot/scatterplot)|(genes/cellSets))"
-# Already processed files to generate config file
-# zarr_md:
-#   "visium_label":
-#     "channel_names": ["channel_1", "channel_2"]
-# config_files:
-#   - "anndata.zarr"
