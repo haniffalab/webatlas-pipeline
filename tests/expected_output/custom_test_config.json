@@ -1,0 +1,258 @@
+{
+  "version": "1.0.7",
+  "name": "",
+  "description": "",
+  "datasets": [
+    {
+      "uid": "test",
+      "name": "custom",
+      "files": [
+        {
+          "type": "raster",
+          "fileType": "raster.json",
+          "options": {
+            "renderLayers": [
+              "image_raw",
+              "image_label",
+              "image2_label"
+            ],
+            "schemaVersion": "0.0.2",
+            "images": [
+              {
+                "name": "image_raw",
+                "url": "http://localhost/image_raw.zarr",
+                "type": "zarr",
+                "metadata": {
+                  "isBitmask": false,
+                  "dimensions": [
+                    {
+                      "field": "t",
+                      "type": "quantitative",
+                      "values": null
+                    },
+                    {
+                      "field": "channel",
+                      "type": "nominal",
+                      "values": [
+                        "Channel 1",
+                        "Channel 2"
+                      ]
+                    },
+                    {
+                      "field": "y",
+                      "type": "quantitative",
+                      "values": null
+                    },
+                    {
+                      "field": "x",
+                      "type": "quantitative",
+                      "values": null
+                    }
+                  ],
+                  "isPyramid": true,
+                  "transform": {
+                    "translate": {
+                      "y": 0,
+                      "x": 0
+                    },
+                    "scale": 1
+                  }
+                }
+              },
+              {
+                "name": "image_label",
+                "url": "http://localhost/image_label.zarr",
+                "type": "zarr",
+                "metadata": {
+                  "isBitmask": true,
+                  "dimensions": [
+                    {
+                      "field": "t",
+                      "type": "quantitative",
+                      "values": null
+                    },
+                    {
+                      "field": "channel",
+                      "type": "nominal",
+                      "values": [
+                        "Labels"
+                      ]
+                    },
+                    {
+                      "field": "y",
+                      "type": "quantitative",
+                      "values": null
+                    },
+                    {
+                      "field": "x",
+                      "type": "quantitative",
+                      "values": null
+                    }
+                  ],
+                  "isPyramid": true,
+                  "transform": {
+                    "translate": {
+                      "y": 0,
+                      "x": 0
+                    },
+                    "scale": 1
+                  }
+                }
+              },
+              {
+                "name": "image2_label",
+                "url": "http://localhost/image2_label.zarr",
+                "type": "zarr",
+                "metadata": {
+                  "isBitmask": true,
+                  "dimensions": [
+                    {
+                      "field": "t",
+                      "type": "quantitative",
+                      "values": null
+                    },
+                    {
+                      "field": "channel",
+                      "type": "nominal",
+                      "values": [
+                        "Labels"
+                      ]
+                    },
+                    {
+                      "field": "y",
+                      "type": "quantitative",
+                      "values": null
+                    },
+                    {
+                      "field": "x",
+                      "type": "quantitative",
+                      "values": null
+                    }
+                  ],
+                  "isPyramid": true,
+                  "transform": {
+                    "translate": {
+                      "y": 0,
+                      "x": 0
+                    },
+                    "scale": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "cells",
+          "fileType": "anndata-cells.zarr",
+          "url": "http://localhost/anndata.zarr",
+          "options": {
+            "xy": "obsm/spatial",
+            "mappings": {
+              "X_UMAP": {
+                "key": "obsm/X_umap",
+                "dims": [
+                  0,
+                  1
+                ]
+              },
+              "X_PCA": {
+                "key": "obsm/X_pca",
+                "dims": [
+                  3,
+                  4
+                ]
+              }
+            }
+          }
+        },
+        {
+          "type": "cell-sets",
+          "fileType": "anndata-cell-sets.zarr",
+          "url": "http://localhost/anndata.zarr",
+          "options": [
+            {
+              "groupName": "Tissue",
+              "setName": "obs/tissue"
+            },
+            {
+              "groupName": "Celltype",
+              "setName": "obs/celltype"
+            }
+          ]
+        },
+        {
+          "type": "expression-matrix",
+          "fileType": "anndata-expression-matrix.zarr",
+          "url": "http://localhost/anndata.zarr",
+          "options": {
+            "matrix": "X"
+          }
+        }
+      ]
+    }
+  ],
+  "coordinationSpace": {
+    "dataset": {
+      "A": "test"
+    },
+    "embeddingType": {
+      "X_UMAP": "X_UMAP",
+      "X_PCA": "X_PCA"
+    }
+  },
+  "layout": [
+    {
+      "component": "spatial",
+      "coordinationScopes": {
+        "dataset": "A"
+      },
+      "x": 0,
+      "y": 0,
+      "w": 6,
+      "h": 6
+    },
+    {
+      "component": "heatmap",
+      "coordinationScopes": {
+        "dataset": "A"
+      },
+      "x": 0,
+      "y": 6,
+      "w": 6,
+      "h": 6
+    },
+    {
+      "component": "genes",
+      "coordinationScopes": {
+        "dataset": "A"
+      },
+      "x": 6,
+      "y": 0,
+      "w": 6,
+      "h": 6
+    },
+    {
+      "component": "scatterplot",
+      "coordinationScopes": {
+        "dataset": "A",
+        "embeddingType": "X_UMAP"
+      },
+      "x": 6,
+      "y": 6,
+      "w": 3,
+      "h": 6
+    },
+    {
+      "component": "cellSets",
+      "coordinationScopes": {
+        "dataset": "A"
+      },
+      "x": 9,
+      "y": 6,
+      "w": 3,
+      "h": 6
+    }
+  ],
+  "initStrategy": "auto"
+}

@@ -1,0 +1,83 @@
+{
+  "version": "1.0.7",
+  "name": "",
+  "description": "",
+  "datasets": [
+    {
+      "uid": "test",
+      "name": "minimal",
+      "files": [
+        {
+          "type": "cells",
+          "fileType": "anndata-cells.zarr",
+          "url": "http://localhost/anndata.zarr",
+          "options": {
+            "xy": "obsm/spatial",
+            "mappings": {
+              "X_UMAP": {
+                "key": "obsm/X_umap",
+                "dims": [
+                  0,
+                  1
+                ]
+              }
+            },
+            "factors": [
+              "obs/sample"
+            ]
+          }
+        },
+        {
+          "type": "cell-sets",
+          "fileType": "anndata-cell-sets.zarr",
+          "url": "http://localhost/anndata.zarr",
+          "options": [
+            {
+              "groupName": "Sample",
+              "setName": "obs/sample"
+            }
+          ]
+        },
+        {
+          "type": "expression-matrix",
+          "fileType": "anndata-expression-matrix.zarr",
+          "url": "http://localhost/anndata.zarr",
+          "options": {
+            "matrix": "X"
+          }
+        }
+      ]
+    }
+  ],
+  "coordinationSpace": {
+    "dataset": {
+      "A": "test"
+    },
+    "embeddingType": {
+      "X_UMAP": "X_UMAP"
+    }
+  },
+  "layout": [
+    {
+      "component": "spatial",
+      "coordinationScopes": {
+        "dataset": "A"
+      },
+      "x": 0,
+      "y": 0,
+      "w": 6,
+      "h": 12
+    },
+    {
+      "component": "layerController",
+      "coordinationScopes": {
+        "dataset": "A"
+      },
+      "x": 6,
+      "y": 0,
+      "w": 6,
+      "h": 12
+    }
+  ],
+  "initStrategy": "auto"
+}
