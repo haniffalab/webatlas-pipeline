@@ -13,14 +13,11 @@ warnings.filterwarnings("ignore")
 SUFFIX = 'anndata.zarr'
 
 def h5ad_to_zarr(
-    file,
+    adata,
     stem,
     compute_embeddings=False,
     chunk_size=10,
     ):
-
-    adata = ad.read(file)
-
     # compute embeddings if not already stored in object
     if compute_embeddings:
         if not 'X_pca' in adata.obsm:
