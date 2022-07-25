@@ -11,9 +11,7 @@
 """
 import fire
 import scanpy as sc
-import ome_zarr
 import numpy as np
-import re
 from skimage.draw import disk
 import tifffile as tf
 
