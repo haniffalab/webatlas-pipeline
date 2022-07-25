@@ -1,0 +1,26 @@
+{
+    "title": "simple",
+    "dataset": "test",
+    "file_paths": [
+        "anndata.zarr"
+    ],
+    "image_zarr": {
+        "image_raw.zarr": "",
+        "image_label.zarr": ""
+    },
+    "url": "http://localhost/",
+    "options": {
+        "spatial": {
+            "xy": "obsm/spatial"
+        },
+        "mappings": {
+            "obsm/X_umap": [0,1]
+        },
+        "sets": [
+            "obs/tissue",
+            "obs/celltype"
+        ],
+        "matrix": "X"
+    },
+    "layout": "simple"
+}

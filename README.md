@@ -112,3 +112,15 @@ Further reading:
 --- 
 
 Docker image pulling/local conda env creation are handled by nextflow. Please refer to [this](https://www.nextflow.io/docs/latest/getstarted.html) for detailed information.
+
+
+## Testing
+
+### Python testing
+
+Testing of python scripts uses [pytest](https://docs.pytest.org/en/7.1.x/).
+
+Set the `PYTHONPATH` environment variable to the `bin` directory where the scripts are stored and then run
+```
+python -m pytest -q tests/test_class.py
+```
