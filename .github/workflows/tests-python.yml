@@ -1,0 +1,35 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ dev ]
+    
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Clone ome-zarr-metadata
+        uses: actions/checkout@v2
+        with:
+          repository: ome/ome-zarr-metadata
+          path: ./ome-zarr-metadata
+          submodules: recursive
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./docker/requirements.txt
+          cd ./ome-zarr-metadata && pre-commit install && pip install -e . && cd ../
+      - name: Run tests
+        run: python -m pytest tests/test_class.py
+        env:
+          PYTHON_PATH: ./bin
+          
