@@ -31,5 +31,5 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/test_class.py
         env:
-          PYTHON_PATH: ./bin
+          PYTHONPATH: ./bin
           
