@@ -114,7 +114,7 @@ class TestClass:
         assert os.path.exists(stem + ".tif")
     
     def test_build_config(self, request, tmp_path_factory):
-        input_dir = os.path.dirname(request.path) # to get files in tests dir
+        input_dir = os.path.dirname(request.fspath) # to get files in tests dir
         fn = tmp_path_factory.mktemp("data")
         for config_type in ["minimal", "simple", "advanced", "custom"]:
             input_file = os.path.join(input_dir, "input", config_type + "_config.json")
