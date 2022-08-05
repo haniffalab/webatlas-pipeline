@@ -16,7 +16,7 @@ from bin.consolidate_md import main as consolidate_md
 from bin.router import main as router
 from bin.ome_zarr_metadata import main as ome_zarr_metadata
 from bin.generate_label import main as generate_label
-from bin.build_config import write_json
+# from bin.build_config import write_json
 
 class TestClass:
 
@@ -113,19 +113,19 @@ class TestClass:
         generate_label(stem, ome_md, anndata_h5ad_file)
         assert os.path.exists(stem + ".tif")
     
-    def test_build_config(self, request, tmp_path_factory):
-        input_dir = os.path.dirname(request.fspath) # to get files in tests dir
-        fn = tmp_path_factory.mktemp("data")
-        for config_type in ["minimal", "simple", "advanced", "custom"]:
-            input_file = os.path.join(input_dir, "input", config_type + "_config.json")
-            with open(input_file) as jsonfile:
-                input_json = json.load(jsonfile)
-            input_json["outdir"] = fn
-            expected_file = os.path.join(input_dir, "expected_output", config_type + "_test_config.json")
-            with open(expected_file) as jsonfile:
-                expected_json = json.load(jsonfile)
-            write_json(**input_json)
-            output_file = os.path.join(fn, config_type + "_test_config.json")
-            with open(output_file) as jsonfile:
-                output_json = json.load(jsonfile)
-            assert output_json == expected_json
+    # def test_build_config(self, request, tmp_path_factory):
+    #     input_dir = os.path.dirname(request.fspath) # to get files in tests dir
+    #     fn = tmp_path_factory.mktemp("data")
+    #     for config_type in ["minimal", "simple", "advanced", "custom"]:
+    #         input_file = os.path.join(input_dir, "input", config_type + "_config.json")
+    #         with open(input_file) as jsonfile:
+    #             input_json = json.load(jsonfile)
+    #         input_json["outdir"] = fn
+    #         expected_file = os.path.join(input_dir, "expected_output", config_type + "_test_config.json")
+    #         with open(expected_file) as jsonfile:
+    #             expected_json = json.load(jsonfile)
+    #         write_json(**input_json)
+    #         output_file = os.path.join(fn, config_type + "_test_config.json")
+    #         with open(output_file) as jsonfile:
+    #             output_json = json.load(jsonfile)
+    #         assert output_json == expected_json
