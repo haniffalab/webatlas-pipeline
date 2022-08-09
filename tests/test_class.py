@@ -28,7 +28,7 @@ class TestClass:
         fn = tmp_path_factory.mktemp("data") / "anndata.h5ad"
         adata.write_h5ad(fn)
         return fn
-    
+
     @pytest.fixture(scope='class')
     def molecules_tsv_file(self, tmp_path_factory):
         fn = tmp_path_factory.mktemp("data") / "molecules.tsv"
@@ -37,7 +37,7 @@ class TestClass:
             csvwriter.writerow(["Name", "x_int", "y_int"])
             csvwriter.writerow(["background", "0", "0"])
         return fn
-    
+
     @pytest.fixture(scope='class')
     def zarr_file(self, tmp_path_factory):
         fn = tmp_path_factory.mktemp("data") / "dummy.zarr"
@@ -45,7 +45,7 @@ class TestClass:
             fn, mode='w', shape=(100, 100),
             chunks=(10, 10), dtype='i4')
         return fn
-    
+
     @pytest.fixture(scope='class')
     def ome_xml_file(self, tmp_path_factory):
         xs = xmlschema.XMLSchema('https://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd')
@@ -63,32 +63,32 @@ class TestClass:
         fn = tmp_path_factory.mktemp("data") / "METADATA.ome.xml"
         ElementTree(xml).write(fn)
         return fn
-    
+
     def test_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
-        out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
+        out_file = h5ad_to_zarr(ad.read_h5ad(anndata_h5ad_file), stem)
         assert os.path.exists(out_file)
         assert out_file == stem + "_anndata.zarr"
-    
+
     def test_tsv_to_json(self, monkeypatch, molecules_tsv_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
         stem = "test"
         out_file = tsv_to_json(molecules_tsv_file, stem)
         assert os.path.exists(out_file)
         assert out_file == stem + "_molecules.json"
-    
+
     def test_zarr(self, zarr_file):
         md = consolidate_md(zarr_file)
         assert os.path.exists(os.path.join(zarr_file, '.zmetadata'))
-    
+
     def test_route_h5ad(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
         out_file = router("h5ad", anndata_h5ad_file, stem, {})
         assert os.path.exists(out_file)
         assert out_file == stem + "_anndata.zarr"
-    
+
     def test_route_molecules(self, monkeypatch, molecules_tsv_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
         stem = "test"
@@ -105,14 +105,14 @@ class TestClass:
             "X": "100", "Y": "100", "Z": "1", "C": "1", "T": "1"
         }
         assert out_json == md
-    
+
     def test_generate_label(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
         ome_md = {"X": 100, "Y": 100}
         generate_label(stem, ome_md, anndata_h5ad_file)
         assert os.path.exists(stem + ".tif")
-    
+
     # def test_build_config(self, request, tmp_path_factory):
     #     input_dir = os.path.dirname(request.fspath) # to get files in tests dir
     #     fn = tmp_path_factory.mktemp("data")
