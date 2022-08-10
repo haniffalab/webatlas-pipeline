@@ -1,5 +1,9 @@
 ## SINGLE CELL INSIGHTS
 
+[![tests](https://github.com/haniffalab/sci-spatial-data/actions/workflows/tests-python.yml/badge.svg)](https://github.com/haniffalab/sci-spatial-data/actions/workflows/tests-python.yml)
+[![codecov](https://codecov.io/gh/haniffalab/sci-spatial-data/branch/dev/graph/badge.svg?token=7HQVFH08WJ)](https://codecov.io/gh/haniffalab/sci-spatial-data/branch/dev)
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 # Spatial Data Pipeline
 
 Nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium) for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
