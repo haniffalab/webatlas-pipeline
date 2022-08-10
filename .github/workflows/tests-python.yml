@@ -29,7 +29,7 @@ jobs:
           pip install -r ./docker/requirements.txt
           cd ./ome-zarr-metadata && pre-commit install && pip install -e . && cd ../
       - name: Run tests
-        run: python -m pytest --cov tests/test_class.py
+        run: python -m pytest --cov=bin tests/test_class.py
         env:
           PYTHONPATH: ./bin
       - name: Upload coverage to Codecov
