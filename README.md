@@ -76,11 +76,21 @@ Each dataset to be processed is defined as a line in a [tsv file](templates/visi
 
 `options` is an optional json-like string that overrides the `options` in the yaml file
 
+
+### Docker
+
+Before running the pipeline, build the docker images.
+
+```sh
+cd docker
+./build-docker-imgs.sh
+```
+
 ## Run
 
 The pipeline contains workflows to process files (h5ad files, csv/tsv files), convert images to Zarrs and build a Vitessce config file from the generated files.
 
-The `scRNAseq_pipeline` entry point handles datasets with no image data. Thus, process files and builds a Vitessce config file.
+The `scRNAseq_pipeline` entry point handles datasets with no image data. This processes files and builds a Vitessce config file.
 The `ISS_pipeline` entry point handles datasets that contain both raw and label images.
 The `Visium_pipeline` entry point handles datasets that contain a raw image and generates a label image from the specified h5ad file where it expects to have a `spatial` key within `uns`.
 
