@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 
 import fire
-import os
-
-import anndata as ad
 import scanpy as sc
-import scipy
+from scipy.sparse import spmatrix
 
 import warnings
 warnings.filterwarnings("ignore")
 
-SUFFIX = 'anndata.zarr'
+SUFFIX = "anndata.zarr"
 
 def h5ad_to_zarr(
     adata,
@@ -18,28 +15,33 @@ def h5ad_to_zarr(
     compute_embeddings=False,
     chunk_size=10,
     ):
+
     # compute embeddings if not already stored in object
     if compute_embeddings:
-        if not 'X_pca' in adata.obsm:
+        if not "X_pca" in adata.obsm:
             sc.tl.pca(adata)
-        if not 'X_umap' in adata.obsm:
+        if not "X_umap" in adata.obsm:
             sc.pp.neighbors(adata)
             sc.tl.umap(adata)
 
     for col in adata.obs:
         # anndata >= 0.8.0
-        # if data type is categorical vitessce will throw "path obs/X contains a group" and won't find .zarray
-        if adata.obs[col].dtype == 'category':
-            adata.obs[col] = adata.obs[col].cat.codes
-        if adata.obs[col].dtype == 'int8':
-            adata.obs[col] = adata.obs[col].astype('int32')
+        # if data type is categorical vitessce will throw "path obs/X contains a group" and won"t find .zarray
+        # if adata.obs[col].dtype == "category":
+        #     adata.obs[col] = adata.obs[col].cat.codes
+        if adata.obs[col].dtype == "int8":
+            adata.obs[col] = adata.obs[col].astype("int32")
+        if adata.obs[col].dtype == "bool":
+            adata.obs[col] = adata.obs[col].astype(str).astype("category")
 
     for col in adata.obsm:
-        if col == 'spatial' or adata.obsm[col].dtype == 'int8':
-            adata.obsm[col] = adata.obsm[col].astype('int32')
+        if type(adata.obsm[col]).__name__ in ["DataFrame", "Series"]:
+            adata.obsm[col] = adata.obsm[col].to_numpy()
+        if adata.obsm[col].dtype == "int8" or col == "spatial":
+            adata.obsm[col] = adata.obsm[col].astype("int32")
 
     # matrix sparse to dense
-    if isinstance(adata.X, scipy.sparse.spmatrix):
+    if isinstance(adata.X, spmatrix):
         # use toarray() as it generates a ndarray, instead of todense() which generates a matrix
         adata.X = adata.X.toarray()
 
