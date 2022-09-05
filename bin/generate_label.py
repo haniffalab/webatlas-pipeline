@@ -38,7 +38,7 @@ def main(stem, ome_md, h5ad):
     #----------------------------------------------
     #check if index is integer, if not reindex
     if not adata.obs.index.is_integer(): 
-        adata.obs['spot_id'] = adata.obs.index
+        adata.obs['label_id'] = adata.obs.index
         adata.obs.index = pd.Categorical(adata.obs.index)
         adata.obs.index = adata.obs.index.codes
         adata.obs.index = adata.obs.index.astype(str)
