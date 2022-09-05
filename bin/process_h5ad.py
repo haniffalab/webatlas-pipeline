@@ -3,7 +3,8 @@
 import fire
 import scanpy as sc
 from scipy.sparse import spmatrix
-
+import pandas as pd
+import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -15,7 +16,16 @@ def h5ad_to_zarr(
     compute_embeddings=False,
     chunk_size=10,
     ):
+    #check if index is integer, if not reindex
 
+    if not adata.obs.index.is_integer(): 
+        adata.obs['spot_id'] = adata.obs.index
+        adata.obs.index = pd.Categorical(adata.obs.index)
+        adata.obs.index = adata.obs.index.codes
+        adata.obs.index = adata.obs.index.astype(str)
+    #turn obsm into a numpy array
+    for k in adata.obsm_keys():
+        adata.obsm[k] = np.array(adata.obsm[k])
     # compute embeddings if not already stored in object
     if compute_embeddings:
         if not "X_pca" in adata.obsm:
