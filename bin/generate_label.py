@@ -14,6 +14,7 @@ import scanpy as sc
 import numpy as np
 from skimage.draw import disk
 import tifffile as tf
+import pandas as pd
 
 from pathlib import Path
 
@@ -35,7 +36,15 @@ def main(stem, ome_md, h5ad):
     # adata.obs["Y"] = adata.obsm["spatial"][:, 0]
     # adata.obs["X"] = adata.obsm["spatial"][:, 1]
     #----------------------------------------------
-
+    #check if index is integer, if not reindex
+    if not adata.obs.index.is_integer(): 
+        adata.obs['label_id'] = adata.obs.index
+        adata.obs.index = pd.Categorical(adata.obs.index)
+        adata.obs.index = adata.obs.index.codes
+        adata.obs.index = adata.obs.index.astype(str)
+    #turn obsm into a numpy array
+    for k in adata.obsm_keys():
+        adata.obsm[k] = np.array(adata.obsm[k])
     # print(adata.uns["spatial"][sample_id]["scalefactors"])
 
     spot_diameter_fullres = adata.uns["spatial"][sample_id]["scalefactors"]["spot_diameter_fullres"]
