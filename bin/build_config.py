@@ -133,7 +133,7 @@ def write_json(
     has_files = False
 
     config = VitessceConfig()
-    config_dataset = config.add_dataset(title, dataset)
+    config_dataset = config.add_dataset(str(title), str(dataset))
 
     coordination_types = defaultdict(lambda: cycle(iter([])))
     file_paths_names = { x.split("_")[-1]:x for x in file_paths }
