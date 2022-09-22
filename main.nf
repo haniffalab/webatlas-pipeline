@@ -31,7 +31,7 @@ params.tsv = "./template.tsv"
 
 verbose_log = true
 version = "0.0.1"
-outdir_with_version = params.outdir + "/" + version
+outdir_with_version = params.outdir.replaceFirst(/\/*$/, "") + "/" + version
 
 process image_to_zarr {
     tag "${image}"
@@ -131,7 +131,7 @@ process Build_config{
     zarrs = [] + (raster && raster.toString() ? "\"${raster.name}\":${raster_md}" : []) + (label && label.toString() ? "\"${label.name}\":${label_md}" : [])
     zarrs_str = zarrs ? "--image_zarr '{" + zarrs.join(",") + "}'" : ""
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
-    url_str = url?.trim() ? "--url ${url}/${version}" : ""
+    url_str = url?.trim() ? "--url ${url.replaceFirst(/\/*$/, "")}/${version}" : ""
     clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
     options_str = options ? "--options '" + (options instanceof String ? options : new JsonBuilder(options).toString()) + "'" : ""
     """
