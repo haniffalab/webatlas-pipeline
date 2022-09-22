@@ -1,2 +1,2 @@
-h5ad	image_type	image_path	title	codebook	dataset	molecule	url	options
-annotated.h5ad			Test		scRNAseq_1		https://hindlimb.cog.sanger.ac.uk/datasets/scRNAseq/
+h5ad	image_type	image_path	title	dataset	url	molecule	options	codebook
+/path/to/anndata.h5ad			scrnaseq_project	dataset_1	https://localhost:3000/output/scrnaseq/

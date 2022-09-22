@@ -1,3 +1,2 @@
-h5ad	image_type	image_path	title	codebook	dataset	molecule	url	options
-s3://hindlimb/datasets/visium/annotated_h5ads/WSSS_THYst9699524.h5ad			Test		visium_1		https://hindlimb.cog.sanger.ac.uk/datasets/scRNAseq/
-s3://hindlimb/datasets/scRNAseq/scRNAseq-hindlimb-human.h5ad			Test		scRNAseq_1		https://hindlimb.cog.sanger.ac.uk/datasets/scRNAseq/
+h5ad	image_type	image_path	title	dataset	url	molecule	options	codebook
+s3://bucket/path/to/anndata.h5ad			scrnaseq_project	dataset_1	https://localhost:3000/output/scrnaseq/

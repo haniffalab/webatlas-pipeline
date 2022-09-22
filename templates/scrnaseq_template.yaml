@@ -1,4 +1,4 @@
-outdir: "output/scrnaseq"
+outdir: "output/scrnaseq/"
 max_n_worker: 30
 tsv : "./templates/scrnaseq_template.tsv"
 args:
