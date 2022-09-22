@@ -15,15 +15,23 @@ def h5ad_to_zarr(
     stem,
     compute_embeddings=False,
     chunk_size=10,
+    var_index=None
     ):
-    #check if index is integer, if not reindex
 
+    # reindex var with a specified column
+    if var_index and var_index in adata.var:
+        adata.var.reset_index(inplace=True)
+        adata.var.set_index(var_index, inplace=True)
+        adata.var.index = adata.var.index.astype(str)
+
+    # check if index is integer, if not reindex
     if not adata.obs.index.is_integer(): 
         adata.obs['label_id'] = adata.obs.index
         adata.obs.index = pd.Categorical(adata.obs.index)
         adata.obs.index = adata.obs.index.codes
         adata.obs.index = adata.obs.index.astype(str)
-    #turn obsm into a numpy array
+
+    # turn obsm into a numpy array
     for k in adata.obsm_keys():
         adata.obsm[k] = np.array(adata.obsm[k])
     # compute embeddings if not already stored in object
