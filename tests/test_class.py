@@ -91,7 +91,7 @@ class TestClass:
     def test_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
-        out_file = h5ad_to_zarr(ad.read_h5ad(anndata_h5ad_file), stem)
+        out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
         assert os.path.exists(out_file)
         assert out_file == stem + "_anndata.zarr"
 
