@@ -6,17 +6,23 @@ from scipy.sparse import spmatrix
 import pandas as pd
 import numpy as np
 import warnings
+
 warnings.filterwarnings("ignore")
 
 SUFFIX = "anndata.zarr"
 
+
 def h5ad_to_zarr(
-    adata,
-    stem,
+    file=None,
+    stem="",
+    adata=None,
     compute_embeddings=False,
     chunk_size=10,
-    var_index=None
-    ):
+    var_index=None,
+):
+
+    if not adata:
+        adata = sc.read(file)
 
     # reindex var with a specified column
     if var_index and var_index in adata.var:
@@ -25,8 +31,8 @@ def h5ad_to_zarr(
         adata.var.index = adata.var.index.astype(str)
 
     # check if index is integer, if not reindex
-    if not adata.obs.index.is_integer(): 
-        adata.obs['label_id'] = adata.obs.index
+    if not adata.obs.index.is_integer():
+        adata.obs["label_id"] = adata.obs.index
         adata.obs.index = pd.Categorical(adata.obs.index)
         adata.obs.index = adata.obs.index.codes
         adata.obs.index = adata.obs.index.astype(str)
@@ -34,6 +40,7 @@ def h5ad_to_zarr(
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
         adata.obsm[k] = np.array(adata.obsm[k])
+
     # compute embeddings if not already stored in object
     if compute_embeddings:
         if not "X_pca" in adata.obsm:
@@ -71,5 +78,6 @@ def h5ad_to_zarr(
 
     return zarr_file
 
+
 if __name__ == "__main__":
-   fire.Fire(h5ad_to_zarr)
+    fire.Fire(h5ad_to_zarr)

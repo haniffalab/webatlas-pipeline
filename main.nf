@@ -108,7 +108,7 @@ process route_file {
     script:
     args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    router.py --file_type ${type} --file_path ${file} --stem ${stem} ${args_str}
+    router.py --file_type ${type} --path ${file} --stem ${stem} ${args_str}
     """
 }
 
@@ -171,8 +171,11 @@ Channel.fromPath(params.tsv)
     .multiMap { l ->
         images: [l.title + "_" + l.dataset, l.image_type, l.image_path]
         data: [
-            h5ad: [l.title + "_" + l.dataset, l.h5ad, params.args.h5ad],
-            molecules: [l.title + "_" + l.dataset, l.molecule, params.args.molecules]
+            h5ad: [l.title + "_" + l.dataset, l.h5ad, l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad],
+            molecules: [l.title + "_" + l.dataset, l.molecule, l.args && l.args.molecules?.trim() ? l.args.molecules?.trim() : params.args.molecules],
+            spaceranger: [l.title + "_" + l.dataset, l.spaceranger, 
+                (l.args && l.args.spaceranger?.trim() ? l.args.spaceranger?.trim() : params.args.spaceranger ? params.args.spaceranger : []) + 
+                (l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad ? params.args.h5ad : [])]
         ]
         config_params: [l.title + "_" + l.dataset, l.title, l.dataset, l.url, l.options?.trim() ? l.options : params.options]
     }
@@ -222,7 +225,7 @@ workflow Process_files {
     if (data_with_md.data){
         data_list = data_with_md.data.flatMap{ it ->
             it.collectMany{ data_type, data_map ->
-                data_map[1] ? [[data_map[0], file(data_map[1]), data_type, data_map[2]]] : []
+                data_map[1] ? [[data_map[0], data_map[1], data_type, data_map[2]]] : []
             }
         }
         route_file(data_list.unique())
@@ -257,7 +260,6 @@ workflow scRNAseq_pipeline {
 
 workflow ISS_pipeline {
     To_ZARR()
-    /*To_ZARR.out.zarr_dirs.view()*/
 
     Process_files()
 
@@ -268,9 +270,6 @@ workflow ISS_pipeline {
         }
         .set{zarrs}
 
-    zarrs.raw.view()
-    zarrs.label.view()
-
     To_ZARR.out.ome_md_json
         .branch{ it ->
             raw : it[2] ==~ /raw/
@@ -278,7 +277,6 @@ workflow ISS_pipeline {
         }
         .set{zarr_mds}
 
-    /*zarr_mds.others.view()*/
     zarr_mds.raw.view()
     zarr_mds.label.view()
 
@@ -289,8 +287,6 @@ workflow ISS_pipeline {
             .join(zarr_mds.label)
             .join(data_with_md.config_params)
             .set{img_data_for_config}
-        /*.view()*/
-
 
     Build_config(
         img_data_for_config,
@@ -307,7 +303,7 @@ workflow Visium_pipeline {
 
     h5ads = data_with_md.data.flatMap{ it ->
             it.collectMany{ data_type, data_map ->
-                data_type == "h5ad" ? [[data_map[0], file(data_map[1])]] : [] }}
+                (data_type == "h5ad" || data_type == "spaceranger") && data_map[1] ? [[data_map[0], data_map[1]]] : [] }}
     Generate_label_image(To_ZARR.out.ome_md_json.join(h5ads))
 
     _label_to_ZARR(Generate_label_image.out)
@@ -319,8 +315,6 @@ workflow Visium_pipeline {
             .join(_label_to_ZARR.out.ome_md_json)
             .join(data_with_md.config_params)
             .set{img_data_for_config}
-        /*.view()*/
-
 
     Build_config(
         img_data_for_config,
