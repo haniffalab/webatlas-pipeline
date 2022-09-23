@@ -24,14 +24,17 @@ params.config_files = []
 
 // if directly writing to s3
 params.s3 = false
-params.s3_keys = ["YOUR_ACCESS_KEY", "YOUR_SECRETE_KEY"]
+params.s3_keys = [
+    "YOUR_ACCESS_KEY",
+    "YOUR_SECRET_KEY"
+]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
 params.tsv = "./template.tsv"
 
 verbose_log = true
 version = "0.0.1"
-outdir_with_version = params.outdir.replaceFirst(/\/*$/, "") + "/" + version
+outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
 process image_to_zarr {
     tag "${image}"
@@ -120,12 +123,12 @@ process Build_config{
     publishDir outdir_with_version, mode: "copy"
 
     input:
-        tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(raw_str), val(label_md), val(label_str), val(title), val(dataset), val(url), val(options)
-        val(layout)
-        val(custom_layout)
+    tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(raw_str), val(label_md), val(label_str), val(title), val(dataset), val(url), val(options)
+    val(layout)
+    val(custom_layout)
 
     output:
-        path("${stem}_config.json")
+    path("${stem}_config.json")
 
     script:
     zarrs = [] + (raster && raster.toString() ? "\"${raster.name}\":${raster_md}" : []) + (label && label.toString() ? "\"${label.name}\":${label_md}" : [])
@@ -154,10 +157,10 @@ process Generate_label_image {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-        tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
+    tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
 
     output:
-        tuple val(stem), val("label"), file("${stem}.tif")
+    tuple val(stem), val("label"), file("${stem}.tif")
 
     script:
     """
@@ -169,15 +172,36 @@ process Generate_label_image {
 Channel.fromPath(params.tsv)
     .splitCsv(header:true, sep:"\t")
     .multiMap { l ->
-        images: [l.title + "_" + l.dataset, l.image_type, l.image_path]
-        data: [
-            h5ad: [l.title + "_" + l.dataset, l.h5ad, l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad],
-            molecules: [l.title + "_" + l.dataset, l.molecule, l.args && l.args.molecules?.trim() ? l.args.molecules?.trim() : params.args.molecules],
-            spaceranger: [l.title + "_" + l.dataset, l.spaceranger, 
-                (l.args && l.args.spaceranger?.trim() ? l.args.spaceranger?.trim() : params.args.spaceranger ? params.args.spaceranger : []) + 
-                (l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad ? params.args.h5ad : [])]
+        images: [
+            "${l.title}_${l.dataset}",
+            l.image_type,
+            l.image_path
         ]
-        config_params: [l.title + "_" + l.dataset, l.title, l.dataset, l.url, l.options?.trim() ? l.options : params.options]
+        data: [
+            h5ad: [
+                "${l.title}_${l.dataset}",
+                l.h5ad,
+                l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad
+            ],
+            molecules: [
+                "${l.title}_${l.dataset}",
+                l.molecule,
+                l.args && l.args.molecules?.trim() ? l.args.molecules?.trim() : params.args.molecules
+            ],
+            spaceranger: [
+                "${l.title}_${l.dataset}",
+                l.spaceranger,
+                (l.args && l.args.spaceranger?.trim() ? l.args.spaceranger?.trim() : params.args.spaceranger ? params.args.spaceranger : []) +
+                (l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad ? params.args.h5ad : [])
+            ]
+        ]
+        config_params: [
+            "${l.title}_${l.dataset}",
+            l.title,
+            l.dataset,
+            l.url,
+            l.options?.trim() ? l.options : params.options
+        ]
     }
     .set { data_with_md }
 
@@ -196,8 +220,8 @@ workflow To_ZARR {
     }
 
     emit:
-        zarr_dirs = zarr_dirs
-        ome_md_json = ome_md_json
+    zarr_dirs = zarr_dirs
+    ome_md_json = ome_md_json
 }
 
 workflow _label_to_ZARR {
@@ -210,52 +234,68 @@ workflow _label_to_ZARR {
         label_zarr = image_to_zarr.out.raw_zarr
         ome_zarr_metadata(image_to_zarr.out.ome_xml)
         ome_md_json = ome_zarr_metadata.out
-
     } else {
         label_zarr = []
         ome_md_json = []
     }
 
     emit:
-        label_zarr = label_zarr
-        ome_md_json = ome_md_json
+    label_zarr = label_zarr
+    ome_md_json = ome_md_json
 }
 
 workflow Process_files {
     if (data_with_md.data){
         data_list = data_with_md.data.flatMap{ it ->
             it.collectMany{ data_type, data_map ->
-                data_map[1] ? [[data_map[0], data_map[1], data_type, data_map[2]]] : []
+                data_map[1] ? [
+                    [
+                        data_map[0],
+                        data_map[1],
+                        data_type,
+                        data_map[2]
+                    ]
+                ] : []
             }
         }
         route_file(data_list.unique())
         files = route_file.out.converted_files.groupTuple(by:0)
-        file_paths = route_file.out.out_file_paths.map{ it -> [it[0], it[1].split('\n').flatten()].flatten() }.groupTuple(by:0)
+        file_paths = route_file.out.out_file_paths.map{ it -> [
+                it[0],
+                it[1].split('\n').flatten()
+            ].flatten() }.groupTuple(by:0)
     } else {
         files = []
         file_paths = []
     }
 
     emit:
-        files = files
-        file_paths = file_paths
+    files = files
+    file_paths = file_paths
 }
 
 workflow scRNAseq_pipeline {
     Process_files()
 
     Process_files.out.file_paths
-            .map{
-                it -> it + [null, null, null, null, null, null] // null image paths
-            }
-            .join(data_with_md.config_params)
-            .set{img_data_for_config}
+        .map{ it ->
+            it + [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ] // null image paths
+        }
+        .join(data_with_md.config_params)
+        .set{img_data_for_config}
 
     Build_config(
         img_data_for_config,
         params.layout,
         params.custom_layout
-    )
+        )
 }
 
 workflow ISS_pipeline {
@@ -281,18 +321,18 @@ workflow ISS_pipeline {
     zarr_mds.label.view()
 
     Process_files.out.file_paths
-            .join(zarrs.raw)
-            .join(zarrs.label)
-            .join(zarr_mds.raw)
-            .join(zarr_mds.label)
-            .join(data_with_md.config_params)
-            .set{img_data_for_config}
+        .join(zarrs.raw)
+        .join(zarrs.label)
+        .join(zarr_mds.raw)
+        .join(zarr_mds.label)
+        .join(data_with_md.config_params)
+        .set{img_data_for_config}
 
     Build_config(
         img_data_for_config,
         params.layout,
         params.custom_layout
-    )
+        )
 }
 
 workflow Visium_pipeline {
@@ -302,37 +342,46 @@ workflow Visium_pipeline {
     Process_files()
 
     h5ads = data_with_md.data.flatMap{ it ->
-            it.collectMany{ data_type, data_map ->
-                (data_type == "h5ad" || data_type == "spaceranger") && data_map[1] ? [[data_map[0], data_map[1]]] : [] }}
+        it.collectMany{ data_type, data_map ->
+            (data_type == "h5ad" || data_type == "spaceranger") && data_map[1] ? [[data_map[0], data_map[1]]] : []
+        }
+    }
     Generate_label_image(To_ZARR.out.ome_md_json.join(h5ads))
 
     _label_to_ZARR(Generate_label_image.out)
 
     Process_files.out.file_paths
-            .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
-            .join(_label_to_ZARR.out.label_zarr)
-            .join(To_ZARR.out.ome_md_json)
-            .join(_label_to_ZARR.out.ome_md_json)
-            .join(data_with_md.config_params)
-            .set{img_data_for_config}
+        .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
+        .join(_label_to_ZARR.out.label_zarr)
+        .join(To_ZARR.out.ome_md_json)
+        .join(_label_to_ZARR.out.ome_md_json)
+        .join(data_with_md.config_params)
+        .set{img_data_for_config}
 
     Build_config(
         img_data_for_config,
         params.layout,
         params.custom_layout
-    )
+        )
 }
 
 workflow Config {
     Build_config(
         [
-            params.title + "_" + params.dataset, params.files,
-            new File(params.raw.zarr), new File(params.label.zarr),
-            new JsonBuilder(params.raw.md).toString(), "raw",
-            new JsonBuilder(params.label.md).toString(), "label",
-            params.title, params.dataset, params.url, params.options
+            "${params.title}_${params.dataset}",
+            params.files,
+            new File(params.raw.zarr),
+            new File(params.label.zarr),
+            new JsonBuilder(params.raw.md).toString(),
+            "raw",
+            new JsonBuilder(params.label.md).toString(),
+            "label",
+            params.title,
+            params.dataset,
+            params.url,
+            params.options
         ],
         params.layout,
         params.custom_layout
-    )
+        )
 }
