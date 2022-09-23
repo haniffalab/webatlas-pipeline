@@ -46,7 +46,7 @@ def main(stem, ome_md, h5ad):
         adata.obs.index = pd.Categorical(adata.obs.index)
         adata.obs.index = adata.obs.index.codes
         adata.obs.index = adata.obs.index.astype(str)
-        
+
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
         adata.obsm[k] = np.array(adata.obsm[k])

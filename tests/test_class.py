@@ -16,50 +16,74 @@ from bin.consolidate_md import main as consolidate_md
 from bin.router import main as router
 from bin.ome_zarr_metadata import main as ome_zarr_metadata
 from bin.generate_label import main as generate_label
+
 # from bin.build_config import write_json
 
-class TestClass:
 
-    @pytest.fixture(scope='class')
+class TestClass:
+    @pytest.fixture(scope="class")
     def anndata_h5ad_file(self, tmp_path_factory):
-        adata = ad.AnnData(np.array([[100.0]*3]*3), dtype=float)
-        adata.uns['spatial'] = {'anndata': {'scalefactors': {'spot_diameter_fullres': 10}}}
-        adata.obsm['spatial'] = np.array([[20.0,20.0],[40.0,40.0],[60.0,60.0]])
+        adata = ad.AnnData(np.array([[100.0] * 3] * 3), dtype=float)
+        adata.uns["spatial"] = {
+            "anndata": {"scalefactors": {"spot_diameter_fullres": 10}}
+        }
+        adata.obsm["spatial"] = np.array([[20.0, 20.0], [40.0, 40.0], [60.0, 60.0]])
         fn = tmp_path_factory.mktemp("data") / "anndata.h5ad"
         adata.write_h5ad(fn)
         return fn
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def molecules_tsv_file(self, tmp_path_factory):
         fn = tmp_path_factory.mktemp("data") / "molecules.tsv"
-        with open(fn, 'w') as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter='\t')
+        with open(fn, "w") as csvfile:
+            csvwriter = csv.writer(csvfile, delimiter="\t")
             csvwriter.writerow(["Name", "x_int", "y_int"])
             csvwriter.writerow(["background", "0", "0"])
         return fn
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def zarr_file(self, tmp_path_factory):
         fn = tmp_path_factory.mktemp("data") / "dummy.zarr"
-        z = zarr.open(
-            fn, mode='w', shape=(100, 100),
-            chunks=(10, 10), dtype='i4')
+        z = zarr.open(fn, mode="w", shape=(100, 100), chunks=(10, 10), dtype="i4")
         return fn
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def ome_xml_file(self, tmp_path_factory):
-        xs = xmlschema.XMLSchema('https://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd')
-        xml_data = {'@xmlns': 'http://www.openmicroscopy.org/Schemas/OME/2016-06',
-            '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-            '@xsi:schemaLocation': 'http://www.openmicroscopy.org/Schemas/OME/2016-06 http://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd',
-            'Image': [{'@ID': 'Image:0',
-                'Pixels': {
-                    '@DimensionOrder': 'XYZCT', '@ID': 'Pixels:0', '@Type': 'uint32',
-                    '@SizeC': 1, '@SizeT': 1, '@SizeX': 100, '@SizeY': 100, '@SizeZ': 1,
-                    'Channel': [{'@ID': 'Channel:0:0', '@Name': 'Channel_0'}], 'TiffData': []}}]}
-        xml = xmlschema.from_json(json.dumps(xml_data), schema=xs, preserve_root=True,
-            namespaces={"":"http://www.openmicroscopy.org/Schemas/OME/2016-06"}, path="OME")
-        xs = xmlschema.XMLSchema("https://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd")
+        xs = xmlschema.XMLSchema(
+            "https://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd"
+        )
+        xml_data = {
+            "@xmlns": "http://www.openmicroscopy.org/Schemas/OME/2016-06",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@xsi:schemaLocation": "http://www.openmicroscopy.org/Schemas/OME/2016-06 http://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd",
+            "Image": [
+                {
+                    "@ID": "Image:0",
+                    "Pixels": {
+                        "@DimensionOrder": "XYZCT",
+                        "@ID": "Pixels:0",
+                        "@Type": "uint32",
+                        "@SizeC": 1,
+                        "@SizeT": 1,
+                        "@SizeX": 100,
+                        "@SizeY": 100,
+                        "@SizeZ": 1,
+                        "Channel": [{"@ID": "Channel:0:0", "@Name": "Channel_0"}],
+                        "TiffData": [],
+                    },
+                }
+            ],
+        }
+        xml = xmlschema.from_json(
+            json.dumps(xml_data),
+            schema=xs,
+            preserve_root=True,
+            namespaces={"": "http://www.openmicroscopy.org/Schemas/OME/2016-06"},
+            path="OME",
+        )
+        xs = xmlschema.XMLSchema(
+            "https://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd"
+        )
         fn = tmp_path_factory.mktemp("data") / "METADATA.ome.xml"
         ElementTree(xml).write(fn)
         return fn
@@ -80,7 +104,7 @@ class TestClass:
 
     def test_zarr(self, zarr_file):
         md = consolidate_md(zarr_file)
-        assert os.path.exists(os.path.join(zarr_file, '.zmetadata'))
+        assert os.path.exists(os.path.join(zarr_file, ".zmetadata"))
 
     def test_route_h5ad(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
@@ -101,8 +125,13 @@ class TestClass:
         stem = "test"
         out_json = json.loads(ome_zarr_metadata(ome_xml_file))
         md = {
-            "dimOrder": "XYZCT", "channel_names": ["Channel_0"],
-            "X": "100", "Y": "100", "Z": "1", "C": "1", "T": "1"
+            "dimOrder": "XYZCT",
+            "channel_names": ["Channel_0"],
+            "X": "100",
+            "Y": "100",
+            "Z": "1",
+            "C": "1",
+            "T": "1",
         }
         assert out_json == md
 

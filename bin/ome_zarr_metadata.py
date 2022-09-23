@@ -5,6 +5,7 @@ import json
 import fire
 from xml.etree import ElementTree as ET
 
+
 def get_image_basic_metadata(xml_path):
     NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
 
@@ -15,7 +16,11 @@ def get_image_basic_metadata(xml_path):
     Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
     C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
     T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
-    channels = [channel.attrib["Name"] for channel in ome_metadata.findall("./**/ome:Channel", NS) if "Name" in channel.attrib]
+    channels = [
+        channel.attrib["Name"]
+        for channel in ome_metadata.findall("./**/ome:Channel", NS)
+        if "Name" in channel.attrib
+    ]
     return dimOrder, channels, X, Y, Z, C, T
 
 
@@ -24,7 +29,11 @@ def main(xml_path):
     md = {
         "dimOrder": dimOrder,
         "channel_names": channel_names,
-        "X": X, "Y": Y, "Z": Z, "C": C, "T": T
+        "X": X,
+        "Y": Y,
+        "Z": Z,
+        "C": C,
+        "T": T,
     }
     return json.dumps(md)
 
