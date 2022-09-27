@@ -3,18 +3,18 @@ tsv: './visium_template.tsv'
 
 # Already processed files to generate config file
 raw:
-  zarr: "Test_visium_raw.zarr"
+  zarr: "test_visium_raw.zarr"
   md:
     channel_names: ["channel_1"]
 label:
-  zarr: "Test_visium_label.zarr"
+  zarr: "test_visium_label.zarr"
   md: []
 files:
-  - "Test_visium_anndata.zarr"
+  - "test_visium_anndata.zarr"
 
-title: "Test"
+title: "test"
 dataset: "visium"
-url: "https://hindlimb.cog.sanger.ac.uk/datasets/visium/"
+url: "https://localhost:3000/output/"
 options:
   spatial:
     xy: "obsm/spatial"
