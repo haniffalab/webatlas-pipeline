@@ -42,6 +42,14 @@ class TestClass:
         return fn
 
     @pytest.fixture(scope="class")
+    def molecules_json_file(self, tmp_path_factory):
+        fn = tmp_path_factory.mktemp("data") / "molecules.json"
+        molecules_json = {"background": [[0.0, 0.0]]}
+        with open(fn, "w") as out_file:
+            json.dump(molecules_json, out_file)
+        return fn
+
+    @pytest.fixture(scope="class")
     def zarr_file(self, tmp_path_factory):
         fn = tmp_path_factory.mktemp("data") / "dummy.zarr"
         z = zarr.open(fn, mode="w", shape=(100, 100), chunks=(10, 10), dtype="i4")
@@ -93,17 +101,27 @@ class TestClass:
         stem = "test"
         out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
         assert os.path.exists(out_file)
+        assert os.path.isdir(os.path.join(out_file,"X"))
+        assert os.path.isdir(os.path.join(out_file,"obs"))
+        assert os.path.isdir(os.path.join(out_file,"var"))
+        assert os.path.isdir(os.path.join(out_file,"obsm","spatial"))
+        assert os.path.isdir(os.path.join(out_file,"uns","spatial"))
         assert out_file == stem + "_anndata.zarr"
 
-    def test_tsv_to_json(self, monkeypatch, molecules_tsv_file):
+    def test_tsv_to_json(self, monkeypatch, molecules_tsv_file, molecules_json_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
         stem = "test"
         out_file = tsv_to_json(molecules_tsv_file, stem)
         assert os.path.exists(out_file)
         assert out_file == stem + "_molecules.json"
+        with open(out_file, "r") as jsonfile:
+            output_json = json.load(jsonfile)
+        with open(molecules_json_file, "r") as jsonfile:
+            expected_json = json.load(jsonfile)
+        assert output_json == expected_json
 
     def test_zarr(self, zarr_file):
-        md = consolidate_md(zarr_file)
+        consolidate_md(zarr_file)
         assert os.path.exists(os.path.join(zarr_file, ".zmetadata"))
 
     def test_route_h5ad(self, monkeypatch, anndata_h5ad_file):
