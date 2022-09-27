@@ -41,7 +41,7 @@ def spaceranger_to_h5ad(
 
 
 def spaceranger_to_zarr(
-    path, stem, load_clusters=False, load_embeddings=False, save_h5ad=False, **kwargs
+    path, stem, load_clusters=True, load_embeddings=True, save_h5ad=False, **kwargs
 ):
 
     adata = spaceranger_to_h5ad(path, load_clusters, load_embeddings)

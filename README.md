@@ -6,7 +6,7 @@
 
 # Spatial Data Pipeline
 
-Nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium) for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
+Nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium) for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). (Single cell RNA sequencing data can also be visualized without the spatial layer.) The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
 
 ## Installation
 
@@ -25,19 +25,36 @@ cd sci-spatial-data
 
 General configuration options are specified with a [yaml file](templates/visium_template.yaml). While dataset-specific configurations are written in a [tsv file](templates/visium_template.tsv)
 
+Templates are available in the [templates directory](templates/).
+
 ### yaml file
 
 `outdir` is the path to the directory to which files will be written
 
 `tsv` is the path to the file that contains a dataset to process per line
 
-`args` is a map of arguments for supported files that will be processed. This is applied to files of all datasets. For example,
+`args` is a map of optional arguments for the scripts that process the supported files. This is applied to files of all datasets.
+Available `args` are
 ```yaml
 args:
     h5ad:
-        compute_embeddings: "True"
+        compute_embeddings: "True" # set to `True` to compute PCA and UMAP if not already within the anndata object
+        chunk_size: 20 # Zarr chunk size, defaults to 10
+        var_index: "SYMBOL" # `var` column from the anndata object to use as the gene names in the webapp. This reindexes the `var` matrix
+    spaceranger:
+        save_h5ad: "True" # save an h5ad to the output directory. Defaults to `False`
+        load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
+        load_embeddings: "True" # set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory
+        clustering: "graphclust" # clusters to load (if `load_clusters` is set to `True`)
     molecules:
-        delimiter: "','" 
+        delimiter: "','" # the file delimiter. Defaults to `\t`
+        has_header: "True" # set to `False` if csv/tsv file contains no header
+        gene_col_name: "Name" # name of the column for gene names. Defaults to `Name`.
+        x_col_name: "x_int" # name of the column for `x` coordinates. Defaults to `x_int`.
+        y_col_name: "y_int" # name of the column for `y` coordinates. Defaults to `y_int`.
+        gene_col_idx: 0 # column index of the column for gene names in case `has_header` is `False`.
+        x_col_idx: 1 # column index of the column for `x` coordinates in case `has_header` is `False`.
+        y_col_idx: 2 # column index of the column for `y` coordinates in case `has_header` is `False`.
 ```
 
 `options` is a map of the contents of the h5ad file that gets converted to Zarr. This is information required to write the Vitessce config file. For example,
@@ -77,6 +94,8 @@ Each dataset to be processed is defined as a line in a [tsv file](templates/visi
 `molecule` is the path to a molecules tsv file
 
 `url` is an optional string that will be prepended to each file in the Vitessce config file
+
+`args` is an optional json-like string that overrides the `args` in the yaml file
 
 `options` is an optional json-like string that overrides the `options` in the yaml file
 
