@@ -52,7 +52,7 @@ class TestClass:
     @pytest.fixture(scope="class")
     def zarr_file(self, tmp_path_factory):
         fn = tmp_path_factory.mktemp("data") / "dummy.zarr"
-        z = zarr.open(fn, mode="w", shape=(100, 100), chunks=(10, 10), dtype="i4")
+        zarr.open(fn, mode="w", shape=(100, 100), chunks=(10, 10), dtype="i4")
         return fn
 
     @pytest.fixture(scope="class")
@@ -140,7 +140,6 @@ class TestClass:
 
     def test_ome_metadata(self, monkeypatch, ome_xml_file):
         monkeypatch.chdir(os.path.dirname(ome_xml_file))
-        stem = "test"
         out_json = json.loads(ome_zarr_metadata(ome_xml_file))
         md = {
             "dimOrder": "XYZCT",
