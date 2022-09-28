@@ -6,9 +6,9 @@
 
 # Spatial Data Pipeline
 
-Nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium) for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
+Nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium) for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). (Single cell RNA sequencing data can also be visualized without the spatial layer.) The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
 
-## Installation
+# Installation
 
 1. Clone the repository
 
@@ -21,48 +21,64 @@ cd sci-spatial-data
 3. Install [Docker](https://docs.docker.com/engine/install/) and make sure it's in PATH
 
 
-## Setup
+# Setup
 
 General configuration options are specified with a [yaml file](templates/visium_template.yaml). While dataset-specific configurations are written in a [tsv file](templates/visium_template.tsv)
 
-### yaml file
+Templates are available in the [templates directory](templates/).
+
+## yaml file
 
 `outdir` is the path to the directory to which files will be written
 
 `tsv` is the path to the file that contains a dataset to process per line
 
-`args` is a map of arguments for supported files that will be processed. This is applied to files of all datasets. For example,
+`args` is a map of optional arguments for the scripts that process the supported files. This is applied to files of all datasets.
+Available `args` are
 ```yaml
 args:
     h5ad:
-        compute_embeddings: "True"
+        compute_embeddings: "True" # set to `True` to compute PCA and UMAP if not already within the anndata object
+        chunk_size: 20 # Zarr chunk size, defaults to 10
+        var_index: "SYMBOL" # `var` column from the anndata object to use as the gene names in the webapp. This reindexes the `var` matrix
+    spaceranger:
+        save_h5ad: "True" # save an h5ad to the output directory. Defaults to `False`
+        load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
+        load_embeddings: "True" # set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory
+        clustering: "graphclust" # clusters to load (if `load_clusters` is set to `True`)
     molecules:
-        delimiter: "','" 
+        delimiter: "','" # the file delimiter. Defaults to `\t`
+        has_header: "True" # set to `False` if csv/tsv file contains no header
+        gene_col_name: "Name" # name of the column for gene names. Defaults to `Name`.
+        x_col_name: "x_int" # name of the column for `x` coordinates. Defaults to `x_int`.
+        y_col_name: "y_int" # name of the column for `y` coordinates. Defaults to `y_int`.
+        gene_col_idx: 0 # column index of the column for gene names in case `has_header` is `False`.
+        x_col_idx: 1 # column index of the column for `x` coordinates in case `has_header` is `False`.
+        y_col_idx: 2 # column index of the column for `y` coordinates in case `has_header` is `False`.
 ```
 
-`options` is a map of the contents of the h5ad file that gets converted to Zarr. This is information required to write the Vitessce config file. For example,
+`options` is a map of the contents of the h5ad file that gets converted to Zarr. This is information required to write the Vitessce config file. These values are applied to all datasets unless a dataset has its own `options` specified within the `tsv` file. For example,
 ```yaml
 options:
     spatial:
-        xy: "obsm/spatial"
-    mappings:
+        xy: "obsm/spatial" # where the Anndata object holds spatial coordinates
+    mappings: # list of embeddings and the index of the dimensions to use in a scatterplot
         obsm/X_umap: [0,1]
         obsm/spatial: [0,1]
-    factors:
+    factors: # list of useful metadata to show per cell when hovering over them in the visualization
         - "obs/sample"
-    sets:
+    sets: # list of keys fo grouping cells
         - "obs/sample"
-    matrix: "X"
+    matrix: "X" # expression matrix to use
 ```
-Where `spatial` specifies where the Anndata object holds spatial coordinates. `mappings` is a list of embeddings and the index of the dimensions to be used in a scatterplot. `factors` is a list of useful metadata to be shown per cell when hovering over them in the visualization. `sets` is a list of metadata that defines different cell sets. `matrix` is the expression matrix to use, which will typically be `X`. These values are applied to all datasets unless a dataset has its own `options` specified within the `tsv` file.
-**Note** that the pipeline does not check for the existence of these metadata within the h5ad file. It is written directly to the Vitessce config file.
+**Note** that the pipeline does not check for the existence of these metadata within the h5ad file. It is written directly to the Vitessce config file. If they're incorrectly specified then the output config file can be manually edited without re-running the pipeline.
 
 `layout` is the predefined Vitessce layout to use, it can be either `minimal`, `simple` or `advanced`
 
 `custom_layout` is an optional string that defines a Vitessce layout following [Vitessce's View Config API's layout alternative syntax](https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout) (Vitessce components are concatenated horizontally with `|` and vertically with `/`). Supercedes `layout`
 
 
-### tsv file
+## tsv file
 
 Each dataset to be processed is defined as a line in a [tsv file](templates/visium_template.tsv)
 
@@ -78,10 +94,12 @@ Each dataset to be processed is defined as a line in a [tsv file](templates/visi
 
 `url` is an optional string that will be prepended to each file in the Vitessce config file
 
+`args` is an optional json-like string that overrides the `args` in the yaml file
+
 `options` is an optional json-like string that overrides the `options` in the yaml file
 
 
-### Docker
+## Docker
 
 Before running the pipeline, build the docker images.
 
@@ -90,13 +108,13 @@ cd docker
 ./build-docker-imgs.sh
 ```
 
-## Run
+# Run
 
-The pipeline contains workflows to process files (h5ad files, csv/tsv files), convert images to Zarrs and build a Vitessce config file from the generated files.
+The pipeline contains workflows to process files (h5ad files, spaceranger output, csv/tsv files), convert images to Zarrs and build a Vitessce config file from the generated files.
 
-The `scRNAseq_pipeline` entry point handles datasets with no image data. This processes files and builds a Vitessce config file.
-The `ISS_pipeline` entry point handles datasets that contain both raw and label images.
-The `Visium_pipeline` entry point handles datasets that contain a raw image and generates a label image from the specified h5ad file where it expects to have a `spatial` key within `uns`.
+- The `scRNAseq_pipeline` entry point handles datasets with no image data. This processes files and builds a Vitessce config file.
+- The `ISS_pipeline` entry point handles datasets that contain both raw and label images.
+- The `Visium_pipeline` entry point handles datasets that contain a raw image and generates a label image from the specified h5ad file where it expects to have a `spatial` key within `uns`.
 
 Each dataset in a tsv file should belong to the same modality so they can all be run through the corresponding pipeline. 
 
@@ -122,15 +140,14 @@ Additionally, you can build a config file without processing files nor images, u
 nextflow run main.nf -params-file [your_params].yaml -entry Config
 ```
 
-Further reading:
---- 
+## Further reading:
 
 Docker image pulling/local conda env creation are handled by nextflow. Please refer to [this](https://www.nextflow.io/docs/latest/getstarted.html) for detailed information.
 
 
-## Testing
+# Testing
 
-### Python testing
+## Python testing
 
 Testing of python scripts uses [pytest](https://docs.pytest.org/en/7.1.x/).
 
