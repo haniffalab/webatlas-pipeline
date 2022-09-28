@@ -84,6 +84,8 @@ Each dataset to be processed is defined as a line in a [tsv file](templates/visi
 
 `h5ad` is the path to the h5ad file
 
+`spaceranger` is the path to the spaceranger output directory
+
 `image_type` specifies whether the image at `image_path` is type `raw` or `label`
 
 `title` is the project/experiment title which can have multiple datasets
