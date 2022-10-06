@@ -142,7 +142,7 @@ def write_json(
 
     has_files = False
 
-    config = VitessceConfig()
+    config = VitessceConfig(name=str(title))
     config_dataset = config.add_dataset(str(title), str(dataset))
 
     coordination_types = defaultdict(lambda: cycle(iter([])))
