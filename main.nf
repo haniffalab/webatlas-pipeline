@@ -41,7 +41,7 @@ process image_to_zarr {
     debug verbose_log
 
     container "hamat/webatlas-image-to-zarr:${version}"
-    publishDir outdir_with_version
+    publishDir outdir_with_version, mode: "copy"
 
     input:
     tuple val(stem), val(img_type), path(image)
@@ -56,28 +56,15 @@ process image_to_zarr {
     script:
     out_s3 = "${output_s3}/${img_type}.zarr"
     """
-    #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" \
-        #${image} s3://${out_s3}
-    if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"; then
+    #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" ${image} s3://${out_s3}
+    if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
+    then
         tiffcp -c none ${image} uncompressed.tif
         /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem}_${img_type}.zarr
     else
         /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem}_${img_type}.zarr
     fi
-    """
-}
-
-process consolidate_metadata{
-    tag "${zarr}"
-    debug verbose_log
-    container "hamat/webatlas-zarr:${version}"
-
-    input:
-    tuple val(stem), path(zarr)
-
-    script:
-    """
-    consolidate_md.py ${zarr}
+    consolidate_md.py ${stem}_${img_type}.zarr
     """
 }
 
@@ -214,7 +201,6 @@ Channel.fromPath(params.tsv)
 workflow To_ZARR {
     if (data_with_md.images) {
         image_to_zarr(data_with_md.images, params.s3_keys, params.outdir_s3)
-        consolidate_metadata(image_to_zarr.out.raw_zarr) // this will create .zmetadata in-place
         zarr_dirs = image_to_zarr.out.raw_zarr
 
         ome_zarr_metadata(image_to_zarr.out.ome_xml)
@@ -235,7 +221,6 @@ workflow _label_to_ZARR {
     main:
     if (label_images) {
         image_to_zarr(label_images, params.s3_keys, params.outdir_s3)
-        consolidate_metadata(image_to_zarr.out.raw_zarr) // this will create .zmetadata in-place
         label_zarr = image_to_zarr.out.raw_zarr
         ome_zarr_metadata(image_to_zarr.out.ome_xml)
         ome_md_json = ome_zarr_metadata.out
