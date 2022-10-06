@@ -40,8 +40,8 @@ process image_to_zarr {
     tag "${image}"
     debug verbose_log
 
-    container "openmicroscopy/bioformats2raw:0.4.0"
-    storeDir outdir_with_version
+    container "hamat/webatlas-image-to-zarr:${version}"
+    publishDir outdir_with_version
 
     input:
     tuple val(stem), val(img_type), path(image)
@@ -58,7 +58,12 @@ process image_to_zarr {
     """
     #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" \
         #${image} s3://${out_s3}
-    /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem}_${img_type}.zarr
+    if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"; then
+        tiffcp -c none ${image} uncompressed.tif
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem}_${img_type}.zarr
+    else
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem}_${img_type}.zarr
+    fi
     """
 }
 
@@ -336,7 +341,6 @@ workflow ISS_pipeline {
 }
 
 workflow Visium_pipeline {
-
     To_ZARR()
 
     Process_files()
