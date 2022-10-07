@@ -67,7 +67,7 @@ options:
         obsm/spatial: [0,1]
     factors: # list of useful metadata to show per cell when hovering over them in the visualization
         - "obs/sample"
-    sets: # list of keys fo grouping cells
+    sets: # list of keys for grouping cells
         - "obs/sample"
     matrix: "X" # expression matrix to use
 ```
