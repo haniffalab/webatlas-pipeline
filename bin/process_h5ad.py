@@ -55,7 +55,7 @@ def h5ad_to_zarr(
         # if data type is categorical vitessce will throw "path obs/X contains a group" and won"t find .zarray
         # if adata.obs[col].dtype == "category":
         #     adata.obs[col] = adata.obs[col].cat.codes
-        if adata.obs[col].dtype == "int8":
+        if adata.obs[col].dtype in ["int8", "int64"]:
             adata.obs[col] = adata.obs[col].astype("int32")
         if adata.obs[col].dtype == "bool":
             adata.obs[col] = adata.obs[col].astype(str).astype("category")
@@ -63,7 +63,7 @@ def h5ad_to_zarr(
     for col in adata.obsm:
         if type(adata.obsm[col]).__name__ in ["DataFrame", "Series"]:
             adata.obsm[col] = adata.obsm[col].to_numpy()
-        if adata.obsm[col].dtype == "int8" or col == "spatial":
+        if adata.obsm[col].dtype in ["int8", "int64"] or col == "spatial":
             adata.obsm[col] = adata.obsm[col].astype("int32")
 
     # matrix sparse to dense
