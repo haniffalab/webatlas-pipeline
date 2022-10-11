@@ -13,7 +13,8 @@ options:
     obsm/X_pca: [0,1]
   sets:
     - "obs/tissue"
-    - "obs/celltype"
+    - name: "obs/celltype"
+      score: "obs/celltype_prob"
   matrix: "X"
 # layout: 'advanced' # advanced, minimal
 custom_layout: "((scatterplot/scatterplot)|(genes/cellSets))"

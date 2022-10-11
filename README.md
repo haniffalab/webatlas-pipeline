@@ -68,7 +68,9 @@ options:
     factors: # list of useful metadata to show per cell when hovering over them in the visualization
         - "obs/sample"
     sets: # list of keys for grouping cells
-        - "obs/sample"
+        - name: "obs/celltype" # key with cell set labels
+          score: "obs/celltype_prob" # key with cell set confidence/percentage scores (float values [0,1])
+        - "obs/sample" # key with cell set labels, without associated scores
     matrix: "X" # expression matrix to use
 ```
 **Note** that the pipeline does not check for the existence of these metadata within the h5ad file. It is written directly to the Vitessce config file. If they're incorrectly specified then the output config file can be manually edited without re-running the pipeline.

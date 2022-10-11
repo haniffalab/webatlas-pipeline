@@ -18,7 +18,8 @@ options:
     #- "obs/total_counts"
   sets:
     - "obs/cluster"
-    - "obs/cell_type"
+    - name: "obs/celltype"
+      score: "obs/celltype_prob"
   matrix: "X"
 layout: 'advanced' # advanced, minimal
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"

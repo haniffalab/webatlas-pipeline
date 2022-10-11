@@ -45,19 +45,29 @@ def build_options(file_type, file_path, file_options, check_exist=False):
         options = []
         if "sets" in file_options:
             for cell_set in file_options["sets"]:
-                cell_set_name = cell_set.split("/")[-1]
-                if check_exist and not os.path.exists(
-                    os.path.join(file_path, cell_set)
-                ):
-                    continue
-                options.append(
-                    {
-                        "groupName": "".join(
-                            w.capitalize() for w in cell_set_name.split("_")
-                        ),
-                        "setName": cell_set,
-                    }
-                )
+                if type(cell_set) != dict:
+                    cell_set = {"name": cell_set}
+                cell_set_name = cell_set["name"].split("/")[-1]
+                if check_exist:
+                    if not os.path.exists(
+                        os.path.join(file_path, cell_set["name"])
+                    ) or (
+                        "score" in cell_set
+                        and not os.path.exists(
+                            os.path.join(file_path, cell_set["score"])
+                        )
+                    ):
+                        continue
+                cell_set_options = {
+                    "groupName": "".join(
+                        w.capitalize() for w in cell_set_name.split("_")
+                    ),
+                    "setName": cell_set["name"],
+                }
+                if "score" in cell_set:
+                    cell_set_options["groupName"] += " with Scores"
+                    cell_set_options["scoreName"] = cell_set["score"]
+                options.append(cell_set_options)
 
     elif file_type == ft.ANNDATA_EXPRESSION_MATRIX_ZARR:
         options = {}
