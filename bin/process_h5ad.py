@@ -122,10 +122,11 @@ def batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size):
 
     with h5py.File(file, "r") as f:
         indptr = f["X"]["indptr"][:]
-        for i in range(len(indptr) // batch_size + 1):
+        batch_size = len(indptr) if batch_size > len(indptr) else batch_size
+        for i in range(len(indptr) // batch_size):
             j = i * batch_size
-            if j + batch_size >= len(indptr):
-                batch_size = len(indptr) % batch_size - 1
+            if j + batch_size > len(indptr) - 1:
+                batch_size = len(indptr) - 1 - j
             k = j + batch_size
 
             indices = f["X"]["indices"][indptr[j] : indptr[k]]
@@ -146,10 +147,11 @@ def batch_process_csc(file, zarr_file, m, n, batch_size, chunk_size):
 
     with h5py.File(file, "r") as f:
         indptr = f["X"]["indptr"][:]
-        for i in range(len(indptr) // batch_size + 1):
+        batch_size = len(indptr) if batch_size > len(indptr) else batch_size
+        for i in range(len(indptr) // batch_size):
             j = i * batch_size
-            if j + batch_size >= len(indptr):
-                batch_size = len(indptr) % batch_size - 1
+            if j + batch_size > len(indptr) - 1:
+                batch_size = len(indptr) - 1 - j
             k = j + batch_size
 
             indices = f["X"]["indices"][indptr[j] : indptr[k]]
@@ -171,8 +173,8 @@ def batch_process_array(file, zarr_file, m, n, batch_size, chunk_size):
     with h5py.File(file, "r") as f:
         for i in range(n // batch_size + 1):
             j = i * batch_size
-            if j + batch_size >= n:
-                batch_size = n % batch_size
+            if j + batch_size > n:
+                batch_size = n - j
             k = j + batch_size
 
             matrix = f["X"][:, j:k]
