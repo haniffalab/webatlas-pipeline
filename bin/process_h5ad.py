@@ -2,10 +2,13 @@
 
 import fire
 import scanpy as sc
-from scipy.sparse import spmatrix
+import anndata as ad
 import pandas as pd
 import numpy as np
+import h5py
+import zarr
 import warnings
+from scipy.sparse import spmatrix, csr_matrix, csc_matrix
 
 warnings.filterwarnings("ignore")
 
@@ -19,10 +22,25 @@ def h5ad_to_zarr(
     compute_embeddings=False,
     chunk_size=10,
     var_index=None,
+    batch_processing=False,
+    batch_size=10000,
 ):
 
     if not adata:
-        adata = sc.read(file)
+        if not batch_processing:
+            adata = sc.read(file)
+        else:
+            with h5py.File(file, "r") as f:
+                # Load everything but X and layers
+                adata = ad.AnnData(
+                    obs=ad._io.h5ad.read_elem(f["obs"]),
+                    var=ad._io.h5ad.read_elem(f["var"]),
+                    obsm=ad._io.h5ad.read_elem(f["obsm"]),
+                    obsp=ad._io.h5ad.read_elem(f["obsp"]),
+                    varm=ad._io.h5ad.read_elem(f["varm"]),
+                    varp=ad._io.h5ad.read_elem(f["varp"]),
+                    uns=ad._io.h5ad.read_elem(f["uns"]),
+                )
 
     # reindex var with a specified column
     if var_index and var_index in adata.var:
@@ -68,18 +86,99 @@ def h5ad_to_zarr(
         if adata.obsm[col].dtype in ["int8", "int64"] or col == "spatial":
             adata.obsm[col] = adata.obsm[col].astype("int32")
 
-    # matrix sparse to dense
-    if isinstance(adata.X, spmatrix):
-        # use toarray() as it generates a ndarray, instead of todense() which generates a matrix
-        adata.X = adata.X.toarray()
-
     # remove unnecessary data
     del adata.raw
 
     zarr_file = f"{stem}_{SUFFIX}"
-    adata.write_zarr(zarr_file, [adata.shape[0], chunk_size])
+
+    if not batch_processing:
+        # matrix sparse to dense
+        if isinstance(adata.X, spmatrix):
+            # use toarray() as it generates a ndarray, instead of todense() which generates a matrix
+            adata.X = adata.X.toarray()
+
+        adata.write_zarr(zarr_file, [adata.shape[0], chunk_size])
+    elif file and batch_processing:
+        adata.write_zarr(zarr_file)
+
+        m = len(adata.obs)
+        n = len(adata.var)
+
+        with h5py.File(file, "r") as f:
+            if isinstance(f["X"], h5py.Group) and "indptr" in f["X"].keys():
+                if len(f["X"]["indptr"]) - 1 == m:
+                    batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size)
+                elif len(f["X"]["indptr"]) - 1 == n:
+                    batch_process_csc(file, zarr_file, m, n, batch_size, chunk_size)
+            else:
+                batch_process_array(file, zarr_file, m, n, batch_size, chunk_size)
 
     return zarr_file
+
+
+def batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size):
+    z = zarr.open(zarr_file, mode="a")
+    z["X"] = zarr.empty((0, n), chunks=(m, chunk_size), dtype="float32")
+
+    with h5py.File(file, "r") as f:
+        indptr = f["X"]["indptr"][:]
+        for i in range(len(indptr) // batch_size + 1):
+            j = i * batch_size
+            if j + batch_size >= len(indptr):
+                batch_size = len(indptr) % batch_size - 1
+            k = j + batch_size
+
+            indices = f["X"]["indices"][indptr[j] : indptr[k]]
+            data = f["X"]["data"][indptr[j] : indptr[k]]
+
+            matrix = csr_matrix(
+                (data, indices, [x - indptr[j] for x in indptr[j : k + 1]]),
+                shape=(1 * batch_size, n),
+            )
+
+            z["X"].append(matrix.toarray())
+    return
+
+
+def batch_process_csc(file, zarr_file, m, n, batch_size, chunk_size):
+    z = zarr.open(zarr_file, mode="a")
+    z["X"] = zarr.empty((m, 0), chunks=(m, chunk_size), dtype="float32")
+
+    with h5py.File(file, "r") as f:
+        indptr = f["X"]["indptr"][:]
+        for i in range(len(indptr) // batch_size + 1):
+            j = i * batch_size
+            if j + batch_size >= len(indptr):
+                batch_size = len(indptr) % batch_size - 1
+            k = j + batch_size
+
+            indices = f["X"]["indices"][indptr[j] : indptr[k]]
+            data = f["X"]["data"][indptr[j] : indptr[k]]
+
+            matrix = csc_matrix(
+                (data, indices, [x - indptr[j] for x in indptr[j : k + 1]]),
+                shape=(m, 1 * batch_size),
+            )
+
+            z["X"].append(matrix.toarray(), axis=1)
+    return
+
+
+def batch_process_array(file, zarr_file, m, n, batch_size, chunk_size):
+    z = zarr.open(zarr_file, mode="a")
+    z["X"] = zarr.empty((m, 0), chunks=(m, chunk_size), dtype="float32")
+
+    with h5py.File(file, "r") as f:
+        for i in range(n // batch_size + 1):
+            j = i * batch_size
+            if j + batch_size >= n:
+                batch_size = n % batch_size
+            k = j + batch_size
+
+            matrix = f["X"][:, j:k]
+
+            z["X"].append(matrix, axis=1)
+    return
 
 
 if __name__ == "__main__":
