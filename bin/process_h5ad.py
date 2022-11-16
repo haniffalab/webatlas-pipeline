@@ -119,7 +119,6 @@ def h5ad_to_zarr(
 def batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size):
     z = zarr.open(zarr_file, mode="a")
     z["X"] = zarr.empty((0, n), chunks=(m, chunk_size), dtype="float32")
-<<<<<<< HEAD
     with h5py.File(file, "r") as f:
         indptr = f["X"]["indptr"][:]
         batch_size = m if batch_size > m else batch_size
@@ -127,26 +126,13 @@ def batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size):
             j = i * batch_size
             if j + batch_size > m:
                 batch_size = m - j
-=======
-
-    with h5py.File(file, "r") as f:
-        indptr = f["X"]["indptr"][:]
-        for i in range(len(indptr) // batch_size + 1):
-            j = i * batch_size
-            if j + batch_size >= len(indptr):
-                batch_size = len(indptr) % batch_size - 1
->>>>>>> 5e71f51 (add batch processing option to process_h5ad.py)
             k = j + batch_size
 
             indices = f["X"]["indices"][indptr[j] : indptr[k]]
             data = f["X"]["data"][indptr[j] : indptr[k]]
 
             matrix = csr_matrix(
-<<<<<<< HEAD
                 (data, indices, indptr[j:k+1]-indptr[j]),
-=======
-                (data, indices, [x - indptr[j] for x in indptr[j : k + 1]]),
->>>>>>> 5e71f51 (add batch processing option to process_h5ad.py)
                 shape=(1 * batch_size, n),
             )
 
@@ -160,29 +146,18 @@ def batch_process_csc(file, zarr_file, m, n, batch_size, chunk_size):
 
     with h5py.File(file, "r") as f:
         indptr = f["X"]["indptr"][:]
-<<<<<<< HEAD
         batch_size = n if batch_size > n else batch_size
         for i in range(n // batch_size + 1):
             j = i * batch_size
             if j + batch_size > n:
                 batch_size = n - j
-=======
-        for i in range(len(indptr) // batch_size + 1):
-            j = i * batch_size
-            if j + batch_size >= len(indptr):
-                batch_size = len(indptr) % batch_size - 1
->>>>>>> 5e71f51 (add batch processing option to process_h5ad.py)
             k = j + batch_size
 
             indices = f["X"]["indices"][indptr[j] : indptr[k]]
             data = f["X"]["data"][indptr[j] : indptr[k]]
 
             matrix = csc_matrix(
-<<<<<<< HEAD
                 (data, indices, indptr[j:k+1]-indptr[j]),
-=======
-                (data, indices, [x - indptr[j] for x in indptr[j : k + 1]]),
->>>>>>> 5e71f51 (add batch processing option to process_h5ad.py)
                 shape=(m, 1 * batch_size),
             )
 
@@ -197,13 +172,8 @@ def batch_process_array(file, zarr_file, m, n, batch_size, chunk_size):
     with h5py.File(file, "r") as f:
         for i in range(n // batch_size + 1):
             j = i * batch_size
-<<<<<<< HEAD
             if j + batch_size > n:
                 batch_size = n - j
-=======
-            if j + batch_size >= n:
-                batch_size = n % batch_size
->>>>>>> 5e71f51 (add batch processing option to process_h5ad.py)
             k = j + batch_size
 
             matrix = f["X"][:, j:k]
