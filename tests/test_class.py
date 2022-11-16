@@ -101,12 +101,30 @@ class TestClass:
         stem = "test"
         out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
         assert os.path.exists(out_file)
-        assert os.path.isdir(os.path.join(out_file, "X"))
-        assert os.path.isdir(os.path.join(out_file, "obs"))
-        assert os.path.isdir(os.path.join(out_file, "var"))
-        assert os.path.isdir(os.path.join(out_file, "obsm", "spatial"))
-        assert os.path.isdir(os.path.join(out_file, "uns", "spatial"))
+        z = zarr.open(out_file, mode="r")
+        assert "X" in z and isinstance(z["X"], zarr.Array)
+        assert "obs" in z
+        assert "var" in z
+        assert "obsm" in z and "spatial" in z["obsm"]
+        assert "uns" in z and "spatial" in z["uns"]
         assert out_file == stem + "_anndata.zarr"
+
+    def test_batch_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
+        monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
+        stem = "batch_test"
+        out_batch_file = h5ad_to_zarr(anndata_h5ad_file, stem, batch_processing=True, batch_size=2)
+        assert os.path.exists(out_batch_file)
+        assert out_batch_file == stem + "_anndata.zarr"
+        z_batch = zarr.open(out_batch_file, mode="r")
+        assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
+        assert "obs" in z_batch
+        assert "var" in z_batch
+        assert "obsm" in z_batch and "spatial" in z_batch["obsm"]
+        assert "uns" in z_batch and "spatial" in z_batch["uns"]
+        stem = "test"
+        out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
+        z = zarr.open(out_file, mode="r")
+        assert np.array_equal(z_batch["X"], z["X"])
 
     def test_tsv_to_json(self, monkeypatch, molecules_tsv_file, molecules_json_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
