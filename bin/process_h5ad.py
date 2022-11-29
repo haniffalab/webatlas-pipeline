@@ -33,13 +33,13 @@ def h5ad_to_zarr(
             with h5py.File(file, "r") as f:
                 # Load everything but X and layers
                 adata = ad.AnnData(
-                    obs=ad._io.h5ad.read_elem(f["obs"]),
-                    var=ad._io.h5ad.read_elem(f["var"]),
-                    obsm=ad._io.h5ad.read_elem(f["obsm"]),
-                    obsp=ad._io.h5ad.read_elem(f["obsp"]),
-                    varm=ad._io.h5ad.read_elem(f["varm"]),
-                    varp=ad._io.h5ad.read_elem(f["varp"]),
-                    uns=ad._io.h5ad.read_elem(f["uns"]),
+                    obs=ad._io.h5ad.read_elem(f["obs"]) if "obs" in f else None,
+                    var=ad._io.h5ad.read_elem(f["var"]) if "var" in f else None,
+                    obsm=ad._io.h5ad.read_elem(f["obsm"]) if "obsm" in f else None,
+                    obsp=ad._io.h5ad.read_elem(f["obsp"]) if "obsp" in f else None,
+                    varm=ad._io.h5ad.read_elem(f["varm"]) if "varm" in f else None,
+                    varp=ad._io.h5ad.read_elem(f["varp"]) if "varp" in f else None,
+                    uns=ad._io.h5ad.read_elem(f["uns"]) if "uns" in f else None,
                 )
 
     # reindex var with a specified column
@@ -119,21 +119,20 @@ def h5ad_to_zarr(
 def batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size):
     z = zarr.open(zarr_file, mode="a")
     z["X"] = zarr.empty((0, n), chunks=(m, chunk_size), dtype="float32")
-
     with h5py.File(file, "r") as f:
         indptr = f["X"]["indptr"][:]
-        batch_size = len(indptr) if batch_size > len(indptr) else batch_size
-        for i in range(len(indptr) // batch_size):
+        batch_size = m if batch_size > m else batch_size
+        for i in range(m // batch_size + 1):
             j = i * batch_size
-            if j + batch_size > len(indptr) - 1:
-                batch_size = len(indptr) - 1 - j
+            if j + batch_size > m:
+                batch_size = m - j
             k = j + batch_size
 
             indices = f["X"]["indices"][indptr[j] : indptr[k]]
             data = f["X"]["data"][indptr[j] : indptr[k]]
 
             matrix = csr_matrix(
-                (data, indices, [x - indptr[j] for x in indptr[j : k + 1]]),
+                (data, indices, indptr[j:k+1]-indptr[j]),
                 shape=(1 * batch_size, n),
             )
 
@@ -147,18 +146,18 @@ def batch_process_csc(file, zarr_file, m, n, batch_size, chunk_size):
 
     with h5py.File(file, "r") as f:
         indptr = f["X"]["indptr"][:]
-        batch_size = len(indptr) if batch_size > len(indptr) else batch_size
-        for i in range(len(indptr) // batch_size):
+        batch_size = n if batch_size > n else batch_size
+        for i in range(n // batch_size + 1):
             j = i * batch_size
-            if j + batch_size > len(indptr) - 1:
-                batch_size = len(indptr) - 1 - j
+            if j + batch_size > n:
+                batch_size = n - j
             k = j + batch_size
 
             indices = f["X"]["indices"][indptr[j] : indptr[k]]
             data = f["X"]["data"][indptr[j] : indptr[k]]
 
             matrix = csc_matrix(
-                (data, indices, [x - indptr[j] for x in indptr[j : k + 1]]),
+                (data, indices, indptr[j:k+1]-indptr[j]),
                 shape=(m, 1 * batch_size),
             )
 
