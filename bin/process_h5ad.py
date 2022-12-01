@@ -32,7 +32,9 @@ def h5ad_to_zarr(
     adata.var_names_make_unique()
 
     # check if index is integer, if not reindex
-    if not adata.obs.index.is_integer():
+    if not adata.obs.index.is_integer() and (
+        adata.obs.index.is_object() and not all(adata.obs.index.str.isnumeric())
+    ):
         adata.obs["label_id"] = adata.obs.index
         adata.obs.index = pd.Categorical(adata.obs.index)
         adata.obs.index = adata.obs.index.codes
