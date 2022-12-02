@@ -21,7 +21,7 @@ def tsv_to_json(
     x_col_idx=None,
     y_col_idx=None,
 ):
-    print(delimiter)
+
     with open(file) as f:
         reader = csv.reader(f, delimiter=delimiter)
 
@@ -34,10 +34,9 @@ def tsv_to_json(
                     x_col_idx = header.index(x_col_name)
                     y_col_idx = header.index(y_col_name)
             except ValueError as e:
-                logging.error(
+                raise SystemExit(
                     f"Column name(s), ({gene_col_name}, {x_col_name}, {y_col_name}) not in header"
                 )
-                quit(1)
 
         molecules_json = {}
         for row in reader:
@@ -47,8 +46,8 @@ def tsv_to_json(
                     [float(row[x_col_idx]), float(row[y_col_idx])]
                 )
             except ValueError as e:
-                logging.error(e)
-                quit(1)
+                # TODO: add message
+                raise e
 
     json_file = f"{stem}_{SUFFIX}"
 

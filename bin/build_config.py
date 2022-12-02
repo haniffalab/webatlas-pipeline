@@ -206,8 +206,7 @@ def write_json(
                 break
 
     if not has_files:
-        logging.error("No files to add to config file")
-        quit(1)
+        raise SystemExit("No files to add to config file")
 
     # Get layout components/views
     # Set layout with alternative syntax https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
@@ -274,9 +273,8 @@ def write_json(
     try:
         exec("config.layout({})".format(config_layout))
     except Exception as e:
-        logging.error("Error building config layout")
         logging.error(e)
-        quit(1)
+        raise SystemExit("Error building config layout")
 
     # Make sure views' grid coordinates are integers
     config_json = config.to_dict()

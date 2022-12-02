@@ -16,6 +16,8 @@ from pathlib import Path
 
 
 def main(file_in):
+    log = logging.getLogger()
+    log.setLevel(logging.INFO)
     stem = Path(file_in).stem
     logging.info(stem)
     consolidated = consolidate_metadata(file_in)
