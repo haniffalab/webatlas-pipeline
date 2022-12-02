@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import json
 import fire
 from xml.etree import ElementTree as ET

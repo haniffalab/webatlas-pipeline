@@ -6,7 +6,7 @@ args:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
   # molecules:
-  #   delimiter: "','"
+  #   delimiter: ","
 options:
   mappings:
     obsm/X_umap: [0,1]

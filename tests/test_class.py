@@ -101,11 +101,11 @@ class TestClass:
         stem = "test"
         out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
         assert os.path.exists(out_file)
-        assert os.path.isdir(os.path.join(out_file,"X"))
-        assert os.path.isdir(os.path.join(out_file,"obs"))
-        assert os.path.isdir(os.path.join(out_file,"var"))
-        assert os.path.isdir(os.path.join(out_file,"obsm","spatial"))
-        assert os.path.isdir(os.path.join(out_file,"uns","spatial"))
+        assert os.path.isdir(os.path.join(out_file, "X"))
+        assert os.path.isdir(os.path.join(out_file, "obs"))
+        assert os.path.isdir(os.path.join(out_file, "var"))
+        assert os.path.isdir(os.path.join(out_file, "obsm", "spatial"))
+        assert os.path.isdir(os.path.join(out_file, "uns", "spatial"))
         assert out_file == stem + "_anndata.zarr"
 
     def test_tsv_to_json(self, monkeypatch, molecules_tsv_file, molecules_json_file):

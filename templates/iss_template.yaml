@@ -1,12 +1,12 @@
 outdir: "output/iss/"
 max_n_worker: 30
-tsv : "./templates/iss_template.txt"
+tsv : "./templates/iss_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
   # molecules:
-  #   delimiter: "','"
+  #   delimiter: ","
 options:
   spatial:
     xy: "obsm/spatial"

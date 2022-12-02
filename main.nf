@@ -177,7 +177,7 @@ Channel.fromPath(params.tsv)
             ],
             molecules: [
                 "${l.title}_${l.dataset}",
-                l.molecule,
+                l.molecules,
                 l.args && l.args.molecules?.trim() ? l.args.molecules?.trim() : params.args.molecules
             ],
             spaceranger: [
@@ -235,6 +235,7 @@ workflow _label_to_ZARR {
 }
 
 workflow Process_files {
+    data_with_md.data.view()
     if (data_with_md.data){
         data_list = data_with_md.data.flatMap{ it ->
             it.collectMany{ data_type, data_map ->

@@ -13,7 +13,6 @@ import logging
 import fire
 from zarr import consolidate_metadata
 from pathlib import Path
-import zarr
 
 
 def main(file_in):

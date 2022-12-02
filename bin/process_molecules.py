@@ -21,7 +21,7 @@ def tsv_to_json(
     x_col_idx=None,
     y_col_idx=None,
 ):
-
+    print(delimiter)
     with open(file) as f:
         reader = csv.reader(f, delimiter=delimiter)
 

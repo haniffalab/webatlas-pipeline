@@ -47,7 +47,7 @@ args:
         load_embeddings: "True" # set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory
         clustering: "graphclust" # clusters to load (if `load_clusters` is set to `True`)
     molecules:
-        delimiter: "','" # the file delimiter. Defaults to `\t`
+        delimiter: "," # the file delimiter. Defaults to `\t`
         has_header: "True" # set to `False` if csv/tsv file contains no header
         gene_col_name: "Name" # name of the column for gene names. Defaults to `Name`.
         x_col_name: "x_int" # name of the column for `x` coordinates. Defaults to `x_int`.
@@ -77,30 +77,31 @@ options:
 
 `layout` is the predefined Vitessce layout to use, it can be either `minimal`, `simple` or `advanced`
 
-`custom_layout` is an optional string that defines a Vitessce layout following [Vitessce's View Config API's layout alternative syntax](https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout) (Vitessce components are concatenated horizontally with `|` and vertically with `/`). Supercedes `layout`
+`custom_layout` is an optional string that defines a Vitessce layout following [Vitessce's View Config API's layout alternative syntax](https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout) (Vitessce components are concatenated horizontally with `|` and vertically with `/`).Supersedes `layout`
 
 
 ## tsv file
 
 Each dataset to be processed is defined as a line in a [tsv file](templates/visium_template.tsv)
 
-`h5ad` is the path to the h5ad file
+Columns definition:
+- `h5ad` is the path to the h5ad file
 
-`spaceranger` is the path to the spaceranger output directory
+- `spaceranger` is the path to the spaceranger output directory
 
-`image_type` specifies whether the image at `image_path` is type `raw` or `label`
+- `image_type` specifies whether the image at `image_path` is type `raw` or `label`
 
-`title` is the project/experiment title which can have multiple datasets
+- `title` is the project/experiment title which can have multiple datasets
 
-`dataset` is the name of the dataset
+- `dataset` is the name of the dataset
 
-`molecule` is the path to a molecules tsv file
+- `molecules` is the path to a molecules tsv file
 
-`url` is an optional string that will be prepended to each file in the Vitessce config file
+- `url` is an optional string that will be prepended to each file in the Vitessce config file
 
-`args` is an optional json-like string that overrides the `args` in the yaml file
+- `args` is an optional json-like string that overrides the `args` in the yaml file
 
-`options` is an optional json-like string that overrides the `options` in the yaml file
+- `options` is an optional json-like string that overrides the `options` in the yaml file
 
 
 ## Docker

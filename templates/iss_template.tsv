@@ -1,3 +1,3 @@
-h5ad	image_type	image_path	title	dataset	url	molecule	options	codebook
+h5ad	image_type	image_path	title	dataset	url	molecules	options	codebook
 /path/to/anndata.h5ad	raw	/path/to/image.tif	iss_project	dataset_1	http://localhost:3000/output/iss/
 /path/to/anndata.h5ad	label	/path/to/image.tif	iss_project	dataset_1	http://localhost:3000/output/iss/
