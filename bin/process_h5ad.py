@@ -31,7 +31,7 @@ def h5ad_to_zarr(
         adata.var.index = adata.var.index.astype(str)
     adata.var_names_make_unique()
 
-    # check if index is integer, if not reindex
+    # check if index is numerical, if not reindex
     if not adata.obs.index.is_integer() and (
         adata.obs.index.is_object() and not all(adata.obs.index.str.isnumeric())
     ):

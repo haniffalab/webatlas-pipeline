@@ -40,8 +40,10 @@ def main(stem, ome_md, h5ad):
     # adata.obs["X"] = adata.obsm["spatial"][:, 1]
     # ----------------------------------------------
 
-    # check if index is integer, if not reindex
-    if not adata.obs.index.is_integer():
+    # check if index is numerical, if not reindex
+    if not adata.obs.index.is_integer() and (
+        adata.obs.index.is_object() and not all(adata.obs.index.str.isnumeric())
+    ):
         adata.obs["label_id"] = adata.obs.index
         adata.obs.index = pd.Categorical(adata.obs.index)
         adata.obs.index = adata.obs.index.codes
@@ -50,23 +52,20 @@ def main(stem, ome_md, h5ad):
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
         adata.obsm[k] = np.array(adata.obsm[k])
-    # print(adata.uns["spatial"][sample_id]["scalefactors"])
 
     spot_diameter_fullres = adata.uns["spatial"][sample_id]["scalefactors"][
         "spot_diameter_fullres"
     ]
     # hires_scalef = adata.uns["spatial"][sample_id]["scalefactors"]["tissue_hires_scalef"]
     spot_coords = adata.obsm["spatial"]
-    # print(spot_coords, X, Y, Z, C, T)
     assert adata.obs.shape[0] == spot_coords.shape[0]
 
     X = ome_md["X"]
     Y = ome_md["Y"]
     labelImg = np.zeros((int(Y), int(X)), dtype=np.uint16)
-    # print(labelImg.shape)
-    # print(np.max(spot_coords))
+
     for spId, (y, x) in zip(adata.obs.index, spot_coords):
-        labelImg[disk((x, y), spot_diameter_fullres / 2)] = spId
+        labelImg[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
 
     tf.imwrite(f"{stem}.tif", labelImg)
 
