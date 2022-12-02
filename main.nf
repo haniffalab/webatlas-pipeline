@@ -71,7 +71,7 @@ process image_to_zarr {
 process ome_zarr_metadata{
     tag "${zarr}"
     debug verbose_log
-    container "hamat/webatlas-ome-zarr-metadata:${version}"
+    container "hamat/webatlas-processing:${version}"
 
     input:
     tuple val(stem), path(zarr), val(img_type)
@@ -90,7 +90,7 @@ process route_file {
     tag "${file}"
     debug verbose_log
 
-    container "hamat/webatlas-router:${version}"
+    container "hamat/webatlas-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
@@ -145,7 +145,7 @@ process Generate_label_image {
     tag "${stem}"
     debug verbose_log
 
-    container "hamat/webatlas-generate-label:${version}"
+    container "hamat/webatlas-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
