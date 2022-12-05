@@ -146,7 +146,6 @@ class TestClass:
         assert "var" in z
         assert "obsm" in z and "spatial" in z["obsm"]
         assert "uns" in z and "spatial" in z["uns"]
-<<<<<<< HEAD
         assert out_file == stem + "_anndata.zarr"
 
     def test_batch_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
@@ -187,15 +186,12 @@ class TestClass:
         out_batch_file = h5ad_to_zarr(
             anndata_csr_h5ad_file, stem, batch_processing=True, batch_size=2
         )
-=======
-        assert out_file == stem + "_anndata.zarr"
+        assert out_batch_file == stem + "_anndata.zarr"
 
     def test_batch_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "batch_test"
-<<<<<<< HEAD
         out_batch_file = h5ad_to_zarr(anndata_h5ad_file, stem, batch_processing=True, batch_size=2)
->>>>>>> e349376 (add test case for batch processing h5ad)
         assert os.path.exists(out_batch_file)
         assert out_batch_file == stem + "_anndata.zarr"
         z_batch = zarr.open(out_batch_file, mode="r")
@@ -205,8 +201,7 @@ class TestClass:
         assert "obsm" in z_batch and "spatial" in z_batch["obsm"]
         assert "uns" in z_batch and "spatial" in z_batch["uns"]
         stem = "test"
-<<<<<<< HEAD
-        out_file = h5ad_to_zarr(anndata_csr_h5ad_file, stem)
+        out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
         z = zarr.open(out_file, mode="r")
         assert np.array_equal(z_batch["X"], z["X"])
 
@@ -228,10 +223,7 @@ class TestClass:
         stem = "batch_test"
         out_batch_file = h5ad_to_zarr(
             anndata_csc_h5ad_file, stem, batch_processing=True, batch_size=4
-=======
-        out_batch_file = h5ad_to_zarr(
-            anndata_h5ad_file, stem, batch_processing=True, batch_size=2
->>>>>>> 0c83145 (fix batch processing)
+
         )
         assert os.path.exists(out_batch_file)
         assert out_batch_file == stem + "_anndata.zarr"
@@ -243,9 +235,6 @@ class TestClass:
         assert "uns" in z_batch and "spatial" in z_batch["uns"]
         stem = "test"
         out_file = h5ad_to_zarr(anndata_csc_h5ad_file, stem)
-=======
-        out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
->>>>>>> e349376 (add test case for batch processing h5ad)
         z = zarr.open(out_file, mode="r")
         assert np.array_equal(z_batch["X"], z["X"])
 
