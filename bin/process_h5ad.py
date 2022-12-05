@@ -132,7 +132,7 @@ def batch_process_csr(file, zarr_file, m, n, batch_size, chunk_size):
             data = f["X"]["data"][indptr[j] : indptr[k]]
 
             matrix = csr_matrix(
-                (data, indices, indptr[j:k+1]-indptr[j]),
+                (data, indices, indptr[j : k + 1] - indptr[j]),
                 shape=(1 * batch_size, n),
             )
 
@@ -157,7 +157,7 @@ def batch_process_csc(file, zarr_file, m, n, batch_size, chunk_size):
             data = f["X"]["data"][indptr[j] : indptr[k]]
 
             matrix = csc_matrix(
-                (data, indices, indptr[j:k+1]-indptr[j]),
+                (data, indices, indptr[j : k + 1] - indptr[j]),
                 shape=(m, 1 * batch_size),
             )
 
