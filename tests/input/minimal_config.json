@@ -1,0 +1,8 @@
+{
+    "title": "minimal",
+    "dataset": "test",
+    "file_paths": [
+        "anndata.zarr"
+    ],
+    "url": "http://localhost/"
+}

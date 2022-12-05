@@ -1,0 +1,30 @@
+outdir: "output/"
+tsv: './visium_template.tsv'
+
+# Already processed files to generate config file
+raw:
+  zarr: "test_visium_raw.zarr"
+  md:
+    channel_names: ["channel_1"]
+label:
+  zarr: "test_visium_label.zarr"
+  md: []
+files:
+  - "test_visium_anndata.zarr"
+
+title: "test"
+dataset: "visium"
+url: "https://localhost:3000/output/"
+options:
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0,1]
+    obsm/X_pca: [0,1]
+  factors:
+    - "obs/sample"
+  sets:
+    - "obs/sample"
+  matrix: "X"
+layout: 'advanced'
+# custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"

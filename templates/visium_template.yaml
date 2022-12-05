@@ -1,0 +1,22 @@
+outdir: "output/visium/"
+max_n_worker: 30
+tsv : "./templates/visium_template.tsv"
+args:
+  h5ad:
+    compute_embeddings: "True"
+    # var_index: "SYMBOL"
+  # molecules:
+  #   delimiter: ","
+options:
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0,1]
+    obsm/X_pca: [0,1]
+  factors:
+    - "obs/sample"
+  sets:
+    - "obs/clustering"
+  matrix: "X"
+layout: 'advanced'
+# custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"

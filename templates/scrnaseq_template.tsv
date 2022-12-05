@@ -1,0 +1,2 @@
+h5ad	image_type	image_path	title	dataset	url	molecules	options	codebook
+/path/to/anndata.h5ad			scrnaseq_project	dataset_1	http://localhost:3000/output/scrnaseq/

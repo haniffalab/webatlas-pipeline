@@ -1,0 +1,4 @@
+h5ad	image_type	image_path	title	dataset	url	molecules	options	codebook
+/path/to/anndata.h5ad	raw	/path/to/image.tif	visium_project	dataset_1	http://localhost:3000/output/visium/
+/path/to/anndata2.h5ad	raw	/path/to/image2.tif	visium_project	dataset_2	http://localhost:3000/output/visium/
+/path/to/anndata3.h5ad	raw	/path/to/image3.tif	visium_project	dataset_3	http://localhost:3000/output/visium/

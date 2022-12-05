@@ -1,0 +1,20 @@
+outdir: "output/scrnaseq/"
+max_n_worker: 30
+tsv : "./templates/scrnaseq_template.tsv"
+args:
+  h5ad:
+    compute_embeddings: "True"
+    # var_index: "SYMBOL"
+  # molecules:
+  #   delimiter: ","
+options:
+  mappings:
+    obsm/X_umap: [0,1]
+    obsm/X_pca: [0,1]
+  sets:
+    - "obs/tissue"
+    - name: "obs/celltype"
+      score: "obs/celltype_prob"
+  matrix: "X"
+# layout: 'advanced' # advanced, minimal
+custom_layout: "((scatterplot/scatterplot)|(genes/cellSets))"
