@@ -41,8 +41,8 @@ def main(stem, ome_md, h5ad):
     # ----------------------------------------------
 
     # check if index is numerical, if not reindex
-    if not adata.obs.index.is_integer() and (
-        adata.obs.index.is_object() and not all(adata.obs.index.str.isnumeric())
+    if not adata.obs.index.is_integer() and not (
+        adata.obs.index.is_object() and all(adata.obs.index.str.isnumeric())
     ):
         adata.obs["label_id"] = adata.obs.index
         adata.obs.index = pd.Categorical(adata.obs.index)
