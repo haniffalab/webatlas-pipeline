@@ -1,4 +1,4 @@
-|Tests| |Sphinx| |Coverage| |Python| |DOI|
+|Tests| |Sphinx| |Coverage| |DOI|
  
 .. |Tests| image:: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml/badge.svg
    :target: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml
@@ -6,12 +6,10 @@
    :target: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/sphinx-build.yml
 .. |Coverage| image:: https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ
    :target: https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main
-.. |Python| image:: https://img.shields.io/badge/python-3.8-blue
-   :target: https://python.org
-.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5824895.svg
-   :target: https://doi.org/10.5281/zenodo.5824895
+.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg
+   :target: https://doi.org/10.5281/zenodo.7405818
 
-vitessce-pipeline
+Vitessce Pipeline
 =================
 
 This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in `Vitessce`_. 
@@ -30,6 +28,7 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
    setup
    run
    testing
+   demo
    citing
    
 Search
