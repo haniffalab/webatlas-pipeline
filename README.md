@@ -1,12 +1,11 @@
-## SINGLE CELL INSIGHTS
+[![tests](https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml/badge.svg)](https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml)
+[![codecov](https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ)](https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main)
 
-[![tests](https://github.com/haniffalab/sci-spatial-data/actions/workflows/tests-python.yml/badge.svg)](https://github.com/haniffalab/sci-spatial-data/actions/workflows/tests-python.yml)
-[![codecov](https://codecov.io/gh/haniffalab/sci-spatial-data/branch/dev/graph/badge.svg?token=7HQVFH08WJ)](https://codecov.io/gh/haniffalab/sci-spatial-data/branch/dev)
-[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+# Vitessce Pipeline
 
-# Spatial Data Pipeline
+[![demo](https://img.shields.io/badge/demo-latest-blue)](DEMOS.md)
 
-Nextflow pipeline to pre-process spatial data (In-Situ Sequencing, 10x Visium) for [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). (Single cell RNA sequencing data can also be visualized without the spatial layer.) The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
+This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in [Vitessce](http://github.com/hms-dbmi/vitessce/#readme). The pipeline generates data files for [supported data types](http://vitessce.io/docs/data-types-file-types/), and builds a [view config](http://vitessce.io/docs/view-config-json/).
 
 # Installation
 

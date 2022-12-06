@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vitessce-pipeline &mdash; vitessce-pipeline 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> vitessce-pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Frontend Client</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-app">Vitessce App</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/issues">Issue Tracker</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://www.sanger.ac.uk/group/bayraktar-group">Bayraktar Lab</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://haniffalab.com">Haniffa Lab</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.openmicroscopy.org/">Open Microscopy Environment</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">vitessce-pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">vitessce-pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml"><img alt="Tests" src="https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/actions/workflows/sphinx-build.yml"><img alt="Sphinx" src="https://github.com/haniffalab/vitessce-pipeline/actions/workflows/sphinx-build.yml/badge.svg" /></a> <a class="reference external" href="https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main"><img alt="Coverage" src="https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ" /></a> <a class="reference external" href="https://python.org"><img alt="Python" src="https://img.shields.io/badge/python-3.8-blue" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.5824895"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.5824895.svg" /></a></p>
+<section id="vitessce-pipeline">
+<h1>vitessce-pipeline<a class="headerlink" href="#vitessce-pipeline" title="Permalink to this heading"></a></h1>
+<p>This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in <a class="reference external" href="http://github.com/hms-dbmi/vitessce">Vitessce</a>.
+The pipeline generates data files for <a class="reference external" href="http://vitessce.io/docs/data-types-file-types/">supported data types</a>, and builds a <a class="reference external" href="http://vitessce.io/docs/view-config-json/">view config</a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="citing.html#the-importance-of-citing-software">The importance of citing software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="citing.html#bibtex">Bibtex</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="search">
+<h2>Search<a class="headerlink" href="#search" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Haniffa Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
