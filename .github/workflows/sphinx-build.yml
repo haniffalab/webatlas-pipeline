@@ -1,0 +1,36 @@
+name: docs
+
+on:
+  push:
+    branches: [ main, dev ]
+    tags: [ 'v*' ]
+
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sphinx sphinx-rtd-theme
+      - name: Sphinx Build
+        working-directory: ./sphinx
+        run: | 
+          make html
+          touch _build/html/.nojekyll
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: main
+          folder: sphinx/_build/html
+          target-folder: docs
+          clean: true

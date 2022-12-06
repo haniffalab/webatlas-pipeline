@@ -1,6 +1,5 @@
 [![tests](https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml/badge.svg)](https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml)
 [![codecov](https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ)](https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main)
-[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 # Vitessce Pipeline
 
