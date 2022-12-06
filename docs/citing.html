@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Testing" href="testing.html" /> 
+    <link rel="prev" title="Demo" href="demo.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,6 +44,7 @@
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Citing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-importance-of-citing-software">The importance of citing software</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bibtex">Bibtex</a></li>
@@ -93,20 +94,27 @@
   <section id="citing">
 <span id="id1"></span><h1>Citing<a class="headerlink" href="#citing" title="Permalink to this heading"></a></h1>
 <p>If you use this software in a scientific publication, please cite using the following Zenodo reference.</p>
-<p><b><i>Dave Horsfall, Jim McGrath, Issac Goh. (2022). Adifa software for Single Cell Insights. Zenodo. https://doi.org/10.5281/zenodo.5824896</i></b></p><section id="the-importance-of-citing-software">
+<p><b><i>Li, T., Horsfall, D., & Basurto Lozada, D. Vitessce Pipeline [Computer software]. https://github.com/haniffalab/vitessce-pipeline</i></b></p><section id="the-importance-of-citing-software">
 <h2>The importance of citing software<a class="headerlink" href="#the-importance-of-citing-software" title="Permalink to this heading"></a></h2>
 <p>Motivation.</p>
 </section>
 <section id="bibtex">
 <h2>Bibtex<a class="headerlink" href="#bibtex" title="Permalink to this heading"></a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@software</span><span class="p">{</span><span class="n">dave_horsfall_2022_5824896</span><span class="p">,</span>
-    <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Dave</span> <span class="n">Horsfall</span> <span class="ow">and</span> <span class="n">Jim</span> <span class="n">McGrath</span><span class="p">},</span>
-    <span class="n">title</span>        <span class="o">=</span> <span class="p">{</span><span class="n">Adifa</span> <span class="n">software</span> <span class="k">for</span> <span class="n">Single</span> <span class="n">Cell</span> <span class="n">Insights</span><span class="p">},</span>
-    <span class="n">year</span>         <span class="o">=</span> <span class="mi">2022</span><span class="p">,</span>
-    <span class="n">publisher</span>    <span class="o">=</span> <span class="p">{</span><span class="n">Zenodo</span><span class="p">},</span>
-    <span class="n">version</span>      <span class="o">=</span> <span class="p">{</span><span class="n">v0</span><span class="mf">.1.0</span><span class="p">},</span>
-    <span class="n">doi</span>          <span class="o">=</span> <span class="p">{</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.5824896</span><span class="p">},</span>
-    <span class="n">url</span>          <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.5824896</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@software</span><span class="p">{</span><span class="n">li_tong_2022_7405819</span><span class="p">,</span>
+   <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Li</span><span class="p">,</span> <span class="n">Tong</span> <span class="ow">and</span>
+                     <span class="n">Horsfall</span><span class="p">,</span> <span class="n">Dave</span> <span class="ow">and</span>
+                     <span class="n">Basurto</span> <span class="n">Lozada</span><span class="p">,</span> <span class="n">Daniela</span><span class="p">},</span>
+   <span class="n">title</span>        <span class="o">=</span> <span class="p">{{</span><span class="n">A</span> <span class="n">nextflow</span> <span class="n">pipeline</span> <span class="n">to</span> <span class="n">pre</span><span class="o">-</span><span class="n">process</span> <span class="n">spatial</span> <span class="n">data</span>
+                     <span class="p">(</span><span class="n">In</span><span class="o">-</span><span class="n">Situ</span> <span class="n">Sequencing</span><span class="p">,</span> <span class="mi">10</span><span class="n">x</span> <span class="n">Visium</span><span class="p">,</span> <span class="n">scRNAseq</span><span class="p">)</span> <span class="k">for</span>
+                     <span class="n">Vitessce</span><span class="o">.</span> <span class="n">The</span> <span class="n">pipeline</span> <span class="n">generates</span> <span class="n">data</span> <span class="n">files</span> <span class="k">for</span>
+                     <span class="n">supported</span> <span class="n">data</span> <span class="n">types</span><span class="p">,</span> <span class="ow">and</span> <span class="n">builds</span> <span class="n">a</span> <span class="n">view</span> <span class="n">config</span><span class="o">.</span><span class="p">}},</span>
+   <span class="n">month</span>        <span class="o">=</span> <span class="n">dec</span><span class="p">,</span>
+   <span class="n">year</span>         <span class="o">=</span> <span class="mi">2022</span><span class="p">,</span>
+   <span class="n">note</span>         <span class="o">=</span> <span class="p">{</span><span class="n">If</span> <span class="n">you</span> <span class="n">use</span> <span class="n">this</span> <span class="n">repo</span><span class="p">,</span> <span class="n">please</span> <span class="n">cite</span> <span class="n">it</span><span class="p">},</span>
+   <span class="n">publisher</span>    <span class="o">=</span> <span class="p">{</span><span class="n">Zenodo</span><span class="p">},</span>
+   <span class="n">version</span>      <span class="o">=</span> <span class="p">{</span><span class="mf">0.1.0</span><span class="p">},</span>
+   <span class="n">doi</span>          <span class="o">=</span> <span class="p">{</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.7405819</span><span class="p">},</span>
+   <span class="n">url</span>          <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.7405819</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -117,7 +125,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="testing.html" class="btn btn-neutral float-left" title="Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="demo.html" class="btn btn-neutral float-left" title="Demo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
