@@ -40,7 +40,7 @@ process image_to_zarr {
     tag "${image}"
     debug verbose_log
 
-    container "hamat/webatlas-image-to-zarr:${version}"
+    container "haniffalab/vitessce-pipeline-image-to-zarr:${version}"
     publishDir outdir_with_version, mode: "copy"
 
     input:
@@ -71,7 +71,7 @@ process image_to_zarr {
 process ome_zarr_metadata{
     tag "${zarr}"
     debug verbose_log
-    container "hamat/webatlas-processing:${version}"
+    container "haniffalab/vitessce-pipeline-processing:${version}"
 
     input:
     tuple val(stem), path(zarr), val(img_type)
@@ -90,7 +90,7 @@ process route_file {
     tag "${file}"
     debug verbose_log
 
-    container "hamat/webatlas-processing:${version}"
+    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
@@ -111,7 +111,7 @@ process Build_config{
     tag "${stem}"
     debug verbose_log
 
-    container "hamat/webatlas-build-config:${version}"
+    container "haniffalab/vitessce-pipeline-build-config:${version}"
     publishDir outdir_with_version, mode: "copy"
 
     input:
@@ -145,7 +145,7 @@ process Generate_label_image {
     tag "${stem}"
     debug verbose_log
 
-    container "hamat/webatlas-processing:${version}"
+    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
