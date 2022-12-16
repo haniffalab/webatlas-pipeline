@@ -16,7 +16,7 @@ from bin.process_h5ad import h5ad_to_zarr
 from bin.process_molecules import tsv_to_json
 from bin.consolidate_md import main as consolidate_md
 from bin.router import main as router
-from bin.ome_zarr_metadata import main as ome_zarr_metadata
+from bin.ome_zarr_metadata import get_metadata
 from bin.generate_label import main as generate_label
 
 # from bin.build_config import write_json
@@ -263,7 +263,7 @@ class TestClass:
 
     def test_ome_metadata(self, monkeypatch, ome_xml_file):
         monkeypatch.chdir(os.path.dirname(ome_xml_file))
-        out_json = json.loads(ome_zarr_metadata(ome_xml_file))
+        out_json = json.loads(get_metadata(ome_xml_file))
         md = {
             "dimOrder": "XYZCT",
             "channel_names": ["Channel_0"],
