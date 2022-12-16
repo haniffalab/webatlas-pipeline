@@ -1,11 +1,8 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-#
-# Copyright © 2022 Tong LI <tongli.bioinfo@protonmail.com>
-#
-# Distributed under terms of the BSD-3 license.
-
+"""
+generate_label.py
+====================================
+Generates the label image from AnnData spatial data
+"""
 from __future__ import annotations
 import os
 import fire

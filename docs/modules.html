@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modules &mdash; vitessce-pipeline 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Demos" href="demo.html" />
+    <link rel="prev" title="Testing" href="testing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> vitessce-pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generate-label-py">generate_label.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build_config.build_options"><code class="docutils literal notranslate"><span class="pre">build_options()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">generate_label.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate_label.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_h5ad.batch_process_array"><code class="docutils literal notranslate"><span class="pre">batch_process_array()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_h5ad.batch_process_sparse"><code class="docutils literal notranslate"><span class="pre">batch_process_sparse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_h5ad.h5ad_to_zarr"><code class="docutils literal notranslate"><span class="pre">h5ad_to_zarr()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/issues">Issue Tracker</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-app">Frontend Client</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://www.sanger.ac.uk/group/bayraktar-group">Bayraktar Lab</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://haniffalab.com">Haniffa Lab</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.openmicroscopy.org/">Open Microscopy Environment</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">vitessce-pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-build_config">
+<span id="modules"></span><h1>Modules<a class="headerlink" href="#module-build_config" title="Permalink to this heading"></a></h1>
+<section id="generate-label-py">
+<h2>generate_label.py<a class="headerlink" href="#generate-label-py" title="Permalink to this heading"></a></h2>
+<p>Generates a Vitessce view config</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="build_config.build_options">
+<span class="sig-prename descclassname"><span class="pre">build_config.</span></span><span class="sig-name descname"><span class="pre">build_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_exist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#build_config.build_options" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the sum of two decimal numbers in binary digits.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Parameters:</dt><dd><p>a (int): A decimal integer
+b (int): Another decimal integer</p>
+</dd>
+<dt>Returns:</dt><dd><p>binary_sum (str): Binary string of the sum of a and b</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="module-constants"></span><span class="target" id="module-consolidate_md"></span><span class="target" id="module-generate_label"></span><section id="id1">
+<h2>generate_label.py<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<p>Generates the label image from AnnData spatial data</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="generate_label.main">
+<span class="sig-prename descclassname"><span class="pre">generate_label.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ome_md</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5ad</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generate_label.main" title="Permalink to this definition"></a></dt>
+<dd><p>Writes…</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Parameters:</dt><dd><p>stem (int): A decimal integer
+ome_md (int): Another decimal integer
+h5ad (int): Another decimal integer</p>
+</dd>
+<dt>Returns:</dt><dd><p>binary_sum (str): Binary string of the sum of a and b</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="module-ome_zarr_metadata"></span><span class="target" id="module-process_h5ad"></span><dl class="py function">
+<dt class="sig sig-object py" id="process_h5ad.batch_process_array">
+<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">batch_process_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zarr_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.batch_process_array" title="Permalink to this definition"></a></dt>
+<dd><p>Function to incrementally load and write a dense matrix to Zarr</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>file (str): Path to h5ad file
+zarr_file (str): Path to output Zarr file
+m (int): Number of rows in the matrix
+n (int): Number of columns in the matrix
+batch_size (int): Number of columns to load and write at a time
+chunk_size (int): Output Zarr column chunk size</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="process_h5ad.batch_process_sparse">
+<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">batch_process_sparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zarr_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_csc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.batch_process_sparse" title="Permalink to this definition"></a></dt>
+<dd><p>Function to incrementally load and write a sparse matrix to Zarr</p>
+<dl>
+<dt>Args:</dt><dd><p>file (str): Path to h5ad file
+zarr_file (str): Path to output Zarr file
+m (int): Number of rows in the matrix
+n (int): Number of columns in the matrix
+batch_size (int): Number of rows/columns to load and write at a time
+chunk_size (int): Output Zarr column chunk size
+is_csc (bool, optional): If matrix is in CSC format instead of CSR format.</p>
+<blockquote>
+<div><p>Defaults to False.</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="process_h5ad.h5ad_to_zarr">
+<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">h5ad_to_zarr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_processing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.h5ad_to_zarr" title="Permalink to this definition"></a></dt>
+<dd><p>This function takes an AnnData object or path to an h5ad file,
+ensures data is of an appropriate data type for Vitessce
+and writes the object to Zarr.</p>
+<dl>
+<dt>Args:</dt><dd><p>file (str, optional): Path to the h5ad file. Defaults to None.
+stem (str, optional): Prefix for the output file. Defaults to “”.
+adata (AnnData, optional): AnnData object to process. Supersedes <cite>file</cite>.</p>
+<blockquote>
+<div><p>Defaults to None.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>compute_embeddings (bool, optional): If <cite>X_umap</cite> and <cite>X_pca</cite> embeddings will be computed.</dt><dd><p>Defaults to False.</p>
+</dd>
+</dl>
+<p>chunk_size (int, optional): Output Zarr column chunk size. Defaults to 10.
+var_index (str, optional): Alternative <cite>var</cite> column name with <cite>var</cite> names</p>
+<blockquote>
+<div><p>to be used in the visualization. Defaults to None.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>batch_processing (bool, optional): If the expression matrix will be written to Zarr incrementally.</dt><dd><p>Use to avoid loading the whole AnnData into memory. Defaults to False.</p>
+</dd>
+<dt>batch_size (int, optional): The amount of rows (if matrix is in CSR format)</dt><dd><p>or columns (if matrix is dense or in CSC format) of the expression matrix
+to process at a time when batch processing. Defaults to 10000.</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>SystemError: If <cite>batch_processing</cite> is True and the matrix contains an <cite>indptr</cite> key
+but the matrix is not in scipy.sparse.csr_matrix nor scipy.sparse.csc_matrix format</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: The written Zarr filename</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-process_molecules"></span><span class="target" id="module-process_spaceranger"></span></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="testing.html" class="btn btn-neutral float-left" title="Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="demo.html" class="btn btn-neutral float-right" title="Demos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Haniffa Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+"""
+build_config.py
+====================================
+Generates a Vitessce view config
+"""
 
 from collections import defaultdict
 import os
