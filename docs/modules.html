@@ -46,13 +46,17 @@
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#build-config-py">build_config.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#consolidate_md.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#generate-label-py">generate_label.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#build_config.build_options"><code class="docutils literal notranslate"><span class="pre">build_options()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">generate_label.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#generate_label.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ome_zarr_metadata.get_metadata"><code class="docutils literal notranslate"><span class="pre">get_metadata()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_h5ad.batch_process_array"><code class="docutils literal notranslate"><span class="pre">batch_process_array()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_h5ad.batch_process_sparse"><code class="docutils literal notranslate"><span class="pre">batch_process_sparse()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_h5ad.h5ad_to_zarr"><code class="docutils literal notranslate"><span class="pre">h5ad_to_zarr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_molecules.tsv_to_json"><code class="docutils literal notranslate"><span class="pre">tsv_to_json()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.spaceranger_to_anndata"><code class="docutils literal notranslate"><span class="pre">spaceranger_to_anndata()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.spaceranger_to_zarr"><code class="docutils literal notranslate"><span class="pre">spaceranger_to_zarr()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -97,48 +101,53 @@
              
   <section id="module-build_config">
 <span id="modules"></span><h1>Modules<a class="headerlink" href="#module-build_config" title="Permalink to this heading"></a></h1>
-<section id="generate-label-py">
-<h2>generate_label.py<a class="headerlink" href="#generate-label-py" title="Permalink to this heading"></a></h2>
+<section id="build-config-py">
+<h2>build_config.py<a class="headerlink" href="#build-config-py" title="Permalink to this heading"></a></h2>
 <p>Generates a Vitessce view config</p>
 </section>
-<dl class="py function">
-<dt class="sig sig-object py" id="build_config.build_options">
-<span class="sig-prename descclassname"><span class="pre">build_config.</span></span><span class="sig-name descname"><span class="pre">build_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_exist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#build_config.build_options" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the sum of two decimal numbers in binary digits.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Parameters:</dt><dd><p>a (int): A decimal integer
-b (int): Another decimal integer</p>
-</dd>
-<dt>Returns:</dt><dd><p>binary_sum (str): Binary string of the sum of a and b</p>
+<span class="target" id="module-constants"></span><span class="target" id="module-consolidate_md"></span><dl class="py function">
+<dt class="sig sig-object py" id="consolidate_md.main">
+<span class="sig-prename descclassname"><span class="pre">consolidate_md.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#consolidate_md.main" title="Permalink to this definition"></a></dt>
+<dd><p>Function to consolidate the metadata of a Zarr file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>file_in (str): Path to Zarr file</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
-<span class="target" id="module-constants"></span><span class="target" id="module-consolidate_md"></span><span class="target" id="module-generate_label"></span><section id="id1">
-<h2>generate_label.py<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<span class="target" id="module-generate_label"></span><section id="generate-label-py">
+<h2>generate_label.py<a class="headerlink" href="#generate-label-py" title="Permalink to this heading"></a></h2>
 <p>Generates the label image from AnnData spatial data</p>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="generate_label.main">
-<span class="sig-prename descclassname"><span class="pre">generate_label.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ome_md</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5ad</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generate_label.main" title="Permalink to this definition"></a></dt>
-<dd><p>Writes…</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Parameters:</dt><dd><p>stem (int): A decimal integer
-ome_md (int): Another decimal integer
-h5ad (int): Another decimal integer</p>
-</dd>
-<dt>Returns:</dt><dd><p>binary_sum (str): Binary string of the sum of a and b</p>
+<span class="sig-prename descclassname"><span class="pre">generate_label.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ome_md</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5ad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#generate_label.main" title="Permalink to this definition"></a></dt>
+<dd><p>This function writes a label image of spots
+from the metadata contained in an h5ad file.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>stem (str): Prefix for the output image filename
+ome_md (dict of str: str): Dictionary containing image size in keys <cite>X</cite> and <cite>Y</cite>
+h5ad (str): Path to h5ad file</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
-<span class="target" id="module-ome_zarr_metadata"></span><span class="target" id="module-process_h5ad"></span><dl class="py function">
+<span class="target" id="module-ome_zarr_metadata"></span><dl class="py function">
+<dt class="sig sig-object py" id="ome_zarr_metadata.get_metadata">
+<span class="sig-prename descclassname"><span class="pre">ome_zarr_metadata.</span></span><span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xml_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ome_zarr_metadata.get_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Function that parses an OME XML file
+and dumps basic metadata as a JSON formatted str</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>xml_path (str): Path to OME XML file</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: JSON formatted metadata</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-process_h5ad"></span><dl class="py function">
 <dt class="sig sig-object py" id="process_h5ad.batch_process_array">
-<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">batch_process_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zarr_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.batch_process_array" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">batch_process_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zarr_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#process_h5ad.batch_process_array" title="Permalink to this definition"></a></dt>
 <dd><p>Function to incrementally load and write a dense matrix to Zarr</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>file (str): Path to h5ad file
@@ -153,7 +162,7 @@ chunk_size (int): Output Zarr column chunk size</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="process_h5ad.batch_process_sparse">
-<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">batch_process_sparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zarr_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_csc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.batch_process_sparse" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">batch_process_sparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zarr_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_csc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#process_h5ad.batch_process_sparse" title="Permalink to this definition"></a></dt>
 <dd><p>Function to incrementally load and write a sparse matrix to Zarr</p>
 <dl>
 <dt>Args:</dt><dd><p>file (str): Path to h5ad file
@@ -172,7 +181,7 @@ is_csc (bool, optional): If matrix is in CSC format instead of CSR format.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="process_h5ad.h5ad_to_zarr">
-<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">h5ad_to_zarr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_processing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.h5ad_to_zarr" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">h5ad_to_zarr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">AnnData</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_embeddings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_processing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#process_h5ad.h5ad_to_zarr" title="Permalink to this definition"></a></dt>
 <dd><p>This function takes an AnnData object or path to an h5ad file,
 ensures data is of an appropriate data type for Vitessce
 and writes the object to Zarr.</p>
@@ -203,12 +212,91 @@ to process at a time when batch processing. Defaults to 10000.</p>
 <dt>Raises:</dt><dd><p>SystemError: If <cite>batch_processing</cite> is True and the matrix contains an <cite>indptr</cite> key
 but the matrix is not in scipy.sparse.csr_matrix nor scipy.sparse.csc_matrix format</p>
 </dd>
-<dt>Returns:</dt><dd><p>str: The written Zarr filename</p>
+<dt>Returns:</dt><dd><p>str: Output Zarr filename</p>
 </dd>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-process_molecules"></span><span class="target" id="module-process_spaceranger"></span></section>
+<span class="target" id="module-process_molecules"></span><dl class="py function">
+<dt class="sig sig-object py" id="process_molecules.tsv_to_json">
+<span class="sig-prename descclassname"><span class="pre">process_molecules.</span></span><span class="sig-name descname"><span class="pre">tsv_to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'x_int'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'y_int'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'\t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_col_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_col_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_col_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_col_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#process_molecules.tsv_to_json" title="Permalink to this definition"></a></dt>
+<dd><p>This function loads a TSV/CSV file containing gene names, X and Y coordinates
+and writes them to a JSON file supported by Vitessce</p>
+<dl>
+<dt>Args:</dt><dd><p>file (str): Path to tsv/csv file
+stem (str): Prefix for output JSON file
+has_header (bool, optional): If input file contains a header row. Defaults to True.
+gene_col_name (str, optional): Column header name where gene names are stored. Defaults to “Name”.
+x_col_name (str, optional): Column header name where <cite>X</cite> coordinates are stored. Defaults to “x_int”.
+y_col_name (str, optional): Column header name where <cite>Y</cite> coordinates are stored. Defaults to “y_int”.
+delimiter (str, optional): Input file delimiter. Defaults to ”  “.
+x_scale (float, optional): Scale to multiply <cite>X</cite> coordinates by. Defaults to 1.0.
+y_scale (float, optional): Scale to multiply <cite>Y</cite> coordinates by. Defaults to 1.0.
+x_offset (float, optional): Offset to add to <cite>X</cite> coordinates. Defaults to 0.0.
+y_offset (float, optional): Offset to add to <cite>Y</cite> coordinates. Defaults to 0.0.
+gene_col_idx (int, optional): Column index where gene names are stored if header is not present. Defaults to None.
+x_col_idx (int, optional): Column index where <cite>X</cite> coordinates are stored if header is not present. Defaults to None.
+y_col_idx (int, optional): Column index where <cite>Y</cite> coordinates are stored if header is not present. Defaults to None.
+filter_col_name (str, optional): Column header name storing values to filter data. Defaults to None.
+filter_col_idx (int, optional): Column index storing values to filter data if header is not present. Defaults to None.
+filter_col_value (str, optional): Value expected in filter column.</p>
+<blockquote>
+<div><p>If a row has a different value it will not be written to output file. Defaults to None.</p>
+</div></blockquote>
+</dd>
+<dt>Raises:</dt><dd><p>SystemExit: If any column header name is not in the header row.
+e: If coordinate values cannot be parsed to float</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: Output JSON filename</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-process_spaceranger"></span><dl class="py function">
+<dt class="sig sig-object py" id="process_spaceranger.spaceranger_to_anndata">
+<span class="sig-prename descclassname"><span class="pre">process_spaceranger.</span></span><span class="sig-name descname"><span class="pre">spaceranger_to_anndata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_embeddings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustering</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'graphclust'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AnnData</span></span></span><a class="headerlink" href="#process_spaceranger.spaceranger_to_anndata" title="Permalink to this definition"></a></dt>
+<dd><p>Function to create an AnnData object from a SpaceRanger output directory.</p>
+<dl>
+<dt>Args:</dt><dd><p>path (str): Path to a SpaceRanger output directory
+load_clusters (bool, optional): If cluster files should be included in the</p>
+<blockquote>
+<div><p>AnnData object. Defaults to False.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>load_embeddings (bool, optional): If embedding coordinates files should be included</dt><dd><p>in the AnnData object. Defaults to False.</p>
+</dd>
+<dt>clustering (str, optional): The clustering algorithm to include in the AnnData</dt><dd><p>object if <cite>load_clusters</cite> is True. Defaults to “graphclust”.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>AnnData: AnnData object created from the SpaceRanger output data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="process_spaceranger.spaceranger_to_zarr">
+<span class="sig-prename descclassname"><span class="pre">process_spaceranger.</span></span><span class="sig-name descname"><span class="pre">spaceranger_to_zarr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_embeddings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_h5ad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#process_spaceranger.spaceranger_to_zarr" title="Permalink to this definition"></a></dt>
+<dd><p>Function to write to Zarr an AnnData object created from SpaceRanger output data</p>
+<dl>
+<dt>Args:</dt><dd><p>path (str): Path to a SpaceRanger output directory
+stem (str): Prefix for the output Zarr filename
+load_clusters (bool, optional): If cluster files should be included in the</p>
+<blockquote>
+<div><p>AnnData object. Defaults to False.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>load_embeddings (bool, optional): If embedding coordinates files should be included</dt><dd><p>in the AnnData object. Defaults to False.</p>
+</dd>
+</dl>
+<p>save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: Output Zarr filename</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 
 
            </div>
