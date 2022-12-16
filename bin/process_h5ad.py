@@ -18,15 +18,15 @@ SUFFIX = "anndata.zarr"
 
 
 def h5ad_to_zarr(
-    file=None,
-    stem="",
-    adata=None,
-    compute_embeddings=False,
-    chunk_size=10,
-    var_index=None,
-    batch_processing=False,
-    batch_size=10000,
-):
+    file: str = None,
+    stem: str = "",
+    adata: ad.AnnData = None,
+    compute_embeddings: bool = False,
+    chunk_size: int = 10,
+    var_index: str = None,
+    batch_processing: bool = False,
+    batch_size: int = 10000,
+) -> str:
     """This function takes an AnnData object or path to an h5ad file,
     ensures data is of an appropriate data type for Vitessce
     and writes the object to Zarr.
@@ -52,7 +52,7 @@ def h5ad_to_zarr(
         but the matrix is not in scipy.sparse.csr_matrix nor scipy.sparse.csc_matrix format
 
     Returns:
-        str: The written Zarr filename
+        str: Output Zarr filename
     """
 
     if not adata:
@@ -154,7 +154,15 @@ def h5ad_to_zarr(
     return zarr_file
 
 
-def batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size, is_csc=False):
+def batch_process_sparse(
+    file: str,
+    zarr_file: str,
+    m: int,
+    n: int,
+    batch_size: int,
+    chunk_size: int,
+    is_csc: bool = False,
+) -> None:
     """Function to incrementally load and write a sparse matrix to Zarr
 
     Args:
@@ -201,7 +209,9 @@ def batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size, is_csc=F
     return
 
 
-def batch_process_array(file, zarr_file, m, n, batch_size, chunk_size):
+def batch_process_array(
+    file: str, zarr_file: str, m: int, n: int, batch_size: int, chunk_size: int
+) -> None:
     """Function to incrementally load and write a dense matrix to Zarr
 
     Args:

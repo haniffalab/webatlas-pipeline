@@ -209,7 +209,8 @@ def write_json(
         raise SystemExit("No files to add to config file")
 
     # Get layout components/views
-    # Set layout with alternative syntax https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
+    # Set layout with alternative syntax:
+    # https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
     config_layout = (
         custom_layout
         if custom_layout and len(custom_layout)

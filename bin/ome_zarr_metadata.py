@@ -5,7 +5,16 @@ import fire
 from xml.etree import ElementTree as ET
 
 
-def get_image_basic_metadata(xml_path):
+def get_metadata(xml_path: str) -> str:
+    """Function that parses an OME XML file
+    and dumps basic metadata as a JSON formatted str
+
+    Args:
+        xml_path (str): Path to OME XML file
+
+    Returns:
+        str: JSON formatted metadata
+    """
     NS = {"ome": "http://www.openmicroscopy.org/Schemas/OME/2016-06"}
 
     ome_metadata = ET.parse(xml_path)
@@ -15,16 +24,13 @@ def get_image_basic_metadata(xml_path):
     Z = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeZ"]
     C = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeC"]
     T = ome_metadata.find("./*/ome:Pixels", NS).attrib["SizeT"]
-    channels = [
+
+    channel_names = [
         channel.attrib["Name"]
         for channel in ome_metadata.findall("./**/ome:Channel", NS)
         if "Name" in channel.attrib
     ]
-    return dimOrder, channels, X, Y, Z, C, T
 
-
-def main(xml_path):
-    dimOrder, channel_names, X, Y, Z, C, T = get_image_basic_metadata(xml_path)
     md = {
         "dimOrder": dimOrder,
         "channel_names": channel_names,
@@ -38,4 +44,4 @@ def main(xml_path):
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(get_metadata)

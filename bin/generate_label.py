@@ -6,9 +6,7 @@
 #
 # Distributed under terms of the BSD-3 license.
 
-"""
-
-"""
+from __future__ import annotations
 import os
 import fire
 import scanpy as sc
@@ -17,14 +15,22 @@ from skimage.draw import disk
 import tifffile as tf
 import pandas as pd
 from pathlib import Path
-from process_spaceranger import spaceranger_to_h5ad
+from process_spaceranger import spaceranger_to_anndata
 
 
-def main(stem, ome_md, h5ad):
+def main(stem: str, ome_md: dict[str, str], h5ad: str) -> None:
+    """This function writes a label image of spots
+    from the metadata contained in an h5ad file.
+
+    Args:
+        stem (str): Prefix for the output image filename
+        ome_md (dict of str: str): Dictionary containing image size in keys `X` and `Y`
+        h5ad (str): Path to h5ad file
+    """
     sample_id = Path(h5ad).stem
 
     if os.path.isdir(h5ad):
-        adata = spaceranger_to_h5ad(h5ad)
+        adata = spaceranger_to_anndata(h5ad)
     else:
         adata = sc.read(h5ad)
 
