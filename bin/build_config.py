@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+"""
+generate_label.py
+====================================
+Generates a Vitessce view config
+"""
 
 from collections import defaultdict
 import os
@@ -9,6 +13,16 @@ from itertools import chain, cycle
 
 
 def build_options(file_type, file_path, file_options, check_exist=False):
+    """
+    Returns the sum of two decimal numbers in binary digits.
+
+            Parameters:
+                    a (int): A decimal integer
+                    b (int): Another decimal integer
+
+            Returns:
+                    binary_sum (str): Binary string of the sum of a and b
+    """
     from vitessce import FileType as ft
 
     options = None

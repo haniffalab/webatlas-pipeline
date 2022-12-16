@@ -1,13 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-#
-# Copyright © 2022 Tong LI <tongli.bioinfo@protonmail.com>
-#
-# Distributed under terms of the BSD-3 license.
-
 """
-
+generate_label.py
+====================================
+Generates the label image from AnnData spatial data
 """
 import os
 import fire
@@ -21,6 +15,17 @@ from process_spaceranger import spaceranger_to_h5ad
 
 
 def main(stem, ome_md, h5ad):
+    """
+    Writes...
+
+            Parameters:
+                    stem (int): A decimal integer
+                    ome_md (int): Another decimal integer
+                    h5ad (int): Another decimal integer
+
+            Returns:
+                    binary_sum (str): Binary string of the sum of a and b
+    """
     sample_id = Path(h5ad).stem
 
     if os.path.isdir(h5ad):
