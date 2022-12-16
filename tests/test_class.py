@@ -8,7 +8,9 @@ from xml.etree.ElementTree import ElementTree
 import xmlschema
 import zarr
 import numpy as np
+import pandas as pd
 import anndata as ad
+from scipy.sparse import csc_matrix, csr_matrix
 
 from bin.process_h5ad import h5ad_to_zarr
 from bin.process_molecules import tsv_to_json
@@ -23,7 +25,44 @@ from bin.generate_label import main as generate_label
 class TestClass:
     @pytest.fixture(scope="class")
     def anndata_h5ad_file(self, tmp_path_factory):
-        adata = ad.AnnData(np.array([[100.0] * 3] * 3), dtype=float)
+        adata = ad.AnnData(
+            np.array([[100.0] * 4] * 3),
+            obs=pd.DataFrame(index=["obs1", "obs2", "obs3"]),
+            var=pd.DataFrame(index=["var1", "var2", "var3", "var4"]),
+            dtype="float32",
+        )
+        adata.uns["spatial"] = {
+            "anndata": {"scalefactors": {"spot_diameter_fullres": 10}}
+        }
+        adata.obsm["spatial"] = np.array([[20.0, 20.0], [40.0, 40.0], [60.0, 60.0]])
+        fn = tmp_path_factory.mktemp("data") / "anndata.h5ad"
+        adata.write_h5ad(fn)
+        return fn
+
+    @pytest.fixture(scope="class")
+    def anndata_csr_h5ad_file(self, tmp_path_factory):
+        adata = ad.AnnData(
+            csr_matrix(np.array([[100.0] * 4] * 3)),
+            obs=pd.DataFrame(index=["obs1", "obs2", "obs3"]),
+            var=pd.DataFrame(index=["var1", "var2", "var3", "var4"]),
+            dtype="float32",
+        )
+        adata.uns["spatial"] = {
+            "anndata": {"scalefactors": {"spot_diameter_fullres": 10}}
+        }
+        adata.obsm["spatial"] = np.array([[20.0, 20.0], [40.0, 40.0], [60.0, 60.0]])
+        fn = tmp_path_factory.mktemp("data") / "anndata.h5ad"
+        adata.write_h5ad(fn)
+        return fn
+
+    @pytest.fixture(scope="class")
+    def anndata_csc_h5ad_file(self, tmp_path_factory):
+        adata = ad.AnnData(
+            csc_matrix(np.array([[100.0] * 4] * 3)),
+            obs=pd.DataFrame(index=["obs1", "obs2", "obs3"]),
+            var=pd.DataFrame(index=["var1", "var2", "var3", "var4"]),
+            dtype="float32",
+        )
         adata.uns["spatial"] = {
             "anndata": {"scalefactors": {"spot_diameter_fullres": 10}}
         }
@@ -101,12 +140,96 @@ class TestClass:
         stem = "test"
         out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
         assert os.path.exists(out_file)
-        assert os.path.isdir(os.path.join(out_file, "X"))
-        assert os.path.isdir(os.path.join(out_file, "obs"))
-        assert os.path.isdir(os.path.join(out_file, "var"))
-        assert os.path.isdir(os.path.join(out_file, "obsm", "spatial"))
-        assert os.path.isdir(os.path.join(out_file, "uns", "spatial"))
+        z = zarr.open(out_file, mode="r")
+        assert "X" in z and isinstance(z["X"], zarr.Array)
+        assert "obs" in z
+        assert "var" in z
+        assert "obsm" in z and "spatial" in z["obsm"]
+        assert "uns" in z and "spatial" in z["uns"]
         assert out_file == stem + "_anndata.zarr"
+
+    def test_batch_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
+        monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
+        stem = "batch_test"
+        out_batch_file = h5ad_to_zarr(
+            anndata_h5ad_file, stem, batch_processing=True, batch_size=2
+        )
+        assert os.path.exists(out_batch_file)
+        assert out_batch_file == stem + "_anndata.zarr"
+        z_batch = zarr.open(out_batch_file, mode="r")
+        assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
+        assert "obs" in z_batch
+        assert "var" in z_batch
+        assert "obsm" in z_batch and "spatial" in z_batch["obsm"]
+        assert "uns" in z_batch and "spatial" in z_batch["uns"]
+        stem = "test"
+        out_file = h5ad_to_zarr(anndata_h5ad_file, stem)
+        z = zarr.open(out_file, mode="r")
+        assert np.array_equal(z_batch["X"], z["X"])
+
+    def test_csc_h5ad_to_zarr(self, monkeypatch, anndata_csc_h5ad_file):
+        monkeypatch.chdir(os.path.dirname(anndata_csc_h5ad_file))
+        stem = "test"
+        out_file = h5ad_to_zarr(anndata_csc_h5ad_file, stem)
+        assert os.path.exists(out_file)
+        z = zarr.open(out_file, mode="r")
+        assert "X" in z and isinstance(z["X"], zarr.Array)
+        assert "obs" in z
+        assert "var" in z
+        assert "obsm" in z and "spatial" in z["obsm"]
+        assert "uns" in z and "spatial" in z["uns"]
+        assert out_file == stem + "_anndata.zarr"
+
+    def test_batch_csc_h5ad_to_zarr(self, monkeypatch, anndata_csc_h5ad_file):
+        monkeypatch.chdir(os.path.dirname(anndata_csc_h5ad_file))
+        stem = "batch_test"
+        out_batch_file = h5ad_to_zarr(
+            anndata_csc_h5ad_file, stem, batch_processing=True, batch_size=4
+        )
+        assert os.path.exists(out_batch_file)
+        assert out_batch_file == stem + "_anndata.zarr"
+        z_batch = zarr.open(out_batch_file, mode="r")
+        assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
+        assert "obs" in z_batch
+        assert "var" in z_batch
+        assert "obsm" in z_batch and "spatial" in z_batch["obsm"]
+        assert "uns" in z_batch and "spatial" in z_batch["uns"]
+        stem = "test"
+        out_file = h5ad_to_zarr(anndata_csc_h5ad_file, stem)
+        z = zarr.open(out_file, mode="r")
+        assert np.array_equal(z_batch["X"], z["X"])
+
+    def test_csr_h5ad_to_zarr(self, monkeypatch, anndata_csr_h5ad_file):
+        monkeypatch.chdir(os.path.dirname(anndata_csr_h5ad_file))
+        stem = "test"
+        out_file = h5ad_to_zarr(anndata_csr_h5ad_file, stem)
+        assert os.path.exists(out_file)
+        z = zarr.open(out_file, mode="r")
+        assert "X" in z and isinstance(z["X"], zarr.Array)
+        assert "obs" in z
+        assert "var" in z
+        assert "obsm" in z and "spatial" in z["obsm"]
+        assert "uns" in z and "spatial" in z["uns"]
+        assert out_file == stem + "_anndata.zarr"
+
+    def test_batch_csr_h5ad_to_zarr(self, monkeypatch, anndata_csr_h5ad_file):
+        monkeypatch.chdir(os.path.dirname(anndata_csr_h5ad_file))
+        stem = "batch_test"
+        out_batch_file = h5ad_to_zarr(
+            anndata_csr_h5ad_file, stem, batch_processing=True, batch_size=2
+        )
+        assert os.path.exists(out_batch_file)
+        assert out_batch_file == stem + "_anndata.zarr"
+        z_batch = zarr.open(out_batch_file, mode="r")
+        assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
+        assert "obs" in z_batch
+        assert "var" in z_batch
+        assert "obsm" in z_batch and "spatial" in z_batch["obsm"]
+        assert "uns" in z_batch and "spatial" in z_batch["uns"]
+        stem = "test"
+        out_file = h5ad_to_zarr(anndata_csr_h5ad_file, stem)
+        z = zarr.open(out_file, mode="r")
+        assert np.array_equal(z_batch["X"], z["X"])
 
     def test_tsv_to_json(self, monkeypatch, molecules_tsv_file, molecules_json_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
