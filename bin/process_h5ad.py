@@ -27,6 +27,33 @@ def h5ad_to_zarr(
     batch_processing=False,
     batch_size=10000,
 ):
+    """This function takes an AnnData object or path to an h5ad file,
+    ensures data is of an appropriate data type for Vitessce
+    and writes the object to Zarr.
+
+    Args:
+        file (str, optional): Path to the h5ad file. Defaults to None.
+        stem (str, optional): Prefix for the output file. Defaults to "".
+        adata (AnnData, optional): AnnData object to process. Supersedes `file`.
+            Defaults to None.
+        compute_embeddings (bool, optional): If `X_umap` and `X_pca` embeddings will be computed.
+            Defaults to False.
+        chunk_size (int, optional): Output Zarr column chunk size. Defaults to 10.
+        var_index (str, optional): Alternative `var` column name with `var` names
+            to be used in the visualization. Defaults to None.
+        batch_processing (bool, optional): If the expression matrix will be written to Zarr incrementally.
+            Use to avoid loading the whole AnnData into memory. Defaults to False.
+        batch_size (int, optional): The amount of rows (if matrix is in CSR format)
+            or columns (if matrix is dense or in CSC format) of the expression matrix
+            to process at a time when batch processing. Defaults to 10000.
+
+    Raises:
+        SystemError: If `batch_processing` is True and the matrix contains an `indptr` key
+        but the matrix is not in scipy.sparse.csr_matrix nor scipy.sparse.csc_matrix format
+
+    Returns:
+        str: The written Zarr filename
+    """
 
     if not adata:
         if not batch_processing:
@@ -128,6 +155,18 @@ def h5ad_to_zarr(
 
 
 def batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size, is_csc=False):
+    """Function to incrementally load and write a sparse matrix to Zarr
+
+    Args:
+        file (str): Path to h5ad file
+        zarr_file (str): Path to output Zarr file
+        m (int): Number of rows in the matrix
+        n (int): Number of columns in the matrix
+        batch_size (int): Number of rows/columns to load and write at a time
+        chunk_size (int): Output Zarr column chunk size
+        is_csc (bool, optional): If matrix is in CSC format instead of CSR format.
+            Defaults to False.
+    """
     l = n if is_csc else m
     z = zarr.open(zarr_file, mode="a")
     z["X"] = zarr.empty(
@@ -163,6 +202,16 @@ def batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size, is_csc=F
 
 
 def batch_process_array(file, zarr_file, m, n, batch_size, chunk_size):
+    """Function to incrementally load and write a dense matrix to Zarr
+
+    Args:
+        file (str): Path to h5ad file
+        zarr_file (str): Path to output Zarr file
+        m (int): Number of rows in the matrix
+        n (int): Number of columns in the matrix
+        batch_size (int): Number of columns to load and write at a time
+        chunk_size (int): Output Zarr column chunk size
+    """
     z = zarr.open(zarr_file, mode="a")
     z["X"] = zarr.empty((m, 0), chunks=(m, chunk_size), dtype="float32")
 
