@@ -7,10 +7,12 @@ import pandas as pd
 import numpy as np
 import h5py
 import zarr
+import logging
 import warnings
 from scipy.sparse import spmatrix, csr_matrix, csc_matrix
 
 warnings.filterwarnings("ignore")
+logging.getLogger().setLevel(logging.INFO)
 
 SUFFIX = "anndata.zarr"
 
@@ -30,6 +32,8 @@ def h5ad_to_zarr(
         if not batch_processing:
             adata = sc.read(file)
         else:
+            batch_size = max(1, batch_size)
+            logging.info("Batch processing with batch size {}".format(batch_size))
             with h5py.File(file, "r") as f:
                 # Load everything but X and layers
                 adata = ad.AnnData(
@@ -107,14 +111,17 @@ def h5ad_to_zarr(
         with h5py.File(file, "r") as f:
             if isinstance(f["X"], h5py.Group) and "indptr" in f["X"].keys():
                 if len(f["X"]["indptr"]) - 1 == m:
+                    logging.info("Batch processing sparse CSR matrix...")
                     batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size)
                 elif len(f["X"]["indptr"]) - 1 == n:
+                    logging.info("Batch processing sparse CSC matrix...")
                     batch_process_sparse(
                         file, zarr_file, m, n, batch_size, chunk_size, is_csc=True
                     )
                 else:
                     raise SystemError("Error identifying sparse matrix format")
             else:
+                logging.info("Batch processing dense matrix...")
                 batch_process_array(file, zarr_file, m, n, batch_size, chunk_size)
 
     return zarr_file
@@ -122,7 +129,6 @@ def h5ad_to_zarr(
 
 def batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size, is_csc=False):
     l = n if is_csc else m
-    batch_size = min(1, batch_size)
     z = zarr.open(zarr_file, mode="a")
     z["X"] = zarr.empty(
         (m if is_csc else 0, 0 if is_csc else n),
@@ -159,7 +165,6 @@ def batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size, is_csc=F
 def batch_process_array(file, zarr_file, m, n, batch_size, chunk_size):
     z = zarr.open(zarr_file, mode="a")
     z["X"] = zarr.empty((m, 0), chunks=(m, chunk_size), dtype="float32")
-    batch_size = min(1, batch_size)
 
     with h5py.File(file, "r") as f:
         for i in range(n // batch_size + 1):
