@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+process_molecules.py
+====================================
+Processes molecules files
+"""
 
 import csv
 import json

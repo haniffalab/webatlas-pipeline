@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+process_spaceranger.py
+====================================
+Processes SpaceRanger output
+"""
 
 import os
 import fire

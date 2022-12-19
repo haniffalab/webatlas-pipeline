@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+router.py
+====================================
+Calls file processing functions
+"""
 
 from __future__ import annotations
 import fire

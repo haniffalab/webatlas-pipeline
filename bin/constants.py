@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from vitessce import (
     DataType as dt,
     FileType as ft,

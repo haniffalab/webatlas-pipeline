@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+ome_zarr_metadata.py
+====================================
+Gets OME XML basic metadata
+"""
 
 import json
 import fire

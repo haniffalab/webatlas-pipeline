@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 """
 generate_label.py
 ====================================
 Generates the label image from AnnData spatial data
 """
+
 from __future__ import annotations
 import os
 import fire

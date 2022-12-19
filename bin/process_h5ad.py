@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+process_h5ad.py
+====================================
+Processes H5AD files
+"""
 
 import fire
 import scanpy as sc
@@ -49,7 +54,7 @@ def h5ad_to_zarr(
 
     Raises:
         SystemError: If `batch_processing` is True and the matrix contains an `indptr` key
-        but the matrix is not in scipy.sparse.csr_matrix nor scipy.sparse.csc_matrix format
+            but the matrix is not in scipy.sparse.csr_matrix nor scipy.sparse.csc_matrix format
 
     Returns:
         str: Output Zarr filename
