@@ -43,13 +43,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Running</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading:</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/issues">Issue Tracker</a></li>
@@ -88,6 +91,45 @@
              
   <section id="running">
 <span id="run"></span><h1>Running<a class="headerlink" href="#running" title="Permalink to this heading"></a></h1>
+<p>The pipeline contains workflows to process files (h5ad files,
+spaceranger output, csv/tsv files), convert images to Zarrs and build a
+Vitessce config file from the generated files.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">scRNAseq_pipeline</span></code> entry point handles datasets with no image
+data. This processes files and builds a Vitessce config file.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ISS_pipeline</span></code> entry point handles datasets that contain both
+raw and label images.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Visium_pipeline</span></code> entry point handles datasets that contain a
+raw image and generates a label image from the specified h5ad file
+where it expects to have a <code class="docutils literal notranslate"><span class="pre">spatial</span></code> key within <code class="docutils literal notranslate"><span class="pre">uns</span></code>.</p></li>
+</ul>
+<p>Each dataset in a tsv file should belong to the same modality so they
+can all be run through the corresponding pipeline.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="p">[</span><span class="n">modality</span><span class="p">]</span><span class="n">_pipeline</span>
+</pre></div>
+</div>
+<p>You can also just convert the images to Zarrs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">To_ZARR</span>
+</pre></div>
+</div>
+<p>Or just process files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Process_files</span>
+</pre></div>
+</div>
+<p>Additionally, you can build a config file without processing files nor
+images, using a slightly different <a class="reference external" href="templates/config_template.yaml">yaml
+file</a>, per dataset, where you would
+provide filenames and necessary metadata:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Config</span>
+</pre></div>
+</div>
+<section id="further-reading">
+<h2>Further reading:<a class="headerlink" href="#further-reading" title="Permalink to this heading"></a></h2>
+<p>Docker image pulling/local conda env creation are handled by nextflow.
+Please refer to
+<a class="reference external" href="https://www.nextflow.io/docs/latest/getstarted.html">this</a> for
+detailed information.</p>
+</section>
 </section>
 
 

@@ -42,14 +42,19 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#yaml-file">yaml file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tsv-file">tsv file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/issues">Issue Tracker</a></li>
@@ -88,6 +93,100 @@
              
   <section id="setup">
 <span id="id1"></span><h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h1>
+<p>General configuration options are specified with a <a class="reference external" href="templates/visium_template.yaml">yaml
+file</a>. While dataset-specific
+configurations are written in a <a class="reference external" href="templates/visium_template.tsv">tsv
+file</a></p>
+<p>Templates are available in the <a class="reference external" href="templates/">templates directory</a>.</p>
+<section id="yaml-file">
+<h2>yaml file<a class="headerlink" href="#yaml-file" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">outdir</span></code> is the path to the directory to which files will be written</p>
+<p><code class="docutils literal notranslate"><span class="pre">tsv</span></code> is the path to the file that contains a dataset to process per
+line</p>
+<p><code class="docutils literal notranslate"><span class="pre">args</span></code> is a map of optional arguments for the scripts that process the
+supported files. This is applied to files of all datasets. Available
+<code class="docutils literal notranslate"><span class="pre">args</span></code> are</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">args</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">h5ad</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">compute_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `True` to compute PCA and UMAP if not already within the anndata object</span><span class="w"></span>
+<span class="w">        </span><span class="nt">chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># Zarr chunk size, defaults to 10</span><span class="w"></span>
+<span class="w">        </span><span class="nt">var_index</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SYMBOL&quot;</span><span class="w"> </span><span class="c1"># `var` column from the anndata object to use as the gene names in the webapp. This reindexes the `var` matrix</span><span class="w"></span>
+<span class="w">    </span><span class="nt">spaceranger</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">save_h5ad</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># save an h5ad to the output directory. Defaults to `False`</span><span class="w"></span>
+<span class="w">        </span><span class="nt">load_clusters</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` to disable loading the clusters from the `analysis` directory</span><span class="w"></span>
+<span class="w">        </span><span class="nt">load_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory</span><span class="w"></span>
+<span class="w">        </span><span class="nt">clustering</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;graphclust&quot;</span><span class="w"> </span><span class="c1"># clusters to load (if `load_clusters` is set to `True`)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">molecules</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">delimiter</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="w"> </span><span class="c1"># the file delimiter. Defaults to `\t`</span><span class="w"></span>
+<span class="w">        </span><span class="nt">has_header</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` if csv/tsv file contains no header</span><span class="w"></span>
+<span class="w">        </span><span class="nt">gene_col_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Name&quot;</span><span class="w"> </span><span class="c1"># name of the column for gene names. Defaults to `Name`.</span><span class="w"></span>
+<span class="w">        </span><span class="nt">x_col_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;x_int&quot;</span><span class="w"> </span><span class="c1"># name of the column for `x` coordinates. Defaults to `x_int`.</span><span class="w"></span>
+<span class="w">        </span><span class="nt">y_col_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;y_int&quot;</span><span class="w"> </span><span class="c1"># name of the column for `y` coordinates. Defaults to `y_int`.</span><span class="w"></span>
+<span class="w">        </span><span class="nt">gene_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># column index of the column for gene names in case `has_header` is `False`.</span><span class="w"></span>
+<span class="w">        </span><span class="nt">x_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># column index of the column for `x` coordinates in case `has_header` is `False`.</span><span class="w"></span>
+<span class="w">        </span><span class="nt">y_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"> </span><span class="c1"># column index of the column for `y` coordinates in case `has_header` is `False`.</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">options</span></code> is a map of the contents of the h5ad file that gets
+converted to Zarr. This is information required to write the Vitessce
+config file. These values are applied to all datasets unless a dataset
+has its own <code class="docutils literal notranslate"><span class="pre">options</span></code> specified within the <code class="docutils literal notranslate"><span class="pre">tsv</span></code> file. For example,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">spatial</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">xy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obsm/spatial&quot;</span><span class="w"> </span><span class="c1"># where the Anndata object holds spatial coordinates</span><span class="w"></span>
+<span class="w">    </span><span class="nt">mappings</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of embeddings and the index of the dimensions to use in a scatterplot</span><span class="w"></span>
+<span class="w">        </span><span class="nt">obsm/X_umap</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">1</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">        </span><span class="nt">obsm/spatial</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">1</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">factors</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of useful metadata to show per cell when hovering over them in the visualization</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;obs/sample&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">sets</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of keys for grouping cells</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obs/celltype&quot;</span><span class="w"> </span><span class="c1"># key with cell set labels</span><span class="w"></span>
+<span class="w">          </span><span class="nt">score</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obs/celltype_prob&quot;</span><span class="w"> </span><span class="c1"># key with cell set confidence/percentage scores (float values [0,1])</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;obs/sample&quot;</span><span class="w"> </span><span class="c1"># key with cell set labels, without associated scores</span><span class="w"></span>
+<span class="w">    </span><span class="nt">matrix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;X&quot;</span><span class="w"> </span><span class="c1"># expression matrix to use</span><span class="w"></span>
+</pre></div>
+</div>
+<p><strong>Note</strong> that the pipeline does not check for the existence of these
+metadata within the h5ad file. It is written directly to the Vitessce
+config file. If they’re incorrectly specified then the output config
+file can be manually edited without re-running the pipeline.</p>
+<p><code class="docutils literal notranslate"><span class="pre">layout</span></code> is the predefined Vitessce layout to use, it can be either
+<code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code> is an optional string that defines a Vitessce layout
+following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
+syntax</a>
+(Vitessce components are concatenated horizontally with <code class="docutils literal notranslate"><span class="pre">|</span></code> and
+vertically with <code class="docutils literal notranslate"><span class="pre">/</span></code>).Supersedes <code class="docutils literal notranslate"><span class="pre">layout</span></code></p>
+</section>
+<section id="tsv-file">
+<h2>tsv file<a class="headerlink" href="#tsv-file" title="Permalink to this heading"></a></h2>
+<p>Each dataset to be processed is defined as a line in a <a class="reference external" href="templates/visium_template.tsv">tsv
+file</a></p>
+<p>Columns definition: - <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> is the path to the h5ad file</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">spaceranger</span></code> is the path to the spaceranger output directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">image_type</span></code> specifies whether the image at <code class="docutils literal notranslate"><span class="pre">image_path</span></code> is type
+<code class="docutils literal notranslate"><span class="pre">raw</span></code> or <code class="docutils literal notranslate"><span class="pre">label</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is the project/experiment title which can have multiple
+datasets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset</span></code> is the name of the dataset</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">molecules</span></code> is the path to a molecules tsv file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">url</span></code> is an optional string that will be prepended to each file in
+the Vitessce config file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code> is an optional json-like string that overrides the <code class="docutils literal notranslate"><span class="pre">args</span></code>
+in the yaml file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">options</span></code> is an optional json-like string that overrides the
+<code class="docutils literal notranslate"><span class="pre">options</span></code> in the yaml file</p></li>
+</ul>
+</section>
+<section id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading"></a></h2>
+<p>Before running the pipeline, build the docker images.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> docker
+./build-docker-imgs.sh
+</pre></div>
+</div>
+</section>
 </section>
 
 
