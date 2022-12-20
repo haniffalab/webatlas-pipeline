@@ -41,7 +41,7 @@ Indices and tables
    :hidden:
    :caption: Project Links
   
-   demo
+   demos
    citing
    Source Code <https://github.com/haniffalab/vitessce-pipeline>
    Issue Tracker <https://github.com/haniffalab/vitessce-pipeline/issues>

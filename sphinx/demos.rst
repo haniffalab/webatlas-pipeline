@@ -1,4 +1,4 @@
-.. _demo:
+.. _demos:
 
 Demos
 =====
