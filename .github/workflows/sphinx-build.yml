@@ -28,8 +28,8 @@ jobs:
         run: | 
           make html
           touch _build/html/.nojekyll
-      - name: Deploy to gh-pages
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: dev
           folder: sphinx/_build/html
