@@ -6,13 +6,15 @@ import groovy.json.*
 nextflow.enable.dsl=2
 
 // Default params
-params.title = ""
-params.images = []
-params.factors = []
-params.codebook = ""
 params.max_n_worker = 30
+
+params.title = ""
 params.dataset = ""
-params.zarr_md = []
+
+params.tsv = "./template.tsv"
+params.tsv_delimiter = "\t"
+
+params.images = []
 params.args = []
 params.url = ""
 
@@ -30,7 +32,6 @@ params.s3_keys = [
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
-params.tsv = "./template.tsv"
 
 verbose_log = true
 version = "0.0.1"
@@ -50,21 +51,22 @@ process image_to_zarr {
 
     output:
     /*val out_s3, emit: s3_path*/
-    tuple val(stem), path("${stem}_${img_type}.zarr"), emit: raw_zarr
-    tuple val(stem), path("${stem}_${img_type}.zarr/OME/METADATA.ome.xml"), val(img_type), emit: ome_xml
+    tuple val(stem), path("${stem_str}_${img_type}.zarr"), emit: img_zarr
+    tuple val(stem), path("${stem_str}_${img_type}.zarr/OME/METADATA.ome.xml"), val(img_type), emit: ome_xml
 
     script:
+    stem_str = stem.join("-")
     out_s3 = "${output_s3}/${img_type}.zarr"
     """
     #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" ${image} s3://${out_s3}
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
         tiffcp -c none ${image} uncompressed.tif
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem}_${img_type}.zarr
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem_str}_${img_type}.zarr
     else
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem}_${img_type}.zarr
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem_str}_${img_type}.zarr
     fi
-    consolidate_md.py ${stem}_${img_type}.zarr
+    consolidate_md.py ${stem_str}_${img_type}.zarr
     """
 }
 
@@ -101,9 +103,10 @@ process route_file {
     tuple val(stem), path("${stem}*"), emit: converted_files, optional: true
 
     script:
+    stem_str = stem.join("-")
     args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    router.py --file_type ${type} --path ${file} --stem ${stem} ${args_str}
+    router.py --file_type ${type} --path ${file} --stem ${stem_str} ${args_str}
     """
 }
 
@@ -120,9 +123,10 @@ process Build_config{
     val(custom_layout)
 
     output:
-    path("${stem}_config.json")
+    path("${stem_str}_config.json")
 
     script:
+    stem_str = stem.join("-")
     zarrs = [] + (raster && raster.toString() ? "\"${raster.name}\":${raster_md}" : []) + (label && label.toString() ? "\"${label.name}\":${label_md}" : [])
     zarrs_str = zarrs ? "--image_zarr '{" + zarrs.join(",") + "}'" : ""
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
@@ -149,59 +153,109 @@ process Generate_label_image {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
+    tuple val(stem), path(file_path), path(ref_img)
 
     output:
-    tuple val(stem), val("label"), file("${stem}.tif")
+    tuple val(stem), val("label"), file("${stem_str}.tif")
 
     script:
+    stem_str = stem.join("-")
     """
-    generate_label.py --stem "${stem}" --ome_md '${ome_md_json}' --h5ad ${h5ad}
+    generate_label.py --stem "${stem_str}" --ome_md '${ome_md_json}' --h5ad ${h5ad}
     """
 }
 
 
 Channel.fromPath(params.tsv)
-    .splitCsv(header:true, sep:"\t")
-    .multiMap { l ->
-        images: [
-            "${l.title}_${l.dataset}",
-            l.image_type,
-            l.image_path
-        ]
-        data: [
-            h5ad: [
-                "${l.title}_${l.dataset}",
-                l.h5ad,
-                l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad
-            ],
-            molecules: [
-                "${l.title}_${l.dataset}",
-                l.molecules,
-                l.args && l.args.molecules?.trim() ? l.args.molecules?.trim() : params.args.molecules
-            ],
-            spaceranger: [
-                "${l.title}_${l.dataset}",
-                l.spaceranger,
-                (l.args && l.args.spaceranger?.trim() ? l.args.spaceranger?.trim() : params.args.spaceranger ? params.args.spaceranger : []) +
-                (l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad ? params.args.h5ad : [])
-            ]
-        ]
-        config_params: [
-            "${l.title}_${l.dataset}",
-            l.title,
-            l.dataset,
-            l.url,
-            l.options?.trim() ? l.options : params.options
-        ]
+    .splitCsv(header:true, sep:params.tsv_delimiter)
+    // .map { l -> tuple( "${l.title}-${l.dataset}", l ) }
+    .map { l -> tuple( tuple(l.title, l.dataset), l ) }
+    .branch { stem, l ->
+        images: l.data_type in ["raw_image","label_image","label_image_data"]
+        data: l.data_type in ["h5ad","spaceranger"]
+        other: true
     }
-    .set { data_with_md }
+    .set{inputs}
+
+
+workflow Entry {
+
+    // Process_files()
+
+    Process_images()
+
+}
+
+workflow Process_files {
+    inputs.data.view()
+    if (inputs.data){
+        data_list = inputs.data.flatMap { stem, data_map ->
+            data_map.data_path ? [
+                [
+                    stem,
+                    data_map.data_path,
+                    data_map.data_type,
+                    (data_map.args && data_map.args?.trim() ?
+                        data_map.args?.trim() :
+                        params.args[data_map.data_type] ?
+                            params.args[data_map.data_type] :
+                            []
+                    )
+                ]
+            ] : []
+        }
+        route_file(data_list.unique())
+
+        files = route_file.out.converted_files.groupTuple(by:0)
+        file_paths = route_file.out.out_file_paths.map{ it -> [
+                it[0],
+                it[1].split('\n').flatten()
+            ].flatten() }
+            .groupTuple(by:0)
+    } else {
+        files = []
+        file_paths = []
+    }
+
+    emit:
+    files = files
+    file_paths = file_paths
+}
+
+workflow Process_images {
+    inputs.images.view()
+    if (inputs.images) {
+        img_tifs = inputs.images.filter { stem, data_map -> 
+            data_map.data_type in ["raw_image", "label_image"] 
+        }
+        .map { stem, data_map -> 
+            [ 
+                stem,
+                data_map.data_type.replace("_image",""),
+                data_map.data_path
+            ]
+        }
+
+        image_to_zarr(img_tifs, params.s3_keys, params.outdir_s3)
+        img_zarrs = image_to_zarr.out.img_zarr
+
+        ome_zarr_metadata(image_to_zarr.out.ome_xml)
+        ome_md_json = ome_zarr_metadata.out
+    } else {
+        img_zarrs = []
+        ome_md_json = []
+    }
+
+    emit:
+    img_zarrs = img_zarrs
+    ome_md_json = ome_md_json
+}
 
 
 workflow To_ZARR {
     if (data_with_md.images) {
         image_to_zarr(data_with_md.images, params.s3_keys, params.outdir_s3)
-        zarr_dirs = image_to_zarr.out.raw_zarr
+        zarr_dirs = image_to_zarr.out.img_zarr
 
         ome_zarr_metadata(image_to_zarr.out.ome_xml)
         ome_md_json = ome_zarr_metadata.out//{ [[(it[0]): new JsonSlurper().parseText(it[2].replace('\n',''))]] }
@@ -221,7 +275,7 @@ workflow _label_to_ZARR {
     main:
     if (label_images) {
         image_to_zarr(label_images, params.s3_keys, params.outdir_s3)
-        label_zarr = image_to_zarr.out.raw_zarr
+        label_zarr = image_to_zarr.out.img_zarr
         ome_zarr_metadata(image_to_zarr.out.ome_xml)
         ome_md_json = ome_zarr_metadata.out
     } else {
@@ -234,36 +288,6 @@ workflow _label_to_ZARR {
     ome_md_json = ome_md_json
 }
 
-workflow Process_files {
-    data_with_md.data.view()
-    if (data_with_md.data){
-        data_list = data_with_md.data.flatMap{ it ->
-            it.collectMany{ data_type, data_map ->
-                data_map[1] ? [
-                    [
-                        data_map[0],
-                        data_map[1],
-                        data_type,
-                        data_map[2]
-                    ]
-                ] : []
-            }
-        }
-        route_file(data_list.unique())
-        files = route_file.out.converted_files.groupTuple(by:0)
-        file_paths = route_file.out.out_file_paths.map{ it -> [
-                it[0],
-                it[1].split('\n').flatten()
-            ].flatten() }.groupTuple(by:0)
-    } else {
-        files = []
-        file_paths = []
-    }
-
-    emit:
-    files = files
-    file_paths = file_paths
-}
 
 workflow scRNAseq_pipeline {
     Process_files()
