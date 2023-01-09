@@ -167,7 +167,7 @@ process Generate_label_image {
 
 
 Channel.fromPath(params.tsv)
-    .splitCsv(header:true, sep:params.tsv_delimiter)
+    .splitCsv(header:true, sep:params.tsv_delimiter, quote:"'")
     // .map { l -> tuple( "${l.title}-${l.dataset}", l ) }
     .map { l -> tuple( tuple(l.title, l.dataset), l ) }
     .branch { stem, l ->
@@ -236,11 +236,38 @@ workflow Process_images {
             ]
         }
 
-        image_to_zarr(img_tifs, params.s3_keys, params.outdir_s3)
-        img_zarrs = image_to_zarr.out.img_zarr
+        img_data = inputs.images.filter { stem, data_map ->
+            data_map.data_type == "label_image_data"
+        }
+        .map { stem, data_map ->
+            [
+                stem,
+                data_map.data_path,
+                *(data_map.args && data_map.args?.trim() && new JsonSlurper().parseText(data_map.args).containsKey("ref_img") ? 
+                    [
+                        new JsonSlurper().parseText(data_map.args).ref_img,
+                        new JsonSlurper().parseText(data_map.args).findAll { it.key != "ref_img" }
+                    ] :
+                    [
+                        "NO_REF",
+                        data_map.args && data_map.args?.trim() ? data_map.args : []
+                    ]
+                )
+            ]
+        }
 
-        ome_zarr_metadata(image_to_zarr.out.ome_xml)
-        ome_md_json = ome_zarr_metadata.out
+        img_data.view()
+
+        img_zarrs = []
+        ome_md_json = []
+
+        // Generate_label_image
+
+        // image_to_zarr(img_tifs, params.s3_keys, params.outdir_s3)
+        // img_zarrs = image_to_zarr.out.img_zarr
+
+        // ome_zarr_metadata(image_to_zarr.out.ome_xml)
+        // ome_md_json = ome_zarr_metadata.out
     } else {
         img_zarrs = []
         ome_md_json = []
