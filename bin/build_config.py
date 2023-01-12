@@ -42,7 +42,7 @@ def build_options(
         file_type (str): Type of file supported by Vitessce.
         file_path (str): Path to file.
         file_options (dict[str, T.Any]): Dictionary defining the options.
-        check_exist (bool, optional): Whether to check the given path to confirm the file exists. 
+        check_exist (bool, optional): Whether to check the given path to confirm the file exists.
             Defaults to False.
 
     Returns:
@@ -126,8 +126,8 @@ def build_raster_options(
 
     Args:
         image_zarr (dict[str, dict[str, str]]): Dictionary containing a metadata dictionary
-            for each image in Zarr format. 
-        url (str): URL to prepend to each file in the config file. 
+            for each image in Zarr format.
+        url (str): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files
 
     Returns:
@@ -192,7 +192,7 @@ def write_json(
         file_paths (list[str], optional): Paths to files that will be included in the config file. Defaults to [].
         image_zarr (dict[str, dict[str, str]], optional): Dictionary containing a metadata dictionary
             for each image in Zarr format. Defaults to {}.
-        url (str, optional): URL to prepend to each file in the config file. 
+        url (str, optional): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files.
             Defaults to "".
         outdir (str, optional): Directory in which the config file will be written to. Defaults to "./".
@@ -346,7 +346,7 @@ def write_json(
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)
     with open(
-        os.path.join(outdir or "", f"{title}_{dataset}_{config_filename_suffix}"), "w"
+        os.path.join(outdir or "", f"{title}-{dataset}-{config_filename_suffix}"), "w"
     ) as out_file:
         json.dump(config_json, out_file, indent=2)
 
