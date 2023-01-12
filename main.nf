@@ -51,8 +51,8 @@ process image_to_zarr {
 
     output:
     /*val out_s3, emit: s3_path*/
-    tuple val(stem), path("${stem_str}_${img_type}.zarr"), emit: img_zarr
-    tuple val(stem), path("${stem_str}_${img_type}.zarr/OME/METADATA.ome.xml"), val(img_type), emit: ome_xml
+    tuple val(stem), path("${stem_str}-${img_type}.zarr"), emit: img_zarr
+    tuple val(stem), path("${stem_str}-${img_type}.zarr/OME/METADATA.ome.xml"), val(img_type), emit: ome_xml
 
     script:
     stem_str = stem.join("-")
