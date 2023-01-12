@@ -18,17 +18,31 @@ from pathlib import Path
 from process_spaceranger import spaceranger_to_anndata
 
 
-def from_h5ad(stem: str, h5ad: str, shape: tuple[int, int] = None) -> None:
-    sample_id = Path(h5ad).stem
+def from_anndata(
+    stem: str, file_path: str, shape: tuple[int, int] = None, sample_id: str = None
+) -> None:
+    """_summary_
 
-    if os.path.isdir(h5ad):
-        adata = spaceranger_to_anndata(h5ad)
+    Args:
+        stem (str): Prefix for the output image filename.
+        file_path (str): Path to the h5ad file or spaceranger output directory.
+        shape (tuple[int, int], optional): Output image shape. Defaults to None.
+        sample_id (str, optional): Sample ID string within the Anndata object. Defaults to None.
+    """
+    # sample_id = sample_id or Path(file_path).stem
+
+    if os.path.isdir(file_path):
+        adata = spaceranger_to_anndata(file_path)
+        sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
         if not shape:
             hires_shape = adata.uns["spatial"][sample_id]["images"]["hires"].shape
-            scalef = adata.uns["spatial"][sample_id]["scalefactors"]["tissue_hires_scalef"]
-            shape = [hires_shape[0] / scalef, hires_shape[1] / scalef]
+            scalef = adata.uns["spatial"][sample_id]["scalefactors"][
+                "tissue_hires_scalef"
+            ]
+            shape = [int(hires_shape[0] / scalef), int(hires_shape[1] / scalef)]
     else:
-        adata = sc.read(h5ad)
+        adata = sc.read(file_path)
+        sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
 
     # check if index is numerical, if not reindex
     if not adata.obs.index.is_integer() and not (
@@ -55,7 +69,7 @@ def from_h5ad(stem: str, h5ad: str, shape: tuple[int, int] = None) -> None:
     for spId, (y, x) in zip(adata.obs.index, spot_coords):
         labelImg[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
 
-    tf.imwrite(f"{stem}.tif", labelImg)
+    tf.imwrite(f"{stem}-label.tif", labelImg)
 
     return
 
@@ -73,7 +87,7 @@ def create_img(
 
     Args:
         stem (str): Prefix for the output image filename.
-        file_type (str): Type of file containing the metadata from which to 
+        file_type (str): Type of file containing the metadata from which to
             generate the label image.
         file_path (str): Path to the metadata file.
         ref_img (str, optional): Path to reference image from which to get the
@@ -86,8 +100,8 @@ def create_img(
         tif_img = tf.TiffFile(ref_img)
         args["shape"] = tif_img.pages[0].shape[:2]
 
-    if file_type == "h5ad":
-        from_h5ad(stem, file_path, **args)
+    if file_type in {"h5ad", "spaceranger"}:
+        from_anndata(stem, file_path, **args)
 
 
 if __name__ == "__main__":

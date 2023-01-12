@@ -56,17 +56,17 @@ process image_to_zarr {
 
     script:
     stem_str = stem.join("-")
-    out_s3 = "${output_s3}/${img_type}.zarr"
+    out_s3 = "${output_s3}/${stem_str}-${img_type}.zarr"
     """
     #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" ${image} s3://${out_s3}
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
         tiffcp -c none ${image} uncompressed.tif
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem_str}_${img_type}.zarr
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem_str}-${img_type}.zarr
     else
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem_str}_${img_type}.zarr
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem_str}-${img_type}.zarr
     fi
-    consolidate_md.py ${stem_str}_${img_type}.zarr
+    consolidate_md.py ${stem_str}-${img_type}.zarr
     """
 }
 
@@ -123,7 +123,7 @@ process Build_config{
     val(custom_layout)
 
     output:
-    path("${stem_str}_config.json")
+    path("${stem_str}-config.json")
 
     script:
     stem_str = stem.join("-")
@@ -153,26 +153,27 @@ process Generate_label_image {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), path(file_path), path(ref_img)
+    tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
 
     output:
-    tuple val(stem), val("label"), file("${stem_str}.tif")
+    tuple val(stem), val("label"), file("${stem_str}-label.tif")
 
     script:
     stem_str = stem.join("-")
+    ref_img_str = ref_img.name != "NO_REF" ? "--ref_img ${ref_img}" : ""
+    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    generate_label.py --stem "${stem_str}" --ome_md '${ome_md_json}' --h5ad ${h5ad}
+    generate_label.py --stem ${stem_str} --file_type ${file_type} --file_path ${file_path} ${ref_img_str} ${args_str}
     """
 }
 
 
 Channel.fromPath(params.tsv)
     .splitCsv(header:true, sep:params.tsv_delimiter, quote:"'")
-    // .map { l -> tuple( "${l.title}-${l.dataset}", l ) }
     .map { l -> tuple( tuple(l.title, l.dataset), l ) }
     .branch { stem, l ->
-        images: l.data_type in ["raw_image","label_image","label_image_data"]
         data: l.data_type in ["h5ad","spaceranger"]
+        images: l.data_type in ["raw_image","label_image","label_image_data"]
         other: true
     }
     .set{inputs}
@@ -180,15 +181,15 @@ Channel.fromPath(params.tsv)
 
 workflow Entry {
 
-    // Process_files()
+    Process_files()
 
     Process_images()
 
 }
 
 workflow Process_files {
-    inputs.data.view()
     if (inputs.data){
+        // Map inputs to: tuple val(stem), path(file), val(type), val(args)
         data_list = inputs.data.flatMap { stem, data_map ->
             data_map.data_path ? [
                 [
@@ -199,11 +200,12 @@ workflow Process_files {
                         data_map.args?.trim() :
                         params.args[data_map.data_type] ?
                             params.args[data_map.data_type] :
-                            []
+                            [:]
                     )
                 ]
-            ] : []
+            ] : [:]
         }
+
         route_file(data_list.unique())
 
         files = route_file.out.converted_files.groupTuple(by:0)
@@ -223,8 +225,8 @@ workflow Process_files {
 }
 
 workflow Process_images {
-    inputs.images.view()
     if (inputs.images) {
+        // Map tif inputs to: tuple val(stem), val(img_type), path(image)
         img_tifs = inputs.images.filter { stem, data_map -> 
             data_map.data_type in ["raw_image", "label_image"] 
         }
@@ -236,6 +238,8 @@ workflow Process_images {
             ]
         }
 
+        // Map label data inputs to: tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
+        // Pop file_type (required) and ref_img (optional) from args
         img_data = inputs.images.filter { stem, data_map ->
             data_map.data_type == "label_image_data"
         }
@@ -243,31 +247,24 @@ workflow Process_images {
             [
                 stem,
                 data_map.data_path,
-                *(data_map.args && data_map.args?.trim() && new JsonSlurper().parseText(data_map.args).containsKey("ref_img") ? 
-                    [
-                        new JsonSlurper().parseText(data_map.args).ref_img,
-                        new JsonSlurper().parseText(data_map.args).findAll { it.key != "ref_img" }
-                    ] :
-                    [
-                        "NO_REF",
-                        data_map.args && data_map.args?.trim() ? data_map.args : []
-                    ]
-                )
+                *[
+                    new JsonSlurper().parseText(data_map.args).file_type,
+                    new JsonSlurper().parseText(data_map.args).containsKey("ref_img") ? 
+                        new JsonSlurper().parseText(data_map.args).ref_img :
+                        file("NO_REF"),
+                    new JsonSlurper().parseText(data_map.args).findAll { !(it.key in ["file_type", "ref_img"]) }
+                ]
             ]
         }
 
-        img_data.view()
+        Generate_label_image(img_data)
 
-        img_zarrs = []
-        ome_md_json = []
+        all_tifs = img_tifs.mix(Generate_label_image.out)
+        image_to_zarr(all_tifs, params.s3_keys, params.outdir_s3)
+        img_zarrs = image_to_zarr.out.img_zarr
 
-        // Generate_label_image
-
-        // image_to_zarr(img_tifs, params.s3_keys, params.outdir_s3)
-        // img_zarrs = image_to_zarr.out.img_zarr
-
-        // ome_zarr_metadata(image_to_zarr.out.ome_xml)
-        // ome_md_json = ome_zarr_metadata.out
+        ome_zarr_metadata(image_to_zarr.out.ome_xml)
+        ome_md_json = ome_zarr_metadata.out
     } else {
         img_zarrs = []
         ome_md_json = []
@@ -275,43 +272,6 @@ workflow Process_images {
 
     emit:
     img_zarrs = img_zarrs
-    ome_md_json = ome_md_json
-}
-
-
-workflow To_ZARR {
-    if (data_with_md.images) {
-        image_to_zarr(data_with_md.images, params.s3_keys, params.outdir_s3)
-        zarr_dirs = image_to_zarr.out.img_zarr
-
-        ome_zarr_metadata(image_to_zarr.out.ome_xml)
-        ome_md_json = ome_zarr_metadata.out//{ [[(it[0]): new JsonSlurper().parseText(it[2].replace('\n',''))]] }
-    } else {
-        zarr_dirs = []
-        ome_md_json = []
-    }
-
-    emit:
-    zarr_dirs = zarr_dirs
-    ome_md_json = ome_md_json
-}
-
-workflow _label_to_ZARR {
-    take: label_images
-
-    main:
-    if (label_images) {
-        image_to_zarr(label_images, params.s3_keys, params.outdir_s3)
-        label_zarr = image_to_zarr.out.img_zarr
-        ome_zarr_metadata(image_to_zarr.out.ome_xml)
-        ome_md_json = ome_zarr_metadata.out
-    } else {
-        label_zarr = []
-        ome_md_json = []
-    }
-
-    emit:
-    label_zarr = label_zarr
     ome_md_json = ome_md_json
 }
 

@@ -1,5 +1,5 @@
 title,dataset,data_type,data_path,url,args,options
-project_1,visium_dataset_1,h5ad,/path/to/visium/anndata.h5ad/,http://localhost:3000/visium_dataset_1/,,
+project_1,visium_dataset_1,h5ad,/path/to/visium/anndata.h5ad,http://localhost:3000/visium_dataset_1/,,
 project_1,visium_dataset_1,raw_image,/path/to/visium/raw_image.tif,http://localhost:3000/visium_dataset_1/,,
 project_2,iss_dataset_1,h5ad,/path/to/iss/anndata.h5ad/,http://localhost:3000/iss_dataset_1/,,
 project_2,iss_dataset_1,raw_image,/path/to/iss/raw_image.tif,http://localhost:3000/iss_dataset_1/,,
