@@ -120,13 +120,14 @@ def build_options(
 
 
 def build_raster_options(
-    image_zarr: dict[str, dict[str, str]], url: str
+    images: dict[str, list[dict[str, T.Any]]], url: str
 ) -> dict[str, T.Any]:
     """Function that creates the View config's options for image files
 
     Args:
-        image_zarr (dict[str, dict[str, str]]): Dictionary containing a metadata dictionary
-            for each image in Zarr format.
+        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for each image type key (raw and label)
+            a list of dictionaries (one per image of that type) with the corresponding path and metadata for that image.
+            Defaults to {}.
         url (str): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files
 
@@ -134,41 +135,40 @@ def build_raster_options(
         dict[str, T.Any]: Options dictionary for View config file
     """
     raster_options = {"renderLayers": [], "schemaVersion": "0.0.2", "images": []}
-    for image in image_zarr.keys():
-        image_name = os.path.splitext(image)[0]
-        channel_names = (
-            image_zarr[image]["channel_names"]
-            if "channel_names" in image_zarr[image]
-            else []
-        )
-        channel_names, isBitmask = (
-            (["Labels"], True)
-            if image_name.split("_")[-1] == "label" and not len(channel_names)
-            else (channel_names, False)
-        )
-        raster_options["renderLayers"].append(image_name)
-        raster_options["images"].append(
-            {
-                "name": image_name,
-                "url": os.path.join(url, image),
-                "type": "zarr",
-                "metadata": {
-                    "isBitmask": isBitmask,
-                    "dimensions": [
-                        {"field": "t", "type": "quantitative", "values": None},
-                        {
-                            "field": "channel",
-                            "type": "nominal",
-                            "values": channel_names,
-                        },
-                        {"field": "y", "type": "quantitative", "values": None},
-                        {"field": "x", "type": "quantitative", "values": None},
-                    ],
-                    "isPyramid": True,
-                    "transform": {"translate": {"y": 0, "x": 0}, "scale": 1},
-                },
-            }
-        )
+    for img_type in images.keys():  # raw, label
+        for img in images[img_type]:
+            image_name = os.path.splitext(os.path.basename(img["path"]))[0]
+            channel_names = (
+                img["md"]["channel_names"] if "channel_names" in img["md"] else []
+            )
+            channel_names, isBitmask = (
+                (["Labels"], True)
+                if img_type == "label" and not len(channel_names)
+                else (channel_names, False)
+            )
+            raster_options["renderLayers"].append(image_name)
+            raster_options["images"].append(
+                {
+                    "name": image_name,
+                    "url": os.path.join(url, os.path.basename(img["path"])),
+                    "type": "zarr",
+                    "metadata": {
+                        "isBitmask": isBitmask,
+                        "dimensions": [
+                            {"field": "t", "type": "quantitative", "values": None},
+                            {
+                                "field": "channel",
+                                "type": "nominal",
+                                "values": channel_names,
+                            },
+                            {"field": "y", "type": "quantitative", "values": None},
+                            {"field": "x", "type": "quantitative", "values": None},
+                        ],
+                        "isPyramid": True,
+                        "transform": {"translate": {"y": 0, "x": 0}, "scale": 1},
+                    },
+                }
+            )
     return raster_options
 
 
@@ -176,13 +176,13 @@ def write_json(
     title: str = "",
     dataset: str = "",
     file_paths: list[str] = [],
-    image_zarr: dict[str, dict[str, str]] = {},
+    images: dict[str, list[dict[str, T.Any]]] = {},
     url: str = "",
-    outdir: str = "./",
-    config_filename_suffix: str = "config.json",
     options: dict[str, T.Any] = None,
     layout: str = "minimal",
     custom_layout: str = None,
+    config_filename_suffix: str = "config.json",
+    outdir: str = "./",
 ) -> None:
     """This function writes a Vitessce View config JSON file
 
@@ -190,19 +190,20 @@ def write_json(
         title (str, optional): Title to use in the config file. Defaults to "".
         dataset (str, optional): Dataset name. Defaults to "".
         file_paths (list[str], optional): Paths to files that will be included in the config file. Defaults to [].
-        image_zarr (dict[str, dict[str, str]], optional): Dictionary containing a metadata dictionary
-            for each image in Zarr format. Defaults to {}.
+        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for each image type key (raw and label)
+            a list of dictionaries (one per image of that type) with the corresponding path and metadata for that image.
+            Defaults to {}.
         url (str, optional): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files.
             Defaults to "".
-        outdir (str, optional): Directory in which the config file will be written to. Defaults to "./".
-        config_filename_suffix (str, optional): Config filename suffix. Defaults to "config.json".
         options (dict[str, T.Any], optional): Dictionary with Vitessce config file `options`. Defaults to None.
         layout (str, optional): Type of predefined layout to use. Defaults to "minimal".
         custom_layout (str, optional): String defining a Vitessce layout following its alternative syntax.
             https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout
             https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
             Defaults to None.
+        config_filename_suffix (str, optional): Config filename suffix. Defaults to "config.json".
+        outdir (str, optional): Directory in which the config file will be written to. Defaults to "./".
 
     Raises:
         SystemExit: If no valid files have been input
@@ -215,13 +216,13 @@ def write_json(
     config_dataset = config.add_dataset(str(title), str(dataset))
 
     coordination_types = defaultdict(lambda: cycle(iter([])))
-    file_paths_names = {x.split("_")[-1]: x for x in file_paths}
+    file_paths_names = {x.split("-")[-1]: x for x in file_paths}
     dts = set([])
 
-    if len(image_zarr.items()):
+    if images.keys() and any([len(images[k]) for k in images.keys()]):
         has_files = True
         config_dataset.add_file(
-            dt.RASTER, ft.RASTER_JSON, options=build_raster_options(image_zarr, url)
+            dt.RASTER, ft.RASTER_JSON, options=build_raster_options(images, url)
         )
         dts.add(dt.RASTER)
 

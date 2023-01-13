@@ -21,7 +21,8 @@ from process_spaceranger import spaceranger_to_anndata
 def from_anndata(
     stem: str, file_path: str, shape: tuple[int, int] = None, sample_id: str = None
 ) -> None:
-    """_summary_
+    """This function writes a label image tif file with drawn labels according to an
+    Anndata object with necessary metadata stored within `uns["spatial"]`.
 
     Args:
         stem (str): Prefix for the output image filename.
