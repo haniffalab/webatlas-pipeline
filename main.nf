@@ -237,8 +237,7 @@ workflow Process_files {
                     data_map.data_type,
                     (data_map.args && data_map.args?.trim() ?
                         data_map.args?.trim() :
-                        params.args[data_map.data_type] ?
-                            params.args[data_map.data_type] : [:]
+                        params.args[data_map.data_type] ?: [:]
                     )
                 ]
             ] : [:]
