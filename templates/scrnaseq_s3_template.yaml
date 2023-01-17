@@ -1,11 +1,8 @@
 outdir: "output/scrnaseq/"
-max_n_worker: 30
 tsv : "./templates/scrnaseq_s3_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
-  # molecules:
-  #   delimiter: ","
 options:
   mappings:
     obsm/X_umap: [0,1]

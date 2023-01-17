@@ -1,12 +1,9 @@
 outdir: "output/visium/"
-max_n_worker: 30
 tsv : "./templates/visium_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
-  # molecules:
-  #   delimiter: ","
 options:
   spatial:
     xy: "obsm/spatial"

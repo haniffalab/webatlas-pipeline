@@ -1,12 +1,9 @@
 outdir: "output/iss/"
-max_n_worker: 30
 tsv : "./templates/iss_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
-  # molecules:
-  #   delimiter: ","
 options:
   spatial:
     xy: "obsm/spatial"
@@ -15,7 +12,6 @@ options:
     obsm/X_pca: [0,1]
   factors:
     - "obs/sample"
-    #- "obs/total_counts"
   sets:
     - "obs/cluster"
     - name: "obs/celltype"

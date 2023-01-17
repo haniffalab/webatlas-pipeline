@@ -11,8 +11,7 @@ params.max_n_worker = 30
 params.title = ""
 params.dataset = ""
 
-params.tsv = "./template.tsv"
-params.tsv_delimiter = "\t"
+params.tsv_delimiter = ","
 
 params.images = []
 params.args = []
@@ -170,7 +169,7 @@ Channel.fromPath(params.tsv)
     .splitCsv(header:true, sep:params.tsv_delimiter, quote:"'")
     .map { l -> tuple( tuple(l.title, l.dataset), l ) }
     .branch { stem, l ->
-        data: l.data_type in ["h5ad","spaceranger"]
+        data: l.data_type in ["h5ad","spaceranger","molecules"]
         images: l.data_type in ["raw_image","label_image","label_image_data"]
         config_params: l.data_type in ["description","url","options"]
             return [stem, ["${l.data_type}": l.data_path]]
@@ -179,7 +178,7 @@ Channel.fromPath(params.tsv)
     .set{inputs}
 
 
-workflow Entry {
+workflow Full_pipeline {
 
     Process_files()
 

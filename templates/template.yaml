@@ -1,5 +1,4 @@
 outdir: "output/"
-max_n_worker: 30
 tsv : "./templates/template.csv"
 tsv_delimiter: ","
 args:
