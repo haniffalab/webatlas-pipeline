@@ -181,6 +181,8 @@ def write_json(
     options: dict[str, T.Any] = None,
     layout: str = "minimal",
     custom_layout: str = None,
+    config_name: str = "",
+    description: str = "",
     config_filename_suffix: str = "config.json",
     outdir: str = "./",
 ) -> None:
@@ -212,7 +214,10 @@ def write_json(
 
     has_files = False
 
-    config = VitessceConfig(name=str(title))
+    config = VitessceConfig(
+        name=str(config_name) if len(config_name) else str(title),
+        description=description,
+    )
     config_dataset = config.add_dataset(str(title), str(dataset))
 
     coordination_types = defaultdict(lambda: cycle(iter([])))
