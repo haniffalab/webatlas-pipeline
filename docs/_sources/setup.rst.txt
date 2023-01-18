@@ -245,6 +245,8 @@ Supported values are
         therefore we **strongly recommend** writing another `run parameters`_ file instead of 
         overriding ``options``.
 
+Note no ``args`` are required for any type of dataset information.
+
 .. _setup-docker :
 
 Docker
