@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+process_spaceranger.py
+====================================
+Processes SpaceRanger output
+"""
 
 import os
 import fire
@@ -7,9 +12,26 @@ import pandas as pd
 from process_h5ad import h5ad_to_zarr
 
 
-def spaceranger_to_h5ad(
-    path, load_clusters=False, load_embeddings=False, clustering="graphclust"
-):
+def spaceranger_to_anndata(
+    path: str,
+    load_clusters: bool = False,
+    load_embeddings: bool = False,
+    clustering: str = "graphclust",
+) -> sc.AnnData:
+    """Function to create an AnnData object from a SpaceRanger output directory.
+
+    Args:
+        path (str): Path to a SpaceRanger output directory
+        load_clusters (bool, optional): If cluster files should be included in the
+            AnnData object. Defaults to False.
+        load_embeddings (bool, optional): If embedding coordinates files should be included
+            in the AnnData object. Defaults to False.
+        clustering (str, optional): The clustering algorithm to include in the AnnData
+            object if `load_clusters` is True. Defaults to "graphclust".
+
+    Returns:
+        AnnData: AnnData object created from the SpaceRanger output data
+    """
 
     adata = sc.read_visium(path)
 
@@ -41,10 +63,29 @@ def spaceranger_to_h5ad(
 
 
 def spaceranger_to_zarr(
-    path, stem, load_clusters=True, load_embeddings=True, save_h5ad=False, **kwargs
-):
+    path: str,
+    stem: str,
+    load_clusters: bool = True,
+    load_embeddings: bool = True,
+    save_h5ad: bool = False,
+    **kwargs,
+) -> str:
+    """Function to write to Zarr an AnnData object created from SpaceRanger output data
 
-    adata = spaceranger_to_h5ad(path, load_clusters, load_embeddings)
+    Args:
+        path (str): Path to a SpaceRanger output directory
+        stem (str): Prefix for the output Zarr filename
+        load_clusters (bool, optional): If cluster files should be included in the
+            AnnData object. Defaults to False.
+        load_embeddings (bool, optional): If embedding coordinates files should be included
+            in the AnnData object. Defaults to False.
+        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.
+
+    Returns:
+        str: Output Zarr filename
+    """
+
+    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings)
     if save_h5ad:
         adata.write_h5ad(f"{stem}.h5ad")
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)

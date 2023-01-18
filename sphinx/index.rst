@@ -20,7 +20,7 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
 .. _view config: https://vitessce.io/docs/view-config-json/
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Documentation
    :glob:
 
@@ -28,13 +28,20 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
    setup
    run
    testing
+   modules
+
+Indices and tables
+==================
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
 .. toctree::
    :maxdepth: 2
    :hidden:
    :caption: Project Links
   
-   demo
+   demos
    citing
    Source Code <https://github.com/haniffalab/vitessce-pipeline>
    Issue Tracker <https://github.com/haniffalab/vitessce-pipeline/issues>

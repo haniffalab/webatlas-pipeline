@@ -1,16 +1,53 @@
 #!/usr/bin/env python3
+"""
+build_config.py
+====================================
+Generates a Vitessce View config
+"""
 
+from __future__ import annotations
+import typing as T
 from collections import defaultdict
 import os
 import fire
 import json
 import logging
 from itertools import chain, cycle
+import regex
+from vitessce import (
+    VitessceConfig,
+    DataType as dt,
+    FileType as ft,
+    CoordinationType as ct,
+    Component as cm,
+)
+from constants import (
+    DATA_TYPES,
+    DEFAULT_OPTIONS,
+    DEFAULT_LAYOUTS,
+    COMPONENTS_COORDINATION_TYPES,
+    COMPONENTS_DATA_TYPES,
+)
 
 
-def build_options(file_type, file_path, file_options, check_exist=False):
-    from vitessce import FileType as ft
+def build_options(
+    file_type: str,
+    file_path: str,
+    file_options: dict[str, T.Any],
+    check_exist: bool = False,
+) -> T.Any:
+    """Function that creates the View config's options for non-image files
 
+    Args:
+        file_type (str): Type of file supported by Vitessce.
+        file_path (str): Path to file.
+        file_options (dict[str, T.Any]): Dictionary defining the options.
+        check_exist (bool, optional): Whether to check the given path to confirm the file exists. 
+            Defaults to False.
+
+    Returns:
+        T.Any: Options dictionary for View config file
+    """
     options = None
 
     if file_type == ft.ANNDATA_CELLS_ZARR:
@@ -82,7 +119,20 @@ def build_options(file_type, file_path, file_options, check_exist=False):
     return options
 
 
-def build_raster_options(image_zarr, url):
+def build_raster_options(
+    image_zarr: dict[str, dict[str, str]], url: str
+) -> dict[str, T.Any]:
+    """Function that creates the View config's options for image files
+
+    Args:
+        image_zarr (dict[str, dict[str, str]]): Dictionary containing a metadata dictionary
+            for each image in Zarr format. 
+        url (str): URL to prepend to each file in the config file. 
+            The URL to the local or remote server that will serve the files
+
+    Returns:
+        dict[str, T.Any]: Options dictionary for View config file
+    """
     raster_options = {"renderLayers": [], "schemaVersion": "0.0.2", "images": []}
     for image in image_zarr.keys():
         image_name = os.path.splitext(image)[0]
@@ -123,32 +173,41 @@ def build_raster_options(image_zarr, url):
 
 
 def write_json(
-    title="",
-    dataset="",
-    file_paths=[],
-    image_zarr={},
-    url="",
-    outdir="./",
-    config_filename_suffix="config.json",
-    options=None,
-    layout="minimal",
-    custom_layout=None,
-):
-    import regex
-    from vitessce import (
-        VitessceConfig,
-        DataType as dt,
-        FileType as ft,
-        CoordinationType as ct,
-        Component as cm,
-    )
-    from constants import (
-        DATA_TYPES,
-        DEFAULT_OPTIONS,
-        DEFAULT_LAYOUTS,
-        COMPONENTS_COORDINATION_TYPES,
-        COMPONENTS_DATA_TYPES,
-    )
+    title: str = "",
+    dataset: str = "",
+    file_paths: list[str] = [],
+    image_zarr: dict[str, dict[str, str]] = {},
+    url: str = "",
+    outdir: str = "./",
+    config_filename_suffix: str = "config.json",
+    options: dict[str, T.Any] = None,
+    layout: str = "minimal",
+    custom_layout: str = None,
+) -> None:
+    """This function writes a Vitessce View config JSON file
+
+    Args:
+        title (str, optional): Title to use in the config file. Defaults to "".
+        dataset (str, optional): Dataset name. Defaults to "".
+        file_paths (list[str], optional): Paths to files that will be included in the config file. Defaults to [].
+        image_zarr (dict[str, dict[str, str]], optional): Dictionary containing a metadata dictionary
+            for each image in Zarr format. Defaults to {}.
+        url (str, optional): URL to prepend to each file in the config file. 
+            The URL to the local or remote server that will serve the files.
+            Defaults to "".
+        outdir (str, optional): Directory in which the config file will be written to. Defaults to "./".
+        config_filename_suffix (str, optional): Config filename suffix. Defaults to "config.json".
+        options (dict[str, T.Any], optional): Dictionary with Vitessce config file `options`. Defaults to None.
+        layout (str, optional): Type of predefined layout to use. Defaults to "minimal".
+        custom_layout (str, optional): String defining a Vitessce layout following its alternative syntax.
+            https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout
+            https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
+            Defaults to None.
+
+    Raises:
+        SystemExit: If no valid files have been input
+        SystemExit: If the layout has an error that can not be fixed
+    """
 
     has_files = False
 
@@ -209,7 +268,9 @@ def write_json(
         raise SystemExit("No files to add to config file")
 
     # Get layout components/views
-    # Set layout with alternative syntax https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
+    # Set layout with alternative syntax:
+    # https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout
+    # https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
     config_layout = (
         custom_layout
         if custom_layout and len(custom_layout)

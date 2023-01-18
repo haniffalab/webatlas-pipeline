@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Running &mdash; vitessce-pipeline 0.1.0 documentation</title>
+  <title>Python Module Index &mdash; vitessce-pipeline 0.1.0 documentation</title>
   
 
   
@@ -41,8 +40,13 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Testing" href="testing.html" />
-    <link rel="prev" title="Setup" href="setup.html" /> 
+ 
+
+    <script>
+      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
+    </script>
+
+
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,13 +92,10 @@
             
             
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Running</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading:</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
@@ -159,14 +160,10 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Running</li>
+      <li>Python Module Index</li>
     
     
       <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="_sources/run.rst.txt" rel="nofollow"> View page source</a>
-          
         
       </li>
     
@@ -178,48 +175,80 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="running">
-<span id="run"></span><h1>Running<a class="headerlink" href="#running" title="Permalink to this heading">¶</a></h1>
-<p>The pipeline offers a workflow that processes files, images, and
-builds a Vitessce config file from the generated files.
-Alternatively, the workflow to process files only, or the workflow to process images only
-can be called independently.</p>
-<p>Each of these workflows work as entry points that can be specified when running the
-pipeline through the command line.</p>
-<ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Full_pipeline</span></code> workflow runs the other workflows as needed and
-builds a Vitessce config file per dataset.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Process_files</span></code> workflow handles data files and their conversions.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Process_images</span></code> workflow handles image files and/or label image data and their conversions.</p></li>
-</ul>
-<p>Data should be input using a <a class="reference internal" href="setup.html#run-parameters"><span class="std std-ref">run parameters</span></a> file
-and a <a class="reference internal" href="setup.html#data-parameters"><span class="std std-ref">data parameters</span></a> file.</p>
-<p>To run the <code class="docutils literal notranslate"><span class="pre">Full_pipeline</span></code> use</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">run</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Full_pipeline</span>
-</pre></div>
-</div>
-<p>This will handle all input files, whether they are data files or images, for all datasets
-defined in the <a class="reference internal" href="setup.html#data-parameters"><span class="std std-ref">data parameters</span></a> file.</p>
-<p>You can modify the entry point if you’re interested in only getting the converted outputs.
-Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
-<section id="further-reading">
-<h2>Further reading:<a class="headerlink" href="#further-reading" title="Permalink to this heading">¶</a></h2>
-<p>Docker image pulling/local conda env creation are handled by nextflow.
-Please refer to
-<a class="reference external" href="https://www.nextflow.io/docs/latest/getstarted.html">this</a> for
-detailed information.</p>
-</section>
-</section>
+
+   <h1>Python Module Index</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-b"><strong>b</strong></a> | 
+   <a href="#cap-c"><strong>c</strong></a> | 
+   <a href="#cap-g"><strong>g</strong></a> | 
+   <a href="#cap-o"><strong>o</strong></a> | 
+   <a href="#cap-p"><strong>p</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-b"><td></td><td>
+       <strong>b</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-build_config"><code class="xref">build_config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-c"><td></td><td>
+       <strong>c</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-consolidate_md"><code class="xref">consolidate_md</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-constants"><code class="xref">constants</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-g"><td></td><td>
+       <strong>g</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-generate_label"><code class="xref">generate_label</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-o"><td></td><td>
+       <strong>o</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-ome_zarr_metadata"><code class="xref">ome_zarr_metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-p"><td></td><td>
+       <strong>p</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-process_h5ad"><code class="xref">process_h5ad</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-process_molecules"><code class="xref">process_molecules</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="modules.html#module-process_spaceranger"><code class="xref">process_spaceranger</code></a></td><td>
+       <em></em></td></tr>
+   </table>
 
 
            </div>
            
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="testing.html" class="btn btn-neutral float-right" title="Testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="setup.html" class="btn btn-neutral float-left" title="Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 

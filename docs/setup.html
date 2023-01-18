@@ -1,36 +1,73 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Setup &mdash; vitessce-pipeline 0.1.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Running" href="run.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> vitessce-pipeline
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -38,17 +75,42 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#run-parameters">Run parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#args">args</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#options">options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-parameters">Data parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-file">data file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-information">dataset information</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/issues">Issue Tracker</a></li>
@@ -61,63 +123,361 @@
 <li class="toctree-l1"><a class="reference external" href="https://www.openmicroscopy.org/">Open Microscopy Environment</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">vitessce-pipeline</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Setup</li>
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Setup</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/setup.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="setup">
-<span id="id1"></span><h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">¶</a></h1>
+<p>Running the pipeline requires two parameters files:</p>
+<ol class="arabic simple">
+<li><p>a <a class="reference internal" href="#id2">run parameters</a> <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file with general configuration options</p></li>
+<li><p>a <a class="reference internal" href="#id3">data parameters</a> <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> file with dataset-specific information</p></li>
+</ol>
+<p>Templates are available in the <a class="reference external" href="templates/">templates directory</a>.</p>
+<section id="run-parameters">
+<span id="id2"></span><h2>Run parameters<a class="headerlink" href="#run-parameters" title="Permalink to this heading">¶</a></h2>
+<p>The parameters in the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file apply to a full run of the pipeline.
+Parameters for each type of data file work as the default parameters to all the data files defined in the <a class="reference internal" href="#id3">data parameters</a> file.</p>
+<p>In the command line, the path to the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file is indicated through the <code class="docutils literal notranslate"><span class="pre">-params-file</span></code> flag.</p>
+<p>The parameters are as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tsv</span></code>, the path to the <a class="reference internal" href="#id3">data parameters</a> <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> file that contains the datasets’ information and data files to process.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tsv_delimiter</span></code>, the delimiter to be used for the <a class="reference internal" href="#id3">data parameters</a> file.
+Defaults to <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">outdir</span></code>, the path to the directory to which output files will be written.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>, a map of optional arguments for the scripts that process the supported files.
+This is applied to files of all datasets. See available <a class="reference internal" href="#args">args</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">options</span></code>, a map of the contents of a dataset’s Anndata object that gets
+converted to Zarr. This is information required to write the Vitessce
+config file. These values are applied to all datasets unless a dataset
+has its own <code class="docutils literal notranslate"><span class="pre">options</span></code> specified within the <a class="reference internal" href="#id3">data parameters</a> file.
+See more information about <a class="reference internal" href="#options">options</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>, a predefined Vitessce layout to use, it can be either
+<code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code>, an optional string that defines a Vitessce layout
+following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
+syntax</a>
+(Vitessce components are concatenated horizontally with <code class="docutils literal notranslate"><span class="pre">|</span></code> and
+vertically with <code class="docutils literal notranslate"><span class="pre">/</span></code>). Supersedes <code class="docutils literal notranslate"><span class="pre">layout</span></code>.</p></li>
+</ul>
+<section id="args">
+<span id="run-parameters-args"></span><h3>args<a class="headerlink" href="#args" title="Permalink to this heading">¶</a></h3>
+<p>Available <code class="docutils literal notranslate"><span class="pre">args</span></code> depend of the data type of each data file.
+This are passed to the processing script for all the files of the
+corresponding data type (unless overriden in the <a class="reference internal" href="#id3">data parameters</a> file).
+Possible values for the currently supported data types are as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">h5ad</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">compute_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `True` to compute PCA and UMAP if not already within the anndata object</span>
+<span class="w">    </span><span class="nt">chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># Zarr chunk size, defaults to 10</span>
+<span class="w">    </span><span class="nt">var_index</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SYMBOL&quot;</span><span class="w"> </span><span class="c1"># `var` column from the anndata object to use as the gene names in the webapp. This reindexes the `var` matrix</span>
+<span class="w">  </span><span class="nt">spaceranger</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">save_h5ad</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># save an h5ad to the output directory. Defaults to `False`</span>
+<span class="w">    </span><span class="nt">load_clusters</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` to disable loading the clusters from the `analysis` directory</span>
+<span class="w">    </span><span class="nt">load_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory</span>
+<span class="w">    </span><span class="nt">clustering</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;graphclust&quot;</span><span class="w"> </span><span class="c1"># clusters to load (if `load_clusters` is set to `True`)</span>
+<span class="w">  </span><span class="nt">molecules</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">delimiter</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="w"> </span><span class="c1"># the file delimiter. Defaults to `\t`</span>
+<span class="w">    </span><span class="nt">has_header</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` if csv/tsv file contains no header</span>
+<span class="w">    </span><span class="nt">gene_col_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Name&quot;</span><span class="w"> </span><span class="c1"># name of the column for gene names. Defaults to `Name`.</span>
+<span class="w">    </span><span class="nt">x_col_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;x_int&quot;</span><span class="w"> </span><span class="c1"># name of the column for `x` coordinates. Defaults to `x_int`.</span>
+<span class="w">    </span><span class="nt">y_col_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;y_int&quot;</span><span class="w"> </span><span class="c1"># name of the column for `y` coordinates. Defaults to `y_int`.</span>
+<span class="w">    </span><span class="nt">gene_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># column index of the column for gene names in case `has_header` is `False`.</span>
+<span class="w">    </span><span class="nt">x_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># column index of the column for `x` coordinates in case `has_header` is `False`.</span>
+<span class="w">    </span><span class="nt">y_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"> </span><span class="c1"># column index of the column for `y` coordinates in case `has_header` is `False`.</span>
+</pre></div>
+</div>
+</section>
+<section id="options">
+<span id="run-parameters-options"></span><h3>options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">options</span></code> map is used to write the Vitessce config file.
+One Vitessce config file is generated per dataset.
+Include relevant information from your data to be visualized.
+All values are optional as they depend on them existing in your data.</p>
+<p>Values that can be specified are <code class="docutils literal notranslate"><span class="pre">spatial</span></code>, <code class="docutils literal notranslate"><span class="pre">mappings</span></code>, <code class="docutils literal notranslate"><span class="pre">factors</span></code>, <code class="docutils literal notranslate"><span class="pre">sets</span></code> and <code class="docutils literal notranslate"><span class="pre">matrix</span></code>,
+and should be defined as the following example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">options</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">spatial</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">xy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obsm/spatial&quot;</span><span class="w"> </span><span class="c1"># where the Anndata object holds spatial coordinates</span>
+<span class="w">  </span><span class="nt">mappings</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of embeddings and the index of the dimensions to use in a scatterplot</span>
+<span class="w">    </span><span class="nt">obsm/X_umap</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">1</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">obsm/spatial</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">1</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">factors</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of useful metadata to show per cell when hovering over them in the visualization</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;obs/sample&quot;</span>
+<span class="w">  </span><span class="nt">sets</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of keys for grouping cells</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obs/celltype&quot;</span><span class="w"> </span><span class="c1"># key with cell set labels</span>
+<span class="w">      </span><span class="nt">score</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obs/celltype_prob&quot;</span><span class="w"> </span><span class="c1"># key with cell set confidence/percentage scores (float values [0,1])</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;obs/sample&quot;</span><span class="w"> </span><span class="c1"># key with cell set labels, without associated scores</span>
+<span class="w">  </span><span class="nt">matrix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;X&quot;</span><span class="w"> </span><span class="c1"># expression matrix to use</span>
+</pre></div>
+</div>
+<p><strong>Note</strong> that the pipeline does not check for the existence of these
+metadata within the h5ad file. It is written directly to the Vitessce
+config file. If they’re incorrectly specified then an error will occur when
+Vitessce tries to load the data. The output config
+file can be manually edited without re-running the pipeline to fix or adapt
+the visualization to your needs.</p>
+</section>
+</section>
+<section id="data-parameters">
+<span id="id3"></span><h2>Data parameters<a class="headerlink" href="#data-parameters" title="Permalink to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> file is used to define dataset information and data files to be processed.
+Multiple datasets can be defined in the same <cite>data parameters</cite> file and they will all be processed in the same pipeline run.
+Datasets are identified and grouped by the joint <code class="docutils literal notranslate"><span class="pre">title-dataset</span></code> key.</p>
+<p>Each dataset does not need to contain all types of data types,
+but it should contain at least one to be processed (file or image).</p>
+<p>Each line can either define a data file <em>or</em> dataset information.
+Examples for each case are provided further down.</p>
+<p>Columns definitions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> is the project/experiment title which can have multiple datasets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset</span></code> is the name of the dataset</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_type</span></code> is the type of file to be processed if the line defines a <a class="reference internal" href="#data-file">data file</a>,
+or the type of <a class="reference internal" href="#dataset-information">dataset information</a> otherwise.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_path</span></code> is the path to file or directory containing the data if the line defines a <a class="reference internal" href="#data-file">data file</a>,
+or the <a class="reference internal" href="#dataset-information">dataset information</a> value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code> is an optional JSON-like string defining argument names and values
+to be used in the script that processes the data file.
+It must be written inside simple quotes <code class="docutils literal notranslate"><span class="pre">'</span></code>, with strings inside it using double quotes <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>,
+like <code class="docutils literal notranslate"><span class="pre">'{&quot;key&quot;:</span> <span class="pre">&quot;value&quot;}'</span></code>.
+This overrides <code class="docutils literal notranslate"><span class="pre">args</span></code> from <a class="reference internal" href="#id2">run parameters</a> for the line’s file only.
+This value is not used if the line is defining dataset information.</p></li>
+</ul>
+<section id="data-file">
+<span id="data-parameters-data-file"></span><h3>data file<a class="headerlink" href="#data-file" title="Permalink to this heading">¶</a></h3>
+<p>A line defining a data file can be written as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">title</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">data_type</span><span class="p">,</span><span class="n">data_path</span><span class="p">,</span><span class="n">args</span>
+<span class="n">project_1</span><span class="p">,</span><span class="n">dataset_1</span><span class="p">,</span><span class="n">h5ad</span><span class="p">,</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">visium</span><span class="o">/</span><span class="n">anndata</span><span class="o">.</span><span class="n">h5ad</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>Supported values are</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 28.6%" />
+<col style="width: 42.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>data_type</p></th>
+<th class="head"><p>data_path</p></th>
+<th class="head"><p>args</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">h5ad</span></code></p></td>
+<td><p>Path to the <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> file</p></td>
+<td><p>JSON-like string with arguments as described in <a class="reference internal" href="#args">args</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spaceranger</span></code></p></td>
+<td><p>Path to a SpaceRanger output directory</p></td>
+<td><p>JSON-like string with arguments as described in <a class="reference internal" href="#args">args</a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">molecules</span></code></p></td>
+<td><p>Path to a molecules <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> file</p></td>
+<td><p>JSON-like string with arguments as described in <a class="reference internal" href="#args">args</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">raw_image</span></code></p></td>
+<td><p>Path to the raw <code class="docutils literal notranslate"><span class="pre">tif</span></code> image</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">label_image</span></code></p></td>
+<td><p>Path to the raw <code class="docutils literal notranslate"><span class="pre">tif</span></code> image</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">label_image_data</span></code></p></td>
+<td><p>Path to a file or directory containing data from which to generate a label <code class="docutils literal notranslate"><span class="pre">tif</span></code> image.
+Supported inputs are <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> and <code class="docutils literal notranslate"><span class="pre">spaceranger</span></code></p></td>
+<td><dl class="simple">
+<dt>JSON-like string with the following key-values,</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">file_type</span></code> (required), either <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> or <code class="docutils literal notranslate"><span class="pre">spaceranger</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ref_img</span></code> (optional), a reference <code class="docutils literal notranslate"><span class="pre">tif</span></code> image of the size of the desired label image</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code> (optional), shape of the desired label image as <code class="docutils literal notranslate"><span class="pre">[int,</span> <span class="pre">int]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample_id</span></code> (optional), the name of the sample within the Anndata object.
+Otherwise the first one will be used.</p></li>
+</ul>
+</dd>
+</dl>
+<p>For example,</p>
+<p><code class="docutils literal notranslate"><span class="pre">'{&quot;file_type&quot;:</span> <span class="pre">&quot;h5ad&quot;,</span> <span class="pre">&quot;ref_img&quot;:</span> <span class="pre">&quot;/path/to/raw.tif&quot;,</span> <span class="pre">&quot;sample_id&quot;:</span> <span class="pre">&quot;visium_sample&quot;}'</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">'{&quot;file_type&quot;:</span> <span class="pre">&quot;h5ad&quot;,</span> <span class="pre">&quot;shape&quot;:</span> <span class="pre">[1000,1000],</span> <span class="pre">&quot;sample_id&quot;:</span> <span class="pre">&quot;visium_sample&quot;}'</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dataset-information">
+<span id="data-parameters-dataset-info"></span><h3>dataset information<a class="headerlink" href="#dataset-information" title="Permalink to this heading">¶</a></h3>
+<p>A line defining optional dataset information can be written as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">title</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">data_type</span><span class="p">,</span><span class="n">data_path</span><span class="p">,</span><span class="n">args</span>
+<span class="n">project_1</span><span class="p">,</span><span class="n">dataset_1</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">3000</span><span class="o">/</span><span class="n">visium_dataset_1</span><span class="o">/</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>Supported values are</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>data_type</p></th>
+<th class="head"><p>data_path</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">config_name</span></code></p></td>
+<td><p>Name or title for the final Vitessce config file and visualization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">description</span></code></p></td>
+<td><p>Dataset description</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">url</span></code></p></td>
+<td><p>The url to prepend to each converted data file in the output Vitessce config file.
+Vitessce will load files from this location.
+This may be the final location to which files will be uploaded to and served
+or a local one for testing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
+<td><p>a predefined Vitessce layout to use, it can be either
+<code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code>.
+Overrides <code class="docutils literal notranslate"><span class="pre">layout</span></code> from <a class="reference internal" href="#id2">run parameters</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code></p></td>
+<td><p>an optional string that defines a Vitessce layout
+following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
+syntax</a>.
+Overrides <code class="docutils literal notranslate"><span class="pre">custom_layout</span></code> from <a class="reference internal" href="#id2">run parameters</a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">options</span></code></p></td>
+<td><p>(<em>Not recommended</em>) JSON-like string of values as described in <a class="reference internal" href="#options">options</a>.
+This will override the <code class="docutils literal notranslate"><span class="pre">options</span></code> defined in <a class="reference internal" href="#id2">run parameters</a> for a specific
+dataset only. Though, the numerous values needed would result in a lengthy string,
+therefore we <strong>strongly recommend</strong> writing another <a class="reference internal" href="#id2">run parameters</a> file instead of
+overriding <code class="docutils literal notranslate"><span class="pre">options</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note no <code class="docutils literal notranslate"><span class="pre">args</span></code> are required for any type of dataset information.</p>
+</section>
+</section>
+<section id="docker">
+<span id="setup-docker"></span><h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h2>
+<p>Before running the pipeline, build the docker images.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker
+./build-docker-imgs.sh
+</pre></div>
+</div>
+</section>
 </section>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="run.html" class="btn btn-neutral float-right" title="Running" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Haniffa Lab.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, Haniffa Lab.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

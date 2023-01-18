@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+process_molecules.py
+====================================
+Processes molecules files
+"""
 
 import csv
 import json
@@ -8,24 +13,54 @@ SUFFIX = "molecules.json"
 
 
 def tsv_to_json(
-    file,
-    stem,
-    has_header=True,
-    gene_col_name="Name",
-    x_col_name="x_int",
-    y_col_name="y_int",
-    delimiter="\t",
-    x_scale=1.0,
-    y_scale=1.0,
-    x_offset=0.0,
-    y_offset=0.0,
-    gene_col_idx=None,
-    x_col_idx=None,
-    y_col_idx=None,
-    filter_col_name=None,
-    filter_col_idx=None,
-    filter_col_value=None,
-):
+    file: str,
+    stem: str,
+    has_header: bool = True,
+    gene_col_name: str = "Name",
+    x_col_name: str = "x_int",
+    y_col_name: str = "y_int",
+    delimiter: str = "\t",
+    x_scale: float = 1.0,
+    y_scale: float = 1.0,
+    x_offset: float = 0.0,
+    y_offset: float = 0.0,
+    gene_col_idx: int = None,
+    x_col_idx: int = None,
+    y_col_idx: int = None,
+    filter_col_name: str = None,
+    filter_col_idx: int = None,
+    filter_col_value: str = None,
+) -> str:
+    """This function loads a TSV/CSV file containing gene names, X and Y coordinates
+    and writes them to a JSON file supported by Vitessce
+
+    Args:
+        file (str): Path to tsv/csv file
+        stem (str): Prefix for output JSON file
+        has_header (bool, optional): If input file contains a header row. Defaults to True.
+        gene_col_name (str, optional): Column header name where gene names are stored. Defaults to "Name".
+        x_col_name (str, optional): Column header name where `X` coordinates are stored. Defaults to "x_int".
+        y_col_name (str, optional): Column header name where `Y` coordinates are stored. Defaults to "y_int".
+        delimiter (str, optional): Input file delimiter. Defaults to "\t".
+        x_scale (float, optional): Scale to multiply `X` coordinates by. Defaults to 1.0.
+        y_scale (float, optional): Scale to multiply `Y` coordinates by. Defaults to 1.0.
+        x_offset (float, optional): Offset to add to `X` coordinates. Defaults to 0.0.
+        y_offset (float, optional): Offset to add to `Y` coordinates. Defaults to 0.0.
+        gene_col_idx (int, optional): Column index where gene names are stored if header is not present. Defaults to None.
+        x_col_idx (int, optional): Column index where `X` coordinates are stored if header is not present. Defaults to None.
+        y_col_idx (int, optional): Column index where `Y` coordinates are stored if header is not present. Defaults to None.
+        filter_col_name (str, optional): Column header name storing values to filter data. Defaults to None.
+        filter_col_idx (int, optional): Column index storing values to filter data if header is not present. Defaults to None.
+        filter_col_value (str, optional): Value expected in filter column.
+            If a row has a different value it will not be written to output file. Defaults to None.
+
+    Raises:
+        SystemExit: If any column header name is not in the header row.
+        e: If coordinate values cannot be parsed to float
+
+    Returns:
+        str: Output JSON filename
+    """
 
     with open(file) as f:
         reader = csv.reader(f, delimiter=delimiter)
