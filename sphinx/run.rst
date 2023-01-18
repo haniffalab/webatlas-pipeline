@@ -6,7 +6,7 @@ Running
 The pipeline offers a workflow that processes files, images, and 
 builds a Vitessce config file from the generated files.
 Alternatively, the workflow to process files only, or the workflow to process images only  
-be called independently.
+can be called independently.
 
 Each of these workflows work as entry points that can be specified when running the
 pipeline through the command line.

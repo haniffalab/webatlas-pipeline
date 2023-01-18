@@ -184,9 +184,13 @@ Channel.fromPath(params.tsv)
     .set{inputs}
 
     lines
-        .map{ [it[0], null] } // dummy null value for joins with empty channels to work as it would if using phase
+        .map{ [it[0], null] } // dummy null value for joins with empty channels to work as it would if using phase (keys only array wont join with empty channels)
         .unique()
         .set{stems}
+
+    inputs.other
+        .collect { stem, l -> l.data_type }
+        .view{ "Unrecognized data_type(s) ${it.unique()}" }
 
 workflow Full_pipeline {
 
@@ -232,7 +236,7 @@ workflow Output_to_config {
         
         stems
             .join(inputs.config_params, remainder: true)
-            .map{ stem, dummy, c -> [stem, c]}
+            .map{ stem, dummy, c -> [stem, c]} // remove dummy value
             .groupTuple()
             .map { stem, it ->
                 [ stem, params.config_params + it?.collectEntries() {   
@@ -334,7 +338,7 @@ workflow Process_images {
                 stem, type, [path: path.name, md: new JsonSlurper().parseText(md.trim())]
             ]
         }
-        .groupTuple(by: [0,1], remainder: true)
+        .groupTuple(by: [0,1])
 
     emit:
     img_zarrs = img_zarrs

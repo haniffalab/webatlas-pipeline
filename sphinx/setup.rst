@@ -38,10 +38,10 @@ The parameters are as follows:
   has its own ``options`` specified within the `data parameters`_ file. 
   See more information about `options`_.
 
-- ``layout`` is the predefined Vitessce layout to use, it can be either
+- ``layout``, a predefined Vitessce layout to use, it can be either
   ``minimal``, ``simple`` or ``advanced``.
 
-- ``custom_layout`` is an optional string that defines a Vitessce layout
+- ``custom_layout``, an optional string that defines a Vitessce layout
   following `Vitessce's View Config API's layout alternative
   syntax <https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout>`__
   (Vitessce components are concatenated horizontally with ``|`` and
@@ -147,7 +147,7 @@ Columns definitions:
   to be used in the script that processes the data file.
   It must be written inside simple quotes ``'``, with strings inside it using double quotes ``"``,
   like ``'{"key": "value"}'``.
-  This overrides the ``args`` in the `run parameters`_ file for the line's file only.
+  This overrides ``args`` from `run parameters`_ for the line's file only.
   This value is not used if the line is defining dataset information.
 
 .. _data-parameters-data-file:
@@ -207,7 +207,7 @@ Supported values are
 dataset information
 ^^^^^^^^^^^^^^^^^^^
 
-A line defining dataset information can be written as follows::
+A line defining optional dataset information can be written as follows::
 
     title,dataset,data_type,data_path,args
     project_1,dataset_1,url,http://localhost:3000/visium_dataset_1/,
@@ -220,17 +220,30 @@ Supported values are
 
     * - data_type
       - data_path
+    * - ``config_name``
+      - Name or title for the final Vitessce config file and visualization.
+    * - ``description``
+      - Dataset description 
     * - ``url``
-      - The url to prepend to each converted data file.
+      - The url to prepend to each converted data file in the output Vitessce config file.
         Vitessce will load files from this location.
         This may be the final location to which files will be uploaded to and served
         or a local one for testing.
+    * - ``layout``
+      - a predefined Vitessce layout to use, it can be either 
+        ``minimal``, ``simple`` or ``advanced``.
+        Overrides ``layout`` from `run parameters`_.
+    * - ``custom_layout``
+      - an optional string that defines a Vitessce layout
+        following `Vitessce's View Config API's layout alternative
+        syntax <https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout>`__.
+        Overrides ``custom_layout`` from `run parameters`_.
     * - ``options``
       - (*Not recommended*) JSON-like string of values as described in `options`_.
         This will override the ``options`` defined in `run parameters`_ for a specific
         dataset only. Though, the numerous values needed would result in a lengthy string,
         therefore we **strongly recommend** writing another `run parameters`_ file instead of 
-        overriding the ``options``.
+        overriding ``options``.
 
 .. _setup-docker :
 
