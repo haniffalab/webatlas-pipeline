@@ -180,28 +180,38 @@
             
   <section id="running">
 <span id="run"></span><h1>Running<a class="headerlink" href="#running" title="Permalink to this heading">¶</a></h1>
-<p>The pipeline offers a workflow that processes files, images, and
-builds a Vitessce config file from the generated files.
-Alternatively, the workflow to process files only, or the workflow to process images only
-can be called independently.</p>
-<p>Each of these workflows work as entry points that can be specified when running the
-pipeline through the command line.</p>
+<p>The pipeline contains workflows to process files (h5ad files,
+spaceranger output, csv/tsv files), convert images to Zarrs and build a
+Vitessce config file from the generated files.</p>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Full_pipeline</span></code> workflow runs the other workflows as needed and
-builds a Vitessce config file per dataset.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Process_files</span></code> workflow handles data files and their conversions.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Process_images</span></code> workflow handles image files and/or label image data and their conversions.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">scRNAseq_pipeline</span></code> entry point handles datasets with no image
+data. This processes files and builds a Vitessce config file.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ISS_pipeline</span></code> entry point handles datasets that contain both
+raw and label images.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Visium_pipeline</span></code> entry point handles datasets that contain a
+raw image and generates a label image from the specified h5ad file
+where it expects to have a <code class="docutils literal notranslate"><span class="pre">spatial</span></code> key within <code class="docutils literal notranslate"><span class="pre">uns</span></code>.</p></li>
 </ul>
-<p>Data should be input using a <a class="reference internal" href="setup.html#run-parameters"><span class="std std-ref">run parameters</span></a> file
-and a <a class="reference internal" href="setup.html#data-parameters"><span class="std std-ref">data parameters</span></a> file.</p>
-<p>To run the <code class="docutils literal notranslate"><span class="pre">Full_pipeline</span></code> use</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">run</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Full_pipeline</span>
+<p>Each dataset in a tsv file should belong to the same modality so they
+can all be run through the corresponding pipeline.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="p">[</span><span class="n">modality</span><span class="p">]</span><span class="n">_pipeline</span>
 </pre></div>
 </div>
-<p>This will handle all input files, whether they are data files or images, for all datasets
-defined in the <a class="reference internal" href="setup.html#data-parameters"><span class="std std-ref">data parameters</span></a> file.</p>
-<p>You can modify the entry point if you’re interested in only getting the converted outputs.
-Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
+<p>You can also just convert the images to Zarrs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">To_ZARR</span>
+</pre></div>
+</div>
+<p>Or just process files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Process_files</span>
+</pre></div>
+</div>
+<p>Additionally, you can build a config file without processing files nor
+images, using a slightly different <a class="reference external" href="templates/config_template.yaml">yaml
+file</a>, per dataset, where you would
+provide filenames and necessary metadata:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="p">[</span><span class="n">your_params</span><span class="p">]</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Config</span>
+</pre></div>
+</div>
 <section id="further-reading">
 <h2>Further reading:<a class="headerlink" href="#further-reading" title="Permalink to this heading">¶</a></h2>
 <p>Docker image pulling/local conda env creation are handled by nextflow.
