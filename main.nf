@@ -115,6 +115,7 @@ process route_file {
 process Build_config {
     tag "${stem}"
     debug verbose_log
+    cache false
 
     container "haniffalab/vitessce-pipeline-build-config:${version}"
     publishDir outdir_with_version, mode: "copy"
