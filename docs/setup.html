@@ -214,9 +214,9 @@ converted to Zarr. This is information required to write the Vitessce
 config file. These values are applied to all datasets unless a dataset
 has its own <code class="docutils literal notranslate"><span class="pre">options</span></code> specified within the <a class="reference internal" href="#id3">data parameters</a> file.
 See more information about <a class="reference internal" href="#options">options</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code> is the predefined Vitessce layout to use, it can be either
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>, a predefined Vitessce layout to use, it can be either
 <code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code> is an optional string that defines a Vitessce layout
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code>, an optional string that defines a Vitessce layout
 following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
 syntax</a>
 (Vitessce components are concatenated horizontally with <code class="docutils literal notranslate"><span class="pre">|</span></code> and
@@ -302,7 +302,7 @@ or the <a class="reference internal" href="#dataset-information">dataset informa
 to be used in the script that processes the data file.
 It must be written inside simple quotes <code class="docutils literal notranslate"><span class="pre">'</span></code>, with strings inside it using double quotes <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>,
 like <code class="docutils literal notranslate"><span class="pre">'{&quot;key&quot;:</span> <span class="pre">&quot;value&quot;}'</span></code>.
-This overrides the <code class="docutils literal notranslate"><span class="pre">args</span></code> in the <a class="reference internal" href="#id2">run parameters</a> file for the line’s file only.
+This overrides <code class="docutils literal notranslate"><span class="pre">args</span></code> from <a class="reference internal" href="#id2">run parameters</a> for the line’s file only.
 This value is not used if the line is defining dataset information.</p></li>
 </ul>
 <section id="data-file">
@@ -370,7 +370,7 @@ Otherwise the first one will be used.</p></li>
 </section>
 <section id="dataset-information">
 <span id="data-parameters-dataset-info"></span><h3>dataset information<a class="headerlink" href="#dataset-information" title="Permalink to this heading">¶</a></h3>
-<p>A line defining dataset information can be written as follows:</p>
+<p>A line defining optional dataset information can be written as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">title</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">data_type</span><span class="p">,</span><span class="n">data_path</span><span class="p">,</span><span class="n">args</span>
 <span class="n">project_1</span><span class="p">,</span><span class="n">dataset_1</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">3000</span><span class="o">/</span><span class="n">visium_dataset_1</span><span class="o">/</span><span class="p">,</span>
 </pre></div>
@@ -387,18 +387,35 @@ Otherwise the first one will be used.</p></li>
 </tr>
 </thead>
 <tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">config_name</span></code></p></td>
+<td><p>Name or title for the final Vitessce config file and visualization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">description</span></code></p></td>
+<td><p>Dataset description</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">url</span></code></p></td>
-<td><p>The url to prepend to each converted data file.
+<td><p>The url to prepend to each converted data file in the output Vitessce config file.
 Vitessce will load files from this location.
 This may be the final location to which files will be uploaded to and served
 or a local one for testing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
+<td><p>a predefined Vitessce layout to use, it can be either
+<code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code>.
+Overrides <code class="docutils literal notranslate"><span class="pre">layout</span></code> from <a class="reference internal" href="#id2">run parameters</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code></p></td>
+<td><p>an optional string that defines a Vitessce layout
+following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
+syntax</a>.
+Overrides <code class="docutils literal notranslate"><span class="pre">custom_layout</span></code> from <a class="reference internal" href="#id2">run parameters</a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">options</span></code></p></td>
 <td><p>(<em>Not recommended</em>) JSON-like string of values as described in <a class="reference internal" href="#options">options</a>.
 This will override the <code class="docutils literal notranslate"><span class="pre">options</span></code> defined in <a class="reference internal" href="#id2">run parameters</a> for a specific
 dataset only. Though, the numerous values needed would result in a lengthy string,
 therefore we <strong>strongly recommend</strong> writing another <a class="reference internal" href="#id2">run parameters</a> file instead of
-overriding the <code class="docutils literal notranslate"><span class="pre">options</span></code>.</p></td>
+overriding <code class="docutils literal notranslate"><span class="pre">options</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
