@@ -18,7 +18,7 @@ from pathlib import Path
 from process_spaceranger import spaceranger_to_anndata
 
 
-def from_anndata(
+def visium(
     stem: str, file_path: str, shape: tuple[int, int] = None, sample_id: str = None
 ) -> None:
     """This function writes a label image tif file with drawn labels according to an
@@ -101,8 +101,8 @@ def create_img(
         tif_img = tf.TiffFile(ref_img)
         args["shape"] = tif_img.pages[0].shape[:2]
 
-    if file_type in {"h5ad", "spaceranger"}:
-        from_anndata(stem, file_path, **args)
+    if file_type == "visium":
+        visium(stem, file_path, **args)
 
 
 if __name__ == "__main__":

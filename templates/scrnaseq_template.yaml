@@ -1,10 +1,10 @@
 outdir: "output/scrnaseq/"
-tsv : "./templates/scrnaseq_template.tsv"
+data_params : "./templates/scrnaseq_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
-options:
+vitessce_options:
   mappings:
     obsm/X_umap: [0,1]
     obsm/X_pca: [0,1]

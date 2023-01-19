@@ -1,4 +1,4 @@
-title,dataset,data_type,data_path,args
+project,dataset,data_type,data_path,args
 project_1,iss_dataset_1,url,http://localhost:3000/iss_dataset_1/,
 project_1,iss_dataset_1,h5ad,/path/to/anndata.h5ad,
 project_1,iss_dataset_1,raw_image,/path/to/raw_image.tif,

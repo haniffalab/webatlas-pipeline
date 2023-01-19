@@ -22,9 +22,9 @@ In the command line, the path to the ``yaml`` file is indicated through the ``-p
 
 The parameters are as follows:
 
-- ``tsv``, the path to the `data parameters`_ ``csv``/``tsv`` file that contains the datasets' information and data files to process.
+- ``data_params``, the path to the `data parameters`_ ``csv``/``tsv`` file that contains the datasets' information and data files to process.
 
-- ``tsv_delimiter``, the delimiter to be used for the `data parameters`_ file.
+- ``data_params_delimiter``, the delimiter to be used for the `data parameters`_ file.
   Defaults to ``,``.
 
 - ``outdir``, the path to the directory to which output files will be written.
@@ -32,11 +32,11 @@ The parameters are as follows:
 - ``args``, a map of optional arguments for the scripts that process the supported files. 
   This is applied to files of all datasets. See available `args`_.
 
-- ``options``, a map of the contents of a dataset's Anndata object that gets
+- ``vitessce_options``, a map of the contents of a dataset's Anndata object that gets
   converted to Zarr. This is information required to write the Vitessce
   config file. These values are applied to all datasets unless a dataset
   has its own ``options`` specified within the `data parameters`_ file. 
-  See more information about `options`_.
+  See more information about `vitessce options`_.
 
 - ``layout``, a predefined Vitessce layout to use, it can be either
   ``minimal``, ``simple`` or ``advanced``.
@@ -79,12 +79,12 @@ Possible values for the currently supported data types are as follows:
       x_col_idx: 1 # column index of the column for `x` coordinates in case `has_header` is `False`.
       y_col_idx: 2 # column index of the column for `y` coordinates in case `has_header` is `False`.
 
-.. _run-parameters-options:
+.. _run-parameters-vitessce-options:
 
-options
-^^^^^^^
+vitessce options
+^^^^^^^^^^^^^^^^
 
-The ``options`` map is used to write the Vitessce config file.
+The ``vitessce_options`` map is used to write the Vitessce config file.
 One Vitessce config file is generated per dataset.
 Include relevant information from your data to be visualized.
 All values are optional as they depend on them existing in your data.
@@ -94,7 +94,7 @@ and should be defined as the following example:
 
 .. code:: yaml
 
-  options:
+  vitessce_options:
     spatial:
       xy: "obsm/spatial" # where the Anndata object holds spatial coordinates
     mappings: # list of embeddings and the index of the dimensions to use in a scatterplot
@@ -122,7 +122,7 @@ Data parameters
 
 The ``csv``/``tsv`` file is used to define dataset information and data files to be processed.
 Multiple datasets can be defined in the same `data parameters` file and they will all be processed in the same pipeline run.
-Datasets are identified and grouped by the joint ``title-dataset`` key.
+Datasets are identified and grouped by the joint ``project-dataset`` key.
 
 Each dataset does not need to contain all types of data types,
 but it should contain at least one to be processed (file or image).
@@ -133,7 +133,7 @@ Examples for each case are provided further down.
 
 Columns definitions:
 
-- ``title`` is the project/experiment title which can have multiple datasets
+- ``project`` is the project/experiment name which can have multiple datasets
 
 - ``dataset`` is the name of the dataset
 
@@ -157,7 +157,7 @@ data file
 
 A line defining a data file can be written as follows::
 
-    title,dataset,data_type,data_path,args
+    project,dataset,data_type,data_path,args
     project_1,dataset_1,h5ad,/path/to/visium/anndata.h5ad,
 
 Supported values are 
@@ -186,9 +186,11 @@ Supported values are
       - None
     * - ``label_image_data``
       - Path to a file or directory containing data from which to generate a label ``tif`` image. 
-        Supported inputs are ``h5ad`` and ``spaceranger``
+        
+        Possible inputs depend on the supported technology from which the data is obtained,
+          * ``visium`` requires a path to an ``h5ad`` file or ``spaceranger`` output directory
       - JSON-like string with the following key-values,
-          * ``file_type`` (required), either ``h5ad`` or ``spaceranger``
+          * ``file_type`` (required), supported technology like ``visium``.
           * ``ref_img`` (optional), a reference ``tif`` image of the size of the desired label image
           * ``shape`` (optional), shape of the desired label image as ``[int, int]``
           * ``sample_id`` (optional), the name of the sample within the Anndata object.
@@ -196,11 +198,11 @@ Supported values are
 
         For example,
 
-        ``'{"file_type": "h5ad", "ref_img": "/path/to/raw.tif", "sample_id": "visium_sample"}'``
+        ``'{"file_type": "visium", "ref_img": "/path/to/raw.tif", "sample_id": "visium_sample"}'``
 
         or
 
-        ``'{"file_type": "h5ad", "shape": [1000,1000], "sample_id": "visium_sample"}'``
+        ``'{"file_type": "visium", "shape": [1000,1000], "sample_id": "visium_sample"}'``
 
 .. _data-parameters-dataset-info:
 
@@ -209,7 +211,7 @@ dataset information
 
 A line defining optional dataset information can be written as follows::
 
-    title,dataset,data_type,data_path,args
+    project,dataset,data_type,data_path,args
     project_1,dataset_1,url,http://localhost:3000/visium_dataset_1/,
 
 Supported values are 
@@ -220,7 +222,7 @@ Supported values are
 
     * - data_type
       - data_path
-    * - ``config_name``
+    * - ``title``
       - Name or title for the final Vitessce config file and visualization.
     * - ``description``
       - Dataset description 
@@ -238,12 +240,12 @@ Supported values are
         following `Vitessce's View Config API's layout alternative
         syntax <https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout>`__.
         Overrides ``custom_layout`` from `run parameters`_.
-    * - ``options``
-      - (*Not recommended*) JSON-like string of values as described in `options`_.
-        This will override the ``options`` defined in `run parameters`_ for a specific
+    * - ``vitessce_options``
+      - (*Not recommended*) JSON-like string of values as described in `vitessce options`_.
+        This will override the ``vitessce_options`` defined in `run parameters`_ for a specific
         dataset only. Though, the numerous values needed would result in a lengthy string,
         therefore we **strongly recommend** writing another `run parameters`_ file instead of 
-        overriding ``options``.
+        overriding ``vitessce_options``.
 
 Note no ``args`` are required for any type of dataset information.
 

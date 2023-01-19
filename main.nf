@@ -5,30 +5,35 @@ import groovy.json.*
 
 nextflow.enable.dsl=2
 
+
+verbose_log = true
+version = "0.0.1"
+
+
 // Default params
 params.max_n_worker = 30
 
-params.title = ""
+params.project = ""
 params.dataset = ""
 
-params.tsv_delimiter = ","
-
-params.images = []
+params.outdir = ""
+params.data_params_delimiter = ","
 params.args = []
-params.url = ""
+params.vitessce_options = [:]
 
+outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
+
+params.url = "http://localhost:3000/${outdir_with_version}"
 params.layout = "minimal"
 params.custom_layout = ""
-params.outdir = ""
 params.config_files = []
-params.options = [:]
 
-params.config_params = [
+params.vitessce_config_params = [
     url: params.url,
-    options: params.options,
+    options: params.vitessce_options,
     layout: params.layout,
     custom_layout: params.custom_layout,
-    config_name: "",
+    title: "",
     description: ""
 ]
 
@@ -40,10 +45,6 @@ params.s3_keys = [
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
-
-verbose_log = true
-version = "0.0.1"
-outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
 process image_to_zarr {
     tag "${image}"
@@ -135,14 +136,14 @@ process Build_config {
     clayout_str = config_map.custom_layout?.trim() ? "--custom_layout \"${config_map.custom_layout}\"" : ""
     """
     build_config.py \
-        --title "${stem[0]}" \
+        --project "${stem[0]}" \
         --dataset "${stem[1]}" \
         --file_paths '[${file_paths}]' \
         ${imgs_str} \
         ${url_str} \
         ${options_str} \
-        --layout ${config_map.layout} ${clayout_str} \
-        --config_name "${config_map.config_name}" \
+        --layout "${config_map.layout}" ${clayout_str} \
+        --title "${config_map.title}" \
         --description "${config_map.description}"
     """
 }
@@ -170,14 +171,14 @@ process Generate_label_image {
 }
 
 
-Channel.fromPath(params.tsv)
-    .splitCsv(header:true, sep:params.tsv_delimiter, quote:"'")
-    .map { l -> tuple( tuple(l.title, l.dataset), l ) }
+Channel.fromPath(params.data_params)
+    .splitCsv(header:true, sep:params.data_params_delimiter, quote:"'")
+    .map { l -> tuple( tuple(l.project, l.dataset), l ) }
     .tap{ lines }
     .branch { stem, l ->
         data: l.data_type in ["h5ad","spaceranger","molecules"]
         images: l.data_type in ["raw_image","label_image","label_image_data"]
-        config_params: l.data_type in ["config_name","description","url","options","layout","custom_layout"]
+        vitessce_config_params: l.data_type in ["title","description","url","vitessce_options","layout","custom_layout"]
             return [stem, ["${l.data_type}": l.data_path]]
         other: true
     }
@@ -235,11 +236,11 @@ workflow Output_to_config {
             .set{img_map}
         
         stems
-            .join(inputs.config_params, remainder: true)
+            .join(inputs.vitessce_config_params, remainder: true)
             .map{ stem, dummy, c -> [stem, c]} // remove dummy value
             .groupTuple()
             .map { stem, it ->
-                [ stem, params.config_params + it?.collectEntries() {   
+                [ stem, params.vitessce_config_params + it?.collectEntries() {   
                     i -> i ? i.collectEntries { k, v -> [(k.toString()): v] } : [:] 
                     }.findAll { it.value?.trim() ? true : false }
                 ]

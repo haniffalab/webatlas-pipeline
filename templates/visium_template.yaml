@@ -1,10 +1,10 @@
 outdir: "output/visium/"
-tsv : "./templates/visium_template.tsv"
+data_params : "./templates/visium_template.tsv"
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
-options:
+vitessce_options:
   spatial:
     xy: "obsm/spatial"
   mappings:

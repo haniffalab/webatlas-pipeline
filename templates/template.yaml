@@ -1,13 +1,13 @@
 outdir: "output/"
-tsv : "./templates/template.csv"
-tsv_delimiter: ","
+data_params : "./templates/template.csv"
+data_params_delimiter: ","
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
   # molecules:
   #   delimiter: ","
-options:
+vitessce_options:
   spatial:
     xy: "obsm/spatial"
   mappings:

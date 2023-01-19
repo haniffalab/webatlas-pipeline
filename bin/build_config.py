@@ -173,7 +173,7 @@ def build_raster_options(
 
 
 def write_json(
-    title: str = "",
+    project: str = "",
     dataset: str = "",
     file_paths: list[str] = [],
     images: dict[str, list[dict[str, T.Any]]] = {},
@@ -181,7 +181,7 @@ def write_json(
     options: dict[str, T.Any] = None,
     layout: str = "minimal",
     custom_layout: str = None,
-    config_name: str = "",
+    title: str = "",
     description: str = "",
     config_filename_suffix: str = "config.json",
     outdir: str = "./",
@@ -189,7 +189,7 @@ def write_json(
     """This function writes a Vitessce View config JSON file
 
     Args:
-        title (str, optional): Title to use in the config file. Defaults to "".
+        project (str, optional): Project name. Defaults to "".
         dataset (str, optional): Dataset name. Defaults to "".
         file_paths (list[str], optional): Paths to files that will be included in the config file. Defaults to [].
         images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for each image type key (raw and label)
@@ -204,6 +204,7 @@ def write_json(
             https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout
             https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
             Defaults to None.
+        title (str, optional): Data title to show in the visualization. Defaults to "".
         config_filename_suffix (str, optional): Config filename suffix. Defaults to "config.json".
         outdir (str, optional): Directory in which the config file will be written to. Defaults to "./".
 
@@ -215,10 +216,10 @@ def write_json(
     has_files = False
 
     config = VitessceConfig(
-        name=str(config_name) if len(config_name) else str(title),
+        name=str(title) if len(title) else str(project),
         description=description,
     )
-    config_dataset = config.add_dataset(str(title), str(dataset))
+    config_dataset = config.add_dataset(str(dataset), str(dataset))
 
     coordination_types = defaultdict(lambda: cycle(iter([])))
     file_paths_names = {x.split("-")[-1]: x for x in file_paths}
@@ -352,7 +353,7 @@ def write_json(
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)
     with open(
-        os.path.join(outdir or "", f"{title}-{dataset}-{config_filename_suffix}"), "w"
+        os.path.join(outdir or "", f"{project}-{dataset}-{config_filename_suffix}"), "w"
     ) as out_file:
         json.dump(config_json, out_file, indent=2)
 

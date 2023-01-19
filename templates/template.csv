@@ -1,4 +1,4 @@
-title,dataset,data_type,data_path,args
+project,dataset,data_type,data_path,args
 project_1,visium_dataset_1,url,http://localhost:3000/visium_dataset_1/,
 project_1,visium_dataset_1,h5ad,/path/to/visium/anndata.h5ad,
 project_1,visium_dataset_1,raw_image,/path/to/visium/raw_image.tif,
@@ -11,4 +11,4 @@ project_3,scrnaseq_dataset_1,h5ad,/path/to/scrnaseq/anndata.h5ad,
 project_4,visium_dataset_2,url,http://localhost:3000/visium_dataset_2/,
 project_4,visium_dataset_2,spaceranger,/path/to/visium/spaceranger/output/,
 project_4,visium_dataset_2,raw_image,/path/to/visium/spaceranger/output/raw_image.tif,
-project_4,visium_dataset_2,label_image_data,/path/to/visium/spaceranger/output/,'{"file_type": "spaceranger", "ref_img": "/path/to/visium/spaceranger/output/raw_image.tif"}'
+project_4,visium_dataset_2,label_image_data,/path/to/visium/spaceranger/output/,'{"file_type": "visium", "ref_img": "/path/to/visium/spaceranger/output/raw_image.tif"}'

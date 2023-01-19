@@ -279,7 +279,7 @@ class TestClass:
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
         args = {"shape": [100, 100]}
-        create_img(stem, "h5ad", anndata_h5ad_file, args=args)
+        create_img(stem, "visium", anndata_h5ad_file, args=args)
         assert os.path.exists(stem + "-label.tif")
 
     # def test_build_config(self, request, tmp_path_factory):
