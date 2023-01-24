@@ -203,7 +203,7 @@ workflow Full_pipeline {
         Process_files.out.file_paths,
         Process_images.out.img_zarrs
         )
-    
+
 }
 
 workflow Output_to_config {
@@ -215,7 +215,7 @@ workflow Output_to_config {
         // tuple val(stem), val(files), val(img_map), val(config_map)
 
         out_img_zarrs
-            .map { stem, type, img -> 
+            .map { stem, type, img ->
                 [stem, [type: type, img: img]]
             }
             .branch { stem, data ->
@@ -234,14 +234,14 @@ workflow Output_to_config {
                 ]
             ]}
             .set{img_map}
-        
+
         stems
             .join(inputs.vitessce_config_params, remainder: true)
             .map{ stem, dummy, c -> [stem, c]} // remove dummy value
             .groupTuple()
             .map { stem, it ->
-                [ stem, params.vitessce_config_params + it?.collectEntries() {   
-                    i -> i ? i.collectEntries { k, v -> [(k.toString()): v] } : [:] 
+                [ stem, params.vitessce_config_params + it?.collectEntries() {
+                    i -> i ? i.collectEntries { k, v -> [(k.toString()): v] } : [:]
                     }.findAll { it.value?.trim() ? true : false }
                 ]
             }
@@ -262,10 +262,10 @@ workflow Output_to_config {
 }
 
 workflow Process_files {
-    // Map inputs to: 
+    // Map inputs to:
     // tuple val(stem), path(file), val(type), val(args)
     data_list = inputs.data.flatMap { stem, data_map ->
-        data_map.data_path ? 
+        data_map.data_path ?
         [
             [
                 stem,
@@ -281,7 +281,7 @@ workflow Process_files {
 
     route_file(data_list)
     files = route_file.out.converted_files.groupTuple(by:0)
-    file_paths = files.map { stem, it -> 
+    file_paths = files.map { stem, it ->
         [ stem, it.name ]
     }
 
@@ -291,20 +291,20 @@ workflow Process_files {
 }
 
 workflow Process_images {
-    // Map tif inputs to: 
+    // Map tif inputs to:
     // tuple val(stem), val(img_type), path(image)
     img_tifs = inputs.images.filter { stem, data_map ->
         data_map.data_type in ["raw_image", "label_image"]
     }
     .map { stem, data_map ->
-        [ 
+        [
             stem,
             data_map.data_type.replace("_image",""),
             data_map.data_path
         ]
     }
 
-    // Map label data inputs to: 
+    // Map label data inputs to:
     // tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
     // Pop file_type (required) and ref_img (optional) from args
     img_data = inputs.images.filter { stem, data_map ->
@@ -316,7 +316,7 @@ workflow Process_images {
             data_map.data_path,
             *[
                 new JsonSlurper().parseText(data_map.args).file_type,
-                new JsonSlurper().parseText(data_map.args).containsKey("ref_img") ? 
+                new JsonSlurper().parseText(data_map.args).containsKey("ref_img") ?
                     new JsonSlurper().parseText(data_map.args).ref_img :
                     file("NO_REF"),
                 new JsonSlurper().parseText(data_map.args)
