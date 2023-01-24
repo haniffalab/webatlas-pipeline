@@ -1,3 +1,5 @@
-h5ad	image_type	image_path	title	dataset	url	molecules	options	codebook
-/path/to/anndata.h5ad	raw	/path/to/image.tif	iss_project	dataset_1	http://localhost:3000/output/iss/
-/path/to/anndata.h5ad	label	/path/to/image.tif	iss_project	dataset_1	http://localhost:3000/output/iss/
+project,dataset,data_type,data_path,args
+project_1,iss_dataset_1,url,http://localhost:3000/iss_dataset_1/,
+project_1,iss_dataset_1,h5ad,/path/to/anndata.h5ad,
+project_1,iss_dataset_1,raw_image,/path/to/raw_image.tif,
+project_1,iss_dataset_1,label_image,/path/to/label_image.tif,

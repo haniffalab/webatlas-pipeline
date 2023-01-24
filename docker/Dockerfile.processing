@@ -7,4 +7,4 @@ RUN apt-get update && \
 
 RUN python3 -m pip install --upgrade pip --no-cache-dir
 
-RUN pip3 install numpy pandas h5py scipy anndata scanpy zarr fire
+RUN pip3 install numpy pandas h5py scipy anndata scanpy zarr fire scikit-image

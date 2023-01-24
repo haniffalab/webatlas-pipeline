@@ -97,7 +97,7 @@ def tsv_to_json(
                 # TODO: add message
                 raise e
 
-    json_file = f"{stem}_{SUFFIX}"
+    json_file = f"{stem}-{SUFFIX}"
 
     with open(json_file, "w") as out_file:
         json.dump(molecules_json, out_file)

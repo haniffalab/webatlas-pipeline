@@ -1,9 +1,12 @@
-outdir: "output/visium/"
-data_params : "./templates/visium_template.tsv"
+outdir: "output/"
+data_params : "./templates/template.csv"
+data_params_delimiter: ","
 args:
   h5ad:
     compute_embeddings: "True"
     # var_index: "SYMBOL"
+  # molecules:
+  #   delimiter: ","
 vitessce_options:
   spatial:
     xy: "obsm/spatial"

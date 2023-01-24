@@ -125,7 +125,7 @@ def h5ad_to_zarr(
     # remove unnecessary data
     del adata.raw
 
-    zarr_file = f"{stem}_{SUFFIX}"
+    zarr_file = f"{stem}-{SUFFIX}"
 
     if not batch_processing:
         # matrix sparse to dense

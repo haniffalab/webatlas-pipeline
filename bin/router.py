@@ -14,7 +14,7 @@ from process_molecules import tsv_to_json
 from process_spaceranger import spaceranger_to_zarr
 
 
-def main(file_type: str, path: str, stem: str, args: dict[str, T.Any]) -> str:
+def main(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> str:
     """Function that calls the appropriate processing function
     for the input file according to its type
 
@@ -22,7 +22,8 @@ def main(file_type: str, path: str, stem: str, args: dict[str, T.Any]) -> str:
         file_type (str): Type of file to process
         path (str): Path to file to process
         stem (str): Prefix for output files
-        args (dict[str,T.Any]): Args to be passed to the appropriate processing function
+        args (dict[str,T.Any], optional): Args to be passed to the appropriate processing function.
+            Defaults to {}.
 
     Returns:
         str: Output filename
