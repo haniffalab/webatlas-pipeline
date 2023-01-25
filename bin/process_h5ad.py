@@ -5,6 +5,8 @@ process_h5ad.py
 Processes H5AD files
 """
 
+from __future__ import annotations
+import typing as T
 import fire
 import scanpy as sc
 import anndata as ad
@@ -29,6 +31,8 @@ def h5ad_to_zarr(
     compute_embeddings: bool = False,
     chunk_size: int = 10,
     var_index: str = None,
+    obs_subset: tuple[str, T.Any] = None,
+    var_subset: tuple[str, T.Any] = None,
     batch_processing: bool = False,
     batch_size: int = 10000,
 ) -> str:
@@ -46,6 +50,10 @@ def h5ad_to_zarr(
         chunk_size (int, optional): Output Zarr column chunk size. Defaults to 10.
         var_index (str, optional): Alternative `var` column name with `var` names
             to be used in the visualization. Defaults to None.
+        obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
+        var_subset (tuple(str, T.Any), optional): Tuple containing a `var` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
         batch_processing (bool, optional): If the expression matrix will be written to Zarr incrementally.
             Use to avoid loading the whole AnnData into memory. Defaults to False.
         batch_size (int, optional): The amount of rows (if matrix is in CSR format)
@@ -77,6 +85,24 @@ def h5ad_to_zarr(
                     varp=ad._io.h5ad.read_elem(f["varp"]) if "varp" in f else None,
                     uns=ad._io.h5ad.read_elem(f["uns"]) if "uns" in f else None,
                 )
+
+    # Subset adata by obs
+    if obs_subset:
+        obs_subset[1] = (
+            [obs_subset[1]]
+            if not isinstance(obs_subset[1], (list, tuple))
+            else obs_subset[1]
+        )
+        adata = adata[adata.obs[obs_subset[0]].isin(obs_subset[1])]
+
+    # Subset adata by var
+    if var_subset:
+        var_subset[1] = (
+            [var_subset[1]]
+            if not isinstance(var_subset[1], (list, tuple))
+            else var_subset[1]
+        )
+        adata = adata[:, adata.var[var_subset[0]].isin(var_subset[1])]
 
     # reindex var with a specified column
     if var_index and var_index in adata.var:

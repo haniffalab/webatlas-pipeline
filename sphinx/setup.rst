@@ -15,7 +15,7 @@ Templates are available in the `templates directory <templates/>`__.
 Run parameters
 --------------
 
-The parameters in the ``yaml`` file apply to a full run of the pipeline.
+The ``run parameters`` file is a ``yaml`` that defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets).
 Parameters for each type of data file work as the default parameters to all the data files defined in the `data parameters`_ file.
 
 In the command line, the path to the ``yaml`` file is indicated through the ``-params-file`` flag.
@@ -64,6 +64,10 @@ Possible values for the currently supported data types are as follows:
       compute_embeddings: "True" # set to `True` to compute PCA and UMAP if not already within the anndata object
       chunk_size: 20 # Zarr chunk size, defaults to 10
       var_index: "SYMBOL" # `var` column from the anndata object to use as the gene names in the webapp. This reindexes the `var` matrix
+      obs_subset: ["sample", ["sample_id_1"]] # optional `obs` column name an value(s) to subset the anndata object
+      var_subset: ["genome", ["GRCh38"]] # optional `var` column name an value(s) to subset the anndata object
+      batch_processing: "False" # set to `True` to process the file in batches to avoid loading the whole object into memory if it is too large
+      batch_size: 1000 # batch size (number of columns to process at a time if matrix is dense/csc, number of rows if matrix is csr) if `batch_processing` is set to `True`
     spaceranger:
       save_h5ad: "True" # save an h5ad to the output directory. Defaults to `False`
       load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
@@ -79,12 +83,16 @@ Possible values for the currently supported data types are as follows:
       x_col_idx: 1 # column index of the column for `x` coordinates in case `has_header` is `False`.
       y_col_idx: 2 # column index of the column for `y` coordinates in case `has_header` is `False`.
 
+Note that in the case of ``spaceranger`` data, it initially gets converted into an ``h5ad`` file
+and so when processed the ``args`` for ``h5ad`` also apply to it, 
+unless overriden in the `data parameters`_ file.
+
 .. _run-parameters-vitessce-options:
 
 vitessce options
 ^^^^^^^^^^^^^^^^
 
-The ``vitessce_options`` map is used to write the Vitessce config file.
+The ``vitessce_options`` map is used to write Vitessce config files.
 One Vitessce config file is generated per dataset.
 Include relevant information from your data to be visualized.
 All values are optional as they depend on them existing in your data.
@@ -120,16 +128,25 @@ the visualization to your needs.
 Data parameters
 ---------------
 
-The ``csv``/``tsv`` file is used to define dataset information and data files to be processed.
+The ``data parameters`` file is a ``csv``/``tsv`` file used to define dataset information and data files to be processed.
 Multiple datasets can be defined in the same `data parameters` file and they will all be processed in the same pipeline run.
-Datasets are identified and grouped by the joint ``project-dataset`` key.
+Each line can either define a file/image *or* dataset information.
+Examples for each case are provided further down.
 
+Supported files are:
+- ``h5ad``
+- ``spaceranger``
+- ``molecules``
+
+The supported image format is ``tif``.
+Images can be either raw images (microscopy images) or label images (containing segmentations).
+Additionally, label images can be generated and processed if provided with the necessary data.
+Currently, label images can be generated for ``Visium`` data if provided with an ``h5ad`` file or
+``spaceranger`` output directory.
+
+Datasets are identified and grouped by the joint ``project-dataset`` key.
 Each dataset does not need to contain all types of data types,
 but it should contain at least one to be processed (file or image).
-
-
-Each line can either define a data file *or* dataset information.
-Examples for each case are provided further down.
 
 Columns definitions:
 
@@ -191,6 +208,8 @@ Supported values are
           * ``visium`` requires a path to an ``h5ad`` file or ``spaceranger`` output directory
       - JSON-like string with the following key-values,
           * ``file_type`` (required), supported technology like ``visium``.
+          * ``obs_subset`` (optional), a tuple containing ``obs`` column name and value(s) like to subset the Anndata object.
+            Useful if the the Anndata object contains data of multiple slides.
           * ``ref_img`` (optional), a reference ``tif`` image of the size of the desired label image
           * ``shape`` (optional), shape of the desired label image as ``[int, int]``
           * ``sample_id`` (optional), the name of the sample within the Anndata object.
@@ -212,7 +231,7 @@ dataset information
 A line defining optional dataset information can be written as follows::
 
     project,dataset,data_type,data_path,args
-    project_1,dataset_1,url,http://localhost:3000/visium_dataset_1/,
+    project_1,dataset_1,title,Dataset 1,
 
 Supported values are 
 
@@ -230,7 +249,7 @@ Supported values are
       - The url to prepend to each converted data file in the output Vitessce config file.
         Vitessce will load files from this location.
         This may be the final location to which files will be uploaded to and served
-        or a local one for testing.
+        or a local one for testing. Defaults to ``http://localhost:3000/``
     * - ``layout``
       - a predefined Vitessce layout to use, it can be either 
         ``minimal``, ``simple`` or ``advanced``.

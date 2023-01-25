@@ -19,7 +19,11 @@ from process_spaceranger import spaceranger_to_anndata
 
 
 def visium(
-    stem: str, file_path: str, shape: tuple[int, int] = None, sample_id: str = None
+    stem: str,
+    file_path: str,
+    shape: tuple[int, int] = None,
+    obs_subset: tuple[int, T.Any] = None,
+    sample_id: str = None,
 ) -> None:
     """This function writes a label image tif file with drawn labels according to an
     Anndata object with necessary metadata stored within `uns["spatial"]`.
@@ -28,6 +32,8 @@ def visium(
         stem (str): Prefix for the output image filename.
         file_path (str): Path to the h5ad file or spaceranger output directory.
         shape (tuple[int, int], optional): Output image shape. Defaults to None.
+        obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
         sample_id (str, optional): Sample ID string within the Anndata object. Defaults to None.
     """
     # sample_id = sample_id or Path(file_path).stem
@@ -44,6 +50,15 @@ def visium(
     else:
         adata = sc.read(file_path)
         sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
+
+    # Subset adata by obs
+    if obs_subset:
+        obs_subset[1] = (
+            [obs_subset[1]]
+            if not isinstance(obs_subset[1], (list, tuple))
+            else obs_subset[1]
+        )
+        adata = adata[adata.obs[obs_subset[0]].isin(obs_subset[1])]
 
     # check if index is numerical, if not reindex
     if not adata.obs.index.is_integer() and not (
