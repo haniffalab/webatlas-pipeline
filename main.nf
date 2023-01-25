@@ -18,15 +18,17 @@ params.dataset = ""
 
 params.outdir = ""
 params.data_params_delimiter = ","
-params.args = []
+
+params.args = [:].withDefault{[:]}
+params.args["spaceranger"] = (params.args["h5ad"] ?: [:]) + (params.args["spaceranger"] ?: [:])
+
 params.vitessce_options = [:]
 
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
-params.url = "http://localhost:3000/${outdir_with_version}"
+params.url = "http://localhost:3000/"
 params.layout = "minimal"
 params.custom_layout = ""
-params.config_files = []
 
 params.vitessce_config_params = [
     url: params.url,
@@ -94,6 +96,7 @@ process ome_zarr_metadata{
 process route_file {
     tag "${type}, ${file}"
     debug verbose_log
+    cache "lenient"
 
     container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
@@ -271,9 +274,12 @@ workflow Process_files {
                 stem,
                 data_map.data_path,
                 data_map.data_type,
-                (data_map.args && data_map.args?.trim() ?
-                    data_map.args?.trim() :
-                    params.args[data_map.data_type] ?: [:]
+                (
+                    (params.args[data_map.data_type] ?: [:]) + 
+                    (data_map.args?.trim() ? 
+                        new JsonSlurper().parseText(data_map.args?.trim()) :
+                        [:]
+                    )
                 )
             ]
         ] : [:]
