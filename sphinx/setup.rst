@@ -3,6 +3,10 @@
 Setup
 =====
 
+Currently, the pipeline can process several types of data files as well as images.
+It can handle ``h5ad`` files, SpaceRanger output and ``molecules`` data in ``csv``/``tsv`` files.
+It can handle raw and label images in ``tif`` format, as well as generating label images from ``Visium`` data. 
+
 Running the pipeline requires two parameters files:
 
 1. a `run parameters`_ ``yaml`` file with general configuration options
@@ -52,7 +56,14 @@ The parameters are as follows:
 args
 ^^^^
 
-Available ``args`` depend of the data type of each data file.
+Available ``args`` depend of the supported data type of each data file.
+
+Supported data types are:
+
+- ``h5ad``
+- ``spaceranger``
+- ``molecules``
+
 This are passed to the processing script for all the files of the 
 corresponding data type (unless overriden in the `data parameters`_ file).
 Possible values for the currently supported data types are as follows:
@@ -132,11 +143,6 @@ The ``data parameters`` file is a ``csv``/``tsv`` file used to define dataset in
 Multiple datasets can be defined in the same `data parameters` file and they will all be processed in the same pipeline run.
 Each line can either define a file/image *or* dataset information.
 Examples for each case are provided further down.
-
-Supported files are:
-- ``h5ad``
-- ``spaceranger``
-- ``molecules``
 
 The supported image format is ``tif``.
 Images can be either raw images (microscopy images) or label images (containing segmentations).

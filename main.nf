@@ -134,7 +134,7 @@ process Build_config {
     stem_str = stem.join("-")
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
     imgs_str = img_map ? "--images '" + new JsonBuilder(img_map).toString() + "'" : ""
-    url_str = config_map.url?.trim() ? "--url ${config_map.url.replaceFirst(/\/*$/, "")}/${version}" : ""
+    url_str = config_map.url?.trim() ? "--url \"${config_map.url.trim()}\"" : ""
     options_str = config_map.options ? "--options '" + (config_map.options instanceof String ? options : new JsonBuilder(config_map.options).toString()) + "'" : ""
     clayout_str = config_map.custom_layout?.trim() ? "--custom_layout \"${config_map.custom_layout}\"" : ""
     """
