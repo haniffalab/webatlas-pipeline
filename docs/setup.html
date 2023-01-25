@@ -105,6 +105,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html#visualizing">Visualizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
@@ -190,6 +191,9 @@
             
   <section id="setup">
 <span id="id1"></span><h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">¶</a></h1>
+<p>Currently, the pipeline can process several types of data files as well as images.
+It can handle <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> files, SpaceRanger output and <code class="docutils literal notranslate"><span class="pre">molecules</span></code> data in <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> files.
+It can handle raw and label images in <code class="docutils literal notranslate"><span class="pre">tif</span></code> format, as well as generating label images from <code class="docutils literal notranslate"><span class="pre">Visium</span></code> data.</p>
 <p>Running the pipeline requires two parameters files:</p>
 <ol class="arabic simple">
 <li><p>a <a class="reference internal" href="#id2">run parameters</a> <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file with general configuration options</p></li>
@@ -198,7 +202,7 @@
 <p>Templates are available in the <a class="reference external" href="templates/">templates directory</a>.</p>
 <section id="run-parameters">
 <span id="id2"></span><h2>Run parameters<a class="headerlink" href="#run-parameters" title="Permalink to this heading">¶</a></h2>
-<p>The parameters in the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file apply to a full run of the pipeline.
+<p>The <code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">parameters</span></code> file is a <code class="docutils literal notranslate"><span class="pre">yaml</span></code> that defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets).
 Parameters for each type of data file work as the default parameters to all the data files defined in the <a class="reference internal" href="#id3">data parameters</a> file.</p>
 <p>In the command line, the path to the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file is indicated through the <code class="docutils literal notranslate"><span class="pre">-params-file</span></code> flag.</p>
 <p>The parameters are as follows:</p>
@@ -224,8 +228,14 @@ vertically with <code class="docutils literal notranslate"><span class="pre">/</
 </ul>
 <section id="args">
 <span id="run-parameters-args"></span><h3>args<a class="headerlink" href="#args" title="Permalink to this heading">¶</a></h3>
-<p>Available <code class="docutils literal notranslate"><span class="pre">args</span></code> depend of the data type of each data file.
-This are passed to the processing script for all the files of the
+<p>Available <code class="docutils literal notranslate"><span class="pre">args</span></code> depend of the supported data type of each data file.</p>
+<p>Supported data types are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">h5ad</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spaceranger</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">molecules</span></code></p></li>
+</ul>
+<p>This are passed to the processing script for all the files of the
 corresponding data type (unless overriden in the <a class="reference internal" href="#id3">data parameters</a> file).
 Possible values for the currently supported data types are as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">args</span><span class="p">:</span>
@@ -233,6 +243,10 @@ Possible values for the currently supported data types are as follows:</p>
 <span class="w">    </span><span class="nt">compute_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `True` to compute PCA and UMAP if not already within the anndata object</span>
 <span class="w">    </span><span class="nt">chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"> </span><span class="c1"># Zarr chunk size, defaults to 10</span>
 <span class="w">    </span><span class="nt">var_index</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SYMBOL&quot;</span><span class="w"> </span><span class="c1"># `var` column from the anndata object to use as the gene names in the webapp. This reindexes the `var` matrix</span>
+<span class="w">    </span><span class="nt">obs_subset</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;sample&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;sample_id_1&quot;</span><span class="p p-Indicator">]]</span><span class="w"> </span><span class="c1"># optional `obs` column name an value(s) to subset the anndata object</span>
+<span class="w">    </span><span class="nt">var_subset</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;genome&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;GRCh38&quot;</span><span class="p p-Indicator">]]</span><span class="w"> </span><span class="c1"># optional `var` column name an value(s) to subset the anndata object</span>
+<span class="w">    </span><span class="nt">batch_processing</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;False&quot;</span><span class="w"> </span><span class="c1"># set to `True` to process the file in batches to avoid loading the whole object into memory if it is too large</span>
+<span class="w">    </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"> </span><span class="c1"># batch size (number of columns to process at a time if matrix is dense/csc, number of rows if matrix is csr) if `batch_processing` is set to `True`</span>
 <span class="w">  </span><span class="nt">spaceranger</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">save_h5ad</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># save an h5ad to the output directory. Defaults to `False`</span>
 <span class="w">    </span><span class="nt">load_clusters</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `False` to disable loading the clusters from the `analysis` directory</span>
@@ -249,10 +263,13 @@ Possible values for the currently supported data types are as follows:</p>
 <span class="w">    </span><span class="nt">y_col_idx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"> </span><span class="c1"># column index of the column for `y` coordinates in case `has_header` is `False`.</span>
 </pre></div>
 </div>
+<p>Note that in the case of <code class="docutils literal notranslate"><span class="pre">spaceranger</span></code> data, it initially gets converted into an <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> file
+and so when processed the <code class="docutils literal notranslate"><span class="pre">args</span></code> for <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> also apply to it,
+unless overriden in the <a class="reference internal" href="#id3">data parameters</a> file.</p>
 </section>
 <section id="vitessce-options">
 <span id="run-parameters-vitessce-options"></span><h3>vitessce options<a class="headerlink" href="#vitessce-options" title="Permalink to this heading">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code> map is used to write the Vitessce config file.
+<p>The <code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code> map is used to write Vitessce config files.
 One Vitessce config file is generated per dataset.
 Include relevant information from your data to be visualized.
 All values are optional as they depend on them existing in your data.</p>
@@ -283,13 +300,18 @@ the visualization to your needs.</p>
 </section>
 <section id="data-parameters">
 <span id="id3"></span><h2>Data parameters<a class="headerlink" href="#data-parameters" title="Permalink to this heading">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> file is used to define dataset information and data files to be processed.
+<p>The <code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">parameters</span></code> file is a <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> file used to define dataset information and data files to be processed.
 Multiple datasets can be defined in the same <cite>data parameters</cite> file and they will all be processed in the same pipeline run.
-Datasets are identified and grouped by the joint <code class="docutils literal notranslate"><span class="pre">project-dataset</span></code> key.</p>
-<p>Each dataset does not need to contain all types of data types,
-but it should contain at least one to be processed (file or image).</p>
-<p>Each line can either define a data file <em>or</em> dataset information.
+Each line can either define a file/image <em>or</em> dataset information.
 Examples for each case are provided further down.</p>
+<p>The supported image format is <code class="docutils literal notranslate"><span class="pre">tif</span></code>.
+Images can be either raw images (microscopy images) or label images (containing segmentations).
+Additionally, label images can be generated and processed if provided with the necessary data.
+Currently, label images can be generated for <code class="docutils literal notranslate"><span class="pre">Visium</span></code> data if provided with an <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> file or
+<code class="docutils literal notranslate"><span class="pre">spaceranger</span></code> output directory.</p>
+<p>Datasets are identified and grouped by the joint <code class="docutils literal notranslate"><span class="pre">project-dataset</span></code> key.
+Each dataset does not need to contain all types of data types,
+but it should contain at least one to be processed (file or image).</p>
 <p>Columns definitions:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">project</span></code> is the project/experiment name which can have multiple datasets</p></li>
@@ -358,6 +380,8 @@ This value is not used if the line is defining dataset information.</p></li>
 <td><dl class="simple">
 <dt>JSON-like string with the following key-values,</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">file_type</span></code> (required), supported technology like <code class="docutils literal notranslate"><span class="pre">visium</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">obs_subset</span></code> (optional), a tuple containing <code class="docutils literal notranslate"><span class="pre">obs</span></code> column name and value(s) like to subset the Anndata object.
+Useful if the the Anndata object contains data of multiple slides.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ref_img</span></code> (optional), a reference <code class="docutils literal notranslate"><span class="pre">tif</span></code> image of the size of the desired label image</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code> (optional), shape of the desired label image as <code class="docutils literal notranslate"><span class="pre">[int,</span> <span class="pre">int]</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sample_id</span></code> (optional), the name of the sample within the Anndata object.
@@ -378,7 +402,7 @@ Otherwise the first one will be used.</p></li>
 <span id="data-parameters-dataset-info"></span><h3>dataset information<a class="headerlink" href="#dataset-information" title="Permalink to this heading">¶</a></h3>
 <p>A line defining optional dataset information can be written as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">data_type</span><span class="p">,</span><span class="n">data_path</span><span class="p">,</span><span class="n">args</span>
-<span class="n">project_1</span><span class="p">,</span><span class="n">dataset_1</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">3000</span><span class="o">/</span><span class="n">visium_dataset_1</span><span class="o">/</span><span class="p">,</span>
+<span class="n">project_1</span><span class="p">,</span><span class="n">dataset_1</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">Dataset</span> <span class="mi">1</span><span class="p">,</span>
 </pre></div>
 </div>
 <p>Supported values are</p>
@@ -403,7 +427,7 @@ Otherwise the first one will be used.</p></li>
 <td><p>The url to prepend to each converted data file in the output Vitessce config file.
 Vitessce will load files from this location.
 This may be the final location to which files will be uploaded to and served
-or a local one for testing.</p></td>
+or a local one for testing. Defaults to <code class="docutils literal notranslate"><span class="pre">http://localhost:3000/</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
 <td><p>a predefined Vitessce layout to use, it can be either
