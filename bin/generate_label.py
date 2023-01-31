@@ -2,19 +2,22 @@
 """
 generate_label.py
 ====================================
-Generates the label image from AnnData spatial data
+Generates the label image from spatial data
 """
 
 from __future__ import annotations
 import os
 import fire
+import logging
+import glob
+import h5py
+import zarr
 import typing as T
 import scanpy as sc
 import numpy as np
-from skimage.draw import disk
+from skimage.draw import disk, polygon
 import tifffile as tf
 import pandas as pd
-from pathlib import Path
 from process_spaceranger import spaceranger_to_anndata
 
 
@@ -80,12 +83,85 @@ def visium(
     spot_coords = adata.obsm["spatial"]
     assert adata.obs.shape[0] == spot_coords.shape[0]
 
-    labelImg = np.zeros((shape[0], shape[1]), dtype=np.uint16)
+    label_img = np.zeros((shape[0], shape[1]), dtype=np.uint16)
 
     for spId, (y, x) in zip(adata.obs.index, spot_coords):
-        labelImg[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
+        label_img[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
 
-    tf.imwrite(f"{stem}-label.tif", labelImg)
+    tf.imwrite(f"{stem}-label.tif", label_img)
+
+    return
+
+
+def merscope(stem: str, path: str, shape: tuple[int, int], z_index: list[int] = [0]):
+    """This function writes a label image tif file with drawn labels according
+    to `cell_boundaries` data stored in MERSCOPE output directory
+
+    Args:
+        stem (str): Prefix for the output image filename.
+        path (str): Path to the MERSCOPE output directory
+        shape (tuple[int, int]): Output image shape.
+        z_index (list[int], optional): Z indices to process. Defaults to [0].
+    """
+
+    z_index = [z_index] if not isinstance(z_index, (list, tuple)) else z_index
+
+    tm = pd.read_csv(
+        os.path.join(path, "images", "micron_to_mosaic_pixel_transform.csv"),
+        sep=" ",
+        header=None,
+        dtype=float,
+    ).values
+
+    fovs = [
+        x
+        for x in os.listdir(os.path.join(path, "cell_boundaries"))
+        if x.endswith(".hdf5")
+    ]
+
+    for i, z in [(x, "zIndex_{}".format(x)) for x in z_index]:
+
+        label_img = np.zeros((shape[0], shape[1]), dtype=np.uint32)
+
+        for fov in fovs:
+            with h5py.File(os.path.join(path, "cell_boundaries", fov)) as f:
+                for cell_id in f["featuredata"].keys():
+                    pol = f["featuredata"][cell_id][z]["p_0"]["coordinates"][0]
+
+                    pol[:, 0] = pol[:, 0] * tm[0, 0] + tm[0, 2]
+                    pol[:, 1] = pol[:, 1] * tm[1, 1] + tm[1, 2]
+
+                    rr, cc = polygon(pol[:, 1], pol[:, 0])
+                    label_img[rr - 1, cc - 1] = int(cell_id)
+
+        logging.info(f"Writing label tif image {stem}-label_z{i} ...")
+        tf.imwrite(
+            f"{stem}-label_z{i}.tif" if len(z_index) > 1 else f"{stem}-label.tif",
+            label_img,
+        )
+
+    return
+
+
+def xenium(stem: str, path: str, shape: tuple[int, int], resolution: int = 0.2125):
+    if os.path.isdir(path):
+        cells_file = glob.glob(os.path.join(path, "*cells.zarr.zip"))[0]
+    else:
+        cells_file = path
+
+    z = zarr.open(cells_file, "r")
+    ids = z["cell_id"]
+    pols = z["polygon_vertices"][1]
+
+    label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
+
+    for id, pol in zip(ids, pols):
+        pol = pol / resolution
+        pol = np.array(list(map(list, pol.reshape(pol.shape[0] // 2, 2))))
+        rr, cc = polygon(pol[:, 1], pol[:, 0])
+        label_img[rr - 1, cc - 1] = int(id)
+
+    tf.imwrite(f"{stem}-label.tif", label_img)
 
     return
 
@@ -118,6 +194,10 @@ def create_img(
 
     if file_type == "visium":
         visium(stem, file_path, **args)
+    elif file_type == "merscope":
+        merscope(stem, file_path, **args)
+    elif file_type == "xenium":
+        xenium(stem, file_path, **args)
 
 
 if __name__ == "__main__":

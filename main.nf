@@ -21,6 +21,7 @@ params.data_params_delimiter = ","
 
 params.args = [:].withDefault{[:]}
 params.args["spaceranger"] = (params.args["h5ad"] ?: [:]) + (params.args["spaceranger"] ?: [:])
+params.args["merscope"] = (params.args["h5ad"] ?: [:]) + (params.args["merscope"] ?: [:])
 
 params.vitessce_options = [:]
 
@@ -162,7 +163,7 @@ process Generate_label_image {
     tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
 
     output:
-    tuple val(stem), val("label"), path("${stem_str}-label.tif")
+    tuple val(stem), val("label"), path("${stem_str}-label*.tif")
 
     script:
     stem_str = stem.join("-")
@@ -179,7 +180,7 @@ Channel.fromPath(params.data_params)
     .map { l -> tuple( tuple(l.project, l.dataset), l ) }
     .tap{ lines }
     .branch { stem, l ->
-        data: l.data_type in ["h5ad","spaceranger","molecules"]
+        data: l.data_type in ["h5ad","spaceranger","xenium","merscope","molecules"]
         images: l.data_type in ["raw_image","label_image","label_image_data"]
         vitessce_config_params: l.data_type in ["title","description","url","vitessce_options","layout","custom_layout"]
             return [stem, ["${l.data_type}": l.data_path]]
@@ -188,7 +189,7 @@ Channel.fromPath(params.data_params)
     .set{inputs}
 
     lines
-        .map{ [it[0], null] } // dummy null value for joins with empty channels to work as it would if using phase (keys only array wont join with empty channels)
+        .map{ [it[0], null] } // dummy null value for joins with empty channels to work as it would if using phase (keys-only array wont join with empty channels)
         .unique()
         .set{stems}
 
@@ -333,7 +334,14 @@ workflow Process_images {
 
     Generate_label_image(img_data)
 
-    all_tifs = img_tifs.mix(Generate_label_image.out)
+    Generate_label_image.out
+        .map { stem, type, paths ->
+            [stem, type, [paths].flatten()]
+        }
+        .transpose(by: 2)
+        .set {label_tifs}
+        
+    all_tifs = img_tifs.mix(label_tifs)
     image_to_zarr(all_tifs)
 
     ome_zarr_metadata(image_to_zarr.out.ome_xml)
