@@ -5,11 +5,16 @@ process_merscope.py
 Processes MERSCOPE output
 """
 
+from __future__ import annotations
 import os
 import fire
+import logging
+import h5py
 import scanpy as sc
 import numpy as np
 import pandas as pd
+import tifffile as tf
+from skimage.draw import polygon
 from process_h5ad import h5ad_to_zarr
 
 
@@ -86,6 +91,58 @@ def merscope_to_zarr(
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
 
     return zarr_file
+
+
+def merscope_label(
+    stem: str, path: str, shape: tuple[int, int], z_index: list[int] = [0]
+):
+    """This function writes a label image tif file with drawn labels according
+    to `cell_boundaries` data stored in MERSCOPE output directory
+
+    Args:
+        stem (str): Prefix for the output image filename.
+        path (str): Path to the MERSCOPE output directory
+        shape (tuple[int, int]): Output image shape.
+        z_index (list[int], optional): Z indices to process. Defaults to [0].
+    """
+
+    z_index = [z_index] if not isinstance(z_index, (list, tuple)) else z_index
+
+    tm = pd.read_csv(
+        os.path.join(path, "images", "micron_to_mosaic_pixel_transform.csv"),
+        sep=" ",
+        header=None,
+        dtype=float,
+    ).values
+
+    fovs = [
+        x
+        for x in os.listdir(os.path.join(path, "cell_boundaries"))
+        if x.endswith(".hdf5")
+    ]
+
+    for i, z in [(x, "zIndex_{}".format(x)) for x in z_index]:
+
+        label_img = np.zeros((shape[0], shape[1]), dtype=np.uint32)
+
+        for fov in fovs:
+            with h5py.File(os.path.join(path, "cell_boundaries", fov)) as f:
+                for cell_id in f["featuredata"].keys():
+                    pol = f["featuredata"][cell_id][z]["p_0"]["coordinates"][0]
+
+                    pol[:, 0] = pol[:, 0] * tm[0, 0] + tm[0, 2]
+                    pol[:, 1] = pol[:, 1] * tm[1, 1] + tm[1, 2]
+
+                    rr, cc = polygon(pol[:, 1], pol[:, 0])
+                    label_img[rr - 1, cc - 1] = int(cell_id)
+
+        logging.info(f"Writing label tif image {stem}-label_z{i} ...")
+        tf.imwrite(
+            f"{stem}-label_z{i}.tif" if len(z_index) > 1 else f"{stem}-label.tif",
+            label_img,
+        )
+
+    return
 
 
 if __name__ == "__main__":
