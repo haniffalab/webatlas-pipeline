@@ -152,25 +152,30 @@ process Build_config {
     """
 }
 
-process Generate_label_image {
-    tag "${stem}"
+process Generate_image {
+    tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
 
     container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), val(prefix), path(file_path), val(file_type), path(ref_img), val(args)
+    tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)
 
     output:
-    tuple val(stem), val(prefix), val("label"), path("${stem_str}-label*.tif")
+    tuple val(stem), val(prefix), val(img_type), path("${stem_str}*.tif")
 
     script:
     stem_str = ([*stem, prefix] - null - "").join("-")
     ref_img_str = ref_img.name != "NO_REF" ? "--ref_img ${ref_img}" : ""
     args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    generate_label.py --stem ${stem_str} --file_type ${file_type} --file_path ${file_path} ${ref_img_str} ${args_str}
+    generate_image.py \
+        --stem ${stem_str} \
+        --img_type ${img_type} \
+        --file_type ${file_type} \
+        --file_path ${file_path} \
+        ${ref_img_str} ${args_str}
     """
 }
 
@@ -181,7 +186,7 @@ Channel.fromPath(params.data_params)
     .tap{ lines }
     .branch { stem, l ->
         data: l.data_type in ["h5ad","spaceranger","xenium","merscope","molecules"]
-        images: l.data_type in ["raw_image","label_image","label_image_data"]
+        images: l.data_type in ["raw_image","label_image","raw_image_data","label_image_data"]
         vitessce_config_params: l.data_type in ["title","description","url","vitessce_options","layout","custom_layout"]
             return [stem, ["${l.data_type}": l.data_path]]
         other: true
@@ -299,7 +304,7 @@ workflow Process_files {
 }
 
 workflow Process_images {
-    // Map tif inputs to: 
+    // Map tif inputs to:
     // tuple val(stem), val(img_type), path(image)
     img_tifs = inputs.images.filter { stem, data_map ->
         data_map.data_type in ["raw_image", "label_image"]
@@ -314,16 +319,17 @@ workflow Process_images {
         ]
     }
 
-    // Map label data inputs to: 
+    // Map raw/label data inputs to:
     // tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
     // Pop file_type (required) and ref_img (optional) from args
     img_data = inputs.images.filter { stem, data_map ->
-        data_map.data_type == "label_image_data"
+        data_map.data_type in ["raw_image_data", "label_image_data"]
     }
     .map { stem, data_map ->
         [
             stem,
             data_map.prefix,
+            data_map.data_type.replace("_image_data",""),
             data_map.data_path,
             *[
                 new JsonSlurper().parseText(data_map.args).file_type,
@@ -336,9 +342,9 @@ workflow Process_images {
         ]
     }
 
-    Generate_label_image(img_data)
+    Generate_image(img_data)
 
-    Generate_label_image.out
+    Generate_image.out
         .map { stem, prefix, type, paths ->
             [
                 stem,

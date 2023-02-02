@@ -17,7 +17,7 @@ from bin.process_molecules import tsv_to_json
 from bin.consolidate_md import main as consolidate_md
 from bin.router import main as router
 from bin.ome_zarr_metadata import get_metadata
-from bin.generate_label import create_img
+from bin.generate_image import create_img
 
 # from bin.build_config import write_json
 
@@ -279,7 +279,7 @@ class TestClass:
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
         args = {"shape": [100, 100]}
-        create_img(stem, "visium", anndata_h5ad_file, args=args)
+        create_img(stem, "label", "visium", anndata_h5ad_file, args=args)
         assert os.path.exists(stem + "-label.tif")
 
     # def test_build_config(self, request, tmp_path_factory):

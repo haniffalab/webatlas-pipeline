@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-generate_label.py
+generate_image.py
 ====================================
-Generates the label image from spatial data
+Generates raw/label images from spatial data
 """
 
 from __future__ import annotations
@@ -11,11 +11,12 @@ import typing as T
 import tifffile as tf
 from process_spaceranger import visium_label
 from process_xenium import xenium_label
-from process_merscope import merscope_label
+from process_merscope import merscope_label, merscope_raw
 
 
 def create_img(
     stem: str,
+    img_type: str,
     file_type: str,
     file_path: str,
     ref_img: str = None,
@@ -40,12 +41,16 @@ def create_img(
         tif_img = tf.TiffFile(ref_img)
         args["shape"] = tif_img.pages[0].shape[:2]
 
-    if file_type == "visium":
-        visium_label(stem, file_path, **args)
-    elif file_type == "merscope":
-        merscope_label(stem, file_path, **args)
-    elif file_type == "xenium":
-        xenium_label(stem, file_path, **args)
+    if img_type == "label":
+        if file_type == "visium":
+            visium_label(stem, file_path, **args)
+        elif file_type == "merscope":
+            merscope_label(stem, file_path, **args)
+        elif file_type == "xenium":
+            xenium_label(stem, file_path, **args)
+    elif img_type == "raw":
+        if file_type == "merscope":
+            merscope_raw(stem, file_path, **args)
 
 
 if __name__ == "__main__":
