@@ -1,9 +1,9 @@
-project,dataset,data_type,data_path,args
-project_1,visium_dataset_1,title,Visium dataset 1,
-project_1,visium_dataset_1,h5ad,/path/to/anndata.h5ad,
-project_1,visium_dataset_1,raw_image,/path/to/raw_image.tif,
-project_1,visium_dataset_1,label_image_data,/path/to/anndata.h5ad,'{"file_type": "visium", "sample_id": "visium_sample_1", "ref_img": "/path/to/raw_image.tif"}'
-project_1,visium_dataset_2,title,Visium dataset 2,
-project_1,visium_dataset_2,h5ad,/path/to/anndata.h5ad,
-project_1,visium_dataset_2,raw_image,/path/to/raw_image_2.tif,
-project_1,visium_dataset_2,label_image_data,/path/to/anndata.h5ad,'{"file_type": "visium", "sample_id": "visium_sample_2", "shape": [1000, 1000]}'
+project,dataset,data_type,data_path,args,prefix
+project_1,visium_dataset_1,title,Visium dataset 1,,
+project_1,visium_dataset_1,h5ad,/path/to/anndata.h5ad,,
+project_1,visium_dataset_1,raw_image,/path/to/raw_image.tif,,
+project_1,visium_dataset_1,label_image_data,/path/to/anndata.h5ad,'{"file_type": "visium", "sample_id": "visium_sample_1", "ref_img": "/path/to/raw_image.tif"}',
+project_1,visium_dataset_2,title,Visium dataset 2,,
+project_1,visium_dataset_2,h5ad,/path/to/anndata.h5ad,,
+project_1,visium_dataset_2,raw_image,/path/to/raw_image_2.tif,,
+project_1,visium_dataset_2,label_image_data,/path/to/anndata.h5ad,'{"file_type": "visium", "sample_id": "visium_sample_2", "shape": [1000, 1000]}',

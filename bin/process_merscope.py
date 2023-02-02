@@ -136,9 +136,9 @@ def merscope_label(
                     rr, cc = polygon(pol[:, 1], pol[:, 0])
                     label_img[rr - 1, cc - 1] = int(cell_id)
 
-        logging.info(f"Writing label tif image {stem}-label_z{i} ...")
+        logging.info(f"Writing label tif image {stem}-z{i}-label ...")
         tf.imwrite(
-            f"{stem}-label_z{i}.tif" if len(z_index) > 1 else f"{stem}-label.tif",
+            f"{stem}-z{i}-label_.tif" if len(z_index) > 1 else f"{stem}-label.tif",
             label_img,
         )
 

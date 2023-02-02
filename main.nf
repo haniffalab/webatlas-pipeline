@@ -57,23 +57,23 @@ process image_to_zarr {
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(img_type), path(image)
+    tuple val(stem), val(prefix), val(img_type), path(image), val(keep_filename)
 
     output:
-    tuple val(stem), val(img_type), path("${stem_str}-${img_type}.zarr"), emit: img_zarr
-    tuple val(stem), val(img_type), path("${stem_str}-${img_type}.zarr/OME/METADATA.ome.xml"), emit: ome_xml
+    tuple val(stem), val(img_type), path("${filename}.zarr"), emit: img_zarr
+    tuple val(stem), val(img_type), path("${filename}.zarr/OME/METADATA.ome.xml"), emit: ome_xml
 
     script:
-    stem_str = stem.join("-")
+    filename = keep_filename ? image.baseName : ([*stem, img_type, prefix] - null - "").join("-")
     """
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
         tiffcp -c none ${image} uncompressed.tif
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem_str}-${img_type}.zarr
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem_str}-${img_type}.zarr
+        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${filename}.zarr
     fi
-    consolidate_md.py ${stem_str}-${img_type}.zarr
+    consolidate_md.py ${filename}.zarr
     """
 }
 
@@ -103,14 +103,14 @@ process route_file {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), path(file), val(type), val(args)
+    tuple val(stem), val(prefix), path(file), val(type), val(args)
 
     output:
     tuple val(stem), stdout, emit: out_file_paths
     tuple val(stem), path("${stem_str}*"), emit: converted_files, optional: true
 
     script:
-    stem_str = stem.join("-")
+    stem_str = ([*stem, prefix] - null - "").join("-")
     args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
     router.py --file_type ${type} --path ${file} --stem ${stem_str} ${args_str}
@@ -160,13 +160,13 @@ process Generate_label_image {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
+    tuple val(stem), val(prefix), path(file_path), val(file_type), path(ref_img), val(args)
 
     output:
-    tuple val(stem), val("label"), path("${stem_str}-label*.tif")
+    tuple val(stem), val(prefix), val("label"), path("${stem_str}-label*.tif")
 
     script:
-    stem_str = stem.join("-")
+    stem_str = ([*stem, prefix] - null - "").join("-")
     ref_img_str = ref_img.name != "NO_REF" ? "--ref_img ${ref_img}" : ""
     args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
@@ -273,6 +273,7 @@ workflow Process_files {
         [
             [
                 stem,
+                data_map.prefix,
                 data_map.data_path,
                 data_map.data_type,
                 (
@@ -306,8 +307,10 @@ workflow Process_images {
     .map { stem, data_map ->
         [ 
             stem,
+            data_map.data_prefix,
             data_map.data_type.replace("_image",""),
-            data_map.data_path
+            data_map.data_path,
+            false // keep_filename
         ]
     }
 
@@ -320,6 +323,7 @@ workflow Process_images {
     .map { stem, data_map ->
         [
             stem,
+            data_map.prefix,
             data_map.data_path,
             *[
                 new JsonSlurper().parseText(data_map.args).file_type,
@@ -335,12 +339,18 @@ workflow Process_images {
     Generate_label_image(img_data)
 
     Generate_label_image.out
-        .map { stem, type, paths ->
-            [stem, type, [paths].flatten()]
+        .map { stem, prefix, type, paths ->
+            [
+                stem,
+                prefix,
+                type,
+                [paths].flatten(),
+                true // keep_filename
+            ]
         }
-        .transpose(by: 2)
+        .transpose(by: 3)
         .set {label_tifs}
-        
+
     all_tifs = img_tifs.mix(label_tifs)
     image_to_zarr(all_tifs)
 
