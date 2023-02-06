@@ -21,7 +21,7 @@ and a :ref:`data parameters <data-parameters>` file.
 
 To run the ``Full_pipeline`` use
 
-::
+.. code-block:: sh
 
    nextflow run main.nf -params-file /path/to/run-params.yaml -entry Full_pipeline
 
@@ -63,7 +63,7 @@ but you can use any tool that can enable CORS.
 You can serve the view config file and data by specifying the output directory
 (note that the pipeline adds its version to the ``outdir`` defined in the :ref:`run parameters <run-parameters>` file). 
 
-::
+.. code-block:: sh
 
    serve -C -p 3000 /path/to/outdir/0.0.1/
 

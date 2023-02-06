@@ -21,6 +21,7 @@ params.data_params_delimiter = ","
 
 params.args = [:].withDefault{[:]}
 params.args["spaceranger"] = (params.args["h5ad"] ?: [:]) + (params.args["spaceranger"] ?: [:])
+params.args["xenium"] = (params.args["h5ad"] ?: [:]) + (params.args["xenium"] ?: [:])
 params.args["merscope"] = (params.args["h5ad"] ?: [:]) + (params.args["merscope"] ?: [:])
 
 params.vitessce_options = [:]
