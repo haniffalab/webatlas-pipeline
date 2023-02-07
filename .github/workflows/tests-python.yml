@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Install libvips
         run: |
-          apt-get update && apt-get install -y --no-install-recommends libvips
+          sudo apt-get update && apt-get install -y --no-install-recommends libvips
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python 3.8
