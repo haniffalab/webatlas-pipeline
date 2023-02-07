@@ -199,7 +199,7 @@ builds a Vitessce config file per dataset.</p></li>
 <p>Data should be input using a <a class="reference internal" href="setup.html#run-parameters"><span class="std std-ref">run parameters</span></a> file
 and a <a class="reference internal" href="setup.html#data-parameters"><span class="std std-ref">data parameters</span></a> file.</p>
 <p>To run the <code class="docutils literal notranslate"><span class="pre">Full_pipeline</span></code> use</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">main</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">params</span><span class="o">-</span><span class="n">file</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">run</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">entry</span> <span class="n">Full_pipeline</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>/path/to/run-params.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
 </pre></div>
 </div>
 <p>This will handle all input files, whether they are data files or images, for all datasets
@@ -230,7 +230,7 @@ We recommend using <a class="reference external" href="https://www.npmjs.com/pac
 but you can use any tool that can enable CORS.</p>
 <p>You can serve the view config file and data by specifying the output directory
 (note that the pipeline adds its version to the <code class="docutils literal notranslate"><span class="pre">outdir</span></code> defined in the <a class="reference internal" href="setup.html#run-parameters"><span class="std std-ref">run parameters</span></a> file).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">serve</span> <span class="o">-</span><span class="n">C</span> <span class="o">-</span><span class="n">p</span> <span class="mi">3000</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">outdir</span><span class="o">/</span><span class="mf">0.0.1</span><span class="o">/</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>serve<span class="w"> </span>-C<span class="w"> </span>-p<span class="w"> </span><span class="m">3000</span><span class="w"> </span>/path/to/outdir/0.0.1/
 </pre></div>
 </div>
 <p>Make sure to enable CORS and set the appropriate port number.

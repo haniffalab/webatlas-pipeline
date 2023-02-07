@@ -100,10 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#build_config.build_raster_options"><code class="docutils literal notranslate"><span class="pre">build_raster_options()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build_config.write_json"><code class="docutils literal notranslate"><span class="pre">write_json()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#consolidate-md-py">consolidate_md.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#consolidate_md.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generate-label-py">generate_label.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generate_label.create_img"><code class="docutils literal notranslate"><span class="pre">create_img()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generate_label.visium"><code class="docutils literal notranslate"><span class="pre">visium()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#consolidate_md.consolidate"><code class="docutils literal notranslate"><span class="pre">consolidate()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ome-zarr-metadata-py">ome_zarr_metadata.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ome_zarr_metadata.get_metadata"><code class="docutils literal notranslate"><span class="pre">get_metadata()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process-h5ad-py">process_h5ad.py</a></li>
@@ -115,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#process-spaceranger-py">process_spaceranger.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.spaceranger_to_anndata"><code class="docutils literal notranslate"><span class="pre">spaceranger_to_anndata()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.spaceranger_to_zarr"><code class="docutils literal notranslate"><span class="pre">spaceranger_to_zarr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.visium_label"><code class="docutils literal notranslate"><span class="pre">visium_label()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -291,57 +289,12 @@ Defaults to None.</p></li>
 <p>Consolidates Zarr metadata</p>
 </section>
 <dl class="py function">
-<dt class="sig sig-object py" id="consolidate_md.main">
-<span class="sig-prename descclassname"><span class="pre">consolidate_md.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#consolidate_md.main" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="consolidate_md.consolidate">
+<span class="sig-prename descclassname"><span class="pre">consolidate_md.</span></span><span class="sig-name descname"><span class="pre">consolidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#consolidate_md.consolidate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to consolidate the metadata of a Zarr file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file_in</strong> (<em>str</em>) – Path to Zarr file</p>
-</dd>
-</dl>
-</dd></dl>
-
-<span class="target" id="module-generate_label"></span><section id="generate-label-py">
-<h2>generate_label.py<a class="headerlink" href="#generate-label-py" title="Permalink to this heading">¶</a></h2>
-<p>Generates the label image from AnnData spatial data</p>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py" id="generate_label.create_img">
-<span class="sig-prename descclassname"><span class="pre">generate_label.</span></span><span class="sig-name descname"><span class="pre">create_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_img</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#generate_label.create_img" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calls the corresponding function
-to write a label image given the metadata provided.
-It also obtains the image shape of a reference image if specified.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>stem</strong> (<em>str</em>) – Prefix for the output image filename.</p></li>
-<li><p><strong>file_type</strong> (<em>str</em>) – Type of file containing the metadata from which to
-generate the label image.</p></li>
-<li><p><strong>file_path</strong> (<em>str</em>) – Path to the metadata file.</p></li>
-<li><p><strong>ref_img</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to reference image from which to get the
-shape for the label image. Defaults to None.</p></li>
-<li><p><strong>args</strong> (<em>dict</em><em>[</em><em>str</em><em>,</em><em>T.Any</em><em>]</em><em>, </em><em>optional</em>) – Args to be passed to the appropriate processing function.
-Defaults to {}.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="generate_label.visium">
-<span class="sig-prename descclassname"><span class="pre">generate_label.</span></span><span class="sig-name descname"><span class="pre">visium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#generate_label.visium" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function writes a label image tif file with drawn labels according to an
-Anndata object with necessary metadata stored within <cite>uns[“spatial”]</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>stem</strong> (<em>str</em>) – Prefix for the output image filename.</p></li>
-<li><p><strong>file_path</strong> (<em>str</em>) – Path to the h5ad file or spaceranger output directory.</p></li>
-<li><p><strong>shape</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Output image shape. Defaults to None.</p></li>
-<li><p><strong>obs_subset</strong> (<em>tuple</em><em>(</em><em>str</em><em>, </em><em>T.Any</em><em>)</em><em>, </em><em>optional</em>) – Tuple containing an <cite>obs</cite> column name and one or more values
-to use to subset the AnnData object. Defaults to None.</p></li>
-<li><p><strong>sample_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Sample ID string within the Anndata object. Defaults to None.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -549,6 +502,25 @@ in the AnnData object. Defaults to False.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="process_spaceranger.visium_label">
+<span class="sig-prename descclassname"><span class="pre">process_spaceranger.</span></span><span class="sig-name descname"><span class="pre">visium_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#process_spaceranger.visium_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function writes a label image tif file with drawn labels according to an
+Anndata object with necessary metadata stored within <cite>uns[“spatial”]</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stem</strong> (<em>str</em>) – Prefix for the output image filename.</p></li>
+<li><p><strong>file_path</strong> (<em>str</em>) – Path to the h5ad file or spaceranger output directory.</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Output image shape. Defaults to None.</p></li>
+<li><p><strong>obs_subset</strong> (<em>tuple</em><em>(</em><em>str</em><em>, </em><em>T.Any</em><em>)</em><em>, </em><em>optional</em>) – Tuple containing an <cite>obs</cite> column name and one or more values
+to use to subset the AnnData object. Defaults to None.</p></li>
+<li><p><strong>sample_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Sample ID string within the Anndata object. Defaults to None.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
