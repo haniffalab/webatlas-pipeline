@@ -211,7 +211,7 @@ Columns definitions:
 
 - ``prefix`` is an optional string to prefix the output filenames, along with the ``project``
   and ``dataset`` names, so the output filenames become ``{project}-{dataset}-{prefix}-file.ext``.
-  Required if you have multiple input files of the same ``data_type`` within the same ``project`å`
+  Required if you have multiple input files of the same ``data_type`` within the same ``project``
   and ``dataset``, as they would otherwise get 
   overwritten with the default output filename ``{project}-{dataset}-file.ext``.
   If a single input file generates multiple output files of the same type, a prefix will
@@ -317,6 +317,7 @@ For example:
 
     project,dataset,data_type,data_path,args,prefix
     project_1,dataset_1,raw_image_data,/path/to/merscope/output/,'{"file_type": "merscope"}',
+    project_1,dataset_2,raw_image_data,/path/to/merscope2/output/,'{"file_type": "merscope", "z_index": [0,1]}',
 
 
 .. _data-parameters-label-image-data:

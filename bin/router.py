@@ -16,7 +16,7 @@ from process_merscope import merscope_to_zarr
 from process_xenium import xenium_to_zarr
 
 
-def main(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> str:
+def process(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> str:
     """Function that calls the appropriate processing function
     for the input file according to its type
 
@@ -47,4 +47,4 @@ def main(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> s
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(process)
