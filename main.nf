@@ -54,7 +54,7 @@ process image_to_zarr {
     tag "${image}"
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-image-to-zarr:${version}"
+    container "haniffalab/vitessce-pipeline:${version}"
     publishDir outdir_with_version, mode: "copy"
 
     input:
@@ -81,7 +81,7 @@ process image_to_zarr {
 process ome_zarr_metadata{
     tag "${zarr}"
     debug verbose_log
-    container "haniffalab/vitessce-pipeline-processing:${version}"
+    container "haniffalab/vitessce-pipeline:${version}"
 
     input:
     tuple val(stem), val(img_type), path(zarr)
@@ -100,7 +100,7 @@ process route_file {
     debug verbose_log
     cache "lenient"
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
+    container "haniffalab/vitessce-pipeline:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
@@ -123,7 +123,7 @@ process Build_config {
     debug verbose_log
     cache false
 
-    container "haniffalab/vitessce-pipeline-build-config:${version}"
+    container "haniffalab/vitessce-pipeline:${version}"
     publishDir outdir_with_version, mode: "copy"
 
     input:
@@ -157,7 +157,7 @@ process Generate_image {
     tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
+    container "haniffalab/vitessce-pipeline:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:

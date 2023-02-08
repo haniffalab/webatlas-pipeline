@@ -1,11 +1,16 @@
-FROM python:3.9-slim
-
+FROM openmicroscopy/bioformats2raw:0.4.0
+USER root
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends procps && \
+    apt-get install -y software-properties-common && \
+    apt-get install -y --no-install-recommends procps libvips  && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install -y libtiff-tools python3.9 python3.9-distutils python3-pip && \
+    ln -fs /usr/bin/python3.9 /usr/bin/python && \
+    ln -fs /usr/bin/python3.9 /usr/bin/python3 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN python -m pip install --upgrade pip --no-cache-dir
-
+RUN python -m pip install --upgrade pip setuptools distlib --no-cache-dir
 COPY ./requirements.txt /requirements.txt
-RUN pip3 install -r /requirements.txt
+RUN python -m pip install -r /requirements.txt
+ENTRYPOINT []

@@ -5,6 +5,7 @@ cached-property==1.5.2
 cloudpickle==2.0.0
 dask==2022.2.0
 fasteners==0.17.3
+fire==0.5.0
 fsspec==2022.1.0
 h5py==3.6.0
 importlib-metadata==4.11.1
@@ -37,5 +38,4 @@ xlrd==1.2.0
 xmlschema==1.11.3
 zarr==2.11.0
 zipp==3.7.0
-fire==0.4.0
 vitessce==1.0.7
