@@ -64,7 +64,7 @@ process image_to_zarr {
     tuple val(stem), val(img_type), path("${filename}.zarr/OME/METADATA.ome.xml"), emit: ome_xml
 
     script:
-    filename = keep_filename ? image.baseName : ([*stem, img_type, prefix] - null - "").join("-")
+    filename = keep_filename ? image.baseName : ([*stem, prefix, img_type] - null - "").join("-")
     """
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
@@ -314,7 +314,7 @@ workflow Process_images {
     .map { stem, data_map ->
         [ 
             stem,
-            data_map.data_prefix,
+            data_map.prefix,
             data_map.data_type.replace("_image",""),
             data_map.data_path,
             false // keep_filename
