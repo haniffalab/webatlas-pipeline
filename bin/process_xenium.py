@@ -75,7 +75,7 @@ def xenium_to_zarr(
 
     adata = xenium_to_anndata(path, spatial_as_pixel, resolution)
     if save_h5ad:
-        adata.write_h5ad(f"{stem}.h5ad")
+        adata.write_h5ad(f"tmp-{stem}.h5ad")
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
 
     return zarr_file

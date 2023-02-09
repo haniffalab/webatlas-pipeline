@@ -88,7 +88,7 @@ def merscope_to_zarr(
 
     adata = merscope_to_anndata(path, filter_prefix)
     if save_h5ad:
-        adata.write_h5ad(f"{stem}.h5ad")
+        adata.write_h5ad(f"tmp-{stem}.h5ad")
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
 
     return zarr_file

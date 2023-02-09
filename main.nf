@@ -106,6 +106,7 @@ process route_file {
     output:
     tuple val(stem), stdout, emit: out_file_paths
     tuple val(stem), path("${stem_str}*"), emit: converted_files, optional: true
+    tuple val(stem), path("tmp-${stem_str}*"), emit: extra_files, optional: true
 
     script:
     stem_str = ([*stem, prefix] - null - "").join("-")
@@ -289,7 +290,12 @@ workflow Process_files {
     }
 
     route_file(data_list)
-    files = route_file.out.converted_files.groupTuple(by:0)
+    files = route_file.out.converted_files
+        .map { stem, paths ->
+            [ stem, [paths].flatten() ]
+        }
+        .transpose(by: 1)
+        .groupTuple(by:0)
     file_paths = files.map { stem, it -> 
         [ stem, it.name ]
     }
