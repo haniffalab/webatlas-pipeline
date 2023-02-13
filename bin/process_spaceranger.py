@@ -116,16 +116,17 @@ def visium_label(
 
     if os.path.isdir(file_path):
         adata = spaceranger_to_anndata(file_path)
-        sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
-        if not shape:
-            hires_shape = adata.uns["spatial"][sample_id]["images"]["hires"].shape
-            scalef = adata.uns["spatial"][sample_id]["scalefactors"][
-                "tissue_hires_scalef"
-            ]
-            shape = [int(hires_shape[0] / scalef), int(hires_shape[1] / scalef)]
     else:
         adata = sc.read(file_path)
-        sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
+        
+    sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
+    
+    if not shape:
+        hires_shape = adata.uns["spatial"][sample_id]["images"]["hires"].shape
+        scalef = adata.uns["spatial"][sample_id]["scalefactors"][
+            "tissue_hires_scalef"
+        ]
+        shape = [int(hires_shape[0] / scalef), int(hires_shape[1] / scalef)]
 
     # Subset adata by obs
     if obs_subset:
