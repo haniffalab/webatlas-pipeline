@@ -10,6 +10,7 @@ fsspec==2022.1.0
 h5py==3.6.0
 importlib-metadata==4.11.1
 locket==0.2.1
+matplotlib==3.6
 natsort==8.1.0
 numcodecs==0.9.1
 numpy==1.21.5

@@ -69,9 +69,9 @@ process image_to_zarr {
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
         tiffcp -c none ${image} uncompressed.tif
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
+        bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${filename}.zarr
+        bioformats2raw --no-hcs ${image} ${filename}.zarr
     fi
     consolidate_md.py ${filename}.zarr
     """
