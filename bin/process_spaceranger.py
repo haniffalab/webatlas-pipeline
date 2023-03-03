@@ -118,14 +118,12 @@ def visium_label(
         adata = spaceranger_to_anndata(file_path)
     else:
         adata = sc.read(file_path)
-        
+
     sample_id = sample_id or list(adata.uns["spatial"].keys())[0]
-    
+
     if not shape:
         hires_shape = adata.uns["spatial"][sample_id]["images"]["hires"].shape
-        scalef = adata.uns["spatial"][sample_id]["scalefactors"][
-            "tissue_hires_scalef"
-        ]
+        scalef = adata.uns["spatial"][sample_id]["scalefactors"]["tissue_hires_scalef"]
         shape = [int(hires_shape[0] / scalef), int(hires_shape[1] / scalef)]
 
     # Subset adata by obs
@@ -157,7 +155,10 @@ def visium_label(
     spot_coords = adata.obsm["spatial"]
     assert adata.obs.shape[0] == spot_coords.shape[0]
 
-    label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(adata.obs.index.astype(int).max()))
+    label_img = np.zeros(
+        (shape[0], shape[1]),
+        dtype=np.min_scalar_type(adata.obs.index.astype(int).max()),
+    )
 
     for spId, (y, x) in zip(adata.obs.index, spot_coords):
         label_img[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
