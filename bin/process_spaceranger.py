@@ -157,7 +157,7 @@ def visium_label(
     spot_coords = adata.obsm["spatial"]
     assert adata.obs.shape[0] == spot_coords.shape[0]
 
-    label_img = np.zeros((shape[0], shape[1]), dtype=np.uint16)
+    label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(adata.obs.index.astype(int).max()))
 
     for spId, (y, x) in zip(adata.obs.index, spot_coords):
         label_img[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
