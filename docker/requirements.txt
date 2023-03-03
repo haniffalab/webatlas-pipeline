@@ -5,10 +5,12 @@ cached-property==1.5.2
 cloudpickle==2.0.0
 dask==2022.2.0
 fasteners==0.17.3
+fire==0.5.0
 fsspec==2022.1.0
 h5py==3.6.0
 importlib-metadata==4.11.1
 locket==0.2.1
+matplotlib==3.6
 natsort==8.1.0
 numcodecs==0.9.1
 numpy==1.21.5
@@ -22,9 +24,11 @@ pytest==7.1.2
 pytest-cov==3.0.0
 python-dateutil==2.8.2
 pytz==2021.3
+pyvips==2.2.1
 PyYAML==6.0
 regex==2022.7.25
 scanpy==1.9.1
+scikit-image==0.19.3
 scipy==1.7.3
 Shapely==1.8.0
 six==1.16.0
@@ -35,5 +39,4 @@ xlrd==1.2.0
 xmlschema==1.11.3
 zarr==2.11.0
 zipp==3.7.0
-fire==0.4.0
 vitessce==1.0.7

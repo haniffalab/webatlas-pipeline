@@ -12,9 +12,11 @@ import typing as T
 from process_h5ad import h5ad_to_zarr
 from process_molecules import tsv_to_json
 from process_spaceranger import spaceranger_to_zarr
+from process_merscope import merscope_to_zarr
+from process_xenium import xenium_to_zarr
 
 
-def main(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> str:
+def process(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> str:
     """Function that calls the appropriate processing function
     for the input file according to its type
 
@@ -32,6 +34,10 @@ def main(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> s
 
     if file_type == "spaceranger":
         out_file = spaceranger_to_zarr(path=path, stem=stem, **args)
+    elif file_type == "xenium":
+        out_file = xenium_to_zarr(path=path, stem=stem, **args)
+    elif file_type == "merscope":
+        out_file = merscope_to_zarr(path=path, stem=stem, **args)
     elif file_type == "h5ad":
         out_file = h5ad_to_zarr(file=path, stem=stem, **args)
     elif file_type == "molecules":
@@ -41,4 +47,4 @@ def main(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> s
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(process)

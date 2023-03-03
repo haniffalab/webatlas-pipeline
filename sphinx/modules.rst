@@ -11,7 +11,7 @@ Modules
 .. automodule:: consolidate_md
     :members:
 
-.. automodule:: generate_label
+.. automodule:: generate_image
     :members:
 
 .. automodule:: ome_zarr_metadata

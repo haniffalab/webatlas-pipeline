@@ -14,10 +14,10 @@ from scipy.sparse import csc_matrix, csr_matrix
 
 from bin.process_h5ad import h5ad_to_zarr
 from bin.process_molecules import tsv_to_json
-from bin.consolidate_md import main as consolidate_md
-from bin.router import main as router
+from bin.consolidate_md import consolidate
+from bin.router import process
 from bin.ome_zarr_metadata import get_metadata
-from bin.generate_label import create_img
+from bin.generate_image import create_img
 
 # from bin.build_config import write_json
 
@@ -244,20 +244,20 @@ class TestClass:
         assert output_json == expected_json
 
     def test_zarr(self, zarr_file):
-        consolidate_md(zarr_file)
+        consolidate(zarr_file)
         assert os.path.exists(os.path.join(zarr_file, ".zmetadata"))
 
     def test_route_h5ad(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
-        out_file = router("h5ad", anndata_h5ad_file, stem, {})
+        out_file = process("h5ad", anndata_h5ad_file, stem, {})
         assert os.path.exists(out_file)
         assert out_file == stem + "-anndata.zarr"
 
     def test_route_molecules(self, monkeypatch, molecules_tsv_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
         stem = "test"
-        out_file = router("molecules", molecules_tsv_file, stem, {})
+        out_file = process("molecules", molecules_tsv_file, stem, {})
         assert os.path.exists(out_file)
         assert out_file == stem + "-molecules.json"
 
@@ -279,7 +279,7 @@ class TestClass:
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
         args = {"shape": [100, 100]}
-        create_img(stem, "visium", anndata_h5ad_file, args=args)
+        create_img(stem, "label", "visium", anndata_h5ad_file, args=args)
         assert os.path.exists(stem + "-label.tif")
 
     # def test_build_config(self, request, tmp_path_factory):

@@ -139,13 +139,15 @@ def build_raster_options(
         for img in images[img_type]:
             image_name = os.path.splitext(os.path.basename(img["path"]))[0]
             channel_names = (
-                img["md"]["channel_names"] if "channel_names" in img["md"] else []
+                img["md"]["channel_names"]
+                if "channel_names" in img["md"] and len(img["md"]["channel_names"])
+                else (
+                    ["Labels"]
+                    if img_type == "label"
+                    else [f"Channel {x}" for x in range(int(img["md"]["C"]))]
+                )
             )
-            channel_names, isBitmask = (
-                (["Labels"], True)
-                if img_type == "label" and not len(channel_names)
-                else (channel_names, False)
-            )
+            isBitmask = img_type == "label"
             raster_options["renderLayers"].append(image_name)
             raster_options["images"].append(
                 {
