@@ -11,14 +11,15 @@ import numpy as np
 import logging
 
 
-def reindex_label(label_image:str, start_at: int, out_name:str) -> None:
-    lab = tf.imread(label_image).astype(np.int32)
-    max_id = np.max(lab)
-    mask = lab!=0
-    reindexed_lab = (lab + start_at) * mask
-    reindexed_max_id = np.max(lab)
+def reindex_label(label_image: str, offset: int, out_name: str) -> None:
+    label = tf.imread(label_image).astype(np.int32)
+    max_id = np.max(label)
+    mask = label != 0
+    reindexed_label = (label + offset) * mask
+    reindexed_max_id = np.max(label)
     logging.info(max_id, reindexed_max_id)
-    tf.imwrite(out_name, reindexed_lab)
+    tf.imwrite(out_name, reindexed_label)
+
 
 if __name__ == "__main__":
     fire.Fire(reindex_label)

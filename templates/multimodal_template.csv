@@ -1,4 +1,4 @@
-type,start_at,label_tif,h5ad
+type,offset,label_tif,h5ad
 iss,0,/nfs/team283_imaging/KT_JNT/playground_Tong/20230210/segmentation/expanded_label/KT_JNT_optflow_optflow_reg_result_stack.ome_90_label_expanded_by_10.tif,/nfs/team283_imaging/KT_JNT/playground_Tong/20230210/assign/KT_JNT.h5ad
 visium,100000,/nfs/team283_imaging/KT_JNT/playground_Tong/20230210/segmentation/expanded_label/KT_JNT_optflow_optflow_reg_result_stack.ome_90_label_expanded_by_10.tif,/nfs/team283_imaging/KT_JNT/playground_Tong/20230210/assign/KT_JNT.h5ad
 scRNAseq,200000,/nfs/team283_imaging/KT_JNT/playground_Tong/20230210/segmentation/expanded_label/KT_JNT_optflow_optflow_reg_result_stack.ome_90_label_expanded_by_10.tif,/nfs/team283_imaging/KT_JNT/playground_Tong/20230210/assign/KT_JNT.h5ad

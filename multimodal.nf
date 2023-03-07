@@ -19,7 +19,7 @@ process process_label {
 
 
     input:
-    tuple val(type), val(start_at), path(label_tif)
+    tuple val(type), val(offset), path(label_tif)
 
 
     output:
@@ -29,7 +29,7 @@ process process_label {
     stem = label_tif.baseName
     reindexed_tif = "${stem}_${type}_reindexed.tif"
     """
-    multimodal_preprocess.py -label_image $label_tif -start_at ${start_at} -out_name ${reindexed_tif}
+    multimodal_preprocess.py -label_image $label_tif -offset ${offset} -out_name ${reindexed_tif}
     """
 }
 
@@ -43,7 +43,7 @@ process process_h5ads {
 
 
     input:
-    tuple val(type), val(start_at), path(label_tif)
+    tuple val(type), val(offset), path(label_tif)
 
 
     output:
@@ -64,7 +64,7 @@ process intersection {
 
 
     input:
-    tuple val(type), val(start_at), path(label_tif)
+    tuple val(type), val(offset), path(label_tif)
 
 
     output:
@@ -80,8 +80,8 @@ workflow {
     datas = Channel.fromPath(params.data_params)
         .splitCsv(header:true, sep:params.data_params_delimiter, quote:"'")
         .multiMap{ it ->
-            labels : [it.type, it.start_at, it.label_tif]
-            h5ads : [it.type, it.start_at, it.h5ad]
+            labels : [it.type, it.offset, it.label_tif]
+            h5ads : [it.type, it.offset, it.h5ad]
         }
     /*datas.labels.view()*/
     /*datas.h5ads.view()*/
