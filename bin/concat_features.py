@@ -147,12 +147,12 @@ def concat_matrices(
             uns=adata.uns,
         )
 
-    adata_concat.var[prev_features_bool] = adata_concat.var[
-        prev_features_bool
-    ].fillna(False)
-    adata_concat.var[new_features_bool] = adata_concat.var[
-        new_features_bool
-    ].fillna(False)
+    adata_concat.var[prev_features_bool] = adata_concat.var[prev_features_bool].fillna(
+        False
+    )
+    adata_concat.var[new_features_bool] = adata_concat.var[new_features_bool].fillna(
+        False
+    )
 
     for col in [col for col in adata.var_keys() if adata.var[col].dtype == bool]:
         adata_concat.var[col] = adata_concat.var[col].fillna(False)
