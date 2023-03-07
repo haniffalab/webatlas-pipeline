@@ -45,6 +45,6 @@ def intersect_features(
         if isinstance(adata.X, spmatrix):
             adata.X = adata.X.toarray()
 
-        adata.write_zarr(f"reindexed-{basename}.zarr", chunk_shape)
+        adata.write_zarr(f"intersected-{basename}.zarr", chunk_shape)
 
     return
