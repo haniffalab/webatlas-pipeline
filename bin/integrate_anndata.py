@@ -12,7 +12,7 @@ from scipy.sparse import spmatrix, hstack, csr_matrix, csc_matrix
 from process_h5ad import h5ad_to_zarr
 
 
-def reindex_and_concat(path: str, features: str, offset: int, **kwargs):
+def reindex_and_concat(path: str, offset: int, features: str, **kwargs):
 
     adata = read_anndata(path)
 
