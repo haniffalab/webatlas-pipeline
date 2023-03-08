@@ -7,7 +7,7 @@ params.data_params="./templates/multimodal_template.csv"
 params.data_params_delimiter=","
 version="0.0.1"
 verbose_log=true
-outdir_with_version = "${params.outdir}/${version}"
+outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
 
 process process_label {
@@ -29,7 +29,7 @@ process process_label {
     stem = label_tif.baseName
     reindexed_tif = "${stem}_${type}_reindexed.tif"
     """
-    multimodal_preprocess.py -label_image $label_tif -offset ${offset} -out_name ${reindexed_tif}
+    integrate_image.py --label_image $label_tif --offset ${offset} --out_filename ${reindexed_tif}
     """
 }
 

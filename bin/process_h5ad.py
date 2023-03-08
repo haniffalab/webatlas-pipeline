@@ -27,6 +27,7 @@ SUFFIX = "anndata.zarr"
 def h5ad_to_zarr(
     file: str = None,
     stem: str = "",
+    out_filename: str = None,
     adata: ad.AnnData = None,
     compute_embeddings: bool = False,
     chunk_size: int = 10,
@@ -43,6 +44,7 @@ def h5ad_to_zarr(
     Args:
         file (str, optional): Path to the h5ad file. Defaults to None.
         stem (str, optional): Prefix for the output file. Defaults to "".
+        out_filename (str, optional): Output file name without extension. Supersedes `stem`. Defaults to None.
         adata (AnnData, optional): AnnData object to process. Supersedes `file`.
             Defaults to None.
         compute_embeddings (bool, optional): If `X_umap` and `X_pca` embeddings will be computed.
@@ -151,7 +153,11 @@ def h5ad_to_zarr(
     # remove unnecessary data
     del adata.raw
 
-    zarr_file = f"{stem}-{SUFFIX}"
+    zarr_file = (
+        f"{out_filename}.zarr"
+        if out_filename and len(out_filename)
+        else f"{stem}-{SUFFIX}"
+    )
 
     if not batch_processing:
         # matrix sparse to dense
