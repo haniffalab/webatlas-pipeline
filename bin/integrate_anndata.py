@@ -12,31 +12,72 @@ from scipy.sparse import spmatrix, hstack, csr_matrix, csc_matrix
 from process_h5ad import h5ad_to_zarr
 
 
-def reindex_anndata(path: str, offset: int, **kwargs):
+def reindex_and_concat(path: str, features: str, offset: int, **kwargs):
 
     adata = read_anndata(path)
 
-    adata.obs.index = (adata.obs.index.astype(int) + offset).astype(str)
+    adata = reindex_anndata(adata, offset, no_save=True)
+    adata = concat_features(adata, features, no_save=True)
 
-    out_filename = "reindexed-{}".format(os.path.splitext(os.path.basename(path))[0])
-
+    out_filename = "reindexed-concat-{}".format(
+        os.path.splitext(os.path.basename(path))[0]
+    )
     write_anndata(adata, out_filename, **kwargs)
 
     return
 
 
-def concat_features(path: str, features: str, **kwargs):
+def reindex_anndata(
+    data: Union[ad.AnnData, str],
+    offset: int,
+    no_save: bool = False,
+    out_filename: str = None,
+    **kwargs,
+):
 
-    adata = read_anndata(path)
+    if isinstance(data, ad.AnnData):
+        adata = data
+    else:
+        adata = read_anndata(data)
+        out_filename = out_filename or "concat-{}".format(
+            os.path.splitext(os.path.basename(data))[0]
+        )
+
+    adata.obs.index = (adata.obs.index.astype(int) + offset).astype(str)
+
+    if no_save:
+        return adata
+    else:
+        write_anndata(adata, out_filename, **kwargs)
+        return
+
+
+def concat_features(
+    data: Union[ad.AnnData, str],
+    features: str,
+    no_save: bool = False,
+    out_filename: str = None,
+    **kwargs,
+):
+
+    if isinstance(data, ad.AnnData):
+        adata = data
+    else:
+        adata = read_anndata(data)
+        out_filename = out_filename or "concat-{}".format(
+            os.path.splitext(os.path.basename(data))[0]
+        )
 
     if features.endswith(".h5ad") and os.path.isfile(features):
         adata = concat_matrix_from_cell2location(adata, features)
     else:
         adata = concat_matrix_from_obs(adata, features)
 
-    out_filename = "concat-{}".format(os.path.splitext(os.path.basename(path))[0])
-
-    write_anndata(adata, out_filename, **kwargs)
+    if no_save:
+        return adata
+    else:
+        write_anndata(adata, out_filename, **kwargs)
+        return
 
 
 def intersect_features(paths: list[str], **kwargs):
