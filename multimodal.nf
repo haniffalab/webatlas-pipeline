@@ -7,85 +7,84 @@ params.data_params="./templates/multimodal_template.csv"
 params.data_params_delimiter=","
 version="0.0.1"
 verbose_log=true
-outdir_with_version = "${params.outdir}/${version}"
+outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
 
 process process_label {
-    tag "${type}"
+    tag "${label_image}"
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
-
     input:
-    tuple val(type), val(start_at), path(label_tif)
-
+    tuple path(label_image), val(offset)
 
     output:
-    tuple val(type), path("${reindexed_tif}")
+    path("${reindexed_tif}")
 
     script:
-    stem = label_tif.baseName
-    reindexed_tif = "${stem}_${type}_reindexed.tif"
+    basename = label_image.baseName
+    reindexed_tif = "reindexed-${basename}.tif"
     """
-    multimodal_preprocess.py -label_image $label_tif -start_at ${start_at} -out_name ${reindexed_tif}
+    integrate_image.py \
+        --label_image ${label_image} \
+        --offset ${offset} \
+        --out_filename ${reindexed_tif}
     """
 }
 
 
-process process_h5ads {
-    tag "${type}"
+process process_anndata {
+    tag "${anndata}"
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
-
     input:
-    tuple val(type), val(start_at), path(label_tif)
-
+    tuple path(anndata), val(offset), path(features)
 
     output:
-    tuple val(type), path("${reindexed_tif}")
+    path("*")
 
     script:
     """
+    integrate_anndata.py reindex_and_concat \
+        --path ${anndata} \
+        --offset ${offset} \
+        --features ${features}
     """
 }
 
 
-process intersection {
-    tag "${type}"
+process intersect_anndatas {
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
-
     input:
-    tuple val(type), val(start_at), path(label_tif)
-
+    path(anndatas)
 
     output:
-    tuple val(type), path("${reindexed_tif}")
+    path("*")
 
     script:
     """
+    integrate_anndata.py intersect_features --paths ${anndatas}
     """
 }
 
 
 workflow {
-    datas = Channel.fromPath(params.data_params)
+    data = Channel.fromPath(params.data_params)
         .splitCsv(header:true, sep:params.data_params_delimiter, quote:"'")
         .multiMap{ it ->
-            labels : [it.type, it.start_at, it.label_tif]
-            h5ads : [it.type, it.start_at, it.h5ad]
+            labels : [it.label_image, it.offset]
+            adatas : [it.anndata, it.offset, file(it.features)]
         }
-    /*datas.labels.view()*/
-    /*datas.h5ads.view()*/
-    process_label(datas.labels)
-    /*process_h5ads(datas.h5ads)*/
-    /*intersection(process_h5ads.out.collect())*/
+    
+    process_label(data.labels.filter { it[0] })
+
+    process_anndata(data.adatas)
+
+    intersect_anndatas(process_anndata.out.collect())
 }
