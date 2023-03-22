@@ -1,9 +1,29 @@
-outdir: "output/visium/"
-data_params : "./templates/visium_template.tsv"
+outdir: ./output/
+
 args:
   h5ad:
-    compute_embeddings: "True"
-    # var_index: "SYMBOL"
+    compute_embeddings: True
+  spaceranger:
+    save_h5ad: True
+
+projects:
+  test:
+    datasets:
+      visium:
+        title: "Test Visium Dataset"
+        data:
+          -
+            data_type: spaceranger
+            data_path: /path/to/test/visium/slide_1/
+          -
+            data_type: raw_image
+            data_path: /path/to/visium/slide_1/raw_image.tif
+          -
+            data_type: label_image_data
+            data_path: /path/to/visium/slide_1/
+            file_type: visium
+            ref_img: /path/to/visium/slide_1/raw_image.tif
+
 vitessce_options:
   spatial:
     xy: "obsm/spatial"
@@ -15,5 +35,5 @@ vitessce_options:
   sets:
     - "obs/clustering"
   matrix: "X"
-layout: 'advanced'
+layout: advanced
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"

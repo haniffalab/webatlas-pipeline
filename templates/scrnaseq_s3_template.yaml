@@ -1,8 +1,19 @@
-outdir: "output/scrnaseq/"
-data_params : "./templates/scrnaseq_s3_template.tsv"
+outdir: ./output/
+
 args:
   h5ad:
-    compute_embeddings: "True"
+    compute_embeddings: True
+
+projects:
+  - test:
+    datasets:
+      - scRNAseq:
+        title: "Test scRNAseq Dataset"
+        data:
+          -
+            data_type: h5ad
+            data_path: s3://bucket/path/to/anndata.h5ad
+
 vitessce_options:
   mappings:
     obsm/X_umap: [0,1]

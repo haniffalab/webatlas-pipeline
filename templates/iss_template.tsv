@@ -1,5 +1,0 @@
-project,dataset,data_type,data_path,args,prefix
-project_1,iss_dataset_1,title,ISS dataset 1,,
-project_1,iss_dataset_1,h5ad,/path/to/anndata.h5ad,,
-project_1,iss_dataset_1,raw_image,/path/to/raw_image.tif,,
-project_1,iss_dataset_1,label_image,/path/to/label_image.tif,,

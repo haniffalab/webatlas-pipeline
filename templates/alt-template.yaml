@@ -3,24 +3,33 @@ outdir: ./output/
 args:
   h5ad:
     batch_processing: True
+  spaceranger:
+    save_h5ad: False
 
 projects:
-  project_1:
+  - project: project_1
     datasets:
-      scRNAseq:
+      - dataset: scRNAseq
         title: "Project 1 scRNAseq Dataset"
         data:
           -
             data_type: h5ad
             data_path: /path/to/project_1/scrnaseq/anndata.h5ad
-  project_2:
+            args:
+              batch_processing: False
+  - project: project_2
     datasets:
-      visium:
+      - dataset: visium
+        args:
+          h5ad:
+            batch_processing: False
         title: "Project 2 Visium Dataset"
         data:
           -
-            data_type: h5ad
-            data_path: /path/to/project_2/visium/anndata.h5ad
+            data_type: spaceranger
+            data_path: /path/to/project_2/visium/
+            args:
+              save_h5ad: True
           -
             data_type: raw_image
             data_path: /path/to/project_2/visium/raw_image.tif
@@ -29,9 +38,9 @@ projects:
             data_path: /path/to/project_2/visium/anndata.h5ad
             file_type: visium
             ref_img: /path/to/project_2/visium/raw_image.tif
-  project_3:
+  - project: project_3
     datasets:
-      iss:
+      - dataset: iss
         title: "Project 3 ISS Dataset"
         data:
           -
@@ -43,7 +52,23 @@ projects:
           -
             data_type: label_image
             data_path: /path/to/project_3/iss/label_image.tif
-      
+          -
+            data_type: molecules
+            data_path: /path/to/project_3/iss/molecules.csv
+            args:
+              has_header: False
+          - data_type: h5ad
+            data_path: /path/to/project_3/iss/anndata2.h5ad
+            args:
+              batch_processing: False
+  - project: project_4
+    datasets:
+      - dataset: test1
+        title: "Test 1"
+        data: []
+      - dataset: test2
+        data: []
+
 vitessce_options:
   mappings:
     obsm/X_umap: [0,1]

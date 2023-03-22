@@ -1,9 +1,25 @@
-outdir: "output/iss/"
-data_params : "./templates/iss_template.tsv"
+outdir: ./output/
+
 args:
   h5ad:
-    compute_embeddings: "True"
-    # var_index: "SYMBOL"
+    compute_embeddings: False
+
+projects:
+  test:
+    datasets:
+      iss:
+        title: "Test ISS Dataset"
+        data:
+          -
+            data_type: h5ad
+            data_path: /path/to/test/iss/anndata.h5ad
+          -
+            data_type: raw_image
+            data_path: /path/to/test/iss/raw_image.tif
+          -
+            data_type: label_image
+            data_path: /path/to/iss/label_image.tif
+
 vitessce_options:
   spatial:
     xy: "obsm/spatial"
@@ -17,5 +33,5 @@ vitessce_options:
     - name: "obs/celltype"
       score: "obs/celltype_prob"
   matrix: "X"
-layout: 'advanced' # advanced, minimal
+layout: advanced # advanced, minimal
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
