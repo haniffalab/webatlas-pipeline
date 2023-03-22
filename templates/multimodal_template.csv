@@ -1,4 +1,0 @@
-anndata,label_image,offset,features
-/path/to/iss/anndata.zarr,/path/to/iss/label.tif,0,celltype
-/path/to/visium/anndata.zarr,/path/to/visium/label.tif,1000000,/path/to/c2l_output.h5ad
-/path/to/scrnaseq/anndata.zarr,,2000000,celltype
