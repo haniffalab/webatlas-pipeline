@@ -7,9 +7,9 @@ args:
     save_h5ad: True
 
 projects:
-  test:
+  - project: test
     datasets:
-      visium:
+      - dataset: visium
         title: "Test Visium Dataset"
         data:
           -

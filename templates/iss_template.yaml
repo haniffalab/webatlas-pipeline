@@ -5,9 +5,9 @@ args:
     compute_embeddings: False
 
 projects:
-  test:
+  - project: test
     datasets:
-      iss:
+      - dataset: iss
         title: "Test ISS Dataset"
         data:
           -

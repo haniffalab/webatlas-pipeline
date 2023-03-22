@@ -5,9 +5,9 @@ args:
     compute_embeddings: True
 
 projects:
-  test:
+  - project: test
     datasets:
-      scRNAseq:
+      - dataset: scRNAseq
         title: "Test scRNAseq Dataset"
         data:
           -

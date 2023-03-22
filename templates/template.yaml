@@ -5,17 +5,17 @@ args:
     batch_processing: True
 
 projects:
-  project_1:
+  - project: project_1
     datasets:
-      scRNAseq:
+      - dataset: scRNAseq
         title: "Project 1 scRNAseq Dataset"
         data:
           -
             data_type: h5ad
             data_path: /path/to/project_1/scrnaseq/anndata.h5ad
-  project_2:
+  - project: project_2
     datasets:
-      visium:
+      - dataset: visium
         title: "Project 2 Visium Dataset"
         data:
           -
@@ -29,9 +29,9 @@ projects:
             data_path: /path/to/project_2/visium/anndata.h5ad
             file_type: visium
             ref_img: /path/to/project_2/visium/raw_image.tif
-  project_3:
+  - project: project_3
     datasets:
-      iss:
+      - dataset: iss
         title: "Project 3 ISS Dataset"
         data:
           -
@@ -43,7 +43,7 @@ projects:
           -
             data_type: label_image
             data_path: /path/to/project_3/iss/label_image.tif
-      
+
 vitessce_options:
   mappings:
     obsm/X_umap: [0,1]
