@@ -178,7 +178,7 @@ process Build_config {
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(config_map), val(files), val(img_map), 
+    tuple val(stem), val(config_map), val(files), val(img_map)
 
     output:
     path("${stem_str}-config.json")
