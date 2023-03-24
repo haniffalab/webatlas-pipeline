@@ -42,6 +42,12 @@ A parameters file looks like:
               -
                 data_type: h5ad
                 data_path: /path/to/project_1/dataset_1/anndata.h5ad
+              -
+                data_type: raw_image
+                data_path: /path/to/project_1/dataset_1/raw_image.tif
+              -
+                data_type: label_image
+                data_path: /path/to/project_1/dataset_1/label_image.tif
 
     vitessce_options:
         spatial:
@@ -63,9 +69,9 @@ The parameters are as follows:
     * - ``outdir``
       - the path to the directory to which output files will be written.
     * - ``args``
-      - a map of optional arguments for the scripts that process the supported files. 
+      - a map of optional arguments per data type for the scripts that process them. 
         
-        These serve as the default values for all files in the parameters file. 
+        These serve as the default values for all projects. 
         
         See `args`_.
     * - ``projects``
@@ -129,7 +135,7 @@ Each project item is defined by the following keys
         
         See `dataset`_.
     * - ``args``
-      - `optional` map of arguments to set as default for all files within the project.
+      - `optional` map of arguments per data type to set as default for all files within the project.
         
         Supersedes global ``args``. 
 
@@ -190,7 +196,7 @@ Each dataset item is defined by the following keys
         
         Supersedes the global ``vitessce_options``.
     * - ``args``
-      - `optional` map of arguments to set as default for all files within the dataset.
+      - `optional` map of arguments per data type to set as default for all files within the dataset.
         
         Supersedes global and project ``args``.
 
@@ -345,8 +351,6 @@ Args
 Available ``args`` depend of the ``data_type`` of each `data`_ item.
 
 Image files data types ``raw_image`` and ``label_image`` take no ``args``.
-Image data files data types (files from which to generate image files or images that require preprocessing)
-``raw_image_data`` and ``label_image_data`` take ``args`` depending on their ``file_type`` (``visium``, ``xenium`` or ``merscope``).
 
 Possible values for each of the supported data types are as follows
 
@@ -400,6 +404,53 @@ Example,
         args:
           load_embeddings: True # for spaceranger
           compute_embeddings: False # for intermediate h5ad
+
+
+Image-data files data types (files from which to generate image files or images that require preprocessing)
+``raw_image_data`` and ``label_image_data`` take ``args`` at `data`_ level (no global, `project`_ or `dataset`_ defaults)
+depending on their ``file_type``.
+| Label images can be generated from data from ``file_type``'s ``visium``, ``xenium`` or ``merscope``.
+| Raw images can be preprocess from ``file_type`` ``merscope``.
+
+Image-data files of type ``visium`` can take the following ``args``
+
+.. code-block:: yaml
+
+  data:
+    -
+      data_type: label_image_data
+      data_path: /path/to/visium/anndata.h5ad
+      file_type: visium
+      args:
+        obs_subset: ["sample", ["sample_id_1"]] # optional `obs` column name an value(s) to subset the anndata object
+        sample_id: ["sample_id_1"] # optional key within anndata.uns["spatial"]. Defaults to the first key.
+
+
+Image-data files of type ``xenium`` can take the following ``args``
+
+.. code-block:: yaml
+
+  data:
+    -
+      data_type: label_image_data
+      data_path: /path/to/xenium/output/
+      file_type: xenium
+      args:
+        resolution: 0.2125 # optional pixel resolution. Defaults to 0.2125
+
+
+Image-data files of type ``merscope`` can take the following ``args``
+
+.. code-block:: yaml
+
+  data:
+    -
+      data_type: label_image_data # or raw_image_data
+      data_path: /path/to/merscope/output/
+      file_type: merscope
+      args:
+        z_index: [0] # optional Z indices to process. Defaults to [0]
+
 
 
 .. _vitessce_options:

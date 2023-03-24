@@ -127,15 +127,15 @@ def preprocess_anndata(
     """This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion
 
     Args:
-    adata (AnnData): AnnData object to preprocess.
-    compute_embeddings (bool, optional): If `X_umap` and `X_pca` embeddings will be computed.
-        Defaults to False.
-    var_index (str, optional): Alternative `var` column name with `var` names
-        to be used in the visualization. Defaults to None.
-    obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
-        to use to subset the AnnData object. Defaults to None.
-    var_subset (tuple(str, T.Any), optional): Tuple containing a `var` column name and one or more values
-        to use to subset the AnnData object. Defaults to None.
+        adata (AnnData): AnnData object to preprocess.
+        compute_embeddings (bool, optional): If `X_umap` and `X_pca` embeddings will be computed.
+            Defaults to False.
+        var_index (str, optional): Alternative `var` column name with `var` names
+            to be used in the visualization. Defaults to None.
+        obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
+        var_subset (tuple(str, T.Any), optional): Tuple containing a `var` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
     """
 
     # Subset adata by obs

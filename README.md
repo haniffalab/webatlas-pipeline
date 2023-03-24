@@ -12,41 +12,49 @@ This Nextflow pipeline processes spatial and single-cell experiment data for vis
 
 ## Usage
 
-The pipeline can handle data from `h5ad` files, SpaceRanger output, Xenium output and MERSCOPE output.
+The pipeline can handle data from `h5ad` files, image `tif` files, SpaceRanger output, Xenium output and MERSCOPE output. It can also generate image files from data files.
 
-Running the pipeline requires two parameters files that define the data to be processed.
+Running the pipeline requires a `parameters file` that defines configuration options and the data to be processed.
 Full instructions and parameters definitions for this files are available in the [documentation](https://haniffalab.com/vitessce-pipeline/setup.html)
 
-One is a `run parameters` yaml file for general configuration options, which can look like
+A `parameters file` looks like
 
 ```yaml
-data_params: "/path/to/data-parameters.csv"
 outdir: "/path/to/output/"
+
+args:
+    h5ad:
+        compute_embeddings: "True"
+
+projects:
+  - project: project_1
+    datasets:
+      - dataset: dataset_1
+        data:
+          -
+            data_type: h5ad
+            data_path: /path/to/project_1/dataset_1/anndata.h5ad
+          -
+            data_type: raw_image
+            data_path: /path/to/project_1/dataset_1/raw_image.tif
+          -
+            data_type: label_image
+            data_path: /path/to/project_1/dataset_1/label_image.tif
+
 vitessce_options:
-  spatial:
-    xy: "obsm/spatial"
-  mappings:
-    obsm/X_umap: [0,1]
-  matrix: "X"
+    spatial:
+        xy: "obsm/spatial"
+    mappings:
+        obsm/X_umap: [0,1]
 layout: "simple"
 ```
 
-that points to a `data parameters` csv/tsv file which defines files and dataset information, like
-
-```csv
-project,dataset,data_type,data_path,args,prefix
-project_1,dataset_1,title,Sample Visium Dataset,,
-project_1,dataset_1,h5ad,/path/to/visium/anndata.h5ad,,
-project_1,dataset_1,raw_image,/path/to/visium/raw_image.tif,,
-project_1,dataset_1,label_image,/path/to/visium/label_image.tif,,
-project_1,dataset_2,title,Sample Xenium Dataset,,
-project_1,dataset_2,xenium,/path/to/xenium/output/,,
-project_1,dataset_2,raw_image,/path/to/xenium/raw_image.tif,,
-project_1,dataset_2,label_image_data,/path/to/xenium/output/,'{"file_type": "xenium", "shape": [1000,1000]}',
-```
 
 The pipeline can then be run like
 
 ```sh
 nextflow run main.nf -params-file /path/to/run-params.yaml -entry Full_pipeline
 ```
+
+
+`Parameters file` templates are available in the `templates` directory.

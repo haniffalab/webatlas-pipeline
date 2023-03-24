@@ -1,0 +1,37 @@
+outdir: ./output/
+
+args:
+  h5ad:
+    compute_embeddings: True
+
+projects:
+  - project: test
+    datasets:
+      - dataset: xenium
+        title: "Test Xenium Dataset"
+        data:
+          -
+            data_type: xenium
+            data_path: /path/to/test/xenium/
+          -
+            data_type: raw_image
+            data_path: /path/to/xenium/raw_image.tif
+          -
+            data_type: label_image_data
+            data_path: /path/to/xenium/
+            file_type: xenium
+            ref_img: /path/to/xenium/raw_image.tif
+
+vitessce_options:
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0,1]
+    obsm/X_pca: [0,1]
+  factors:
+    - "obs/sample"
+  sets:
+    - "obs/clustering"
+  matrix: "X"
+layout: advanced
+# custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
