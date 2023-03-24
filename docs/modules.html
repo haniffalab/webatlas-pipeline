@@ -67,6 +67,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.spaceranger_to_anndata"><code class="docutils literal notranslate"><span class="pre">spaceranger_to_anndata()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.spaceranger_to_zarr"><code class="docutils literal notranslate"><span class="pre">spaceranger_to_zarr()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_spaceranger.visium_label"><code class="docutils literal notranslate"><span class="pre">visium_label()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process-xenium-py">process_xenium.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_xenium.xenium_label"><code class="docutils literal notranslate"><span class="pre">xenium_label()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_xenium.xenium_to_anndata"><code class="docutils literal notranslate"><span class="pre">xenium_to_anndata()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process_xenium.xenium_to_zarr"><code class="docutils literal notranslate"><span class="pre">xenium_to_zarr()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -315,18 +319,19 @@ to process at a time when batch processing. Defaults to 10000.</p></li>
 <dt class="sig sig-object py" id="process_h5ad.preprocess_anndata">
 <span class="sig-prename descclassname"><span class="pre">process_h5ad.</span></span><span class="sig-name descname"><span class="pre">preprocess_anndata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ad.AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_embeddings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#process_h5ad.preprocess_anndata" title="Permalink to this definition"></a></dt>
 <dd><p>This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion</p>
-<p>Args:
-adata (AnnData): AnnData object to preprocess.
-compute_embeddings (bool, optional): If <cite>X_umap</cite> and <cite>X_pca</cite> embeddings will be computed.</p>
-<blockquote>
-<div><p>Defaults to False.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>var_index (str, optional): Alternative <cite>var</cite> column name with <cite>var</cite> names</dt><dd><p>to be used in the visualization. Defaults to None.</p>
-</dd>
-<dt>obs_subset (tuple(str, T.Any), optional): Tuple containing an <cite>obs</cite> column name and one or more values</dt><dd><p>to use to subset the AnnData object. Defaults to None.</p>
-</dd>
-<dt>var_subset (tuple(str, T.Any), optional): Tuple containing a <cite>var</cite> column name and one or more values</dt><dd><p>to use to subset the AnnData object. Defaults to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData</em>) – AnnData object to preprocess.</p></li>
+<li><p><strong>compute_embeddings</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>X_umap</cite> and <cite>X_pca</cite> embeddings will be computed.
+Defaults to False.</p></li>
+<li><p><strong>var_index</strong> (<em>str</em><em>, </em><em>optional</em>) – Alternative <cite>var</cite> column name with <cite>var</cite> names
+to be used in the visualization. Defaults to None.</p></li>
+<li><p><strong>obs_subset</strong> (<em>tuple</em><em>(</em><em>str</em><em>, </em><em>T.Any</em><em>)</em><em>, </em><em>optional</em>) – Tuple containing an <cite>obs</cite> column name and one or more values
+to use to subset the AnnData object. Defaults to None.</p></li>
+<li><p><strong>var_subset</strong> (<em>tuple</em><em>(</em><em>str</em><em>, </em><em>T.Any</em><em>)</em><em>, </em><em>optional</em>) – Tuple containing a <cite>var</cite> column name and one or more values
+to use to subset the AnnData object. Defaults to None.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -451,7 +456,74 @@ to use to subset the AnnData object. Defaults to None.</p></li>
 </dl>
 </dd></dl>
 
+<span class="target" id="module-process_xenium"></span><section id="process-xenium-py">
+<h2>process_xenium.py<a class="headerlink" href="#process-xenium-py" title="Permalink to this heading"></a></h2>
+<p>Processes Xenium output</p>
 </section>
+<dl class="py function">
+<dt class="sig sig-object py" id="process_xenium.xenium_label">
+<span class="sig-prename descclassname"><span class="pre">process_xenium.</span></span><span class="sig-name descname"><span class="pre">xenium_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2125</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#process_xenium.xenium_label" title="Permalink to this definition"></a></dt>
+<dd><p>This function writes a label image tif file with drawn labels according to
+cell segmentation polygons from Xenium output cells.zarr.zip file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stem</strong> (<em>str</em>) – Prefix for the output image filename.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Path to the Xenium output directory or cells.zarr.zip file</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – Output image shape. Defaults to None.</p></li>
+<li><p><strong>resolution</strong> (<em>float</em><em>, </em><em>optional</em>) – Pixel resolution. Defaults to 0.2125.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="process_xenium.xenium_to_anndata">
+<span class="sig-prename descclassname"><span class="pre">process_xenium.</span></span><span class="sig-name descname"><span class="pre">xenium_to_anndata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_as_pixel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2125</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AnnData</span></span></span><a class="headerlink" href="#process_xenium.xenium_to_anndata" title="Permalink to this definition"></a></dt>
+<dd><p>Function to create an AnnData object from Xenium output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to a xenium output directory</p></li>
+<li><p><strong>spatial_as_pixel</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean indicating whether spatial coordinates should be</p></li>
+<li><p><strong>True.</strong> (<em>converted to pixels. Defaults to</em>) – </p></li>
+<li><p><strong>resolution</strong> (<em>float</em><em>, </em><em>optional</em>) – Pixel resolution. Defaults to 0.2125.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>AnnData object created from the xenium output data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AnnData</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="process_xenium.xenium_to_zarr">
+<span class="sig-prename descclassname"><span class="pre">process_xenium.</span></span><span class="sig-name descname"><span class="pre">xenium_to_zarr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_as_pixel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2125</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_h5ad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#process_xenium.xenium_to_zarr" title="Permalink to this definition"></a></dt>
+<dd><p>Function to write to Zarr an AnnData object created from xenium output data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to a xenium output directory</p></li>
+<li><p><strong>stem</strong> (<em>str</em>) – Prefix for the output Zarr filename</p></li>
+<li><p><strong>spatial_as_pixel</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean indicating whether spatial coordinates should be</p></li>
+<li><p><strong>True.</strong> (<em>converted to pixels. Defaults to</em>) – </p></li>
+<li><p><strong>resolution</strong> (<em>float</em><em>, </em><em>optional</em>) – Pixel resolution. Defaults to 0.2125.</p></li>
+<li><p><strong>save_h5ad</strong> (<em>bool</em><em>, </em><em>optional</em>) – If the AnnData object should also be written to an h5ad file. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output Zarr filename</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-integrate_image"></span></section>
 
 
            </div>
