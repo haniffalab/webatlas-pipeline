@@ -14,6 +14,7 @@ version = "0.0.1"
 params.max_n_worker = 30
 
 params.outdir = ""
+params.args = [:]
 
 params.vitessce_options = [:]
 params.layout = "minimal"
@@ -122,7 +123,7 @@ process image_to_zarr {
     """
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
-        tiffcp -c none ${image} uncompressed.tif
+        tiffcp -c none -m 0 ${image} uncompressed.tif
         bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
         bioformats2raw --no-hcs ${image} ${filename}.zarr
