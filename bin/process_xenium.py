@@ -43,6 +43,14 @@ def xenium_to_anndata(
 
     adata.obs = df
 
+    # somehow the index is not the same in the matrix and the cluter file
+    clusters = pd.read_csv(f"{path}/analysis/clustering/gene_expression_graphclust/clusters.csv", index_col=0)
+    clusters.index = clusters.index.astype(str)
+    # print(df.shape, clusters.shape, adata.obs.shape)
+    combined = pd.merge(adata.obs, clusters, left_index=True, right_index=True, how="inner")
+    mask = [ind in combined.index for ind in adata.obs.index]
+    adata = adata[mask]
+    adata.obs = combined
     adata.obsm["X_spatial"] = adata.obs[["x_centroid", "y_centroid"]].to_numpy()
 
     if spatial_as_pixel:
