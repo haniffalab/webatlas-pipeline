@@ -161,7 +161,7 @@ def visium_label(
     )
 
     for spId, (y, x) in zip(adata.obs.index, spot_coords):
-        label_img[disk((x, y), spot_diameter_fullres / 2)] = int(spId)
+        label_img[disk((int(x), int(y)), spot_diameter_fullres / 2)] = int(spId)
 
     tf.imwrite(f"{stem}-label.tif", label_img)
 

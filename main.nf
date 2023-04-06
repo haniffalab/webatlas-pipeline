@@ -123,7 +123,12 @@ process image_to_zarr {
     """
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
-        tiffcp -c none -m 0 ${image} uncompressed.tif
+        if od -h -j2 -N2 ${image} | head -n1 | sed 's/[0-9]*  *//' | grep -q -E '002b|2b00'
+        then
+            tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+        else
+            tiffcp -c none -m 0 ${image} uncompressed.tif
+        fi
         bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
         bioformats2raw --no-hcs ${image} ${filename}.zarr
