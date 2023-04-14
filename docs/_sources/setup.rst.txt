@@ -369,7 +369,6 @@ Possible values for each of the supported data types are as follows
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
       load_embeddings: "True" # set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory
-      clustering: "graphclust" # clusters to load (if `load_clusters` is set to `True`)
     xenium:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       spatial_as_pixel: "True" # convert spatial coordinates to pixel coordinates. Defaults to `True`
