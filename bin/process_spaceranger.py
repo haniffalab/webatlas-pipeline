@@ -13,26 +13,24 @@ import numpy as np
 import scanpy as sc
 import pandas as pd
 import tifffile as tf
+from pathlib import Path
 from skimage.draw import disk
 from process_h5ad import h5ad_to_zarr
 
 
 def spaceranger_to_anndata(
     path: str,
-    load_clusters: bool = False,
-    load_embeddings: bool = False,
-    clustering: str = "graphclust",
+    load_clusters: bool = True,
+    load_embeddings: bool = True,
 ) -> sc.AnnData:
     """Function to create an AnnData object from a SpaceRanger output directory.
 
     Args:
         path (str): Path to a SpaceRanger output directory
         load_clusters (bool, optional): If cluster files should be included in the
-            AnnData object. Defaults to False.
+            AnnData object. Defaults to True.
         load_embeddings (bool, optional): If embedding coordinates files should be included
-            in the AnnData object. Defaults to False.
-        clustering (str, optional): The clustering algorithm to include in the AnnData
-            object if `load_clusters` is True. Defaults to "graphclust".
+            in the AnnData object. Defaults to True.
 
     Returns:
         AnnData: AnnData object created from the SpaceRanger output data
@@ -40,12 +38,18 @@ def spaceranger_to_anndata(
 
     adata = sc.read_visium(path)
 
+    p = Path(path)
+
     if load_clusters:
-        cluster_df = pd.read_csv(
-            os.path.join(path, f"analysis/clustering/{clustering}/clusters.csv"),
-            index_col="Barcode",
-        )
-        adata.obs[f"{clustering}"] = cluster_df.Cluster.astype("category")
+        for cluster in [
+            d for d in (p / "analysis" / "clustering").iterdir() if d.is_dir()
+        ]:
+            cluster_name = cluster.name.replace("gene_expression_", "")
+            cluster_df = pd.read_csv(
+                cluster / "clusters.csv",
+                index_col="Barcode",
+            )
+            adata.obs[f"{cluster_name}"] = cluster_df.Cluster.astype("category")
 
     if load_embeddings:
         embeddings = [
@@ -54,8 +58,15 @@ def spaceranger_to_anndata(
             ("pca", "10_components"),
         ]
         for embedding, components in embeddings:
+            components_name = (
+                components
+                if (p / "analysis" / embedding / components).exists()
+                else f"gene_expression_{components}"
+            )
             emb = pd.read_csv(
-                os.path.join(path, f"analysis/{embedding}/{components}/projection.csv"),
+                os.path.join(
+                    p / "analysis" / embedding / components_name / "projection.csv"
+                ),
                 index_col="Barcode",
             )
             adata.obsm[f"X_{embedding}"] = emb.values
