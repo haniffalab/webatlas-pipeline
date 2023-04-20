@@ -1,22 +1,56 @@
-outdir: "output/"
-data_params : "./templates/template.csv"
-data_params_delimiter: ","
+outdir: ./output/
+
 args:
   h5ad:
-    compute_embeddings: "True"
-    # var_index: "SYMBOL"
-  # molecules:
-  #   delimiter: ","
+    batch_processing: True
+
+projects:
+  - project: project_1
+    datasets:
+      - dataset: scRNAseq
+        title: "Project 1 scRNAseq Dataset"
+        data:
+          -
+            data_type: h5ad
+            data_path: /path/to/project_1/scrnaseq/anndata.h5ad
+  - project: project_2
+    datasets:
+      - dataset: visium
+        title: "Project 2 Visium Dataset"
+        data:
+          -
+            data_type: h5ad
+            data_path: /path/to/project_2/visium/anndata.h5ad
+          -
+            data_type: raw_image
+            data_path: /path/to/project_2/visium/raw_image.tif
+          -
+            data_type: label_image_data
+            data_path: /path/to/project_2/visium/anndata.h5ad
+            file_type: visium
+            ref_img: /path/to/project_2/visium/raw_image.tif
+  - project: project_3
+    datasets:
+      - dataset: iss
+        title: "Project 3 ISS Dataset"
+        data:
+          -
+            data_type: h5ad
+            data_path: /path/to/project_3/iss/anndata.h5ad
+          -
+            data_type: raw_image
+            data_path: /path/to/project_3/iss/raw_image.tif
+          -
+            data_type: label_image
+            data_path: /path/to/project_3/iss/label_image.tif
+
 vitessce_options:
-  spatial:
-    xy: "obsm/spatial"
   mappings:
     obsm/X_umap: [0,1]
-    obsm/X_pca: [0,1]
   factors:
     - "obs/sample"
   sets:
-    - "obs/clustering"
+    - "obs/celltype"
   matrix: "X"
-layout: 'advanced'
+layout: simple
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"

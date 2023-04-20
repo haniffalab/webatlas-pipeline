@@ -5,35 +5,23 @@ import groovy.json.*
 
 nextflow.enable.dsl=2
 
-
 verbose_log = true
 version = "0.0.1"
 
+//////////////////////////////////////////////////////
 
 // Default params
 params.max_n_worker = 30
 
-params.project = ""
-params.dataset = ""
-
 params.outdir = ""
-params.data_params_delimiter = ","
-
-params.args = [:].withDefault{[:]}
-params.args["spaceranger"] = (params.args["h5ad"] ?: [:]) + (params.args["spaceranger"] ?: [:])
-params.args["xenium"] = (params.args["h5ad"] ?: [:]) + (params.args["xenium"] ?: [:])
-params.args["merscope"] = (params.args["h5ad"] ?: [:]) + (params.args["merscope"] ?: [:])
+params.args = [:]
 
 params.vitessce_options = [:]
-
-outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
-
-params.url = "http://localhost:3000/"
 params.layout = "minimal"
 params.custom_layout = ""
 
-params.vitessce_config_params = [
-    url: params.url,
+params.vitessce_config_map = [
+    url: "http://localhost:3000/",
     options: params.vitessce_options,
     layout: params.layout,
     custom_layout: params.custom_layout,
@@ -49,6 +37,73 @@ params.s3_keys = [
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
+//////////////////////////////////////////////////////
+
+data_types = ["h5ad","spaceranger","xenium","merscope","molecules"]
+image_types = ["raw_image","label_image","raw_image_data","label_image_data"]
+vitessce_params = ["title","description","url","vitessce_options","layout","custom_layout"]
+
+outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
+
+//////////////////////////////////////////////////////
+
+// Get inputs
+Channel.from(params.projects)
+    .map { p -> [p.project, p.datasets] }
+    .transpose()
+    .multiMap {
+        project, dataset -> 
+            data: [ tuple(project, dataset.dataset), dataset.data ]
+            config_map: [
+                tuple(project, dataset.dataset),
+                params.vitessce_config_map + dataset.subMap(vitessce_params)
+            ]
+    }
+    .set {datasets}
+
+datasets.data
+    .transpose(by:1)
+    .branch{ stem, d ->
+        data: d.data_type in data_types
+        images: d.data_type in image_types
+        other: true
+    }
+    .set{inputs}
+
+inputs.other
+    .collect { stem, d -> d.data_type }
+    .view{ "Unrecognized data_type(s) ${it.unique()}" }
+
+//////////////////
+
+interm_dt = [
+    spaceranger: ["h5ad"],
+    xenium: ["h5ad"],
+    merscope: ["h5ad"]
+]
+
+project_args = [:]
+dataset_args = [:]
+
+params.projects.each{ p ->
+    project_args[p.project] = p.args ?: [:]
+    p.datasets.each{ d ->
+        dataset_args[[p.project, d.dataset]] = d.args ?: [:]
+    }
+}
+
+def getSubMapValues (m, keys) {
+    m.subMap(keys).values().sum() ?: [:]
+}
+
+def mergeArgs (stem, data_type, args) {
+    getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
+    getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
+    getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
+    (args ?: [:])
+}
+
+//////////////////////////////////////////////////////
 
 process image_to_zarr {
     tag "${image}"
@@ -68,7 +123,12 @@ process image_to_zarr {
     """
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
-        tiffcp -c none ${image} uncompressed.tif
+        if od -h -j2 -N2 ${image} | head -n1 | sed 's/[0-9]*  *//' | grep -q -E '002b|2b00'
+        then
+            tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+        else
+            tiffcp -c none -m 0 ${image} uncompressed.tif || tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+        fi
         bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
         bioformats2raw --no-hcs ${image} ${filename}.zarr
@@ -124,7 +184,7 @@ process Build_config {
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(files), val(img_map), val(config_map)
+    tuple val(stem), val(config_map), val(files), val(img_map)
 
     output:
     path("${stem_str}-config.json")
@@ -176,28 +236,7 @@ process Generate_image {
     """
 }
 
-
-Channel.fromPath(params.data_params)
-    .splitCsv(header:true, sep:params.data_params_delimiter, quote:"'")
-    .map { l -> tuple( tuple(l.project, l.dataset), l ) }
-    .tap{ lines }
-    .branch { stem, l ->
-        data: l.data_type in ["h5ad","spaceranger","xenium","merscope","molecules"]
-        images: l.data_type in ["raw_image","label_image","raw_image_data","label_image_data"]
-        vitessce_config_params: l.data_type in ["title","description","url","vitessce_options","layout","custom_layout"]
-            return [stem, ["${l.data_type}": l.data_path]]
-        other: true
-    }
-    .set{inputs}
-
-    lines
-        .map{ [it[0], null] } // dummy null value for joins with empty channels to work as it would if using phase (keys-only array wont join with empty channels)
-        .unique()
-        .set{stems}
-
-    inputs.other
-        .collect { stem, l -> l.data_type }
-        .view{ "Unrecognized data_type(s) ${it.unique()}" }
+//////////////////////////////////////////////////////
 
 workflow Full_pipeline {
 
@@ -212,79 +251,19 @@ workflow Full_pipeline {
     
 }
 
-workflow Output_to_config {
-    take: out_file_paths
-    take: out_img_zarrs
-    main:
-
-        // Map workflows' outputs to:
-        // tuple val(stem), val(files), val(img_map), val(config_map)
-
-        out_img_zarrs
-            .map { stem, type, img -> 
-                [stem, [type: type, img: img]]
-            }
-            .branch { stem, data ->
-                raw: data.type == "raw"
-                label: data.type == "label"
-            }
-            .set{img_zarrs}
-
-        img_zarrs.raw
-            .join(img_zarrs.label, remainder: true)
-            .map { stem, raw_data, label_data -> [
-                stem,
-                [
-                    raw: raw_data ? raw_data.img : [],
-                    label: label_data ? label_data.img : []
-                ]
-            ]}
-            .set{img_map}
-        
-        stems
-            .join(inputs.vitessce_config_params, remainder: true)
-            .map{ stem, dummy, c -> [stem, c]} // remove dummy value
-            .groupTuple()
-            .map { stem, it ->
-                [ stem, params.vitessce_config_params + it?.collectEntries() {   
-                    i -> i ? i.collectEntries { k, v -> [(k.toString()): v] } : [:] 
-                    }.findAll { it.value?.trim() ? true : false }
-                ]
-            }
-            .set{config_map}
-
-        stems
-            .join(out_file_paths, remainder: true)
-            .join(img_map, remainder: true)
-            .join(config_map, remainder: true)
-            .map { stem, dummy, fs, is, c -> [
-                stem, fs, is, c // remove dummy value
-            ]}
-            .set{data_for_config}
-
-        Build_config(
-            data_for_config
-            )
-}
 
 workflow Process_files {
     // Map inputs to: 
-    // tuple val(stem), path(file), val(type), val(args)
+    // tuple val(stem), val(prefix), path(file), val(type), val(args)
     data_list = inputs.data.flatMap { stem, data_map ->
-        data_map.data_path ? 
+        data_map.data_path ?
         [
             [
                 stem,
-                data_map.prefix,
+                data_map.prefix ?: "",
                 data_map.data_path,
                 data_map.data_type,
-                (
-                    (params.args[data_map.data_type] ?: [:]) + 
-                    (data_map.args?.trim() ? 
-                        new JsonSlurper().parseText(data_map.args?.trim()) :
-                        [:]
-                    )
-                )
+                mergeArgs(stem, data_map.data_type, data_map.args)
             ]
         ] : [:]
     }
@@ -305,9 +284,10 @@ workflow Process_files {
     file_paths = file_paths
 }
 
+
 workflow Process_images {
     // Map tif inputs to:
-    // tuple val(stem), val(img_type), path(image)
+    // tuple val(stem), val(prefix), val(img_type), path(image)
     img_tifs = inputs.images.filter { stem, data_map ->
         data_map.data_type in ["raw_image", "label_image"]
     }
@@ -322,8 +302,7 @@ workflow Process_images {
     }
 
     // Map raw/label data inputs to:
-    // tuple val(stem), path(file_path), val(file_type), path(ref_img), val(args)
-    // Pop file_type (required) and ref_img (optional) from args
+    // tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)
     img_data = inputs.images.filter { stem, data_map ->
         data_map.data_type in ["raw_image_data", "label_image_data"]
     }
@@ -333,14 +312,9 @@ workflow Process_images {
             data_map.prefix,
             data_map.data_type.replace("_image_data",""),
             data_map.data_path,
-            *[
-                new JsonSlurper().parseText(data_map.args).file_type,
-                new JsonSlurper().parseText(data_map.args).containsKey("ref_img") ? 
-                    new JsonSlurper().parseText(data_map.args).ref_img :
-                    file("NO_REF"),
-                new JsonSlurper().parseText(data_map.args)
-                    .findAll { !(it.key in ["file_type", "ref_img"]) }
-            ]
+            data_map.file_type,
+            data_map.ref_img ?: file("NO_REF"),
+            data_map.args ?: [:]
         ]
     }
 
@@ -375,4 +349,44 @@ workflow Process_images {
 
     emit:
     img_zarrs = img_zarrs
+}
+
+
+workflow Output_to_config {
+    take: out_file_paths
+    take: out_img_zarrs
+    main:
+
+        // Map workflows' outputs to:
+        // tuple val(stem), val(files), val(img_map), val(config_map)
+
+        out_img_zarrs
+            .map { stem, type, img -> 
+                [stem, [type: type, img: img]]
+            }
+            .branch { stem, data ->
+                raw: data.type == "raw"
+                label: data.type == "label"
+            }
+            .set{img_zarrs}
+
+        img_zarrs.raw
+            .join(img_zarrs.label, remainder: true)
+            .map { stem, raw_data, label_data -> [
+                stem,
+                [
+                    raw: raw_data ? raw_data.img : [],
+                    label: label_data ? label_data.img : []
+                ]
+            ]}
+            .set{img_map}
+
+        datasets.config_map
+            .join(out_file_paths, remainder: true)
+            .join(img_map, remainder: true)
+            .set{data_for_config}
+
+        Build_config(
+            data_for_config
+            )
 }

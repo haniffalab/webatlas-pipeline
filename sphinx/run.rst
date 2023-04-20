@@ -16,17 +16,17 @@ pipeline through the command line.
 - The ``Process_files`` workflow handles data files and their conversions.
 - The ``Process_images`` workflow handles image files and/or label image data and their conversions.
 
-Data should be input using a :ref:`run parameters <run-parameters>` file 
-and a :ref:`data parameters <data-parameters>` file.
+Configurations and data are input through a :ref:`parameters yaml file <parameters_file>`.
 
 To run the ``Full_pipeline`` use
 
 .. code-block:: sh
 
-   nextflow run main.nf -params-file /path/to/run-params.yaml -entry Full_pipeline
+   nextflow run main.nf -params-file /path/to/params.yaml -entry Full_pipeline
+
 
 This will handle all input files, whether they are data files or images, for all datasets
-defined in the :ref:`data parameters <data-parameters>` file.
+defined.
 
 You can modify the entry point if you're interested in only getting the converted outputs.
 Use ``-entry Process_files`` or ``-entry Process_images`` as you need.
@@ -52,7 +52,7 @@ This file can then be used to load the views and data as configured in the param
 You can locally serve and visualize the data in a few steps.
 
 By default, the base ``url`` used within the view config is ``http://localhost:3000/`` 
-(this can be changed in the :ref:`data parameters <data-parameters-dataset-info>` file).
+(this can be changed in the :ref:`parameters file <parameters_file>`).
 This ``url`` indicates Vitessce to look for data at that location.
 
 You can set up an http server locally to serve the processed files so a Vitessce instance can load them.
@@ -61,7 +61,7 @@ We recommend using `serve <https://www.npmjs.com/package/serve>`__ (requires `No
 but you can use any tool that can enable CORS.
 
 You can serve the view config file and data by specifying the output directory
-(note that the pipeline adds its version to the ``outdir`` defined in the :ref:`run parameters <run-parameters>` file). 
+(note that the pipeline adds its version to the ``outdir`` defined in the :ref:`parameters file <parameters_file>` file). 
 
 .. code-block:: sh
 

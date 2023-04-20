@@ -25,3 +25,15 @@ Modules
 
 .. automodule:: process_spaceranger
     :members:
+
+.. automodule:: process_xenium
+    :members:
+
+.. automodule:: process_merscope
+    :members:
+
+.. automodule:: integrate_anndata
+    :members:
+
+.. automodule:: integrate_image
+    :members:
