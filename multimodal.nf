@@ -2,9 +2,8 @@
 
 nextflow.enable.dsl=2
 
-params.outdir = "./"
-params.data_params="./templates/multimodal_template.csv"
-params.data_params_delimiter=","
+params.outdir = ""
+
 version="0.0.1"
 verbose_log=true
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
@@ -75,12 +74,12 @@ process intersect_anndatas {
 
 
 workflow {
-    data = Channel.fromPath(params.data_params)
-        .splitCsv(header:true, sep:params.data_params_delimiter, quote:"'")
+    Channel.from(params.data)
         .multiMap{ it ->
             labels : [it.label_image, it.offset]
             adatas : [it.anndata, it.offset, file(it.features)]
         }
+        .set{data}
     
     process_label(data.labels.filter { it[0] })
 

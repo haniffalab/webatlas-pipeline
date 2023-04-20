@@ -1,0 +1,17 @@
+outdir: ./output/
+
+data:
+  -
+    anndata: /path/to/iss/anndata.zarr/
+    label_image: /path/to/iss/label.tif
+    offset: 0
+    features: celltype
+  -
+    anndata: /path/to/visium/anndata.zarr/
+    label_image: /path/to/visium/label.tif
+    offset: 1000000
+    features: /path/to/c2l_output.h5ad
+  -
+    anndata: /path/to/scrnaseq/anndata.zarr/
+    offset: 2000000
+    features: celltype

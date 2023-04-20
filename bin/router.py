@@ -32,16 +32,15 @@ def process(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -
     """
     out_file = None
 
-    if file_type == "spaceranger":
-        out_file = spaceranger_to_zarr(path=path, stem=stem, **args)
-    elif file_type == "xenium":
-        out_file = xenium_to_zarr(path=path, stem=stem, **args)
-    elif file_type == "merscope":
-        out_file = merscope_to_zarr(path=path, stem=stem, **args)
-    elif file_type == "h5ad":
-        out_file = h5ad_to_zarr(file=path, stem=stem, **args)
-    elif file_type == "molecules":
-        out_file = tsv_to_json(file=path, stem=stem, **args)
+    func_dict = {
+        "spaceranger": spaceranger_to_zarr,
+        "xenium": xenium_to_zarr,
+        "merscope": merscope_to_zarr,
+        "h5ad": h5ad_to_zarr,
+        "molecules": tsv_to_json
+    }
+
+    out_file = func_dict[file_type](path=path, stem=stem, **args)
 
     return out_file
 

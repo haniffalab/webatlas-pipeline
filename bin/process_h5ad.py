@@ -25,7 +25,7 @@ SUFFIX = "anndata.zarr"
 
 
 def h5ad_to_zarr(
-    file: str = None,
+    path: str = None,
     stem: str = "",
     out_filename: str = None,
     adata: ad.AnnData = None,
@@ -39,10 +39,10 @@ def h5ad_to_zarr(
     and writes the object to Zarr.
 
     Args:
-        file (str, optional): Path to the h5ad file. Defaults to None.
+        path (str, optional): Path to the h5ad file. Defaults to None.
         stem (str, optional): Prefix for the output file. Defaults to "".
         out_filename (str, optional): Output file name without extension. Supersedes `stem`. Defaults to None.
-        adata (AnnData, optional): AnnData object to process. Supersedes `file`.
+        adata (AnnData, optional): AnnData object to process. Supersedes `path`.
             Defaults to None.
         chunk_size (int, optional): Output Zarr column chunk size. Defaults to 10.
         batch_processing (bool, optional): If the expression matrix will be written to Zarr incrementally.
@@ -61,11 +61,11 @@ def h5ad_to_zarr(
 
     if not adata:
         if not batch_processing:
-            adata = sc.read(file)
+            adata = sc.read(path)
         else:
             batch_size = max(1, batch_size)
             logging.info("Batch processing with batch size {}".format(batch_size))
-            with h5py.File(file, "r") as f:
+            with h5py.File(path, "r") as f:
                 # Load everything but X and layers
                 adata = ad.AnnData(
                     obs=ad._io.h5ad.read_elem(f["obs"]) if "obs" in f else None,
@@ -92,27 +92,27 @@ def h5ad_to_zarr(
             adata.X = adata.X.toarray()
 
         adata.write_zarr(zarr_file, [adata.shape[0], chunk_size])
-    elif file and batch_processing:
+    elif path and batch_processing:
         adata.write_zarr(zarr_file)
 
         m = len(adata.obs)
         n = len(adata.var)
 
-        with h5py.File(file, "r") as f:
+        with h5py.File(path, "r") as f:
             if isinstance(f["X"], h5py.Group) and "indptr" in f["X"].keys():
                 if len(f["X"]["indptr"]) - 1 == m:
                     logging.info("Batch processing sparse CSR matrix...")
-                    batch_process_sparse(file, zarr_file, m, n, batch_size, chunk_size)
+                    batch_process_sparse(path, zarr_file, m, n, batch_size, chunk_size)
                 elif len(f["X"]["indptr"]) - 1 == n:
                     logging.info("Batch processing sparse CSC matrix...")
                     batch_process_sparse(
-                        file, zarr_file, m, n, batch_size, chunk_size, is_csc=True
+                        path, zarr_file, m, n, batch_size, chunk_size, is_csc=True
                     )
                 else:
                     raise SystemError("Error identifying sparse matrix format")
             else:
                 logging.info("Batch processing dense matrix...")
-                batch_process_array(file, zarr_file, m, n, batch_size, chunk_size)
+                batch_process_array(path, zarr_file, m, n, batch_size, chunk_size)
 
     return zarr_file
 
@@ -127,15 +127,15 @@ def preprocess_anndata(
     """This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion
 
     Args:
-    adata (AnnData): AnnData object to preprocess.
-    compute_embeddings (bool, optional): If `X_umap` and `X_pca` embeddings will be computed.
-        Defaults to False.
-    var_index (str, optional): Alternative `var` column name with `var` names
-        to be used in the visualization. Defaults to None.
-    obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
-        to use to subset the AnnData object. Defaults to None.
-    var_subset (tuple(str, T.Any), optional): Tuple containing a `var` column name and one or more values
-        to use to subset the AnnData object. Defaults to None.
+        adata (AnnData): AnnData object to preprocess.
+        compute_embeddings (bool, optional): If `X_umap` and `X_pca` embeddings will be computed.
+            Defaults to False.
+        var_index (str, optional): Alternative `var` column name with `var` names
+            to be used in the visualization. Defaults to None.
+        obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
+        var_subset (tuple(str, T.Any), optional): Tuple containing a `var` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
     """
 
     # Subset adata by obs

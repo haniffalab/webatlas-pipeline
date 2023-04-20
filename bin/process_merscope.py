@@ -96,7 +96,7 @@ def merscope_to_zarr(
 
 def merscope_label(
     stem: str, path: str, shape: tuple[int, int], z_index: list[int] = [0]
-):
+) -> None:
     """This function writes a label image tif file with drawn labels according
     to `cell_boundaries` data stored in MERSCOPE output directory
 
@@ -146,7 +146,7 @@ def merscope_label(
     return
 
 
-def merscope_raw(stem: str, path: str, z_index: list[int] = [0]):
+def merscope_raw(stem: str, path: str, z_index: list[int] = [0]) -> None:
     """This function concatenates MERSCOPE output raw tif images
     into a single multichannel tif image per Z-index
 

@@ -90,8 +90,8 @@ def xenium_to_zarr(
 
 
 def xenium_label(
-    stem: str, path: str, shape: tuple[int, int], resolution: int = 0.2125
-):
+    stem: str, path: str, shape: tuple[int, int], resolution: float = 0.2125
+) -> None:
     """This function writes a label image tif file with drawn labels according to
     cell segmentation polygons from Xenium output cells.zarr.zip file
 
@@ -99,7 +99,7 @@ def xenium_label(
         stem (str): Prefix for the output image filename.
         path (str): Path to the Xenium output directory or cells.zarr.zip file
         shape (tuple[int, int]): Output image shape. Defaults to None.
-        resolution (int, optional): Pixel resolution. Defaults to 0.2125.
+        resolution (float, optional): Pixel resolution. Defaults to 0.2125.
     """
     if os.path.isdir(path):
         cells_file = glob.glob(os.path.join(path, "*cells.zarr.zip"))[0]
