@@ -127,7 +127,7 @@ process image_to_zarr {
         then
             tiffcp -c none -m 0 -8 ${image} uncompressed.tif
         else
-            tiffcp -c none -m 0 ${image} uncompressed.tif
+            tiffcp -c none -m 0 ${image} uncompressed.tif || tiffcp -c none -m 0 -8 ${image} uncompressed.tif
         fi
         bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
