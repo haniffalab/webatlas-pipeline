@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running &mdash; vitessce-pipeline 0.1.0 documentation</title>
+  <title>Running &mdash; webatlas-pipeline 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            vitessce-pipeline
+            webatlas-pipeline
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -49,7 +49,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#visualizing">Visualizing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#vitessce">Vitessce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#webatlas">WebAtlas</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
@@ -59,9 +59,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline">Source Code</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/vitessce-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">vitessce-pipeline</a>
+          <a href="index.html">webatlas-pipeline</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -119,7 +119,7 @@ defined.</p>
 Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
 <section id="further-reading">
 <h2>Further reading:<a class="headerlink" href="#further-reading" title="Permalink to this heading"></a></h2>
-<p>Docker image pulling/local conda env creation are handled by nextflow.
+<p>Docker image pulling/local conda env creation are handled by Nextflow.
 Please refer to
 <a class="reference external" href="https://www.nextflow.io/docs/latest/getstarted.html">this</a> for
 detailed information.</p>
@@ -127,8 +127,8 @@ detailed information.</p>
 </section>
 <section id="visualizing">
 <h1>Visualizing<a class="headerlink" href="#visualizing" title="Permalink to this heading"></a></h1>
-<section id="vitessce">
-<h2>Vitessce<a class="headerlink" href="#vitessce" title="Permalink to this heading"></a></h2>
+<section id="webatlas">
+<h2>WebAtlas<a class="headerlink" href="#webatlas" title="Permalink to this heading"></a></h2>
 <p>The pipeline generates a Vitessce view config file for each processed dataset.
 This file can then be used to load the views and data as configured in the parameters files.</p>
 <p>You can locally serve and visualize the data in a few steps.</p>
@@ -147,10 +147,10 @@ but you can use any tool that can enable CORS.</p>
 <p>Make sure to enable CORS and set the appropriate port number.
 In this case, using <a class="reference external" href="https://www.npmjs.com/package/serve">serve</a>, this is done through the <code class="docutils literal notranslate"><span class="pre">-C</span></code> and <code class="docutils literal notranslate"><span class="pre">-p</span></code> flags respectively.</p>
 <p>Your view configs should then be accessible at <code class="docutils literal notranslate"><span class="pre">http://localhost:3000/{project}-{dataset}-config.json</span></code>.</p>
-<p>You can then load them in a Vitessce instance like the <a class="reference external" href="https://github.com/haniffalab/vitessce-app">Vitessce app</a>
-deployed at <a class="reference external" href="https://vitessce-app.cog.sanger.ac.uk/latest/index.html">https://vitessce-app.cog.sanger.ac.uk/latest/index.html</a>.</p>
+<p>You can then load them in a Vitessce instance like the <a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas app</a>
+deployed at <a class="reference external" href="https://webatlas.cog.sanger.ac.uk/latest/index.html">https://webatlas.cog.sanger.ac.uk/latest/index.html</a>.</p>
 <p>Specify your locally served view config through the <code class="docutils literal notranslate"><span class="pre">config</span></code> parameter like
-<code class="docutils literal notranslate"><span class="pre">https://vitessce-app.cog.sanger.ac.uk/latest/index.html?config=http://localhost:3000/{project}-{dataset}-config.json</span></code>
+<code class="docutils literal notranslate"><span class="pre">https://webatlas.cog.sanger.ac.uk/latest/index.html?config=http://localhost:3000/{project}-{dataset}-config.json</span></code>
 and load this URL in your browser to visualize your data in a Vitessce viewer.</p>
 </section>
 </section>
