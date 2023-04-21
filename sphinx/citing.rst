@@ -15,7 +15,7 @@ Cite as
 
 .. raw:: html
 
-   <p><b><i>Li, Tong, Horsfall, Dave, & Basurto Lozada, Daniela. (2022). A nextflow pipeline to process spatial and single-cell data for Vitessce (0.1.0). Zenodo. https://doi.org/10.5281/zenodo.7405819</i></b></p>
+   <p><b><i>Li, Tong, Horsfall, Dave, & Basurto-Lozada, Daniela. (2022). A nextflow pipeline to process spatial and single-cell data for Vitessce (0.1.0). Zenodo. https://doi.org/10.5281/zenodo.7405819</i></b></p>
 
 Bibtex
 ------
@@ -25,7 +25,7 @@ Bibtex
    @software{li_tong_2022_7405819,
       author       = {Li, Tong and
                         Horsfall, Dave and
-                        Basurto Lozada, Daniela},
+                        Basurto-Lozada, Daniela},
       title        = {{A nextflow pipeline to process spatial and single- 
                         cell data for Vitessce}},
       month        = dec,

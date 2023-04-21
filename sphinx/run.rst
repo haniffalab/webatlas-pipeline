@@ -34,7 +34,7 @@ Use ``-entry Process_files`` or ``-entry Process_images`` as you need.
 Further reading:
 ----------------
 
-Docker image pulling/local conda env creation are handled by nextflow.
+Docker image pulling/local conda env creation are handled by Nextflow.
 Please refer to
 `this <https://www.nextflow.io/docs/latest/getstarted.html>`__ for
 detailed information.
@@ -43,7 +43,7 @@ detailed information.
 Visualizing
 ===========
 
-Vitessce
+WebAtlas
 --------
 
 The pipeline generates a Vitessce view config file for each processed dataset.
@@ -72,9 +72,9 @@ In this case, using `serve <https://www.npmjs.com/package/serve>`__, this is don
 
 Your view configs should then be accessible at ``http://localhost:3000/{project}-{dataset}-config.json``.
 
-You can then load them in a Vitessce instance like the `Vitessce app <https://github.com/haniffalab/vitessce-app>`__ 
-deployed at `<https://vitessce-app.cog.sanger.ac.uk/latest/index.html>`__.
+You can then load them in a Vitessce instance like the `WebAtlas app <https://github.com/haniffalab/webatlas-app>`__ 
+deployed at `<https://webatlas.cog.sanger.ac.uk/latest/index.html>`__.
 
 Specify your locally served view config through the ``config`` parameter like
-``https://vitessce-app.cog.sanger.ac.uk/latest/index.html?config=http://localhost:3000/{project}-{dataset}-config.json``
+``https://webatlas.cog.sanger.ac.uk/latest/index.html?config=http://localhost:3000/{project}-{dataset}-config.json``
 and load this URL in your browser to visualize your data in a Vitessce viewer.
