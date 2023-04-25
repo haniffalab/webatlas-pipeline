@@ -3,26 +3,25 @@ outdir: ./output/
 args:
   h5ad:
     compute_embeddings: True
-  spaceranger:
-    save_h5ad: True
 
 projects:
   - project: test
     datasets:
-      - dataset: visium
-        title: "Test Visium Dataset"
+      - dataset: merscope
+        title: "Test MERSCOPE Dataset"
         data:
           -
-            data_type: spaceranger
-            data_path: /path/to/test/visium/slide_1/
+            data_type: merscope
+            data_path: /path/to/test/merscope/
           -
-            data_type: raw_image
-            data_path: /path/to/visium/slide_1/raw_image.tif
+            data_type: raw_image_data
+            data_path: /path/to/merscope/
+            file_type: merscope
           -
             data_type: label_image_data
-            data_path: /path/to/visium/slide_1/
-            file_type: visium
-            ref_img: /path/to/visium/slide_1/raw_image.tif
+            data_path: /path/to/merscope/
+            file_type: merscope
+            shape: [10000, 10000]
 
 vitessce_options:
   spatial:

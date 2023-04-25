@@ -14,10 +14,10 @@ from scipy.sparse import csc_matrix, csr_matrix
 
 from bin.process_h5ad import h5ad_to_zarr
 from bin.process_molecules import tsv_to_json
-from bin.consolidate_md import main as consolidate_md
-from bin.router import main as router
+from bin.consolidate_md import consolidate
+from bin.router import process
 from bin.ome_zarr_metadata import get_metadata
-from bin.generate_label import main as generate_label
+from bin.generate_image import create_img
 
 # from bin.build_config import write_json
 
@@ -146,7 +146,7 @@ class TestClass:
         assert "var" in z
         assert "obsm" in z and "spatial" in z["obsm"]
         assert "uns" in z and "spatial" in z["uns"]
-        assert out_file == stem + "_anndata.zarr"
+        assert out_file == stem + "-anndata.zarr"
 
     def test_batch_h5ad_to_zarr(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
@@ -155,7 +155,7 @@ class TestClass:
             anndata_h5ad_file, stem, batch_processing=True, batch_size=2
         )
         assert os.path.exists(out_batch_file)
-        assert out_batch_file == stem + "_anndata.zarr"
+        assert out_batch_file == stem + "-anndata.zarr"
         z_batch = zarr.open(out_batch_file, mode="r")
         assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
         assert "obs" in z_batch
@@ -178,7 +178,7 @@ class TestClass:
         assert "var" in z
         assert "obsm" in z and "spatial" in z["obsm"]
         assert "uns" in z and "spatial" in z["uns"]
-        assert out_file == stem + "_anndata.zarr"
+        assert out_file == stem + "-anndata.zarr"
 
     def test_batch_csc_h5ad_to_zarr(self, monkeypatch, anndata_csc_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_csc_h5ad_file))
@@ -187,7 +187,7 @@ class TestClass:
             anndata_csc_h5ad_file, stem, batch_processing=True, batch_size=4
         )
         assert os.path.exists(out_batch_file)
-        assert out_batch_file == stem + "_anndata.zarr"
+        assert out_batch_file == stem + "-anndata.zarr"
         z_batch = zarr.open(out_batch_file, mode="r")
         assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
         assert "obs" in z_batch
@@ -210,7 +210,7 @@ class TestClass:
         assert "var" in z
         assert "obsm" in z and "spatial" in z["obsm"]
         assert "uns" in z and "spatial" in z["uns"]
-        assert out_file == stem + "_anndata.zarr"
+        assert out_file == stem + "-anndata.zarr"
 
     def test_batch_csr_h5ad_to_zarr(self, monkeypatch, anndata_csr_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_csr_h5ad_file))
@@ -219,7 +219,7 @@ class TestClass:
             anndata_csr_h5ad_file, stem, batch_processing=True, batch_size=2
         )
         assert os.path.exists(out_batch_file)
-        assert out_batch_file == stem + "_anndata.zarr"
+        assert out_batch_file == stem + "-anndata.zarr"
         z_batch = zarr.open(out_batch_file, mode="r")
         assert "X" in z_batch and isinstance(z_batch["X"], zarr.Array)
         assert "obs" in z_batch
@@ -236,7 +236,7 @@ class TestClass:
         stem = "test"
         out_file = tsv_to_json(molecules_tsv_file, stem)
         assert os.path.exists(out_file)
-        assert out_file == stem + "_molecules.json"
+        assert out_file == stem + "-molecules.json"
         with open(out_file, "r") as jsonfile:
             output_json = json.load(jsonfile)
         with open(molecules_json_file, "r") as jsonfile:
@@ -244,22 +244,22 @@ class TestClass:
         assert output_json == expected_json
 
     def test_zarr(self, zarr_file):
-        consolidate_md(zarr_file)
+        consolidate(zarr_file)
         assert os.path.exists(os.path.join(zarr_file, ".zmetadata"))
 
     def test_route_h5ad(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
-        out_file = router("h5ad", anndata_h5ad_file, stem, {})
+        out_file = process("h5ad", anndata_h5ad_file, stem, {})
         assert os.path.exists(out_file)
-        assert out_file == stem + "_anndata.zarr"
+        assert out_file == stem + "-anndata.zarr"
 
     def test_route_molecules(self, monkeypatch, molecules_tsv_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
         stem = "test"
-        out_file = router("molecules", molecules_tsv_file, stem, {})
+        out_file = process("molecules", molecules_tsv_file, stem, {})
         assert os.path.exists(out_file)
-        assert out_file == stem + "_molecules.json"
+        assert out_file == stem + "-molecules.json"
 
     def test_ome_metadata(self, monkeypatch, ome_xml_file):
         monkeypatch.chdir(os.path.dirname(ome_xml_file))
@@ -278,9 +278,9 @@ class TestClass:
     def test_generate_label(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
-        ome_md = {"X": 100, "Y": 100}
-        generate_label(stem, ome_md, anndata_h5ad_file)
-        assert os.path.exists(stem + ".tif")
+        args = {"shape": [100, 100]}
+        create_img(stem, "label", "visium", anndata_h5ad_file, args=args)
+        assert os.path.exists(stem + "-label.tif")
 
     # def test_build_config(self, request, tmp_path_factory):
     #     input_dir = os.path.dirname(request.fspath) # to get files in tests dir

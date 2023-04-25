@@ -11,7 +11,7 @@ from zarr import consolidate_metadata
 from pathlib import Path
 
 
-def main(file_in: str) -> None:
+def consolidate(file_in: str) -> None:
     """Function to consolidate the metadata of a Zarr file
 
     Args:
@@ -26,4 +26,4 @@ def main(file_in: str) -> None:
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(consolidate)

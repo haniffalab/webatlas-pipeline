@@ -1,21 +1,21 @@
 |Tests| |Sphinx| |Coverage| |DOI|
  
-.. |Tests| image:: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml/badge.svg
-   :target: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/tests-python.yml
-.. |Sphinx| image:: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/sphinx-build.yml/badge.svg
-   :target: https://github.com/haniffalab/vitessce-pipeline/actions/workflows/sphinx-build.yml
-.. |Coverage| image:: https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ
-   :target: https://codecov.io/gh/haniffalab/vitessce-pipeline/branch/main
+.. |Tests| image:: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml/badge.svg
+   :target: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml
+.. |Sphinx| image:: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml/badge.svg
+   :target: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml
+.. |Coverage| image:: https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ
+   :target: https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg
    :target: https://doi.org/10.5281/zenodo.7405818
 
-Vitessce Pipeline
+WebAtlas Pipeline
 =================
 
-This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in `Vitessce`_. 
+This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in `WebAtlas App`_. 
 The pipeline generates data files for `supported data types`_, and builds a `view config`_.
 
-.. _Vitessce: https://github.com/haniffalab/vitessce-app
+.. _WebAtlas App: https://github.com/haniffalab/webatlas-app
 .. _supported data types: https://vitessce.io/docs/data-types-file-types/
 .. _view config: https://vitessce.io/docs/view-config-json/
 
@@ -43,9 +43,9 @@ Indices and tables
   
    demos
    citing
-   Source Code <https://github.com/haniffalab/vitessce-pipeline>
-   Issue Tracker <https://github.com/haniffalab/vitessce-pipeline/issues>
-   Frontend Client <https://github.com/haniffalab/vitessce-app>
+   Source Code <https://github.com/haniffalab/webatlas-pipeline>
+   Issue Tracker <https://github.com/haniffalab/webatlas-pipeline/issues>
+   Frontend Client <https://github.com/haniffalab/webatlas-app>
 
 .. toctree::
    :maxdepth: 2

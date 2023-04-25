@@ -1,20 +1,28 @@
-outdir: "output/scrnaseq/"
-max_n_worker: 30
-tsv : "./templates/scrnaseq_template.tsv"
+outdir: ./output/
+
 args:
   h5ad:
-    compute_embeddings: "True"
-    # var_index: "SYMBOL"
-  # molecules:
-  #   delimiter: ","
-options:
+    compute_embeddings: True
+
+projects:
+  - project: test
+    datasets:
+      - dataset: scRNAseq
+        title: "Test scRNAseq Dataset"
+        data:
+          -
+            data_type: h5ad
+            data_path: /path/to/test/scrnaseq/anndata.h5ad
+
+vitessce_options:
   mappings:
     obsm/X_umap: [0,1]
     obsm/X_pca: [0,1]
   sets:
     - "obs/tissue"
     - name: "obs/celltype"
+    - name: "obs/celltype"
       score: "obs/celltype_prob"
   matrix: "X"
 # layout: 'advanced' # advanced, minimal
-custom_layout: "((scatterplot/scatterplot)|(genes/cellSets))"
+custom_layout: ((scatterplot/scatterplot)|(genes/cellSets))

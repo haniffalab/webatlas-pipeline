@@ -11,7 +11,7 @@ Modules
 .. automodule:: consolidate_md
     :members:
 
-.. automodule:: generate_label
+.. automodule:: generate_image
     :members:
 
 .. automodule:: ome_zarr_metadata
@@ -24,4 +24,16 @@ Modules
     :members:
 
 .. automodule:: process_spaceranger
+    :members:
+
+.. automodule:: process_xenium
+    :members:
+
+.. automodule:: process_merscope
+    :members:
+
+.. automodule:: integrate_anndata
+    :members:
+
+.. automodule:: integrate_image
     :members:

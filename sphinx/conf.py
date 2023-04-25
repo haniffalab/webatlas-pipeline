@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../bin"))
 
 # -- Project information -----------------------------------------------------
 
-project = "vitessce-pipeline"
+project = "webatlas-pipeline"
 copyright = "2022, Haniffa Lab"
 author = "Haniffa Lab"
 

@@ -5,22 +5,29 @@ import groovy.json.*
 
 nextflow.enable.dsl=2
 
-// Default params
-params.title = ""
-params.images = []
-params.factors = []
-params.codebook = ""
-params.max_n_worker = 30
-params.dataset = ""
-params.zarr_md = []
-params.args = []
-params.url = ""
+verbose_log = true
+version = "0.0.1"
 
-params.options = []
+//////////////////////////////////////////////////////
+
+// Default params
+params.max_n_worker = 30
+
+params.outdir = ""
+params.args = [:]
+
+params.vitessce_options = [:]
 params.layout = "minimal"
 params.custom_layout = ""
-params.outdir = ""
-params.config_files = []
+
+params.vitessce_config_map = [
+    url: "http://localhost:3000/",
+    options: params.vitessce_options,
+    layout: params.layout,
+    custom_layout: params.custom_layout,
+    title: "",
+    description: ""
+]
 
 // if directly writing to s3
 params.s3 = false
@@ -30,55 +37,115 @@ params.s3_keys = [
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
-params.tsv = "./template.tsv"
+//////////////////////////////////////////////////////
 
-verbose_log = true
-version = "0.0.1"
+data_types = ["h5ad","spaceranger","xenium","merscope","molecules"]
+image_types = ["raw_image","label_image","raw_image_data","label_image_data"]
+vitessce_params = ["title","description","url","vitessce_options","layout","custom_layout"]
+
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
+
+//////////////////////////////////////////////////////
+
+// Get inputs
+Channel.from(params.projects)
+    .map { p -> [p.project, p.datasets] }
+    .transpose()
+    .multiMap {
+        project, dataset -> 
+            data: [ tuple(project, dataset.dataset), dataset.data ]
+            config_map: [
+                tuple(project, dataset.dataset),
+                params.vitessce_config_map + dataset.subMap(vitessce_params)
+            ]
+    }
+    .set {datasets}
+
+datasets.data
+    .transpose(by:1)
+    .branch{ stem, d ->
+        data: d.data_type in data_types
+        images: d.data_type in image_types
+        other: true
+    }
+    .set{inputs}
+
+inputs.other
+    .collect { stem, d -> d.data_type }
+    .view{ "Unrecognized data_type(s) ${it.unique()}" }
+
+//////////////////
+
+interm_dt = [
+    spaceranger: ["h5ad"],
+    xenium: ["h5ad"],
+    merscope: ["h5ad"]
+]
+
+project_args = [:]
+dataset_args = [:]
+
+params.projects.each{ p ->
+    project_args[p.project] = p.args ?: [:]
+    p.datasets.each{ d ->
+        dataset_args[[p.project, d.dataset]] = d.args ?: [:]
+    }
+}
+
+def getSubMapValues (m, keys) {
+    m.subMap(keys).values().sum() ?: [:]
+}
+
+def mergeArgs (stem, data_type, args) {
+    getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
+    getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
+    getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
+    (args ?: [:])
+}
+
+//////////////////////////////////////////////////////
 
 process image_to_zarr {
     tag "${image}"
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-image-to-zarr:${version}"
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(img_type), path(image)
-    tuple val(accessKey), val(secretKey)
-    val output_s3
+    tuple val(stem), val(prefix), val(img_type), path(image), val(keep_filename)
 
     output:
-    /*val out_s3, emit: s3_path*/
-    tuple val(stem), path("${stem}_${img_type}.zarr"), emit: raw_zarr
-    tuple val(stem), path("${stem}_${img_type}.zarr/OME/METADATA.ome.xml"), val(img_type), emit: ome_xml
+    tuple val(stem), val(img_type), path("${filename}.zarr"), emit: img_zarr
+    tuple val(stem), val(img_type), path("${filename}.zarr/OME/METADATA.ome.xml"), emit: ome_xml
 
     script:
-    out_s3 = "${output_s3}/${img_type}.zarr"
+    filename = keep_filename ? image.baseName : ([*stem, prefix, img_type] - null - "").join("-")
     """
-    #/opt/bioformats2raw/bin/bioformats2raw --output-options "s3fs_access_key=${accessKey}|s3fs_secret_key=${secretKey}|s3fs_path_style_access=true" ${image} s3://${out_s3}
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
-        tiffcp -c none ${image} uncompressed.tif
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs uncompressed.tif ${stem}_${img_type}.zarr
+        if od -h -j2 -N2 ${image} | head -n1 | sed 's/[0-9]*  *//' | grep -q -E '002b|2b00'
+        then
+            tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+        else
+            tiffcp -c none -m 0 ${image} uncompressed.tif || tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+        fi
+        bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
-        /opt/bioformats2raw/bin/bioformats2raw --no-hcs ${image} ${stem}_${img_type}.zarr
+        bioformats2raw --no-hcs ${image} ${filename}.zarr
     fi
-    consolidate_md.py ${stem}_${img_type}.zarr
+    consolidate_md.py ${filename}.zarr
     """
 }
 
 process ome_zarr_metadata{
     tag "${zarr}"
     debug verbose_log
-    container "haniffalab/vitessce-pipeline-processing:${version}"
 
     input:
-    tuple val(stem), path(zarr), val(img_type)
+    tuple val(stem), val(img_type), path(zarr)
 
     output:
-    tuple val(stem), stdout, val(img_type)
-    /*[>tuple val(zarr), stdout<]*/
+    tuple val(stem), val(img_type), stdout
 
     script:
     """
@@ -87,177 +154,129 @@ process ome_zarr_metadata{
 }
 
 process route_file {
-    tag "${file}"
+    tag "${type}, ${file}"
     debug verbose_log
+    cache "lenient"
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), path(file), val(type), val(args)
+    tuple val(stem), val(prefix), path(file), val(type), val(args)
 
     output:
     tuple val(stem), stdout, emit: out_file_paths
-    tuple val(stem), path("${stem}*"), emit: converted_files, optional: true
+    tuple val(stem), path("${stem_str}*"), emit: converted_files, optional: true
+    tuple val(stem), path("tmp-${stem_str}*"), emit: extra_files, optional: true
 
     script:
+    stem_str = ([*stem, prefix] - null - "").join("-")
     args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    router.py --file_type ${type} --path ${file} --stem ${stem} ${args_str}
+    router.py --file_type ${type} --path ${file} --stem ${stem_str} ${args_str}
     """
 }
 
-process Build_config{
+process Build_config {
     tag "${stem}"
     debug verbose_log
+    cache false
 
-    container "haniffalab/vitessce-pipeline-build-config:${version}"
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(files), val(raster), val(label), val(raster_md), val(raw_str), val(label_md), val(label_str), val(title), val(dataset), val(url), val(options)
-    val(layout)
-    val(custom_layout)
+    tuple val(stem), val(config_map), val(files), val(img_map)
 
     output:
-    path("${stem}_config.json")
+    path("${stem_str}-config.json")
 
     script:
-    zarrs = [] + (raster && raster.toString() ? "\"${raster.name}\":${raster_md}" : []) + (label && label.toString() ? "\"${label.name}\":${label_md}" : [])
-    zarrs_str = zarrs ? "--image_zarr '{" + zarrs.join(",") + "}'" : ""
+    stem_str = stem.join("-")
     file_paths = files.collect{ /"/ + it + /"/ }.join(",")
-    url_str = url?.trim() ? "--url ${url.replaceFirst(/\/*$/, "")}/${version}" : ""
-    clayout_str = custom_layout?.trim() ? "--custom_layout \"${custom_layout}\"" : ""
-    options_str = options ? "--options '" + (options instanceof String ? options : new JsonBuilder(options).toString()) + "'" : ""
+    imgs_str = img_map ? "--images '" + new JsonBuilder(img_map).toString() + "'" : ""
+    url_str = config_map.url?.trim() ? "--url \"${config_map.url.trim()}\"" : ""
+    options_str = config_map.options ? "--options '" + (config_map.options instanceof String ? options : new JsonBuilder(config_map.options).toString()) + "'" : ""
+    clayout_str = config_map.custom_layout?.trim() ? "--custom_layout \"${config_map.custom_layout}\"" : ""
     """
     build_config.py \
-        --title "${title}" \
-        --dataset ${dataset} \
-        ${zarrs_str} \
+        --project "${stem[0]}" \
+        --dataset "${stem[1]}" \
         --file_paths '[${file_paths}]' \
+        ${imgs_str} \
         ${url_str} \
         ${options_str} \
-        --layout ${layout} ${clayout_str}
+        --layout "${config_map.layout}" ${clayout_str} \
+        --title "${config_map.title}" \
+        --description "${config_map.description}"
     """
 }
 
-process Generate_label_image {
-    tag "${stem}"
+process Generate_image {
+    tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
 
-    container "haniffalab/vitessce-pipeline-processing:${version}"
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(stem), val(ome_md_json), val(img_type), path(h5ad)
+    tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)
 
     output:
-    tuple val(stem), val("label"), file("${stem}.tif")
+    tuple val(stem), val(prefix), val(img_type), path("${stem_str}*.tif")
 
     script:
+    stem_str = ([*stem, prefix] - null - "").join("-")
+    ref_img_str = ref_img.name != "NO_REF" ? "--ref_img ${ref_img}" : ""
+    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
     """
-    generate_label.py --stem "${stem}" --ome_md '${ome_md_json}' --h5ad ${h5ad}
+    generate_image.py \
+        --stem ${stem_str} \
+        --img_type ${img_type} \
+        --file_type ${file_type} \
+        --file_path ${file_path} \
+        ${ref_img_str} ${args_str}
     """
 }
 
+//////////////////////////////////////////////////////
 
-Channel.fromPath(params.tsv)
-    .splitCsv(header:true, sep:"\t")
-    .multiMap { l ->
-        images: [
-            "${l.title}_${l.dataset}",
-            l.image_type,
-            l.image_path
-        ]
-        data: [
-            h5ad: [
-                "${l.title}_${l.dataset}",
-                l.h5ad,
-                l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad
-            ],
-            molecules: [
-                "${l.title}_${l.dataset}",
-                l.molecules,
-                l.args && l.args.molecules?.trim() ? l.args.molecules?.trim() : params.args.molecules
-            ],
-            spaceranger: [
-                "${l.title}_${l.dataset}",
-                l.spaceranger,
-                (l.args && l.args.spaceranger?.trim() ? l.args.spaceranger?.trim() : params.args.spaceranger ? params.args.spaceranger : []) +
-                (l.args && l.args.h5ad?.trim() ? l.args.h5ad?.trim() : params.args.h5ad ? params.args.h5ad : [])
-            ]
-        ]
-        config_params: [
-            "${l.title}_${l.dataset}",
-            l.title,
-            l.dataset,
-            l.url,
-            l.options?.trim() ? l.options : params.options
-        ]
-    }
-    .set { data_with_md }
+workflow Full_pipeline {
 
+    Process_files()
 
-workflow To_ZARR {
-    if (data_with_md.images) {
-        image_to_zarr(data_with_md.images, params.s3_keys, params.outdir_s3)
-        zarr_dirs = image_to_zarr.out.raw_zarr
+    Process_images()
 
-        ome_zarr_metadata(image_to_zarr.out.ome_xml)
-        ome_md_json = ome_zarr_metadata.out//{ [[(it[0]): new JsonSlurper().parseText(it[2].replace('\n',''))]] }
-    } else {
-        zarr_dirs = []
-        ome_md_json = []
-    }
-
-    emit:
-    zarr_dirs = zarr_dirs
-    ome_md_json = ome_md_json
+    Output_to_config(
+        Process_files.out.file_paths,
+        Process_images.out.img_zarrs
+        )
+    
 }
 
-workflow _label_to_ZARR {
-    take: label_images
-
-    main:
-    if (label_images) {
-        image_to_zarr(label_images, params.s3_keys, params.outdir_s3)
-        label_zarr = image_to_zarr.out.raw_zarr
-        ome_zarr_metadata(image_to_zarr.out.ome_xml)
-        ome_md_json = ome_zarr_metadata.out
-    } else {
-        label_zarr = []
-        ome_md_json = []
-    }
-
-    emit:
-    label_zarr = label_zarr
-    ome_md_json = ome_md_json
-}
 
 workflow Process_files {
-    data_with_md.data.view()
-    if (data_with_md.data){
-        data_list = data_with_md.data.flatMap{ it ->
-            it.collectMany{ data_type, data_map ->
-                data_map[1] ? [
-                    [
-                        data_map[0],
-                        data_map[1],
-                        data_type,
-                        data_map[2]
-                    ]
-                ] : []
-            }
+    // Map inputs to: 
+    // tuple val(stem), val(prefix), path(file), val(type), val(args)
+    data_list = inputs.data.flatMap { stem, data_map ->
+        data_map.data_path ?
+        [
+            [
+                stem,
+                data_map.prefix ?: "",
+                data_map.data_path,
+                data_map.data_type,
+                mergeArgs(stem, data_map.data_type, data_map.args)
+            ]
+        ] : [:]
+    }
+
+    route_file(data_list)
+    files = route_file.out.converted_files
+        .map { stem, paths ->
+            [ stem, [paths].flatten() ]
         }
-        route_file(data_list.unique())
-        files = route_file.out.converted_files.groupTuple(by:0)
-        file_paths = route_file.out.out_file_paths.map{ it -> [
-                it[0],
-                it[1].split('\n').flatten()
-            ].flatten() }.groupTuple(by:0)
-    } else {
-        files = []
-        file_paths = []
+        .transpose(by: 1)
+        .groupTuple(by:0)
+    file_paths = files.map { stem, it -> 
+        [ stem, it.name ]
     }
 
     emit:
@@ -265,113 +284,109 @@ workflow Process_files {
     file_paths = file_paths
 }
 
-workflow scRNAseq_pipeline {
-    Process_files()
 
-    Process_files.out.file_paths
-        .map{ it ->
-            it + [
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            ] // null image paths
-        }
-        .join(data_with_md.config_params)
-        .set{img_data_for_config}
-
-    Build_config(
-        img_data_for_config,
-        params.layout,
-        params.custom_layout
-        )
-}
-
-workflow ISS_pipeline {
-    To_ZARR()
-
-    Process_files()
-
-    To_ZARR.out.zarr_dirs
-        .branch{ it ->
-            raw : it[1] =~ /raw.zarr/
-            label : it[1] =~ /label.zarr/
-        }
-        .set{zarrs}
-
-    To_ZARR.out.ome_md_json
-        .branch{ it ->
-            raw : it[2] ==~ /raw/
-            label : it[2] ==~ /label/
-        }
-        .set{zarr_mds}
-
-    zarr_mds.raw.view()
-    zarr_mds.label.view()
-
-    Process_files.out.file_paths
-        .join(zarrs.raw)
-        .join(zarrs.label)
-        .join(zarr_mds.raw)
-        .join(zarr_mds.label)
-        .join(data_with_md.config_params)
-        .set{img_data_for_config}
-
-    Build_config(
-        img_data_for_config,
-        params.layout,
-        params.custom_layout
-        )
-}
-
-workflow Visium_pipeline {
-    To_ZARR()
-
-    Process_files()
-
-    h5ads = data_with_md.data.flatMap{ it ->
-        it.collectMany{ data_type, data_map ->
-            (data_type == "h5ad" || data_type == "spaceranger") && data_map[1] ? [[data_map[0], data_map[1]]] : []
-        }
+workflow Process_images {
+    // Map tif inputs to:
+    // tuple val(stem), val(prefix), val(img_type), path(image)
+    img_tifs = inputs.images.filter { stem, data_map ->
+        data_map.data_type in ["raw_image", "label_image"]
     }
-    Generate_label_image(To_ZARR.out.ome_md_json.join(h5ads))
+    .map { stem, data_map ->
+        [ 
+            stem,
+            data_map.prefix,
+            data_map.data_type.replace("_image",""),
+            data_map.data_path,
+            false // keep_filename
+        ]
+    }
 
-    _label_to_ZARR(Generate_label_image.out)
+    // Map raw/label data inputs to:
+    // tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)
+    img_data = inputs.images.filter { stem, data_map ->
+        data_map.data_type in ["raw_image_data", "label_image_data"]
+    }
+    .map { stem, data_map ->
+        [
+            stem,
+            data_map.prefix,
+            data_map.data_type.replace("_image_data",""),
+            data_map.data_path,
+            data_map.file_type,
+            data_map.ref_img ?: file("NO_REF"),
+            data_map.args ?: [:]
+        ]
+    }
 
-    Process_files.out.file_paths
-        .join(To_ZARR.out.zarr_dirs) //.groupTuple(by:0) if several images
-        .join(_label_to_ZARR.out.label_zarr)
-        .join(To_ZARR.out.ome_md_json)
-        .join(_label_to_ZARR.out.ome_md_json)
-        .join(data_with_md.config_params)
-        .set{img_data_for_config}
+    Generate_image(img_data)
 
-    Build_config(
-        img_data_for_config,
-        params.layout,
-        params.custom_layout
-        )
+    Generate_image.out
+        .map { stem, prefix, type, paths ->
+            [
+                stem,
+                prefix,
+                type,
+                [paths].flatten(),
+                true // keep_filename
+            ]
+        }
+        .transpose(by: 3)
+        .set {label_tifs}
+
+    all_tifs = img_tifs.mix(label_tifs)
+    image_to_zarr(all_tifs)
+
+    ome_zarr_metadata(image_to_zarr.out.ome_xml)
+
+    img_zarrs = image_to_zarr.out.img_zarr
+        .join(ome_zarr_metadata.out, by: [0,1])
+        .map { stem, type, path, md ->
+            [
+                stem, type, [path: path.name, md: new JsonSlurper().parseText(md.trim())]
+            ]
+        }
+        .groupTuple(by: [0,1])
+
+    emit:
+    img_zarrs = img_zarrs
 }
 
-workflow Config {
-    Build_config(
-        [
-            "${params.title}_${params.dataset}",
-            params.files,
-            new File(params.raw.zarr),
-            new File(params.label.zarr),
-            new JsonBuilder(params.raw.md).toString(),
-            "raw",
-            new JsonBuilder(params.label.md).toString(),
-            "label",
-            params.title,
-            params.dataset,
-            params.url,
-            params.options
-        ],
-        params.layout,
-        params.custom_layout
-        )
+
+workflow Output_to_config {
+    take: out_file_paths
+    take: out_img_zarrs
+    main:
+
+        // Map workflows' outputs to:
+        // tuple val(stem), val(files), val(img_map), val(config_map)
+
+        out_img_zarrs
+            .map { stem, type, img -> 
+                [stem, [type: type, img: img]]
+            }
+            .branch { stem, data ->
+                raw: data.type == "raw"
+                label: data.type == "label"
+            }
+            .set{img_zarrs}
+
+        img_zarrs.raw
+            .join(img_zarrs.label, remainder: true)
+            .map { stem, raw_data, label_data -> [
+                stem,
+                [
+                    raw: raw_data ? raw_data.img : [],
+                    label: label_data ? label_data.img : []
+                ]
+            ]}
+            .set{img_map}
+
+        datasets.config_map
+            .join(out_file_paths, remainder: true)
+            .join(img_map, remainder: true)
+            .set{data_for_config}
+
+        Build_config(
+            data_for_config
+            )
 }

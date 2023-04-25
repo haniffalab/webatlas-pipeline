@@ -3,26 +3,24 @@ outdir: ./output/
 args:
   h5ad:
     compute_embeddings: True
-  spaceranger:
-    save_h5ad: True
 
 projects:
   - project: test
     datasets:
-      - dataset: visium
-        title: "Test Visium Dataset"
+      - dataset: xenium
+        title: "Test Xenium Dataset"
         data:
           -
-            data_type: spaceranger
-            data_path: /path/to/test/visium/slide_1/
+            data_type: xenium
+            data_path: /path/to/test/xenium/
           -
             data_type: raw_image
-            data_path: /path/to/visium/slide_1/raw_image.tif
+            data_path: /path/to/xenium/raw_image.tif
           -
             data_type: label_image_data
-            data_path: /path/to/visium/slide_1/
-            file_type: visium
-            ref_img: /path/to/visium/slide_1/raw_image.tif
+            data_path: /path/to/xenium/
+            file_type: xenium
+            ref_img: /path/to/xenium/raw_image.tif
 
 vitessce_options:
   spatial:

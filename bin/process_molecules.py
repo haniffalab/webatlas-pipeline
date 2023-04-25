@@ -13,7 +13,7 @@ SUFFIX = "molecules.json"
 
 
 def tsv_to_json(
-    file: str,
+    path: str,
     stem: str,
     has_header: bool = True,
     gene_col_name: str = "Name",
@@ -35,7 +35,7 @@ def tsv_to_json(
     and writes them to a JSON file supported by Vitessce
 
     Args:
-        file (str): Path to tsv/csv file
+        path (str): Path to tsv/csv file
         stem (str): Prefix for output JSON file
         has_header (bool, optional): If input file contains a header row. Defaults to True.
         gene_col_name (str, optional): Column header name where gene names are stored. Defaults to "Name".
@@ -62,7 +62,7 @@ def tsv_to_json(
         str: Output JSON filename
     """
 
-    with open(file) as f:
+    with open(path) as f:
         reader = csv.reader(f, delimiter=delimiter)
 
         if has_header:
@@ -97,7 +97,7 @@ def tsv_to_json(
                 # TODO: add message
                 raise e
 
-    json_file = f"{stem}_{SUFFIX}"
+    json_file = f"{stem}-{SUFFIX}"
 
     with open(json_file, "w") as out_file:
         json.dump(molecules_json, out_file)
