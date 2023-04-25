@@ -11,7 +11,7 @@ Currently, the WebAtlas pipeline can process several types of data files as well
 
 Running the pipeline requires a ``yaml`` `parameters file`_ that lists the data to be processed.
 
-Templates of this parameters file are available in the `templates directory <templates/>`__.
+Templates of this parameters file are available in the `templates directory <https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/>`__.
 
 
 .. _parameters_file:
