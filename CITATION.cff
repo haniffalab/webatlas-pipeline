@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 type: software
 message: "If you use this repo, please cite it"
-title: "WebAtlas Pipeline"
+title: "WebAtlas"
 url: "https://github.com/haniffalab/webatlas-pipeline"
 doi: 10.5281/zenodo.7405818
 authors:
@@ -11,7 +11,7 @@ authors:
   - family-names: "Horsfall"
     given-names: "Dave"
     orcid: "https://orcid.org/0000-0002-8086-812X"
-  - family-names: "Basurto-Lozada"
+  - family-names: "Basurto Lozada"
     given-names: "Daniela"
     orcid: "https://orcid.org/0000-0003-3943-8424"
   - family-names: "Prete"
