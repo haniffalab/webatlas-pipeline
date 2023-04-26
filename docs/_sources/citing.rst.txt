@@ -10,9 +10,8 @@ Citation
 
 If you use this software in a scientific publication, please cite using the following Zenodo reference.
 
-Cite as
--------
+**Cite as**
 
 .. raw:: html
 
-   <p><b><i>Li, Tong, Horsfall, Dave, Basurto-Lozada, Daniela, Prete, Martin, Jessica, Cox, & Iolo, Squires. (2023). WebAtlas Pipeline (v0.2.0). Zenodo. https://doi.org/10.5281/zenodo.7863308</i></b></p>
+   <p><b><i>Li, Tong, Horsfall, David, Basurto-Lozada, Daniela, Prete, Martin, Jessica, Cox, & Iolo, Squires. (2023). WebAtlas Pipeline (v0.2.0). Zenodo. https://doi.org/10.5281/zenodo.7863308</i></b></p>
