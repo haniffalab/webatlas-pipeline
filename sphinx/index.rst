@@ -5,7 +5,7 @@
 .. |Sphinx| image:: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml/badge.svg
    :target: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml
 .. |Coverage| image:: https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ
-   :target: https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main
+   :target: https://app.codecov.io/gh/haniffalab/webatlas-pipeline
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg
    :target: https://doi.org/10.5281/zenodo.7405818
 
@@ -27,6 +27,8 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
    installation
    setup
    run
+   visualise
+   Demos <https://cellatlas.io/webatlas>
    testing
    modules
 
@@ -39,9 +41,18 @@ Indices and tables
 .. toctree::
    :maxdepth: 2
    :hidden:
+   :caption: Example Workflows
+  
+   examples/merscope
+   examples/scrnaseq
+   examples/visium
+   examples/xenium 
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
    :caption: Project Links
   
-   demos
    citing
    Source Code <https://github.com/haniffalab/webatlas-pipeline>
    Issue Tracker <https://github.com/haniffalab/webatlas-pipeline/issues>
