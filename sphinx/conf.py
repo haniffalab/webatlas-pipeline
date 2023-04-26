@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath("../bin"))
 # -- Project information -----------------------------------------------------
 
 project = "WebAtlas"
-copyright = "2022, Haniffa Lab"
+copyright = "2023, Haniffa Lab"
 author = "Haniffa Lab"
 
 # The full version, including alpha/beta/rc tags
