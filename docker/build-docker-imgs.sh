@@ -8,4 +8,4 @@
 
 VERSION=0.0.1
 
-docker build --platform=linux/amd64 -t haniffalab/vitessce-pipeline:${VERSION} -f ./Dockerfile .
+docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:${VERSION} -f ./Dockerfile .

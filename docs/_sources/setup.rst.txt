@@ -4,14 +4,14 @@
 Setup
 #####
 
-Currently, the pipeline can process several types of data files as well as images.
+Currently, the WebAtlas pipeline can process several types of data files as well as images.
 
 - It can handle ``h5ad`` files, SpaceRanger output, Xenium output, MERSCOPE output, and ``molecules`` data in ``csv``/``tsv`` files.
 - It can handle raw and label images in ``tif`` format, as well as generating/preprocessing images from Visium, Xenium and MERFISH data. 
 
 Running the pipeline requires a ``yaml`` `parameters file`_ that lists the data to be processed.
 
-Templates of this parameters file are available in the `templates directory <templates/>`__.
+Templates of this parameters file are available in the `templates directory <https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/>`__.
 
 
 .. _parameters_file:
@@ -31,8 +31,8 @@ A parameters file looks like:
     outdir: "/path/to/output/"
     
     args:
-        h5ad:
-            compute_embeddings: "True"
+      h5ad:
+        compute_embeddings: "True"
     
     projects:
       - project: project_1
@@ -50,10 +50,10 @@ A parameters file looks like:
                 data_path: /path/to/project_1/dataset_1/label_image.tif
 
     vitessce_options:
-        spatial:
-            xy: "obsm/spatial"
-        mappings:
-            obsm/X_umap: [0,1]
+      spatial:
+        xy: "obsm/spatial"
+      mappings:
+        obsm/X_umap: [0,1]
     layout: "simple"
     # custom_layout: "spatial|scatterplot" # overrides `layout`
 
