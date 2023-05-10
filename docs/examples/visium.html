@@ -123,96 +123,234 @@ It can be used on any POSIX compatible system (Linux, OS X, etc).</p>
 </pre></div>
 </div>
 </div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Cloning<span class="w"> </span>into<span class="w"> </span><span class="s1">&#39;webatlas-pipeline&#39;</span>...
+remote:<span class="w"> </span>Enumerating<span class="w"> </span>objects:<span class="w"> </span><span class="m">1966</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Counting<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">341</span>/341<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Compressing<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">144</span>/144<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Total<span class="w"> </span><span class="m">1966</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">227</span><span class="o">)</span>,<span class="w"> </span>reused<span class="w"> </span><span class="m">204</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">195</span><span class="o">)</span>,<span class="w"> </span>pack-reused<span class="w"> </span><span class="m">1625</span>
+Receiving<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">1966</span>/1966<span class="o">)</span>,<span class="w"> </span><span class="m">5</span>.78<span class="w"> </span>MiB<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">5</span>.91<span class="w"> </span>MiB/s,<span class="w"> </span><span class="k">done</span>.
+Resolving<span class="w"> </span>deltas:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">1292</span>/1292<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+</pre></div>
+</div>
+</div>
 <p><strong>#3. Check java is installed</strong></p>
 <p>Make sure java 11 later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-version
-openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11.0.18&quot;</span><span class="w"> </span><span class="m">2023</span>-01-17
+OpenJDK<span class="w"> </span>Runtime<span class="w"> </span>Environment<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1<span class="o">)</span>
+OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </span>Server<span class="w"> </span>VM<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1,<span class="w"> </span>mixed<span class="w"> </span>mode,<span class="w"> </span>sharing<span class="o">)</span>
 </pre></div>
 </div>
 </div>
 <p><strong>#4. Install Nextflow</strong></p>
 <p>Enter this command in your terminal to install nextflow in the current directory:</p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>org.apache.ivy:ivy:jar:2.5.1
+...
+CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>io.nextflow:nf-commons:jar:23.04.1
+
+<span class="w">      </span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W
+<span class="w">      </span>version<span class="w"> </span><span class="m">23</span>.04.1<span class="w"> </span>build<span class="w"> </span><span class="m">5866</span>
+<span class="w">      </span>created<span class="w"> </span><span class="m">15</span>-04-2023<span class="w"> </span><span class="m">06</span>:51<span class="w"> </span>UTC<span class="w"> </span><span class="o">(</span><span class="m">07</span>:51<span class="w"> </span>BST<span class="o">)</span>
+<span class="w">      </span>cite<span class="w"> </span>doi:10.1038/nbt.3820
+<span class="w">      </span>http://nextflow.io
+
+
+Nextflow<span class="w"> </span>installation<span class="w"> </span>completed.<span class="w"> </span>Please<span class="w"> </span>note:
+-<span class="w"> </span>the<span class="w"> </span>executable<span class="w"> </span>file<span class="w"> </span><span class="sb">`</span>nextflow<span class="sb">`</span><span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>created<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>folder:<span class="w"> </span>./webatlas-pipeline
+-<span class="w"> </span>you<span class="w"> </span>may<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>the<span class="w"> </span>installation<span class="w"> </span>by<span class="w"> </span>moving<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>directory<span class="w"> </span><span class="k">in</span><span class="w"> </span>your<span class="w"> </span><span class="nv">$PATH</span>
 </pre></div>
 </div>
 </div>
 <p><strong>#5. Check Docker is installed</strong></p>
 <p>Make sure Docker Engine 20.10 later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
+Version:<span class="w">           </span><span class="m">23</span>.0.4
+API<span class="w"> </span>version:<span class="w">       </span><span class="m">1</span>.42
+Go<span class="w"> </span>version:<span class="w">        </span>go1.19.8
+Git<span class="w"> </span>commit:<span class="w">        </span>f480fb1
+Built:<span class="w">             </span>Fri<span class="w"> </span>Apr<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">10</span>:32:23<span class="w"> </span><span class="m">2023</span>
+OS/Arch:<span class="w">           </span>linux/amd64
+Context:<span class="w">           </span>default
 </pre></div>
 </div>
 </div>
 <p><strong>#6. Build the docker images</strong></p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker
 ./build-docker-imgs.sh
 <span class="nb">cd</span><span class="w"> </span>../
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>somet
-</pre></div>
-</div>
-</div>
-<p><strong>#7. Download the data</strong></p>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://www.something.com
-tar<span class="w"> </span>...
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dgdf
-</pre></div>
-</div>
-</div>
-<p><strong>#8. Download the input configuration file</strong></p>
 <div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://www.something.com
-tar<span class="w"> </span>...
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Building<span class="w"> </span><span class="m">152</span>.0s<span class="w"> </span><span class="o">(</span><span class="m">9</span>/9<span class="o">)</span><span class="w"> </span><span class="nv">FINISHED</span>
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>build<span class="w"> </span>definition<span class="w"> </span>from<span class="w"> </span>Dockerfile<span class="w">                                                                                 </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>dockerfile:<span class="w"> </span>874B<span class="w">                                                                                                 </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>.dockerignore<span class="w">                                                                                                    </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>context:<span class="w"> </span>2B<span class="w">                                                                                                      </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>metadata<span class="w"> </span><span class="k">for</span><span class="w"> </span>docker.io/library/python:3.9<span class="w">                                                                        </span><span class="m">1</span>.7s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">1</span>/4<span class="o">]</span><span class="w"> </span>FROM<span class="w"> </span>docker.io/library/python:3.9@sha256:6ea9dafc96d7914c5c1d199f1f0195c4e05cf017b10666ca84cb7ce8e2699d51<span class="w">                 </span><span class="m">26</span>.9s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>resolve<span class="w"> </span>docker.io/library/python:3.9@sha256:6ea9dafc96d7914c5c1d199f1f0195c4e05cf017b10666ca84cb7ce8e2699d51<span class="w">                  </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:4eedd9c5abf7e5f63753a5e788cb0872a715fa1141e8ce5ea87638e6cd370a41<span class="w"> </span><span class="m">54</span>.58MB<span class="w"> </span>/<span class="w"> </span><span class="m">54</span>.58MB<span class="w">                                    </span><span class="m">11</span>.3s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:6ea9dafc96d7914c5c1d199f1f0195c4e05cf017b10666ca84cb7ce8e2699d51<span class="w"> </span><span class="m">1</span>.86kB<span class="w"> </span>/<span class="w"> </span><span class="m">1</span>.86kB<span class="w">                                       </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:c65dadac8789fed40962578392e99a0528dcb868442c75d144e68ba858984837<span class="w"> </span><span class="m">2</span>.01kB<span class="w"> </span>/<span class="w"> </span><span class="m">2</span>.01kB<span class="w">                                       </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:27ac39eccd1fd7d6c7f78eefc98233e633a7178dd05910983ba905ecf71561f3<span class="w"> </span><span class="m">7</span>.51kB<span class="w"> </span>/<span class="w"> </span><span class="m">7</span>.51kB<span class="w">                                       </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:5d79063a01c561833dc6546d4e647fda0121a59e1a9a17874a3e30854555475e<span class="w"> </span><span class="m">15</span>.76MB<span class="w"> </span>/<span class="w"> </span><span class="m">15</span>.76MB<span class="w">                                     </span><span class="m">3</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:918547b9432687b1e1d238e82dc1e0ea0b736aafbf3c402eea98c6db81a9cb65<span class="w"> </span><span class="m">55</span>.05MB<span class="w"> </span>/<span class="w"> </span><span class="m">55</span>.05MB<span class="w">                                     </span><span class="m">6</span>.5s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:9cdadd40055fb82fef74a0a38f29fb1ee7b6922e18370ebdc3502ec66f79fa3f<span class="w"> </span><span class="m">196</span>.85MB<span class="w"> </span>/<span class="w"> </span><span class="m">196</span>.85MB<span class="w">                                  </span><span class="m">22</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:2a12d0031f3fc457f41eaa0e29c0eaf4ba1376735aa940268ebccc76abb49f04<span class="w"> </span><span class="m">6</span>.29MB<span class="w"> </span>/<span class="w"> </span><span class="m">6</span>.29MB<span class="w">                                       </span><span class="m">8</span>.7s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:918547b9432687b1e1d238e82dc1e0ea0b736aafbf3c402eea98c6db81a9cb65<span class="w">                                            </span><span class="m">0</span>.7s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:5d79063a01c561833dc6546d4e647fda0121a59e1a9a17874a3e30854555475e<span class="w">                                            </span><span class="m">0</span>.2s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:cea461a97d8717d5ef1eb563adaf205de17b9bf5b9bd57bc6bb2eae2296a8740<span class="w"> </span><span class="m">16</span>.15MB<span class="w"> </span>/<span class="w"> </span><span class="m">16</span>.15MB<span class="w">                                    </span><span class="m">11</span>.9s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:4eedd9c5abf7e5f63753a5e788cb0872a715fa1141e8ce5ea87638e6cd370a41<span class="w">                                            </span><span class="m">1</span>.5s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:a48c72dfa8c4e0da323ce32dac703c79d8f2de134e6a420cdfbc868323cfc68a<span class="w"> </span>244B<span class="w"> </span>/<span class="w"> </span>244B<span class="w">                                          </span><span class="m">12</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>sha256:c343b921680a19bf22934b83c02f42d8fdd0d8559417f63c1dcd2d7997c22da3<span class="w"> </span><span class="m">2</span>.90MB<span class="w"> </span>/<span class="w"> </span><span class="m">2</span>.90MB<span class="w">                                      </span><span class="m">12</span>.6s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:9cdadd40055fb82fef74a0a38f29fb1ee7b6922e18370ebdc3502ec66f79fa3f<span class="w">                                            </span><span class="m">2</span>.9s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:2a12d0031f3fc457f41eaa0e29c0eaf4ba1376735aa940268ebccc76abb49f04<span class="w">                                            </span><span class="m">0</span>.2s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:cea461a97d8717d5ef1eb563adaf205de17b9bf5b9bd57bc6bb2eae2296a8740<span class="w">                                            </span><span class="m">0</span>.3s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:a48c72dfa8c4e0da323ce32dac703c79d8f2de134e6a420cdfbc868323cfc68a<span class="w">                                            </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:c343b921680a19bf22934b83c02f42d8fdd0d8559417f63c1dcd2d7997c22da3<span class="w">                                            </span><span class="m">0</span>.1s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>build<span class="w"> </span>context<span class="w">                                                                                                    </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>context:<span class="w"> </span>736B<span class="w">                                                                                                    </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">2</span>/4<span class="o">]</span><span class="w"> </span>COPY<span class="w"> </span>./requirements.txt<span class="w"> </span>/requirements.txt<span class="w">                                                                                  </span><span class="m">0</span>.8s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">3</span>/4<span class="o">]</span><span class="w"> </span>RUN<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">     </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>--no-install-recommends<span class="w">       </span>wget<span class="w"> </span>unzip<span class="w"> </span>cmake<span class="w"> </span>g++<span class="w"> </span>ant<span class="w"> </span>procps<span class="w"> </span>libblosc1<span class="w"> </span>lib<span class="w">  </span><span class="m">27</span>.6s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">4</span>/4<span class="o">]</span><span class="w"> </span>RUN<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>distlib<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">     </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>-r<span class="w"> </span>/requirements.txt<span class="w">    </span><span class="m">91</span>.3s
+<span class="o">=</span>&gt;<span class="w"> </span>exporting<span class="w"> </span>to<span class="w"> </span>image<span class="w">                                                                                                               </span><span class="m">3</span>.7s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>exporting<span class="w"> </span>layers<span class="w">                                                                                                              </span><span class="m">3</span>.7s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>writing<span class="w"> </span>image<span class="w"> </span>sha256:71bf0c89267114ae8df748dfd8d262c253f7cd2658c2221d329e50604cab1722<span class="w">                                         </span><span class="m">0</span>.0s
+<span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>naming<span class="w"> </span>to<span class="w"> </span>docker.io/haniffalab/webatlas-pipeline:0.0.1
 </pre></div>
 </div>
 </div>
+<p><strong>#7. Download and extract the sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dgdf
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://www.something.com/WSSS_THYst9699525.tar.gz
+mkdir<span class="w"> </span>-p<span class="w"> </span>./input/WSSS_THYst9699525
+tar<span class="w"> </span>-xzvf<span class="w"> </span>WSSS_THYst9699525.tar.gz<span class="w"> </span>-C<span class="w"> </span>./input/WSSS_THYst9699525
 </pre></div>
 </div>
 </div>
-<p><strong>#9. Run the pipeline</strong></p>
 <div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id14" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>visium.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./
+./WSSS_THYst9699525.h5ad
+./WSSS_THYst9699525.yaml
+./S3364_C59-FLEG-FO1_C1_HnE-2020-10-07-10.08.32.tif
 </pre></div>
 </div>
 </div>
+<p><strong>#8. Run the pipeline</strong></p>
 <div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dgdf
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>input/WSSS_THYst9699525/WSSS_THYst9699525.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
 </pre></div>
 </div>
 </div>
-<p><strong>#10. Check execution was successful</strong></p>
-<p><strong>#11. Serve the data output through a web browser</strong></p>
-<p><strong>#12. Load data in your browser</strong></p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id16" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W<span class="w">  </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">22</span>.10.6
+Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb">`</span><span class="w"> </span><span class="o">[</span>intergalactic_tuckerman<span class="o">]</span><span class="w"> </span>DSL2<span class="w"> </span>-<span class="w"> </span>revision:<span class="w"> </span>903c9797fa
+executor<span class="w"> </span>&gt;<span class="w">  </span><span class="nb">local</span><span class="w"> </span><span class="o">(</span><span class="m">7</span><span class="o">)</span>
+executor<span class="w"> </span>&gt;<span class="w">  </span><span class="nb">local</span><span class="w"> </span><span class="o">(</span><span class="m">7</span><span class="o">)</span>
+<span class="o">[</span><span class="m">42</span>/8000d9<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_files:route_file<span class="w"> </span><span class="o">(</span>h5ad,<span class="w"> </span>WSSS_THYst9699525.h5ad<span class="o">)</span><span class="w">                    </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+<span class="o">[</span>fa/e7a593<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:Generate_image<span class="w"> </span><span class="o">([</span>lowerlimb,<span class="w"> </span>visium-WSSS_THYst9699525<span class="o">]</span>,<span class="w"> </span>l...<span class="w"> </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+<span class="o">[</span><span class="m">42</span>/2a6dab<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:image_to_zarr<span class="w"> </span><span class="o">(</span>S3364_C59-FLEG-FO1_C1_HnE-2020-10-07-10.0...<span class="w"> </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="w"> </span>✔
+<span class="o">[</span>4e/59100f<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:ome_zarr_metadata<span class="w"> </span><span class="o">(</span>METADATA.ome.xml<span class="o">)</span><span class="w">                        </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="w"> </span>✔
+<span class="o">[</span><span class="m">58</span>/0f5162<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Output_to_config:Build_config<span class="w"> </span><span class="o">([</span>lowerlimb,<span class="w"> </span>visium-WSSS_THYst9699525<span class="o">])</span><span class="w">      </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+
+lowerlimb-visium-WSSS_THYst9699525-anndata.zarr
+
+
+<span class="o">{</span><span class="s2">&quot;dimOrder&quot;</span>:<span class="w"> </span><span class="s2">&quot;XYZCT&quot;</span>,<span class="w"> </span><span class="s2">&quot;channel_names&quot;</span>:<span class="w"> </span><span class="o">[]</span>,<span class="w"> </span><span class="s2">&quot;X&quot;</span>:<span class="w"> </span><span class="s2">&quot;15040&quot;</span>,<span class="w"> </span><span class="s2">&quot;Y&quot;</span>:<span class="w"> </span><span class="s2">&quot;26680&quot;</span>,<span class="w"> </span><span class="s2">&quot;Z&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;C&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;T&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="o">}</span>
+
+
+<span class="o">{</span><span class="s2">&quot;dimOrder&quot;</span>:<span class="w"> </span><span class="s2">&quot;XYZCT&quot;</span>,<span class="w"> </span><span class="s2">&quot;channel_names&quot;</span>:<span class="w"> </span><span class="o">[]</span>,<span class="w"> </span><span class="s2">&quot;X&quot;</span>:<span class="w"> </span><span class="s2">&quot;15040&quot;</span>,<span class="w"> </span><span class="s2">&quot;Y&quot;</span>:<span class="w"> </span><span class="s2">&quot;26680&quot;</span>,<span class="w"> </span><span class="s2">&quot;Z&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;C&quot;</span>:<span class="w"> </span><span class="s2">&quot;3&quot;</span>,<span class="w"> </span><span class="s2">&quot;T&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<p><strong>#9. Check execution was successful</strong></p>
+<p>The output from the pipeline will indicate if the execution was successful. You can also
+verify the expected directories are created.</p>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id17" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>./output/WSSS_THYst9699525/0.0.1
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id18" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>drwxrwxr-x<span class="w"> </span><span class="m">11</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">      </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:35<span class="w"> </span>lowerlimb-WSSS_THYst9699525-anndata.zarr
+-rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">      </span><span class="m">5104</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:36<span class="w"> </span>lowerlimb-WSSS_THYst9699525-config.json
+-rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w"> </span><span class="m">802534656</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:35<span class="w"> </span>lowerlimb-WSSS_THYst9699525-label.tif
+drwxrwxr-x<span class="w">  </span><span class="m">4</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">      </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:35<span class="w"> </span>lowerlimb-WSSS_THYst9699525-label.zarr
+drwxrwxr-x<span class="w">  </span><span class="m">4</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">      </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:36<span class="w"> </span>lowerlimb-WSSS_THYst9699525-raw.zarr
+</pre></div>
+</div>
+</div>
+<p><strong>#10. Serve the data output through a local web server</strong></p>
+<p>To browse and explore the data, you need to serve the output data through a web server.
+You can use your preferred web server, but you must ensure the data is served over port 3000,
+at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, and that CORS is enabled via the Access-Control-Allow-Origin header.</p>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id19" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>./output/WSSS_THYst9699525/0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id20" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Starting<span class="w"> </span>up<span class="w"> </span>http-server,<span class="w"> </span>serving<span class="w"> </span>./
+
+http-server<span class="w"> </span>version:<span class="w"> </span><span class="m">14</span>.1.1
+
+http-server<span class="w"> </span>settings:
+CORS:<span class="w"> </span><span class="nb">true</span>
+Cache:<span class="w"> </span><span class="m">3600</span><span class="w"> </span>seconds
+Connection<span class="w"> </span>Timeout:<span class="w"> </span><span class="m">120</span><span class="w"> </span>seconds
+Directory<span class="w"> </span>Listings:<span class="w"> </span>visible
+AutoIndex:<span class="w"> </span>visible
+Serve<span class="w"> </span>GZIP<span class="w"> </span>Files:<span class="w"> </span><span class="nb">false</span>
+Serve<span class="w"> </span>Brotli<span class="w"> </span>Files:<span class="w"> </span><span class="nb">false</span>
+Default<span class="w"> </span>File<span class="w"> </span>Extension:<span class="w"> </span>none
+
+Available<span class="w"> </span>on:
+http://127.0.0.1:3000
+http://192.168.0.23:3000
+Hit<span class="w"> </span>CTRL-C<span class="w"> </span>to<span class="w"> </span>stop<span class="w"> </span>the<span class="w"> </span>server
+</pre></div>
+</div>
+</div>
+<p><strong>#11. Explore data in your browser</strong></p>
+<p>Start your web browser and open:</p>
+<p><a class="reference external" href="https://webatlas.cog.sanger.ac.uk/dev/index.html?theme=dark&amp;config=http://127.0.0.1:8080/lowerlimb-visium-WSSS_THYst9699525-config.json">https://webatlas.cog.sanger.ac.uk/dev/index.html?theme=dark&amp;config=http://127.0.0.1:8080/lowerlimb-visium-WSSS_THYst9699525-config.json</a></p>
 </section>
 
 
