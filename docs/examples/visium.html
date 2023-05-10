@@ -7,6 +7,7 @@
   <title>Visium &mdash; WebAtlas 0.2.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -97,6 +98,121 @@
              
   <section id="visium">
 <span id="example-visium"></span><h1>Visium<a class="headerlink" href="#visium" title="Permalink to this heading"></a></h1>
+<p>Follow this step by step guide to process and visualise a Visium sample in your web browser.
+It can be used on any POSIX compatible system (Linux, OS X, etc).</p>
+<p><strong>#1. Check Git is installed</strong></p>
+<p>Make sure git 2.17 or later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>--version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>version<span class="w"> </span><span class="m">2</span>.25.1
+</pre></div>
+</div>
+</div>
+<p><strong>#2. Clone the WebAtlas pipeline repository</strong></p>
+<p>Make a copy of the WebAtlas repo and change directory into the new repo:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:haniffalab/webatlas-pipeline.git
+<span class="nb">cd</span><span class="w"> </span>webatlas-pipeline
+</pre></div>
+</div>
+</div>
+<p><strong>#3. Check java is installed</strong></p>
+<p>Make sure java 11 later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-version
+openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11&quot;</span>
+</pre></div>
+</div>
+</div>
+<p><strong>#4. Install Nextflow</strong></p>
+<p>Enter this command in your terminal to install nextflow in the current directory:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+<p><strong>#5. Check Docker is installed</strong></p>
+<p>Make sure Docker Engine 20.10 later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
+</pre></div>
+</div>
+</div>
+<p><strong>#6. Build the docker images</strong></p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker
+./build-docker-imgs.sh
+<span class="nb">cd</span><span class="w"> </span>../
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>somet
+</pre></div>
+</div>
+</div>
+<p><strong>#7. Download the data</strong></p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://www.something.com
+tar<span class="w"> </span>...
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dgdf
+</pre></div>
+</div>
+</div>
+<p><strong>#8. Download the input configuration file</strong></p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://www.something.com
+tar<span class="w"> </span>...
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dgdf
+</pre></div>
+</div>
+</div>
+<p><strong>#9. Run the pipeline</strong></p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id14" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>visium.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dgdf
+</pre></div>
+</div>
+</div>
+<p><strong>#10. Check execution was successful</strong></p>
+<p><strong>#11. Serve the data output through a web browser</strong></p>
+<p><strong>#12. Load data in your browser</strong></p>
 </section>
 
 
