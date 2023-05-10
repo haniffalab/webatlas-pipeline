@@ -8,6 +8,7 @@ Processes SpaceRanger output
 from __future__ import annotations
 import os
 import fire
+import shutil
 import typing as T
 import numpy as np
 import scanpy as sc
@@ -36,9 +37,16 @@ def spaceranger_to_anndata(
         AnnData: AnnData object created from the SpaceRanger output data
     """
 
-    adata = sc.read_visium(path)
-
     p = Path(path)
+    
+    # Temporary fix to support spacerangerr v1.2.0 and v2.0.
+    # until scanpy 1.10.0 is released and scanpy.read_visium can handle it 
+    if os.path.isfile(p/"spatial"/"tissue_positions.csv"):
+        shutil.copyfile(
+            p/"spatial"/"tissue_positions.csv",
+            p/"spatial"/"tissue_positions_list.csv")
+
+    adata = sc.read_visium(path)
 
     if load_clusters:
         for cluster in [
