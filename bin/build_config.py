@@ -264,14 +264,16 @@ def write_json(
                         )
                 else:
                     file_options = None
-                config_dataset.add_file(
-                    data_type,
-                    file_type,
-                    url=os.path.join(url, os.path.basename(file_path)),
-                    options=file_options,
-                )
-                dts.add(data_type)
-                break
+
+                if file_options and len(file_options):
+                    config_dataset.add_file(
+                        data_type,
+                        file_type,
+                        url=os.path.join(url, os.path.basename(file_path)),
+                        options=file_options,
+                    )
+                    dts.add(data_type)
+                    break
 
     if not has_files:
         raise SystemExit("No files to add to config file")
