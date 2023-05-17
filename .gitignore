@@ -122,4 +122,5 @@ nextflow
 .nextflow.log*
 .nextflow/
 work/
+input/
 output/
