@@ -135,7 +135,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 .. code-block:: shell
    :caption: Input
 
-   wget https://www.something.com/WSSS_THYst9699525.tar.gz
+   wget https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz
    mkdir -p ./input/WSSS_THYst9699525
    tar -xzvf WSSS_THYst9699525.tar.gz -C ./input/WSSS_THYst9699525
 
@@ -232,4 +232,4 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 
 Start your web browser and open:
 
-https://webatlas.cog.sanger.ac.uk/dev/index.html?theme=dark&config=http://127.0.0.1:8080/lowerlimb-visium-WSSS_THYst9699525-config.json
+https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=http://127.0.0.1:3000/lowerlimb-WSSS_THYst9699525-config.json
