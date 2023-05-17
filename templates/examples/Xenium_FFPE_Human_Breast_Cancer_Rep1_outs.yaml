@@ -8,8 +8,7 @@ projects:
   - project: xenium
     datasets:
       - dataset: breast-cancer
-        title: "Xenium - High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue
-"
+        title: "Xenium - High resolution mapping of the breast cancer tumor microenvironment"
         data:
           -
             data_type: xenium
