@@ -53,10 +53,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="merscope.html">MERSCOPE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scrnaseq.html">scRNAseq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visium.html">Visium</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Xenium</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Xenium</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sample-details">Sample details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#steps-to-reproduce">Steps to reproduce</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -97,7 +99,268 @@
            <div itemprop="articleBody">
              
   <section id="xenium">
-<span id="example-visium"></span><h1>Xenium<a class="headerlink" href="#xenium" title="Permalink to this heading"></a></h1>
+<span id="example-xenium"></span><h1>Xenium<a class="headerlink" href="#xenium" title="Permalink to this heading"></a></h1>
+<section id="sample-details">
+<h2>Sample details<a class="headerlink" href="#sample-details" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Study Name</p></td>
+<td><p><a class="reference external" href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast">High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue</a></p></td>
+</tr>
+<tr class="row-even"><td><p>WebAtlas</p></td>
+<td><p><a class="reference external" href="https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&amp;config=https://webatlas.cog.sanger.ac.uk/configs/dev/xenium/human/breast/cancer/config.json">Demo Link</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tissue</p></td>
+<td><p>Human breast cancer</p></td>
+</tr>
+<tr class="row-even"><td><p>Data Source Link</p></td>
+<td><p><a class="reference external" href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast">Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="steps-to-reproduce">
+<h2>Steps to reproduce<a class="headerlink" href="#steps-to-reproduce" title="Permalink to this heading"></a></h2>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto; margin-bottom: 20px;">
+    <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+</div><p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser.
+It can be followed on any POSIX compatible system (Linux, OS X, etc).</p>
+<p><strong>#1. Check git is installed</strong></p>
+<p>Make sure git 2.17 or later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>--version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>version<span class="w"> </span><span class="m">2</span>.25.1
+</pre></div>
+</div>
+</div>
+<p><strong>#2. Clone the WebAtlas pipeline repository</strong></p>
+<p>Make a copy of the WebAtlas repo and change directory into the new repo:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/haniffalab/webatlas-pipeline.git
+<span class="nb">cd</span><span class="w"> </span>webatlas-pipeline
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Cloning<span class="w"> </span>into<span class="w"> </span><span class="s1">&#39;webatlas-pipeline&#39;</span>...
+remote:<span class="w"> </span>Enumerating<span class="w"> </span>objects:<span class="w"> </span><span class="m">1966</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Counting<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">341</span>/341<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Compressing<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">144</span>/144<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Total<span class="w"> </span><span class="m">1966</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">227</span><span class="o">)</span>,<span class="w"> </span>reused<span class="w"> </span><span class="m">204</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">195</span><span class="o">)</span>,<span class="w"> </span>pack-reused<span class="w"> </span><span class="m">1625</span>
+Receiving<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">1966</span>/1966<span class="o">)</span>,<span class="w"> </span><span class="m">5</span>.78<span class="w"> </span>MiB<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">5</span>.91<span class="w"> </span>MiB/s,<span class="w"> </span><span class="k">done</span>.
+Resolving<span class="w"> </span>deltas:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">1292</span>/1292<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+</pre></div>
+</div>
+</div>
+<p><strong>#3. Check java is installed</strong></p>
+<p>Make sure java 11 later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11.0.18&quot;</span><span class="w"> </span><span class="m">2023</span>-01-17
+OpenJDK<span class="w"> </span>Runtime<span class="w"> </span>Environment<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1<span class="o">)</span>
+OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </span>Server<span class="w"> </span>VM<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1,<span class="w"> </span>mixed<span class="w"> </span>mode,<span class="w"> </span>sharing<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>#4. Install Nextflow</strong></p>
+<p>Enter this command in your terminal to install nextflow in the current directory:</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>org.apache.ivy:ivy:jar:2.5.1
+...
+CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>io.nextflow:nf-commons:jar:23.04.1
+
+<span class="w">      </span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W
+<span class="w">      </span>version<span class="w"> </span><span class="m">23</span>.04.1<span class="w"> </span>build<span class="w"> </span><span class="m">5866</span>
+<span class="w">      </span>created<span class="w"> </span><span class="m">15</span>-04-2023<span class="w"> </span><span class="m">06</span>:51<span class="w"> </span>UTC<span class="w"> </span><span class="o">(</span><span class="m">07</span>:51<span class="w"> </span>BST<span class="o">)</span>
+<span class="w">      </span>cite<span class="w"> </span>doi:10.1038/nbt.3820
+<span class="w">      </span>http://nextflow.io
+
+
+Nextflow<span class="w"> </span>installation<span class="w"> </span>completed.<span class="w"> </span>Please<span class="w"> </span>note:
+-<span class="w"> </span>the<span class="w"> </span>executable<span class="w"> </span>file<span class="w"> </span><span class="sb">`</span>nextflow<span class="sb">`</span><span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>created<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>folder:<span class="w"> </span>./webatlas-pipeline
+-<span class="w"> </span>you<span class="w"> </span>may<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>the<span class="w"> </span>installation<span class="w"> </span>by<span class="w"> </span>moving<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>directory<span class="w"> </span><span class="k">in</span><span class="w"> </span>your<span class="w"> </span><span class="nv">$PATH</span>
+</pre></div>
+</div>
+</div>
+<p><strong>#5. Check Docker is installed</strong></p>
+<p>Make sure Docker Engine 20.10 later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
+Version:<span class="w">           </span><span class="m">23</span>.0.4
+API<span class="w"> </span>version:<span class="w">       </span><span class="m">1</span>.42
+Go<span class="w"> </span>version:<span class="w">        </span>go1.19.8
+Git<span class="w"> </span>commit:<span class="w">        </span>f480fb1
+Built:<span class="w">             </span>Fri<span class="w"> </span>Apr<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">10</span>:32:23<span class="w"> </span><span class="m">2023</span>
+OS/Arch:<span class="w">           </span>linux/amd64
+Context:<span class="w">           </span>default
+</pre></div>
+</div>
+</div>
+<p><strong>#6. Download and extract the sample data</strong></p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip<span class="w"> </span>-P<span class="w"> </span>./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>--2023-05-17<span class="w"> </span><span class="m">15</span>:05:24--<span class="w">  </span>https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
+Resolving<span class="w"> </span>cf.10xgenomics.com<span class="w"> </span><span class="o">(</span>cf.10xgenomics.com<span class="o">)</span>...<span class="w"> </span><span class="m">104</span>.18.0.173,<span class="w"> </span><span class="m">104</span>.18.1.173,<span class="w"> </span><span class="m">2606</span>:4700::6812:ad,<span class="w"> </span>...
+Connecting<span class="w"> </span>to<span class="w"> </span>cf.10xgenomics.com<span class="w"> </span><span class="o">(</span>cf.10xgenomics.com<span class="o">)</span><span class="p">|</span><span class="m">104</span>.18.0.173<span class="p">|</span>:443...<span class="w"> </span>connected.
+HTTP<span class="w"> </span>request<span class="w"> </span>sent,<span class="w"> </span>awaiting<span class="w"> </span>response...<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
+Length:<span class="w"> </span><span class="m">9861155708</span><span class="w"> </span><span class="o">(</span><span class="m">9</span>.2G<span class="o">)</span><span class="w"> </span><span class="o">[</span>application/zip<span class="o">]</span>
+Saving<span class="w"> </span>to:<span class="w"> </span>‘./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’
+
+Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100</span>%<span class="o">[===================================================================</span>&gt;<span class="o">]</span><span class="w">   </span><span class="m">9</span>.18G<span class="w">  </span><span class="m">14</span>.3MB/s<span class="w">    </span><span class="k">in</span><span class="w"> </span>10m<span class="w"> </span>6s
+
+<span class="m">2023</span>-05-17<span class="w"> </span><span class="m">15</span>:15:31<span class="w"> </span><span class="o">(</span><span class="m">15</span>.5<span class="w"> </span>MB/s<span class="o">)</span><span class="w"> </span>-<span class="w"> </span>‘./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’<span class="w"> </span>saved<span class="w"> </span><span class="o">[</span><span class="m">9861155708</span>/9861155708<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip<span class="w"> </span>-d<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Archive:<span class="w">  </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
+<span class="w">   </span>creating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
+<span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/experiment.xenium
+<span class="w">   </span>creating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz
+<span class="w">        </span>...
+<span class="w">        </span>...
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/morphology_focus.ome.tif
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/nucleus_boundaries.csv.gz
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/nucleus_boundaries.parquet
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json
+<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html
+</pre></div>
+</div>
+</div>
+<p><strong>#7. Run the pipeline</strong></p>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">NXF_VER</span><span class="o">=</span><span class="m">22</span>.04.5<span class="w"> </span>./nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id16" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W<span class="w">  </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">22</span>.10.6
+<span class="w"> </span>Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb">`</span><span class="w"> </span><span class="o">[</span>gigantic_murdock<span class="o">]</span><span class="w"> </span>DSL2<span class="w"> </span>-<span class="w"> </span>revision:<span class="w"> </span>1b6a73f4d6
+<span class="w"> </span>unknown<span class="w"> </span>recognition<span class="w"> </span>error<span class="w"> </span>type:<span class="w"> </span>groovyjarjarantlr4.v4.runtime.LexerNoViableAltException
+<span class="w"> </span>executor<span class="w"> </span>&gt;<span class="w">  </span><span class="nb">local</span><span class="w"> </span><span class="o">(</span><span class="m">5</span><span class="o">)</span>
+<span class="w"> </span><span class="o">[</span>ec/3e8b7a<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_files:route_file<span class="w"> </span><span class="o">(</span>xenium,<span class="w"> </span>outs<span class="o">)</span><span class="w">                              </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+<span class="w"> </span><span class="o">[</span>e8/f83e1e<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:Generate_image<span class="w"> </span><span class="o">([</span>xenium,<span class="w"> </span>breast_cancer<span class="o">]</span>,<span class="w"> </span>label,<span class="w"> </span>outs<span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span>
+<span class="w"> </span>executor<span class="w"> </span>&gt;<span class="w">  </span><span class="nb">local</span><span class="w"> </span><span class="o">(</span><span class="m">7</span><span class="o">)</span>
+<span class="w"> </span><span class="o">[</span>ec/3e8b7a<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_files:route_file<span class="w"> </span><span class="o">(</span>xenium,<span class="w"> </span>outs<span class="o">)</span><span class="w">            </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+<span class="w"> </span><span class="o">[</span>e8/f83e1e<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:Generate_image<span class="w"> </span><span class="o">([</span>xenium,<span class="w"> </span>breast_...<span class="w"> </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+<span class="w"> </span><span class="o">[</span>4b/350f1f<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:image_to_zarr<span class="w"> </span><span class="o">(</span>morphology.ome.tif<span class="o">)</span><span class="w">  </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="w"> </span>✔
+<span class="w"> </span><span class="o">[</span><span class="m">73</span>/d7e509<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:ome_zarr_metadata<span class="w"> </span><span class="o">(</span>METADATA.ome....<span class="w"> </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="w"> </span>✔
+<span class="w"> </span><span class="o">[</span>3c/0faeb8<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Output_to_config:Build_config<span class="w"> </span><span class="o">([</span>xenium,<span class="w"> </span>breast_...<span class="w"> </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
+
+<span class="w"> </span>Completed<span class="w"> </span>at:<span class="w"> </span><span class="m">17</span>-May-2023<span class="w"> </span><span class="m">16</span>:40:58
+<span class="w"> </span>Duration<span class="w">    </span>:<span class="w"> </span>32m<span class="w"> </span>47s
+<span class="w"> </span>CPU<span class="w"> </span>hours<span class="w">   </span>:<span class="w"> </span><span class="m">0</span>.6
+<span class="w"> </span>Succeeded<span class="w">   </span>:<span class="w"> </span><span class="m">7</span>
+</pre></div>
+</div>
+</div>
+<p><strong>#8. Check execution was successful</strong></p>
+<p>The output from the pipeline will indicate if the execution was successful. You can also
+verify the expected directories are created.</p>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id17" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.0.1
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id18" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>total<span class="w"> </span><span class="m">3566252</span>
+<span class="w"> </span>drwxrwxr-x<span class="w"> </span><span class="m">11</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">       </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:08<span class="w"> </span>xenium-breast_cancer-anndata.zarr
+<span class="w"> </span>-rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">       </span><span class="m">4984</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:40<span class="w"> </span>xenium-breast_cancer-config.json
+<span class="w"> </span>-rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w"> </span><span class="m">3651814848</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:12<span class="w"> </span>xenium-breast_cancer-label.tif
+<span class="w"> </span>drwxrwxr-x<span class="w">  </span><span class="m">4</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">       </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:13<span class="w"> </span>xenium-breast_cancer-label.zarr
+<span class="w"> </span>drwxrwxr-x<span class="w">  </span><span class="m">4</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">       </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:40<span class="w"> </span>xenium-breast_cancer-raw.zarr
+</pre></div>
+</div>
+</div>
+<p><strong>#9. Serve the data output through a local web server</strong></p>
+<p>To browse and explore the data, you need to serve the output data through a web server.
+You can use your preferred web server, but you must ensure the data is served over port 3000,
+at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, and that CORS is enabled via the Access-Control-Allow-Origin header.</p>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id19" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id20" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Starting<span class="w"> </span>up<span class="w"> </span>http-server,<span class="w"> </span>serving<span class="w"> </span>./
+
+http-server<span class="w"> </span>version:<span class="w"> </span><span class="m">14</span>.1.1
+
+http-server<span class="w"> </span>settings:
+CORS:<span class="w"> </span><span class="nb">true</span>
+Cache:<span class="w"> </span><span class="m">3600</span><span class="w"> </span>seconds
+Connection<span class="w"> </span>Timeout:<span class="w"> </span><span class="m">120</span><span class="w"> </span>seconds
+Directory<span class="w"> </span>Listings:<span class="w"> </span>visible
+AutoIndex:<span class="w"> </span>visible
+Serve<span class="w"> </span>GZIP<span class="w"> </span>Files:<span class="w"> </span><span class="nb">false</span>
+Serve<span class="w"> </span>Brotli<span class="w"> </span>Files:<span class="w"> </span><span class="nb">false</span>
+Default<span class="w"> </span>File<span class="w"> </span>Extension:<span class="w"> </span>none
+
+Available<span class="w"> </span>on:
+http://127.0.0.1:3000
+http://192.168.0.23:3000
+Hit<span class="w"> </span>CTRL-C<span class="w"> </span>to<span class="w"> </span>stop<span class="w"> </span>the<span class="w"> </span>server
+</pre></div>
+</div>
+</div>
+<p><strong>#10. Explore data in your browser</strong></p>
+<p>Start your web browser and open:</p>
+<p><a class="reference external" href="https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&amp;config=http://127.0.0.1:3000/xenium-breast-cancer-config.json">https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&amp;config=http://127.0.0.1:3000/xenium-breast-cancer-config.json</a></p>
+</section>
 </section>
 
 
