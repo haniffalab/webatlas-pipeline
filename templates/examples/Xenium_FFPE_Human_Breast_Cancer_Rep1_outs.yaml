@@ -1,0 +1,32 @@
+outdir: ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/
+
+args:
+  h5ad:
+    var_index: "gene_name"
+
+projects:
+  - project: xenium
+    datasets:
+      - dataset: breast-cancer
+        title: "Xenium - High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue
+"
+        data:
+          -
+            data_type: xenium
+            data_path: ./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
+          -
+            data_type: raw_image
+            data_path: ./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/morphology.ome.tif
+          -
+            data_type: label_image_data
+            data_path: ./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
+            file_type: xenium
+            ref_img: ./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/morphology.ome.tif
+
+vitessce_options:
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0,1]
+  matrix: "X"
+layout: advanced
