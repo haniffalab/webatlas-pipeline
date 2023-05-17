@@ -49,36 +49,40 @@ def build_options(
         T.Any: Options dictionary for View config file
     """
     options = None
+    dts = set([])
 
-    if file_type == ft.ANNDATA_CELLS_ZARR:
+    # @TODO: simplify to joint ft.ANNDATA_ZARR. Change yaml input keys to 'locations', 'embeddings', 'labels'
+    if file_type == ft.ANNDATA_ZARR:
         options = {}
-        if "spatial" in file_options:
-            for k, v in file_options["spatial"].items():
-                values_path = os.path.join(file_path, v)
-                if check_exist and not os.path.exists(values_path):
-                    continue
-                options[k] = v
+        if "spatial" in file_options and "xy" in file_options["spatial"]:
+            values_path = os.path.join(file_path, file_options["spatial"]["xy"])
+            if not (check_exist and not os.path.exists(values_path)):
+                options["obsLocations"] = {"path": file_options["spatial"]["xy"]}
+                dts.add(dt.OBS_LOCATIONS)
 
         if "mappings" in file_options:
             for k, v in file_options["mappings"].items():
-                k_name = k.split("/")[-1]
                 values_path = os.path.join(file_path, k)
                 if check_exist and not os.path.exists(values_path):
                     continue
-                m_key = k_name.upper()
-                mapping = {"key": k}
+                embedding_type = k.split("/")[-1].upper()
                 v = v if v is not None and v != "null" else [0, 1]
-                mapping["dims"] = v
-                options.setdefault("mappings", {})[m_key] = mapping
+                embedding = {"path": v, "embeddingType": embedding_type, "dims": v}
+                options.setdefault("obsEmbedding", []).append(embedding)
+                dts.add(dt.OBS_EMBEDDING)
 
         if "factors" in file_options:
             for factor in file_options["factors"]:
                 values_path = os.path.join(file_path, factor)
                 if check_exist and not os.path.exists(values_path):
                     continue
-                options.setdefault("factors", []).append(factor)
+                label_type = factor.split("/")[-1].capitalize()
+                label = {"path": factor, "obsLabelsType": label_type}
+                options.setdefault("obsLabels", []).append(label)
+                dts.add(dt.OBS_LABELS)
 
-    elif file_type == ft.ANNDATA_CELL_SETS_ZARR:
+    # @TODO: add to above
+    elif file_type in [ft.OBS_SETS_ANNDATA_ZARR, ft.ANNDATA_CELL_SETS_ZARR]:
         options = []
         if "sets" in file_options:
             for cell_set in file_options["sets"]:
@@ -105,8 +109,12 @@ def build_options(
                     cell_set_options["groupName"] += " with Scores"
                     cell_set_options["scoreName"] = cell_set["score"]
                 options.append(cell_set_options)
+                dts.add(dt.OBS_SETS)
 
-    elif file_type == ft.ANNDATA_EXPRESSION_MATRIX_ZARR:
+    elif file_type in [
+        ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
+        ft.ANNDATA_EXPRESSION_MATRIX_ZARR,
+    ]:
         options = {}
         ematrix_ops = set(["matrix", "matrixGeneFilter", "geneAlias"])
         for k, v in file_options.items():
@@ -115,8 +123,9 @@ def build_options(
             ):
                 continue
             options[k] = v
+            dts.add(dt.OBS_FEATURE_MATRIX)
 
-    return options
+    return options, dts
 
 
 def build_raster_options(
@@ -218,6 +227,7 @@ def write_json(
     has_files = False
 
     config = VitessceConfig(
+        "1.0.15",
         name=str(title) if len(title) else str(project),
         description=description,
     )
@@ -230,7 +240,7 @@ def write_json(
     if images.keys() and any([len(images[k]) for k in images.keys()]):
         has_files = True
         config_dataset.add_file(
-            dt.RASTER, ft.RASTER_JSON, options=build_raster_options(images, url)
+            ft.RASTER_JSON, options=build_raster_options(images, url)
         )
         dts.add(dt.RASTER)
 
@@ -246,7 +256,7 @@ def write_json(
             if file_exists:
                 has_files = True
                 if file_type in DEFAULT_OPTIONS:
-                    file_options = build_options(
+                    file_options, file_dts = build_options(
                         file_type, file_path, options or DEFAULT_OPTIONS[file_type]
                     )
                     # Set a coordination scope for any 'mapping'
@@ -256,23 +266,24 @@ def write_json(
                                 coordination_types[ct.EMBEDDING_TYPE],
                                 [
                                     config.set_coordination_value(
-                                        ct.EMBEDDING_TYPE.value, k, k
+                                        ct.EMBEDDING_TYPE.value,
+                                        k["embeddingType"],
+                                        k["embeddingType"],
                                     )
-                                    for k in file_options["mappings"]
+                                    for k in file_options["obsEmbedding"]
                                 ],
                             )
                         )
                 else:
-                    file_options = None
+                    file_options, file_dts = None, []
 
                 if file_options and len(file_options):
                     config_dataset.add_file(
-                        data_type,
                         file_type,
                         url=os.path.join(url, os.path.basename(file_path)),
                         options=file_options,
                     )
-                    dts.add(data_type)
+                    dts.update(file_dts)
                     break
 
     if not has_files:
