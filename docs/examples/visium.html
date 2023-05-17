@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Xenium" href="xenium.html" />
-    <link rel="prev" title="scRNAseq" href="scrnaseq.html" /> 
+    <link rel="prev" title="Modules" href="../modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,8 +53,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="merscope.html">MERSCOPE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scrnaseq.html">scRNAseq</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Visium</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sample-details">Sample details</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#steps-to-reproduce">Steps to reproduce</a></li>
@@ -111,16 +109,16 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Study Name</p></td>
-<td><p><a class="reference external" href="https://doi.org/10.1101/2022.04.27.489800">A human embryonic limb cell atlas resolved in space and time</a></p></td>
+<td><p><a class="reference external" href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast">High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue</a></p></td>
 </tr>
 <tr class="row-even"><td><p>WebAtlas</p></td>
-<td><p><a class="reference external" href="https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&amp;config=https://webatlas.cog.sanger.ac.uk/configs/dev/lower-limb/modalities/visium/slide8/config.json">Demo Link</a></p></td>
+<td><p><a class="reference external" href="https://webatlas.cog.sanger.ac.uk/latest/index.html?config=https://webatlas.cog.sanger.ac.uk/configs/dev/visium/human/breast/cancer/config.json">Demo Link</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>Tissue</p></td>
-<td><p>Developing Human Lower Limb</p></td>
+<td><p>Human breast cancer</p></td>
 </tr>
 <tr class="row-even"><td><p>Data Source Link</p></td>
-<td><p><a class="reference external" href="https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-10367">E-MTAB-10367</a></p></td>
+<td><p><a class="reference external" href="https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast">CytAssist_FFPE_Human_Breast_Cancer</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -131,7 +129,7 @@
     <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
 </div><p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser.
 It can be followed on any POSIX compatible system (Linux, OS X, etc).</p>
-<p><strong>#1. Check Git is installed</strong></p>
+<p><strong>#1. Check git is installed</strong></p>
 <p>Make sure git 2.17 or later is installed on your computer by using the command:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
@@ -149,7 +147,7 @@ It can be followed on any POSIX compatible system (Linux, OS X, etc).</p>
 <p>Make a copy of the WebAtlas repo and change directory into the new repo:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:haniffalab/webatlas-pipeline.git
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/haniffalab/webatlas-pipeline.git
 <span class="nb">cd</span><span class="w"> </span>webatlas-pipeline
 </pre></div>
 </div>
@@ -230,11 +228,23 @@ Context:<span class="w">           </span>default
 </pre></div>
 </div>
 </div>
-<p><strong>#6. Download and extract the sample data</strong></p>
+<p><strong>#6. Download the sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id11">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>./input/WSSS_THYst9699525
-wget<span class="w"> </span>https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz<span class="w"> </span>-P<span class="w"> </span>./input/WSSS_THYst9699525
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_image.tif<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_tissue_image.tif<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam.bai<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_analysis.tar.gz<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.h5<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.h5<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_spatial.tar.gz<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.tar.gz<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.tar.gz<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_molecule_info.h5<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_cloupe.cloupe<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
+wget<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_metrics_summary.csv<span class="w"> </span>-P<span class="w"> </span>./input/CytAssist_FFPE_Human_Breast_Cancer
 </pre></div>
 </div>
 </div>
@@ -253,30 +263,15 @@ WSSS_THYst9699525.tar.gz<span class="w">                  </span><span class="m"
 </pre></div>
 </div>
 </div>
+<p><strong>#7. Run the pipeline</strong></p>
 <div class="literal-block-wrapper docutils container" id="id13">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xzvf<span class="w"> </span>./input/WSSS_THYst9699525/WSSS_THYst9699525.tar.gz<span class="w"> </span>-C<span class="w"> </span>./input/WSSS_THYst9699525
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">NXF_VER</span><span class="o">=</span><span class="m">22</span>.04.5<span class="w"> </span>./nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>templates/examples/CytAssist_FFPE_Human_Breast_Cancer.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id14">
 <div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./
-./WSSS_THYst9699525.h5ad
-./WSSS_THYst9699525.yaml
-./S3364_C59-FLEG-FO1_C1_HnE-2020-10-07-10.08.32.tif
-</pre></div>
-</div>
-</div>
-<p><strong>#7. Run the pipeline</strong></p>
-<div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>input/WSSS_THYst9699525/WSSS_THYst9699525.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id16" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W<span class="w">  </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">22</span>.10.6
 Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb">`</span><span class="w"> </span><span class="o">[</span>intergalactic_tuckerman<span class="o">]</span><span class="w"> </span>DSL2<span class="w"> </span>-<span class="w"> </span>revision:<span class="w"> </span>903c9797fa
 executor<span class="w"> </span>&gt;<span class="w">  </span><span class="nb">local</span><span class="w"> </span><span class="o">(</span><span class="m">7</span><span class="o">)</span>
@@ -300,14 +295,14 @@ lowerlimb-visium-WSSS_THYst9699525-anndata.zarr
 <p><strong>#8. Check execution was successful</strong></p>
 <p>The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created.</p>
-<div class="literal-block-wrapper docutils container" id="id17">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id17" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>./output/WSSS_THYst9699525/0.0.1
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>./output/CytAssist_FFPE_Human_Breast_Cancer/0.0.1
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id18">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id18" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id16" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>drwxrwxr-x<span class="w"> </span><span class="m">11</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">      </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:35<span class="w"> </span>lowerlimb-WSSS_THYst9699525-anndata.zarr
 -rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w">      </span><span class="m">5104</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:36<span class="w"> </span>lowerlimb-WSSS_THYst9699525-config.json
 -rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dave<span class="w"> </span>dave<span class="w"> </span><span class="m">802534656</span><span class="w"> </span>May<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span>:35<span class="w"> </span>lowerlimb-WSSS_THYst9699525-label.tif
@@ -320,14 +315,14 @@ drwxrwxr-x<span class="w">  </span><span class="m">4</span><span class="w"> </sp
 <p>To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000,
 at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, and that CORS is enabled via the Access-Control-Allow-Origin header.</p>
-<div class="literal-block-wrapper docutils container" id="id19">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id19" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>./output/WSSS_THYst9699525/0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id17" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>./output/CytAssist_FFPE_Human_Breast_Cancer/0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id20">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id20" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id18" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Starting<span class="w"> </span>up<span class="w"> </span>http-server,<span class="w"> </span>serving<span class="w"> </span>./
 
 http-server<span class="w"> </span>version:<span class="w"> </span><span class="m">14</span>.1.1
@@ -359,7 +354,7 @@ Hit<span class="w"> </span>CTRL-C<span class="w"> </span>to<span class="w"> </sp
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="scrnaseq.html" class="btn btn-neutral float-left" title="scRNAseq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules.html" class="btn btn-neutral float-left" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="xenium.html" class="btn btn-neutral float-right" title="Xenium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

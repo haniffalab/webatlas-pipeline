@@ -11,13 +11,13 @@ Sample details
    :header-rows: 0
 
    * - Study Name
-     - `A human embryonic limb cell atlas resolved in space and time <https://doi.org/10.1101/2022.04.27.489800>`__
+     - `High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue <https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast>`__
    * - WebAtlas
-     - `Demo Link <https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=https://webatlas.cog.sanger.ac.uk/configs/dev/lower-limb/modalities/visium/slide8/config.json>`__     
+     - `Demo Link <https://webatlas.cog.sanger.ac.uk/latest/index.html?config=https://webatlas.cog.sanger.ac.uk/configs/dev/visium/human/breast/cancer/config.json>`__     
    * - Tissue
-     - Developing Human Lower Limb   
+     - Human breast cancer
    * - Data Source Link
-     - `E-MTAB-10367 <https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-10367>`__
+     - `CytAssist_FFPE_Human_Breast_Cancer <https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast>`__
 
 Steps to reproduce
 ******************
@@ -31,7 +31,7 @@ Steps to reproduce
 Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
 It can be followed on any POSIX compatible system (Linux, OS X, etc).
 
-**#1. Check Git is installed**
+**#1. Check git is installed**
 
 Make sure git 2.17 or later is installed on your computer by using the command:
 
@@ -52,7 +52,7 @@ Make a copy of the WebAtlas repo and change directory into the new repo:
 .. code-block:: shell
    :caption: Input
 
-   git clone git@github.com:haniffalab/webatlas-pipeline.git
+   git clone https://github.com/haniffalab/webatlas-pipeline.git
    cd webatlas-pipeline
 
 .. code-block:: shell
@@ -130,13 +130,25 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    OS/Arch:           linux/amd64
    Context:           default
 
-**#6. Download and extract the sample data**
+**#6. Download the sample data**
 
 .. code-block:: shell
    :caption: Input
 
-   mkdir -p ./input/WSSS_THYst9699525
-   wget https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz -P ./input/WSSS_THYst9699525
+   mkdir -p ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_image.tif -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_tissue_image.tif -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam.bai -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_analysis.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.h5 -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.h5 -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_spatial.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_molecule_info.h5 -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_cloupe.cloupe -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_metrics_summary.csv -P ./input/CytAssist_FFPE_Human_Breast_Cancer
 
 .. code-block:: shell
    :caption: Output
@@ -152,25 +164,12 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    2023-05-17 12:44:13 (15.8 MB/s) - ‘WSSS_THYst9699525.tar.gz’ saved [245291993/245291993]
 
-.. code-block:: shell
-   :caption: Input
-
-   tar -xzvf ./input/WSSS_THYst9699525/WSSS_THYst9699525.tar.gz -C ./input/WSSS_THYst9699525
-
-.. code-block:: shell
-   :caption: Output
-
-   ./
-   ./WSSS_THYst9699525.h5ad
-   ./WSSS_THYst9699525.yaml
-   ./S3364_C59-FLEG-FO1_C1_HnE-2020-10-07-10.08.32.tif
-
 **#7. Run the pipeline**
 
 .. code-block:: shell
    :caption: Input
 
-   ./nextflow run main.nf -params-file input/WSSS_THYst9699525/WSSS_THYst9699525.yaml -entry Full_pipeline
+   NXF_VER=22.04.5 ./nextflow run main.nf -params-file templates/examples/CytAssist_FFPE_Human_Breast_Cancer.yaml -entry Full_pipeline
 
 .. code-block:: shell
    :caption: Output
@@ -193,7 +192,6 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    {"dimOrder": "XYZCT", "channel_names": [], "X": "15040", "Y": "26680", "Z": "1", "C": "3", "T": "1"}
 
-
 **#8. Check execution was successful**
 
 The output from the pipeline will indicate if the execution was successful. You can also
@@ -202,7 +200,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l ./output/WSSS_THYst9699525/0.0.1
+   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.0.1
 
 .. code-block:: shell
    :caption: Output
@@ -222,7 +220,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server ./output/WSSS_THYst9699525/0.0.1 --port 3000 --cors
+   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.0.1 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output

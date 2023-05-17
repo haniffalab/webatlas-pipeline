@@ -43,8 +43,6 @@ Indices and tables
    :hidden:
    :caption: Example Workflows
   
-   examples/merscope
-   examples/scrnaseq
    examples/visium
    examples/xenium 
 
