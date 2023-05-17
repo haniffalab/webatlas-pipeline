@@ -135,9 +135,27 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 .. code-block:: shell
    :caption: Input
 
-   wget https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz
    mkdir -p ./input/WSSS_THYst9699525
-   tar -xzvf WSSS_THYst9699525.tar.gz -C ./input/WSSS_THYst9699525
+   wget https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz -P ./input/WSSS_THYst9699525
+
+.. code-block:: shell
+   :caption: Output
+
+   --2023-05-17 12:43:58--  https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz
+   Resolving storage.googleapis.com (storage.googleapis.com)... 172.217.169.16, 216.58.212.208, 216.58.212.240, ...
+   Connecting to storage.googleapis.com (storage.googleapis.com)|172.217.169.16|:443... connected.
+   HTTP request sent, awaiting response... 200 OK
+   Length: 245291993 (234M) [application/gzip]
+   Saving to: ‘WSSS_THYst9699525.tar.gz’
+
+   WSSS_THYst9699525.tar.gz                  100%[=====================================================================================>] 233.93M  16.1MB/s    in 15s     
+
+   2023-05-17 12:44:13 (15.8 MB/s) - ‘WSSS_THYst9699525.tar.gz’ saved [245291993/245291993]
+
+.. code-block:: shell
+   :caption: Input
+
+   tar -xzvf ./input/WSSS_THYst9699525/WSSS_THYst9699525.tar.gz -C ./input/WSSS_THYst9699525
 
 .. code-block:: shell
    :caption: Output
@@ -152,7 +170,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 .. code-block:: shell
    :caption: Input
 
-   nextflow run main.nf -params-file input/WSSS_THYst9699525/WSSS_THYst9699525.yaml -entry Full_pipeline
+   ./nextflow run main.nf -params-file input/WSSS_THYst9699525/WSSS_THYst9699525.yaml -entry Full_pipeline
 
 .. code-block:: shell
    :caption: Output
