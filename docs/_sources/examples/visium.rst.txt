@@ -3,8 +3,33 @@
 Visium
 ======
 
-Follow this step by step guide to process and visualise a Visium sample in your web browser. 
-It can be used on any POSIX compatible system (Linux, OS X, etc).
+Sample details
+**************
+
+.. list-table::
+   :widths: 25 75
+   :header-rows: 0
+
+   * - Study Name
+     - `A human embryonic limb cell atlas resolved in space and time <https://doi.org/10.1101/2022.04.27.489800>`__
+   * - WebAtlas
+     - `Demo Link <https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=https://webatlas.cog.sanger.ac.uk/configs/dev/lower-limb/modalities/visium/slide8/config.json>`__     
+   * - Tissue
+     - Developing Human Lower Limb   
+   * - Data Source Link
+     - `E-MTAB-10367 <https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-10367>`__
+
+Steps to reproduce
+******************
+
+.. raw:: html
+
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto; margin-bottom: 20px;">
+        <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+    </div>
+
+Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
+It can be followed on any POSIX compatible system (Linux, OS X, etc).
 
 **#1. Check Git is installed**
 
@@ -105,56 +130,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    OS/Arch:           linux/amd64
    Context:           default
 
-**#6. Build the docker images**
-
-.. code-block:: shell
-   :caption: Input
-
-   cd docker
-   ./build-docker-imgs.sh
-   cd ../
-
-.. code-block:: shell
-   :caption: Output
-
-   [+] Building 152.0s (9/9) FINISHED                                                                                                        
-   => [internal] load build definition from Dockerfile                                                                                 0.0s
-   => => transferring dockerfile: 874B                                                                                                 0.0s
-   => [internal] load .dockerignore                                                                                                    0.0s
-   => => transferring context: 2B                                                                                                      0.0s
-   => [internal] load metadata for docker.io/library/python:3.9                                                                        1.7s
-   => [1/4] FROM docker.io/library/python:3.9@sha256:6ea9dafc96d7914c5c1d199f1f0195c4e05cf017b10666ca84cb7ce8e2699d51                 26.9s
-   => => resolve docker.io/library/python:3.9@sha256:6ea9dafc96d7914c5c1d199f1f0195c4e05cf017b10666ca84cb7ce8e2699d51                  0.0s
-   => => sha256:4eedd9c5abf7e5f63753a5e788cb0872a715fa1141e8ce5ea87638e6cd370a41 54.58MB / 54.58MB                                    11.3s
-   => => sha256:6ea9dafc96d7914c5c1d199f1f0195c4e05cf017b10666ca84cb7ce8e2699d51 1.86kB / 1.86kB                                       0.0s
-   => => sha256:c65dadac8789fed40962578392e99a0528dcb868442c75d144e68ba858984837 2.01kB / 2.01kB                                       0.0s
-   => => sha256:27ac39eccd1fd7d6c7f78eefc98233e633a7178dd05910983ba905ecf71561f3 7.51kB / 7.51kB                                       0.0s
-   => => sha256:5d79063a01c561833dc6546d4e647fda0121a59e1a9a17874a3e30854555475e 15.76MB / 15.76MB                                     3.0s
-   => => sha256:918547b9432687b1e1d238e82dc1e0ea0b736aafbf3c402eea98c6db81a9cb65 55.05MB / 55.05MB                                     6.5s
-   => => sha256:9cdadd40055fb82fef74a0a38f29fb1ee7b6922e18370ebdc3502ec66f79fa3f 196.85MB / 196.85MB                                  22.0s
-   => => sha256:2a12d0031f3fc457f41eaa0e29c0eaf4ba1376735aa940268ebccc76abb49f04 6.29MB / 6.29MB                                       8.7s
-   => => extracting sha256:918547b9432687b1e1d238e82dc1e0ea0b736aafbf3c402eea98c6db81a9cb65                                            0.7s
-   => => extracting sha256:5d79063a01c561833dc6546d4e647fda0121a59e1a9a17874a3e30854555475e                                            0.2s
-   => => sha256:cea461a97d8717d5ef1eb563adaf205de17b9bf5b9bd57bc6bb2eae2296a8740 16.15MB / 16.15MB                                    11.9s
-   => => extracting sha256:4eedd9c5abf7e5f63753a5e788cb0872a715fa1141e8ce5ea87638e6cd370a41                                            1.5s
-   => => sha256:a48c72dfa8c4e0da323ce32dac703c79d8f2de134e6a420cdfbc868323cfc68a 244B / 244B                                          12.0s
-   => => sha256:c343b921680a19bf22934b83c02f42d8fdd0d8559417f63c1dcd2d7997c22da3 2.90MB / 2.90MB                                      12.6s
-   => => extracting sha256:9cdadd40055fb82fef74a0a38f29fb1ee7b6922e18370ebdc3502ec66f79fa3f                                            2.9s
-   => => extracting sha256:2a12d0031f3fc457f41eaa0e29c0eaf4ba1376735aa940268ebccc76abb49f04                                            0.2s
-   => => extracting sha256:cea461a97d8717d5ef1eb563adaf205de17b9bf5b9bd57bc6bb2eae2296a8740                                            0.3s
-   => => extracting sha256:a48c72dfa8c4e0da323ce32dac703c79d8f2de134e6a420cdfbc868323cfc68a                                            0.0s
-   => => extracting sha256:c343b921680a19bf22934b83c02f42d8fdd0d8559417f63c1dcd2d7997c22da3                                            0.1s
-   => [internal] load build context                                                                                                    0.0s
-   => => transferring context: 736B                                                                                                    0.0s
-   => [2/4] COPY ./requirements.txt /requirements.txt                                                                                  0.8s
-   => [3/4] RUN apt-get update &&     apt-get install -y --no-install-recommends       wget unzip cmake g++ ant procps libblosc1 lib  27.6s
-   => [4/4] RUN pip install --upgrade pip setuptools distlib --no-cache-dir &&     pip install --no-cache-dir -r /requirements.txt    91.3s
-   => exporting to image                                                                                                               3.7s
-   => => exporting layers                                                                                                              3.7s
-   => => writing image sha256:71bf0c89267114ae8df748dfd8d262c253f7cd2658c2221d329e50604cab1722                                         0.0s
-   => => naming to docker.io/haniffalab/webatlas-pipeline:0.0.1 
-
-**#7. Download and extract the sample data**
+**#6. Download and extract the sample data**
 
 .. code-block:: shell
    :caption: Input
@@ -171,7 +147,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    ./WSSS_THYst9699525.yaml
    ./S3364_C59-FLEG-FO1_C1_HnE-2020-10-07-10.08.32.tif
 
-**#8. Run the pipeline**
+**#7. Run the pipeline**
 
 .. code-block:: shell
    :caption: Input
@@ -200,7 +176,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    {"dimOrder": "XYZCT", "channel_names": [], "X": "15040", "Y": "26680", "Z": "1", "C": "3", "T": "1"}
 
 
-**#9. Check execution was successful**
+**#8. Check execution was successful**
 
 The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created. 
@@ -219,7 +195,7 @@ verify the expected directories are created.
    drwxrwxr-x  4 dave dave      4096 May 10 11:35 lowerlimb-WSSS_THYst9699525-label.zarr
    drwxrwxr-x  4 dave dave      4096 May 10 11:36 lowerlimb-WSSS_THYst9699525-raw.zarr
 
-**#10. Serve the data output through a local web server**
+**#9. Serve the data output through a local web server**
 
 To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000, 
@@ -252,7 +228,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
    http://192.168.0.23:3000
    Hit CTRL-C to stop the server
 
-**#11. Explore data in your browser**
+**#10. Explore data in your browser**
 
 Start your web browser and open:
 
