@@ -13,7 +13,7 @@ Sample details
    * - Study Name
      - `High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue <https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast>`__
    * - WebAtlas
-     - `Demo Link <https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=https://webatlas.cog.sanger.ac.uk/configs/dev/xenium/human/breast/cancer/config.json>`__     
+     - `Demo <https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=https://webatlas.cog.sanger.ac.uk/configs/dev/xenium/human/breast/cancer/config.json>`__     
    * - Tissue
      - Human breast cancer
    * - Data Source Link
@@ -45,26 +45,52 @@ Make sure git 2.17 or later is installed on your computer by using the command:
 
    git version 2.25.1
 
-**#2. Clone the WebAtlas pipeline repository**
+**#2. Download lthe WebAtlas Pipeline**
 
-Make a copy of the WebAtlas repo and change directory into the new repo: 
+Download the WebAtlas Pipeline: 
 
 .. code-block:: shell
    :caption: Input
 
-   git clone https://github.com/haniffalab/webatlas-pipeline.git
-   cd webatlas-pipeline
+   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.0.tar.gz
 
 .. code-block:: shell
    :caption: Output
     
-   Cloning into 'webatlas-pipeline'...
-   remote: Enumerating objects: 1966, done.
-   remote: Counting objects: 100% (341/341), done.
-   remote: Compressing objects: 100% (144/144), done.
-   remote: Total 1966 (delta 227), reused 204 (delta 195), pack-reused 1625
-   Receiving objects: 100% (1966/1966), 5.78 MiB | 5.91 MiB/s, done.
-   Resolving deltas: 100% (1292/1292), done.
+   Resolving github.com (github.com)... 140.82.121.3
+   Connecting to github.com (github.com)|140.82.121.3|:443... connected.
+   HTTP request sent, awaiting response... 302 Found
+   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.0 [following]
+   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.0
+   Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
+   Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
+   HTTP request sent, awaiting response... 200 OK
+   Length: unspecified [application/x-gzip]
+   Saving to: ‘v0.3.0.tar.gz’
+
+   v0.3.0.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
+
+   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.0.tar.gz’ saved [2835534]
+
+**#2. Extract the WebAtlas Pipeline**
+
+Download and extract a  of the WebAtlas repo and change directory into the new repo: 
+
+.. code-block:: shell
+   :caption: Input
+
+   tar -xzvf ./v0.3.0.tar.gz
+   cd webatlas-pipeline-0.3.0
+
+.. code-block:: shell
+   :caption: Output
+    
+   webatlas-pipeline-0.3.0/
+   webatlas-pipeline-0.3.0/.github/
+   ...
+   ...
+   webatlas-pipeline-0.3.0/tests/input/simple_config.json
+   webatlas-pipeline-0.3.0/tests/test_class.py
 
 **#3. Check java is installed**
 
@@ -130,7 +156,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    OS/Arch:           linux/amd64
    Context:           default
 
-**#6. Download and extract the sample data**
+**#6. Download the sample data**
 
 .. code-block:: shell
    :caption: Input
@@ -152,7 +178,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    2023-05-17 15:15:31 (15.5 MB/s) - ‘./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’ saved [9861155708/9861155708]
 
-**#6. Extract and process sample data**
+**#6. Extract the sample data**
 
 .. code-block:: shell
    :caption: Input
@@ -185,16 +211,11 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
     N E X T F L O W  ~  version 22.10.6
     Launching `main.nf` [gigantic_murdock] DSL2 - revision: 1b6a73f4d6
-    unknown recognition error type: groovyjarjarantlr4.v4.runtime.LexerNoViableAltException
-    executor >  local (5)
-    [ec/3e8b7a] process > Full_pipeline:Process_files:route_file (xenium, outs)                              [100%] 1 of 1 ✔
-    [e8/f83e1e] process > Full_pipeline:Process_images:Generate_image ([xenium, breast_cancer], label, outs) [100%] 1 
-    executor >  local (7)
-    [ec/3e8b7a] process > Full_pipeline:Process_files:route_file (xenium, outs)            [100%] 1 of 1 ✔
-    [e8/f83e1e] process > Full_pipeline:Process_images:Generate_image ([xenium, breast_... [100%] 1 of 1 ✔
-    [4b/350f1f] process > Full_pipeline:Process_images:image_to_zarr (morphology.ome.tif)  [100%] 2 of 2 ✔
-    [73/d7e509] process > Full_pipeline:Process_images:ome_zarr_metadata (METADATA.ome.... [100%] 2 of 2 ✔
-    [3c/0faeb8] process > Full_pipeline:Output_to_config:Build_config ([xenium, breast_... [100%] 1 of 1 ✔
+    [fc/782a3f] process > Full_pipeline:Process_files:route_file (xenium, outs)                              [100%] 1 of 1 ✔
+    [b0/f5ff27] process > Full_pipeline:Process_images:Generate_image ([xenium, breast-cancer], label, outs) [100%] 1 of 1 ✔
+    [2b/054048] process > Full_pipeline:Process_images:image_to_zarr (morphology.ome.tif)                    [100%] 2 of 2 ✔
+    [07/5e37c4] process > Full_pipeline:Process_images:ome_zarr_metadata (METADATA.ome.xml)                  [100%] 2 of 2 ✔
+    [c8/f2378c] process > Full_pipeline:Output_to_config:Build_config ([xenium, breast-cancer])              [100%] 1 of 1 ✔
 
     Completed at: 17-May-2023 16:40:58
     Duration    : 32m 47s
@@ -209,17 +230,17 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.0.1
+   ls -l ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.0
 
 .. code-block:: shell
    :caption: Output
 
     total 3566252
-    drwxrwxr-x 11 dave dave       4096 May 17 16:08 xenium-breast_cancer-anndata.zarr
-    -rw-r--r--  1 dave dave       4984 May 17 16:40 xenium-breast_cancer-config.json
-    -rw-r--r--  1 dave dave 3651814848 May 17 16:12 xenium-breast_cancer-label.tif
-    drwxrwxr-x  4 dave dave       4096 May 17 16:13 xenium-breast_cancer-label.zarr
-    drwxrwxr-x  4 dave dave       4096 May 17 16:40 xenium-breast_cancer-raw.zarr
+    drwxrwxr-x 11 ndh74 ndh74       4096 May 17 16:08 xenium-breast-cancer-anndata.zarr
+    -rw-r--r--  1 ndh74 ndh74       4984 May 17 16:40 xenium-breast-cancer-config.json
+    -rw-r--r--  1 ndh74 ndh74 3651814848 May 17 16:12 xenium-breast-cancer-label.tif
+    drwxrwxr-x  4 ndh74 ndh74       4096 May 17 16:13 xenium-breast-cancer-label.zarr
+    drwxrwxr-x  4 ndh74 ndh74       4096 May 17 16:40 xenium-breast-cancer-raw.zarr
 
 **#9. Serve the data output through a local web server**
 
@@ -230,7 +251,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.0.1 --port 3000 --cors
+   npx http-server ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.0 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
