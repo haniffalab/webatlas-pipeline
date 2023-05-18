@@ -49,7 +49,9 @@ def spaceranger_to_anndata(
                 cluster / "clusters.csv",
                 index_col="Barcode",
             )
-            adata.obs[f"{cluster_name}"] = cluster_df.Cluster.astype("category")
+
+            clusters = cluster_df.reindex(adata.obs.index)
+            adata.obs[cluster_name] = pd.Categorical(clusters["Cluster"])
 
     if load_embeddings:
         embeddings = [
@@ -63,12 +65,14 @@ def spaceranger_to_anndata(
                 if (p / "analysis" / embedding / components).exists()
                 else f"gene_expression_{components}"
             )
-            emb = pd.read_csv(
+            embedding_df = pd.read_csv(
                 os.path.join(
                     p / "analysis" / embedding / components_name / "projection.csv"
                 ),
                 index_col="Barcode",
             )
+
+            emb = embedding_df.reindex(adata.obs.index)
             adata.obsm[f"X_{embedding}"] = emb.values
 
     return adata

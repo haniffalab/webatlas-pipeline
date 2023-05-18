@@ -176,7 +176,7 @@ def build_raster_options(
 
 def write_json(
     project: str = "",
-    dataset: str = "", # super weird bug with digits+"_"+digits, https://github.com/google/python-fire/issues/116
+    dataset: str = "",
     file_paths: list[str] = [],
     images: dict[str, list[dict[str, T.Any]]] = {},
     url: str = "",

@@ -14,12 +14,17 @@ import numpy as np
 import scanpy as sc
 import pandas as pd
 import tifffile as tf
+from pathlib import Path
 from skimage.draw import polygon
 from process_h5ad import h5ad_to_zarr
 
 
 def xenium_to_anndata(
-    path: str, spatial_as_pixel: bool = True, resolution: float = 0.2125
+    path: str,
+    spatial_as_pixel: bool = True,
+    resolution: float = 0.2125,
+    load_clusters: bool = True,
+    load_embeddings: bool = True,
 ) -> sc.AnnData:
     """Function to create an AnnData object from Xenium output.
 
@@ -28,10 +33,16 @@ def xenium_to_anndata(
         spatial_as_pixel (bool, optional): Boolean indicating whether spatial coordinates should be
         converted to pixels. Defaults to True.
         resolution (float, optional): Pixel resolution. Defaults to 0.2125.
+        load_clusters (bool, optional): If cluster files should be included in the
+            AnnData object. Defaults to True.
+        load_embeddings (bool, optional): If embedding coordinates files should be included
+            in the AnnData object. Defaults to True.
 
     Returns:
         AnnData: AnnData object created from the xenium output data
     """
+
+    p = Path(path)
 
     matrix_file = glob.glob(os.path.join(path, "*cell_feature_matrix.h5"))[0]
     cells_file = glob.glob(os.path.join(path, "*cells.csv.gz"))[0]
@@ -43,14 +54,45 @@ def xenium_to_anndata(
 
     adata.obs = df
 
-    # somehow the index is not the same in the matrix and the cluter file
-    clusters = pd.read_csv(f"{path}/analysis/clustering/gene_expression_graphclust/clusters.csv", index_col=0)
-    clusters = clusters.reindex(adata.obs.index.astype(int))#, fill_value="N/A")
-    adata.obs["graphclust"] = pd.Categorical(clusters["Cluster"])
     adata.obsm["X_spatial"] = adata.obs[["x_centroid", "y_centroid"]].to_numpy()
 
     if spatial_as_pixel:
         adata.obsm["X_spatial"] = adata.obsm["X_spatial"] / resolution
+
+    if load_clusters:
+        for cluster in [
+            d for d in (p / "analysis" / "clustering").iterdir() if d.is_dir()
+        ]:
+            cluster_name = cluster.name.replace("gene_expression_", "")
+            cluster_df = pd.read_csv(
+                cluster / "clusters.csv",
+                index_col="Barcode",
+            )
+
+            clusters = cluster_df.reindex(adata.obs.index.astype(int))
+            adata.obs[cluster_name] = pd.Categorical(clusters["Cluster"])
+
+    if load_embeddings:
+        embeddings = [
+            ("umap", "2_components"),
+            ("tsne", "2_components"),
+            ("pca", "10_components"),
+        ]
+        for embedding, components in embeddings:
+            components_name = (
+                components
+                if (p / "analysis" / embedding / components).exists()
+                else f"gene_expression_{components}"
+            )
+            embedding_df = pd.read_csv(
+                os.path.join(
+                    p / "analysis" / embedding / components_name / "projection.csv"
+                ),
+                index_col="Barcode",
+            )
+
+            emb = embedding_df.reindex(adata.obs.index.astype(int))
+            adata.obsm[f"X_{embedding}"] = emb.values
 
     return adata
 
