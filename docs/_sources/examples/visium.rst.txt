@@ -13,7 +13,7 @@ Sample details
    * - Study Name
      - `High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue <https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast>`__
    * - WebAtlas
-     - `Demo Link <https://webatlas.cog.sanger.ac.uk/latest/index.html?config=https://webatlas.cog.sanger.ac.uk/configs/dev/visium/human/breast/cancer/config.json>`__     
+     - `Demo <https://webatlas.cog.sanger.ac.uk/latest/index.html?config=https://webatlas.cog.sanger.ac.uk/configs/dev/visium/human/breast/cancer/config.json>`__     
    * - Tissue
      - Human breast cancer
    * - Data Source Link
@@ -59,12 +59,12 @@ Make a copy of the WebAtlas repo and change directory into the new repo:
    :caption: Output
     
    Cloning into 'webatlas-pipeline'...
-   remote: Enumerating objects: 1966, done.
-   remote: Counting objects: 100% (341/341), done.
-   remote: Compressing objects: 100% (144/144), done.
-   remote: Total 1966 (delta 227), reused 204 (delta 195), pack-reused 1625
-   Receiving objects: 100% (1966/1966), 5.78 MiB | 5.91 MiB/s, done.
-   Resolving deltas: 100% (1292/1292), done.
+   remote: Enumerating objects: 2096, done.
+   remote: Counting objects: 100% (473/473), done.
+   remote: Compressing objects: 100% (220/220), done.
+   Receiving objects: 100% (2096/2096), 5.84 MiB | 17.42 MiB/s, done.
+   remote: Total 2096 (delta 315), reused 300 (delta 251), pack-reused 1623
+   Resolving deltas: 100% (1377/1377), done.
 
 **#3. Check java is installed**
 
@@ -197,8 +197,6 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    N E X T F L O W  ~  version 22.04.5
    Launching `main.nf` [insane_dijkstra] DSL2 - revision: 1b6a73f4d6
-   unknown recognition error type: groovyjarjarantlr4.v4.runtime.LexerNoViableAltException
-   executor >  local (7)
    [05/d2276b] process > Full_pipeline:Process_files:route_file (spaceranger, CytAssist_FFPE_Human_Breast_Cancer)   [100%] 1 of 1 ✔
    [0c/3ffdac] process > Full_pipeline:Process_images:Generate_image ([visium, breast-cancer], label, CytAssist_... [100%] 1 of 1 ✔
    [f1/efaaae] process > Full_pipeline:Process_images:image_to_zarr (tissue_image.tif)                              [100%] 2 of 2 ✔
@@ -217,18 +215,18 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.0.1
+   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.0
 
 .. code-block:: shell
    :caption: Output
 
    total 1103476
-   -rw-r--r--  1 dave dave 288446018 May 17 21:42 tmp-visium-breast-cancer.h5ad
-   drwxrwxr-x 11 dave dave      4096 May 17 21:42 visium-breast-cancer-anndata.zarr
-   -rw-r--r--  1 dave dave      4667 May 17 21:43 visium-breast-cancer-config.json
-   -rw-r--r--  1 dave dave 841484966 May 17 21:42 visium-breast-cancer-label.tif
-   drwxrwxr-x  4 dave dave      4096 May 17 21:43 visium-breast-cancer-label.zarr
-   drwxrwxr-x  4 dave dave      4096 May 17 21:43 visium-breast-cancer-raw.zarr
+   -rw-r--r--  1 ndh74 ndh74 288446018 May 17 21:42 tmp-visium-breast-cancer.h5ad
+   drwxrwxr-x 11 ndh74 ndh74      4096 May 17 21:42 visium-breast-cancer-anndata.zarr
+   -rw-r--r--  1 ndh74 ndh74      4667 May 17 21:43 visium-breast-cancer-config.json
+   -rw-r--r--  1 ndh74 ndh74 841484966 May 17 21:42 visium-breast-cancer-label.tif
+   drwxrwxr-x  4 ndh74 ndh74      4096 May 17 21:43 visium-breast-cancer-label.zarr
+   drwxrwxr-x  4 ndh74 ndh74      4096 May 17 21:43 visium-breast-cancer-raw.zarr
 
 **#9. Serve the data output through a local web server**
 
@@ -239,7 +237,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.0.1 --port 3000 --cors
+   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.0 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output

@@ -2,3 +2,8 @@
     text-align: left;
     padding: 2px;
 }
+
+.citation {
+    font-weight: bold;
+    font-style: italic;
+}
