@@ -37,7 +37,7 @@ def process(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -
         "xenium": xenium_to_zarr,
         "merscope": merscope_to_zarr,
         "h5ad": h5ad_to_zarr,
-        "molecules": tsv_to_json
+        "molecules": tsv_to_json,
     }
 
     out_file = func_dict[file_type](path=path, stem=stem, **args)
