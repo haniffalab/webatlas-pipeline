@@ -22,12 +22,6 @@ Sample details
 Steps to reproduce
 ******************
 
-.. raw:: html
-
-    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto; margin-bottom: 20px;">
-        <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
-    </div>
-
 Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
 It can be followed on any POSIX compatible system (Linux, OS X, etc).
 
@@ -45,28 +39,54 @@ Make sure git 2.17 or later is installed on your computer by using the command:
 
    git version 2.25.1
 
-**#2. Clone the WebAtlas pipeline repository**
+**#2. Download lthe WebAtlas Pipeline**
 
-Make a copy of the WebAtlas repo and change directory into the new repo: 
+Download the WebAtlas Pipeline: 
 
 .. code-block:: shell
    :caption: Input
 
-   git clone https://github.com/haniffalab/webatlas-pipeline.git
-   cd webatlas-pipeline
+   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.1.tar.gz
 
 .. code-block:: shell
    :caption: Output
     
-   Cloning into 'webatlas-pipeline'...
-   remote: Enumerating objects: 2096, done.
-   remote: Counting objects: 100% (473/473), done.
-   remote: Compressing objects: 100% (220/220), done.
-   Receiving objects: 100% (2096/2096), 5.84 MiB | 17.42 MiB/s, done.
-   remote: Total 2096 (delta 315), reused 300 (delta 251), pack-reused 1623
-   Resolving deltas: 100% (1377/1377), done.
+   Resolving github.com (github.com)... 140.82.121.3
+   Connecting to github.com (github.com)|140.82.121.3|:443... connected.
+   HTTP request sent, awaiting response... 302 Found
+   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.1 [following]
+   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.1
+   Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
+   Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
+   HTTP request sent, awaiting response... 200 OK
+   Length: unspecified [application/x-gzip]
+   Saving to: ‘v0.3.1.tar.gz’
 
-**#3. Check java is installed**
+   v0.3.1.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
+
+   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.1.tar.gz’ saved [2835534]
+
+**#3. Extract the WebAtlas Pipeline**
+
+Download and extract a  of the WebAtlas repo and change directory into the new repo: 
+
+.. code-block:: shell
+   :caption: Input
+
+   tar -xzvf ./v0.3.1.tar.gz
+   cd webatlas-pipeline-0.3.1
+
+.. code-block:: shell
+   :caption: Output
+    
+   webatlas-pipeline-0.3.1/
+   webatlas-pipeline-0.3.1/.github/
+   ...
+   ...
+   webatlas-pipeline-0.3.1/tests/input/simple_config.json
+   webatlas-pipeline-0.3.1/tests/test_class.py
+
+**#4. Check java is installed**
 
 Make sure java 11 later is installed on your computer by using the command:
 
@@ -82,7 +102,7 @@ Make sure java 11 later is installed on your computer by using the command:
    OpenJDK Runtime Environment (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1)
    OpenJDK 64-Bit Server VM (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1, mixed mode, sharing)
 
-**#4. Install Nextflow**
+**#5. Install Nextflow**
 
 Enter this command in your terminal to install nextflow in the current directory:
 
@@ -109,7 +129,7 @@ Enter this command in your terminal to install nextflow in the current directory
    - the executable file `nextflow` has been created in the folder: ./webatlas-pipeline
    - you may complete the installation by moving it to a directory in your $PATH
 
-**#5. Check Docker is installed**
+**#6. Check Docker is installed**
 
 Make sure Docker Engine 20.10 later is installed on your computer by using the command:
 
@@ -130,7 +150,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    OS/Arch:           linux/amd64
    Context:           default
 
-**#6. Download the sample data**
+**#7. Download the sample data**
 
 .. code-block:: shell
    :caption: Input
@@ -164,7 +184,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    2023-05-17 21:37:58 (7.16 MB/s) - ‘./input/CytAssist_FFPE_Human_Breast_Cancer/metrics_summary.csv’ saved [803/803]
 
-**#6. Extract and process sample data**
+**#8. Extract and process sample data**
 
 .. code-block:: shell
    :caption: Input
@@ -185,7 +205,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    raw_feature_bc_matrix/barcodes.tsv.gz
    raw_feature_bc_matrix/matrix.mtx.gz
 
-**#7. Run the pipeline**
+**#9. Run the pipeline**
 
 .. code-block:: shell
    :caption: Input
@@ -207,7 +227,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    {"dimOrder": "XYZCT", "channel_names": [], "X": "19505", "Y": "21571", "Z": "1", "C": "3", "T": "1"}
 
-**#8. Check execution was successful**
+**#10. Check execution was successful**
 
 The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created. 
@@ -215,7 +235,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.0
+   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.1
 
 .. code-block:: shell
    :caption: Output
@@ -228,7 +248,7 @@ verify the expected directories are created.
    drwxrwxr-x  4 ndh74 ndh74      4096 May 17 21:43 visium-breast-cancer-label.zarr
    drwxrwxr-x  4 ndh74 ndh74      4096 May 17 21:43 visium-breast-cancer-raw.zarr
 
-**#9. Serve the data output through a local web server**
+**#11. Serve the data output through a local web server**
 
 To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000, 
@@ -237,7 +257,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.0 --port 3000 --cors
+   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.1 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
@@ -261,7 +281,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
    http://192.168.0.23:3000
    Hit CTRL-C to stop the server
 
-**#10. Explore data in your browser**
+**#12. Explore data in your browser**
 
 Start your web browser and open:
 
