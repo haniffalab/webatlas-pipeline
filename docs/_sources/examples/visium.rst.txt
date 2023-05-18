@@ -136,33 +136,54 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    :caption: Input
 
    mkdir -p ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_image.tif -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_tissue_image.tif -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam.bai -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_analysis.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.h5 -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.h5 -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_spatial.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.tar.gz -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_molecule_info.h5 -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_cloupe.cloupe -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam -P ./input/CytAssist_FFPE_Human_Breast_Cancer
-   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_metrics_summary.csv -P ./input/CytAssist_FFPE_Human_Breast_Cancer
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_image.tif -O ./input/CytAssist_FFPE_Human_Breast_Cancer/image.tif
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_tissue_image.tif -O ./input/CytAssist_FFPE_Human_Breast_Cancer/tissue_image.tif
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam.bai -O ./input/CytAssist_FFPE_Human_Breast_Cancer/possorted_genome_bam.bam.bai
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_analysis.tar.gz -O ./input/CytAssist_FFPE_Human_Breast_Cancer/analysis.tar.gz
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.h5 -O ./input/CytAssist_FFPE_Human_Breast_Cancer/filtered_feature_bc_matrix.h5
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.h5 -O ./input/CytAssist_FFPE_Human_Breast_Cancer/raw_feature_bc_matrix.h5
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_spatial.tar.gz -O ./input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.tar.gz -O ./input/CytAssist_FFPE_Human_Breast_Cancer/filtered_feature_bc_matrix.tar.gz
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_raw_feature_bc_matrix.tar.gz -O ./input/CytAssist_FFPE_Human_Breast_Cancer/raw_feature_bc_matrix.tar.gz
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_molecule_info.h5 -O ./input/CytAssist_FFPE_Human_Breast_Cancer/molecule_info.h5
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_cloupe.cloupe -O ./input/CytAssist_FFPE_Human_Breast_Cancer/cloupe.cloupe
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_possorted_genome_bam.bam -O ./input/CytAssist_FFPE_Human_Breast_Cancer/possorted_genome_bam.bam
+   wget https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_metrics_summary.csv -O ./input/CytAssist_FFPE_Human_Breast_Cancer/metrics_summary.csv
 
 .. code-block:: shell
    :caption: Output
 
-   --2023-05-17 12:43:58--  https://storage.googleapis.com/haniffa-lab/resources/docs/webatlas/example-workflows/visium/WSSS_THYst9699525.tar.gz
-   Resolving storage.googleapis.com (storage.googleapis.com)... 172.217.169.16, 216.58.212.208, 216.58.212.240, ...
-   Connecting to storage.googleapis.com (storage.googleapis.com)|172.217.169.16|:443... connected.
+   --2023-05-17 21:37:57--  https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_metrics_summary.csv
+   Resolving cf.10xgenomics.com (cf.10xgenomics.com)... 104.18.0.173, 104.18.1.173, 2606:4700::6812:ad, ...
+   Connecting to cf.10xgenomics.com (cf.10xgenomics.com)|104.18.0.173|:443... connected.
    HTTP request sent, awaiting response... 200 OK
-   Length: 245291993 (234M) [application/gzip]
-   Saving to: ‘WSSS_THYst9699525.tar.gz’
+   Length: 803 [text/csv]
+   Saving to: ‘./input/CytAssist_FFPE_Human_Breast_Cancer/metrics_summary.csv’
 
-   WSSS_THYst9699525.tar.gz                  100%[=====================================================================================>] 233.93M  16.1MB/s    in 15s     
+   ./input/CytAssist_FFPE_Human_Breas 100%[================================================================>]     803  --.-KB/s    in 0s      
 
-   2023-05-17 12:44:13 (15.8 MB/s) - ‘WSSS_THYst9699525.tar.gz’ saved [245291993/245291993]
+   2023-05-17 21:37:58 (7.16 MB/s) - ‘./input/CytAssist_FFPE_Human_Breast_Cancer/metrics_summary.csv’ saved [803/803]
+
+**#6. Extract and process sample data**
+
+.. code-block:: shell
+   :caption: Input
+
+   tar -xzvf ./input/CytAssist_FFPE_Human_Breast_Cancer/analysis.tar.gz -C ./input/CytAssist_FFPE_Human_Breast_Cancer
+   tar -xzvf ./input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz -C ./input/CytAssist_FFPE_Human_Breast_Cancer
+   tar -xzvf ./input/CytAssist_FFPE_Human_Breast_Cancer/filtered_feature_bc_matrix.tar.gz -C ./input/CytAssist_FFPE_Human_Breast_Cancer
+   tar -xzvf ./input/CytAssist_FFPE_Human_Breast_Cancer/raw_feature_bc_matrix.tar.gz -C ./input/CytAssist_FFPE_Human_Breast_Cancer
+   cp ./input/CytAssist_FFPE_Human_Breast_Cancer/spatial/tissue_positions.csv ./input/CytAssist_FFPE_Human_Breast_Cancer/spatial/tissue_positions_list.csv
+
+.. code-block:: shell
+   :caption: Output
+
+   analysis/umap/
+   analysis/umap/gene_expression_2_components/
+   ...
+   ...
+   raw_feature_bc_matrix/barcodes.tsv.gz
+   raw_feature_bc_matrix/matrix.mtx.gz
 
 **#7. Run the pipeline**
 
@@ -174,23 +195,19 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 .. code-block:: shell
    :caption: Output
 
-   N E X T F L O W  ~  version 22.10.6
-   Launching `main.nf` [intergalactic_tuckerman] DSL2 - revision: 903c9797fa
+   N E X T F L O W  ~  version 22.04.5
+   Launching `main.nf` [insane_dijkstra] DSL2 - revision: 1b6a73f4d6
+   unknown recognition error type: groovyjarjarantlr4.v4.runtime.LexerNoViableAltException
    executor >  local (7)
-   executor >  local (7)
-   [42/8000d9] process > Full_pipeline:Process_files:route_file (h5ad, WSSS_THYst9699525.h5ad)                    [100%] 1 of 1 ✔
-   [fa/e7a593] process > Full_pipeline:Process_images:Generate_image ([lowerlimb, visium-WSSS_THYst9699525], l... [100%] 1 of 1 ✔
-   [42/2a6dab] process > Full_pipeline:Process_images:image_to_zarr (S3364_C59-FLEG-FO1_C1_HnE-2020-10-07-10.0... [100%] 2 of 2 ✔
-   [4e/59100f] process > Full_pipeline:Process_images:ome_zarr_metadata (METADATA.ome.xml)                        [100%] 2 of 2 ✔
-   [58/0f5162] process > Full_pipeline:Output_to_config:Build_config ([lowerlimb, visium-WSSS_THYst9699525])      [100%] 1 of 1 ✔
+   [05/d2276b] process > Full_pipeline:Process_files:route_file (spaceranger, CytAssist_FFPE_Human_Breast_Cancer)   [100%] 1 of 1 ✔
+   [0c/3ffdac] process > Full_pipeline:Process_images:Generate_image ([visium, breast-cancer], label, CytAssist_... [100%] 1 of 1 ✔
+   [f1/efaaae] process > Full_pipeline:Process_images:image_to_zarr (tissue_image.tif)                              [100%] 2 of 2 ✔
+   [44/2bcaeb] process > Full_pipeline:Process_images:ome_zarr_metadata (METADATA.ome.xml)                          [100%] 2 of 2 ✔
+   [43/04893d] process > Full_pipeline:Output_to_config:Build_config ([visium, breast-cancer])                      [100%] 1 of 1 ✔
 
-   lowerlimb-visium-WSSS_THYst9699525-anndata.zarr
+   {"dimOrder": "XYZCT", "channel_names": [], "X": "19505", "Y": "21571", "Z": "1", "C": "1", "T": "1"}
 
-
-   {"dimOrder": "XYZCT", "channel_names": [], "X": "15040", "Y": "26680", "Z": "1", "C": "1", "T": "1"}
-
-
-   {"dimOrder": "XYZCT", "channel_names": [], "X": "15040", "Y": "26680", "Z": "1", "C": "3", "T": "1"}
+   {"dimOrder": "XYZCT", "channel_names": [], "X": "19505", "Y": "21571", "Z": "1", "C": "3", "T": "1"}
 
 **#8. Check execution was successful**
 
@@ -205,11 +222,13 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Output
 
-   drwxrwxr-x 11 dave dave      4096 May 10 11:35 lowerlimb-WSSS_THYst9699525-anndata.zarr
-   -rw-r--r--  1 dave dave      5104 May 10 11:36 lowerlimb-WSSS_THYst9699525-config.json
-   -rw-r--r--  1 dave dave 802534656 May 10 11:35 lowerlimb-WSSS_THYst9699525-label.tif
-   drwxrwxr-x  4 dave dave      4096 May 10 11:35 lowerlimb-WSSS_THYst9699525-label.zarr
-   drwxrwxr-x  4 dave dave      4096 May 10 11:36 lowerlimb-WSSS_THYst9699525-raw.zarr
+   total 1103476
+   -rw-r--r--  1 dave dave 288446018 May 17 21:42 tmp-visium-breast-cancer.h5ad
+   drwxrwxr-x 11 dave dave      4096 May 17 21:42 visium-breast-cancer-anndata.zarr
+   -rw-r--r--  1 dave dave      4667 May 17 21:43 visium-breast-cancer-config.json
+   -rw-r--r--  1 dave dave 841484966 May 17 21:42 visium-breast-cancer-label.tif
+   drwxrwxr-x  4 dave dave      4096 May 17 21:43 visium-breast-cancer-label.zarr
+   drwxrwxr-x  4 dave dave      4096 May 17 21:43 visium-breast-cancer-raw.zarr
 
 **#9. Serve the data output through a local web server**
 
@@ -248,4 +267,4 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 
 Start your web browser and open:
 
-https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=http://127.0.0.1:3000/lowerlimb-WSSS_THYst9699525-config.json
+https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=http://127.0.0.1:3000/visium-breast-cancer-config.json

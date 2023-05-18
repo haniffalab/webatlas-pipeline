@@ -152,6 +152,8 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
 
    2023-05-17 15:15:31 (15.5 MB/s) - ‘./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’ saved [9861155708/9861155708]
 
+**#6. Extract and process sample data**
+
 .. code-block:: shell
    :caption: Input
 
@@ -164,22 +166,19 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
       creating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
      inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/experiment.xenium  
       creating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz  
-           ...
-           ...
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/morphology_focus.ome.tif  
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/nucleus_boundaries.csv.gz  
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/nucleus_boundaries.parquet  
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv  
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json  
-    inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html 
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz  
+            ...
+            ... 
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv  
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json  
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html 
 
 **#7. Run the pipeline**
 
 .. code-block:: shell
    :caption: Input
 
-   NXF_VER=22.04.5 ./nextflow run main.nf -params-file input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml -entry Full_pipeline
+   NXF_VER=22.04.5 ./nextflow run main.nf -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml -entry Full_pipeline
 
 .. code-block:: shell
    :caption: Output

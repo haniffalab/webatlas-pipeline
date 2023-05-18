@@ -251,6 +251,7 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 </pre></div>
 </div>
 </div>
+<p><strong>#6. Extract and process sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id13">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip<span class="w"> </span>-d<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
@@ -263,22 +264,19 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 <span class="w">   </span>creating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
 <span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/experiment.xenium
 <span class="w">   </span>creating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz
-<span class="w">        </span>...
-<span class="w">        </span>...
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/morphology_focus.ome.tif
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/nucleus_boundaries.csv.gz
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/nucleus_boundaries.parquet
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json
-<span class="w"> </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html
+<span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz
+<span class="w">         </span>...
+<span class="w">         </span>...
+<span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv
+<span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json
+<span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html
 </pre></div>
 </div>
 </div>
 <p><strong>#7. Run the pipeline</strong></p>
 <div class="literal-block-wrapper docutils container" id="id15">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">NXF_VER</span><span class="o">=</span><span class="m">22</span>.04.5<span class="w"> </span>./nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">NXF_VER</span><span class="o">=</span><span class="m">22</span>.04.5<span class="w"> </span>./nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
 </pre></div>
 </div>
 </div>
