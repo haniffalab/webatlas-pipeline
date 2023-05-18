@@ -1,0 +1,9 @@
+.rst-content .code-block-caption {
+    text-align: left;
+    padding: 2px;
+}
+
+.citation {
+    font-weight: bold;
+    font-style: italic;
+}

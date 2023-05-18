@@ -20,9 +20,9 @@ but you can use any tool that can enable CORS.
 You can serve the view config file and data by specifying the output directory
 (note that the pipeline adds its version to the ``outdir`` defined in the :ref:`parameters file <parameters_file>` file). 
 
-.. code-block:: sh
+.. parsed-literal::
 
-   serve -C -p 3000 /path/to/outdir/0.0.1/
+   serve -C -p 3000 /path/to/outdir/|release|/
 
 Make sure to enable CORS and set the appropriate port number.
 In this case, using `serve <https://www.npmjs.com/package/serve>`__, this is done through the ``-C`` and ``-p`` flags respectively.

@@ -23,7 +23,7 @@ copyright = "2023, Haniffa Lab"
 author = "Haniffa Lab"
 
 # The full version, including alpha/beta/rc tags
-release = "0.2.0"
+release = "0.3.0"
 
 # -- General configuration ---------------------------------------------------
 
@@ -47,3 +47,12 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+
+# These folders are copied to the documentation's HTML output
+html_static_path = ["_static"]
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    "css/custom.css",
+]

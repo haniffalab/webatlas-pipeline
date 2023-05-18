@@ -1,12 +1,11 @@
 #!/usr/bin/env/ nextflow
 
-// Copyright (C) 2022 Tong LI <tongli.bioinfo@protonmail.com>
 import groovy.json.*
 
 nextflow.enable.dsl=2
 
 verbose_log = true
-version = "0.0.1"
+version = "0.3.0"
 
 //////////////////////////////////////////////////////
 
@@ -261,7 +260,7 @@ workflow Process_files {
             [
                 stem,
                 data_map.prefix ?: "",
-                data_map.data_path,
+                file(data_map.data_path),
                 data_map.data_type,
                 mergeArgs(stem, data_map.data_type, data_map.args)
             ]
@@ -296,7 +295,7 @@ workflow Process_images {
             stem,
             data_map.prefix,
             data_map.data_type.replace("_image",""),
-            data_map.data_path,
+            file(data_map.data_path),
             false // keep_filename
         ]
     }
@@ -311,9 +310,9 @@ workflow Process_images {
             stem,
             data_map.prefix,
             data_map.data_type.replace("_image_data",""),
-            data_map.data_path,
+            file(data_map.data_path),
             data_map.file_type,
-            data_map.ref_img ?: file("NO_REF"),
+            file(data_map.ref_img) ?: file("NO_REF"),
             data_map.args ?: [:]
         ]
     }
