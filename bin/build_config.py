@@ -51,7 +51,7 @@ def build_options(
     options = None
     dts = set([])
 
-    # @TODO: simplify to joint ft.ANNDATA_ZARR. Change yaml input keys to 'locations', 'embeddings', 'labels'
+    # @TODO: Change yaml input keys to 'locations', 'embeddings', 'labels'
     if file_type == ft.ANNDATA_ZARR:
         options = {}
         if "spatial" in file_options and "xy" in file_options["spatial"]:
@@ -67,7 +67,7 @@ def build_options(
                     continue
                 embedding_type = k.split("/")[-1].upper()
                 v = v if v is not None and v != "null" else [0, 1]
-                embedding = {"path": v, "embeddingType": embedding_type, "dims": v}
+                embedding = {"path": k, "embeddingType": embedding_type, "dims": v}
                 options.setdefault("obsEmbedding", []).append(embedding)
                 dts.add(dt.OBS_EMBEDDING)
 
@@ -81,48 +81,33 @@ def build_options(
                 options.setdefault("obsLabels", []).append(label)
                 dts.add(dt.OBS_LABELS)
 
-    # @TODO: add to above
-    elif file_type in [ft.OBS_SETS_ANNDATA_ZARR, ft.ANNDATA_CELL_SETS_ZARR]:
-        options = []
         if "sets" in file_options:
-            for cell_set in file_options["sets"]:
-                if type(cell_set) != dict:
-                    cell_set = {"name": cell_set}
-                cell_set_name = cell_set["name"].split("/")[-1]
+            for obs_set in file_options["sets"]:
+                if type(obs_set) != dict:
+                    obs_set = {"name": obs_set}
                 if check_exist:
-                    if not os.path.exists(
-                        os.path.join(file_path, cell_set["name"])
-                    ) or (
-                        "score" in cell_set
+                    if not os.path.exists(os.path.join(file_path, obs_set["name"])) or (
+                        "score" in obs_set
                         and not os.path.exists(
-                            os.path.join(file_path, cell_set["score"])
+                            os.path.join(file_path, obs_set["score"])
                         )
                     ):
                         continue
-                cell_set_options = {
-                    "groupName": "".join(
-                        w.capitalize() for w in cell_set_name.split("_")
+                obs_set_options = {
+                    "name": "".join(
+                        w.capitalize()
+                        for w in obs_set["name"].split("/")[-1].split("_")
                     ),
-                    "setName": cell_set["name"],
+                    "path": obs_set["name"],
                 }
-                if "score" in cell_set:
-                    cell_set_options["groupName"] += " with Scores"
-                    cell_set_options["scoreName"] = cell_set["score"]
-                options.append(cell_set_options)
+                if "score" in obs_set:
+                    obs_set_options["name"] += " with scores"
+                    obs_set_options["scorePath"] = obs_set["score"]
+                options.setdefault("obsSets", []).append(obs_set_options)
                 dts.add(dt.OBS_SETS)
 
-    elif file_type in [
-        ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
-        ft.ANNDATA_EXPRESSION_MATRIX_ZARR,
-    ]:
-        options = {}
-        ematrix_ops = set(["matrix", "matrixGeneFilter", "geneAlias"])
-        for k, v in file_options.items():
-            if k not in ematrix_ops or (
-                check_exist and not os.path.exists(os.path.join(file_path, v))
-            ):
-                continue
-            options[k] = v
+        if "matrix" in file_options:
+            options["obsFeatureMatrix"] = {"path": file_options["matrix"]}
             dts.add(dt.OBS_FEATURE_MATRIX)
 
     return options, dts
@@ -259,8 +244,8 @@ def write_json(
                     file_options, file_dts = build_options(
                         file_type, file_path, options or DEFAULT_OPTIONS[file_type]
                     )
-                    # Set a coordination scope for any 'mapping'
-                    if "mappings" in file_options:
+                    # Set a coordination scope for any 'obsEmbedding'
+                    if "obsEmbedding" in file_options:
                         coordination_types[ct.EMBEDDING_TYPE] = cycle(
                             chain(
                                 coordination_types[ct.EMBEDDING_TYPE],

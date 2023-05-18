@@ -9,7 +9,7 @@ from vitessce import (
 SINGLE_ZARR = "anndata.zarr"
 OBS = "obs"
 
-# @TODO: remove deprecated data types
+# @TODO: remove deprecated and unused data types
 # Data types with ordered file types
 DATA_TYPES = {
     OBS: [
@@ -30,24 +30,24 @@ DATA_TYPES = {
     dt.MOLECULES: [
         ("molecules.json", ft.MOLECULES_JSON),
     ],
-    dt.OBS_SETS: [
-        ("cell-sets.json", ft.CELL_SETS_JSON),
-        ("obsSets.anndata.zarr", ft.OBS_SETS_ANNDATA_ZARR),
-        ("anndata-cell-sets.zarr", ft.ANNDATA_CELL_SETS_ZARR),
-        (SINGLE_ZARR, ft.OBS_SETS_ANNDATA_ZARR),
-    ],
+    # dt.OBS_SETS: [
+    #     ("cell-sets.json", ft.CELL_SETS_JSON),
+    #     ("obsSets.anndata.zarr", ft.OBS_SETS_ANNDATA_ZARR),
+    #     ("anndata-cell-sets.zarr", ft.ANNDATA_CELL_SETS_ZARR),
+    #     (SINGLE_ZARR, ft.OBS_SETS_ANNDATA_ZARR),
+    # ],
     dt.RASTER: [
         ("raster.ome-zarr", "raster.ome-zarr"),
         ("raster.json", ft.RASTER_JSON),
     ],
-    dt.OBS_FEATURE_MATRIX: [
-        ("obsFeatureMatrix.anndata.zarr", ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR),
-        ("expression-matrix.zarr", ft.EXPRESSION_MATRIX_ZARR),
-        ("anndata-expression-matrix.zarr", ft.ANNDATA_EXPRESSION_MATRIX_ZARR),
-        ("clusters.json", ft.CLUSTERS_JSON),
-        ("genes.json", ft.GENES_JSON),
-        (SINGLE_ZARR, ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR),
-    ],
+    # dt.OBS_FEATURE_MATRIX: [
+    #     ("obsFeatureMatrix.anndata.zarr", ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR),
+    #     ("expression-matrix.zarr", ft.EXPRESSION_MATRIX_ZARR),
+    #     ("anndata-expression-matrix.zarr", ft.ANNDATA_EXPRESSION_MATRIX_ZARR),
+    #     ("clusters.json", ft.CLUSTERS_JSON),
+    #     ("genes.json", ft.GENES_JSON),
+    #     (SINGLE_ZARR, ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR),
+    # ],
     dt.NEIGHBORHOODS: [
         ("neighborhoods.json", ft.NEIGHBORHOODS_JSON),
     ],
@@ -67,9 +67,9 @@ DEFAULT_OPTIONS = {
         "spatial": {
             "xy": "obsm/spatial",
         },
-    },
-    ft.OBS_SETS_ANNDATA_ZARR: {"sets": ["obs/sample"]},
-    ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR: {"matrix": "X"},
+        "sets": ["obs/sample"],
+        "matrix": "X",
+    }
 }
 
 
