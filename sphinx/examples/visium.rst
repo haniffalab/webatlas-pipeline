@@ -46,7 +46,7 @@ Download the WebAtlas Pipeline:
 .. code-block:: shell
    :caption: Input
 
-   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.1.tar.gz
+   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.2.tar.gz
 
 .. code-block:: shell
    :caption: Output
@@ -54,17 +54,17 @@ Download the WebAtlas Pipeline:
    Resolving github.com (github.com)... 140.82.121.3
    Connecting to github.com (github.com)|140.82.121.3|:443... connected.
    HTTP request sent, awaiting response... 302 Found
-   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.1 [following]
-   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.1
+   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2 [following]
+   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2
    Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
    Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
    HTTP request sent, awaiting response... 200 OK
    Length: unspecified [application/x-gzip]
-   Saving to: ‘v0.3.1.tar.gz’
+   Saving to: ‘v0.3.2.tar.gz’
 
-   v0.3.1.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
+   v0.3.2.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
 
-   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.1.tar.gz’ saved [2835534]
+   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.2.tar.gz’ saved [2835534]
 
 **#3. Extract the WebAtlas Pipeline**
 
@@ -73,18 +73,18 @@ Download and extract a  of the WebAtlas repo and change directory into the new r
 .. code-block:: shell
    :caption: Input
 
-   tar -xzvf ./v0.3.1.tar.gz
-   cd webatlas-pipeline-0.3.1
+   tar -xzvf ./v0.3.2.tar.gz
+   cd webatlas-pipeline-0.3.2
 
 .. code-block:: shell
    :caption: Output
     
-   webatlas-pipeline-0.3.1/
-   webatlas-pipeline-0.3.1/.github/
+   webatlas-pipeline-0.3.2/
+   webatlas-pipeline-0.3.2/.github/
    ...
    ...
-   webatlas-pipeline-0.3.1/tests/input/simple_config.json
-   webatlas-pipeline-0.3.1/tests/test_class.py
+   webatlas-pipeline-0.3.2/tests/input/simple_config.json
+   webatlas-pipeline-0.3.2/tests/test_class.py
 
 **#4. Check java is installed**
 
@@ -235,7 +235,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.1
+   ls -l ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.2
 
 .. code-block:: shell
    :caption: Output
@@ -257,7 +257,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.1 --port 3000 --cors
+   npx http-server ./output/CytAssist_FFPE_Human_Breast_Cancer/0.3.2 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
