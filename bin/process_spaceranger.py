@@ -44,14 +44,14 @@ def spaceranger_to_anndata(
 
     # Temporary fix to support spacerangerr v1.2.0 and v2.0.
     # until scanpy 1.10.0 is released and scanpy.read_visium can handle it
-    if os.path.isfile(p / "spatial" / "tissue_positions.csv"):
+    if (p / "spatial" / "tissue_positions.csv").is_file():
         shutil.copyfile(
             p / "spatial" / "tissue_positions.csv",
             p / "spatial" / "tissue_positions_list.csv",
         )
 
     adata = sc.read_visium(
-        path,
+        p,
         count_file="raw_feature_bc_matrix.h5"
         if load_raw
         else "filtered_feature_bc_matrix.h5",
@@ -83,9 +83,7 @@ def spaceranger_to_anndata(
                 else f"gene_expression_{components}"
             )
             embedding_df = pd.read_csv(
-                os.path.join(
-                    p / "analysis" / embedding / components_name / "projection.csv"
-                ),
+                (p / "analysis" / embedding / components_name / "projection.csv"),
                 index_col="Barcode",
             )
 
