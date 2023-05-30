@@ -23,6 +23,7 @@ def spaceranger_to_anndata(
     path: str,
     load_clusters: bool = True,
     load_embeddings: bool = True,
+    load_raw: bool = False,
 ) -> sc.AnnData:
     """Function to create an AnnData object from a SpaceRanger output directory.
 
@@ -32,21 +33,29 @@ def spaceranger_to_anndata(
             AnnData object. Defaults to True.
         load_embeddings (bool, optional): If embedding coordinates files should be included
             in the AnnData object. Defaults to True.
+        load_raw (bool, optional): If the raw matrix count file should be loaded
+            instead of the filtered matrix. Defaults to False.
 
     Returns:
         AnnData: AnnData object created from the SpaceRanger output data
     """
 
     p = Path(path)
-    
-    # Temporary fix to support spacerangerr v1.2.0 and v2.0.
-    # until scanpy 1.10.0 is released and scanpy.read_visium can handle it 
-    if os.path.isfile(p/"spatial"/"tissue_positions.csv"):
-        shutil.copyfile(
-            p/"spatial"/"tissue_positions.csv",
-            p/"spatial"/"tissue_positions_list.csv")
 
-    adata = sc.read_visium(path)
+    # Temporary fix to support spacerangerr v1.2.0 and v2.0.
+    # until scanpy 1.10.0 is released and scanpy.read_visium can handle it
+    if os.path.isfile(p / "spatial" / "tissue_positions.csv"):
+        shutil.copyfile(
+            p / "spatial" / "tissue_positions.csv",
+            p / "spatial" / "tissue_positions_list.csv",
+        )
+
+    adata = sc.read_visium(
+        path,
+        count_file="raw_feature_bc_matrix.h5"
+        if load_raw
+        else "filtered_feature_bc_matrix.h5",
+    )
 
     if load_clusters:
         for cluster in [
@@ -91,6 +100,7 @@ def spaceranger_to_zarr(
     stem: str,
     load_clusters: bool = True,
     load_embeddings: bool = True,
+    load_raw: bool = False,
     save_h5ad: bool = False,
     **kwargs,
 ) -> str:
@@ -100,16 +110,19 @@ def spaceranger_to_zarr(
         path (str): Path to a SpaceRanger output directory
         stem (str): Prefix for the output Zarr filename
         load_clusters (bool, optional): If cluster files should be included in the
-            AnnData object. Defaults to False.
+            AnnData object. Defaults to True.
         load_embeddings (bool, optional): If embedding coordinates files should be included
-            in the AnnData object. Defaults to False.
-        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.
+            in the AnnData object. Defaults to True.
+        load_raw (bool, optional): If the raw matrix count file should be loaded
+            instead of the filtered matrix. Defaults to False.
+        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file.
+            Defaults to False.
 
     Returns:
         str: Output Zarr filename
     """
 
-    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings)
+    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings, load_raw)
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
