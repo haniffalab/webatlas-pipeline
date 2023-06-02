@@ -32,6 +32,7 @@ def h5ad_to_zarr(
     chunk_size: int = 10,
     batch_processing: bool = False,
     batch_size: int = 10000,
+    consolidate_metadata: bool = True,
     **kwargs,
 ) -> str:
     """This function takes an AnnData object or path to an h5ad file,
@@ -113,6 +114,9 @@ def h5ad_to_zarr(
             else:
                 logging.info("Batch processing dense matrix...")
                 batch_process_array(path, zarr_file, m, n, batch_size, chunk_size)
+    
+    if consolidate_metadata:
+        zarr.consolidate_metadata(zarr_file)
 
     return zarr_file
 
