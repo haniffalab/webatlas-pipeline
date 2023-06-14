@@ -365,10 +365,12 @@ Possible values for each of the supported data types are as follows
       var_subset: ["genome", ["GRCh38"]] # optional `var` column name an value(s) to subset the anndata object
       batch_processing: "False" # set to `True` to process the file in batches to avoid loading the whole object into memory if it is too large
       batch_size: 1000 # batch size (number of columns to process at a time if matrix is dense/csc, number of rows if matrix is csr) if `batch_processing` is set to `True`
+      consolidate_metadata: "True" # whether to consolidate output zarr metadata. Defaults to `True`
     spaceranger:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
       load_embeddings: "True" # set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory
+      load_raw: "False" # set to `True` to load the raw count file instead of the filtered count file
     xenium:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       spatial_as_pixel: "True" # convert spatial coordinates to pixel coordinates. Defaults to `True`
