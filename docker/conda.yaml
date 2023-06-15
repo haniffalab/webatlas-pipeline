@@ -1,7 +1,6 @@
 name: webatlas-0.3.2
 channels:
   - conda-forge
-  - defaults
   - ome
 dependencies:
   - python=3.9
