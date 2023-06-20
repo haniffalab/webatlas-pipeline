@@ -9,7 +9,6 @@ dependencies:
   - pip
   - pip:
       - anndata==0.8.0
-      - apeer-ometiff-library==1.8.2
       - asciitree==0.3.3
       - cached-property==1.5.2
       - cloudpickle==2.0.0
