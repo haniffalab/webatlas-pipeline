@@ -9,6 +9,7 @@ projects:
     datasets:
       - dataset: xenium
         title: "Test Xenium Dataset"
+        url: ''
         data:
           -
             data_type: xenium
@@ -24,14 +25,12 @@ projects:
 
 vitessce_options:
   spatial:
-    xy: "obsm/spatial"
+    xy: "obsm/X_spatial"
   mappings:
     obsm/X_umap: [0,1]
     obsm/X_pca: [0,1]
-  factors:
-    - "obs/sample"
   sets:
-    - "obs/clustering"
+    - "obs/graphclust"
   matrix: "X"
 layout: advanced
 # custom_layout: "spatial|((scatterplot/scatterplot)|(genes/cellSets))"
