@@ -137,7 +137,7 @@ process image_to_zarr {
 }
 
 process ome_zarr_metadata{
-    tag "${zarr}"
+    tag "${zarr}, ${img_type}"
     debug verbose_log
 
     input:
@@ -312,7 +312,7 @@ workflow Process_images {
             data_map.data_type.replace("_image_data",""),
             file(data_map.data_path),
             data_map.file_type,
-            file(data_map.ref_img) ?: file("NO_REF"),
+            file(data_map.ref_img ?: file("NO_REF")) ,
             data_map.args ?: [:]
         ]
     }

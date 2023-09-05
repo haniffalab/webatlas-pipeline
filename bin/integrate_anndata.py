@@ -13,7 +13,6 @@ from process_h5ad import h5ad_to_zarr
 
 
 def reindex_and_concat(path: str, offset: int, features: str, **kwargs):
-
     adata = read_anndata(path)
 
     adata = reindex_anndata(adata, offset, no_save=True)
@@ -34,7 +33,6 @@ def reindex_anndata(
     out_filename: str = None,
     **kwargs,
 ):
-
     if isinstance(data, ad.AnnData):
         adata = data
     else:
@@ -59,7 +57,6 @@ def concat_features(
     out_filename: str = None,
     **kwargs,
 ):
-
     if isinstance(data, ad.AnnData):
         adata = data
     else:
@@ -81,7 +78,6 @@ def concat_features(
 
 
 def intersect_features(paths: list[str], **kwargs):
-
     var_intersect = get_feature_intersection(paths)
 
     for path in paths:
@@ -122,7 +118,6 @@ def concat_matrix_from_cell2location(
     feature_name: str = "gene",
     obs_feature_name: str = None,
 ):
-
     if isinstance(data, ad.AnnData):
         adata = data
     else:
@@ -157,7 +152,6 @@ def concat_matrices(
     feature_name: str = "gene",
     obs_feature_name: str = None,
 ):
-
     assert adata.shape[0] == ext_df.shape[0]
 
     obs_feature_name = obs_feature_name or obs
@@ -216,7 +210,6 @@ def concat_matrices(
 
 
 def get_feature_intersection(paths: list[str]):
-
     var_indices = []
     for path in paths:
         is_zarr = os.path.splitext(path)[-1] == ".zarr"

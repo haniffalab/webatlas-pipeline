@@ -134,6 +134,7 @@ def visium_label(
     shape: tuple[int, int] = None,
     obs_subset: tuple[int, T.Any] = None,
     sample_id: str = None,
+    relative_size: str = None,
 ) -> None:
     """This function writes a label image tif file with drawn labels according to an
     Anndata object with necessary metadata stored within `uns["spatial"]`.
@@ -145,6 +146,9 @@ def visium_label(
         obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
             to use to subset the AnnData object. Defaults to None.
         sample_id (str, optional): Sample ID string within the Anndata object. Defaults to None.
+        relative_size (str, optional): Optional numerical `obs` column name that holds
+            a multiplier for the spot diameter. Only useful for data that has been
+            processed to merge spots. Defaults to None.
     """
     # sample_id = sample_id or Path(file_path).stem
 
@@ -194,8 +198,16 @@ def visium_label(
         dtype=np.min_scalar_type(adata.obs.index.astype(int).max()),
     )
 
-    for spId, (y, x) in zip(adata.obs.index, spot_coords):
-        label_img[disk((int(x), int(y)), spot_diameter_fullres / 2)] = int(spId)
+    if relative_size and relative_size in adata.obs:
+        for spId, (y, x), m in zip(
+            adata.obs.index, spot_coords, adata.obs[relative_size]
+        ):
+            label_img[disk((int(x), int(y)), (spot_diameter_fullres / 2) * m)] = int(
+                spId
+            )
+    else:
+        for spId, (y, x) in zip(adata.obs.index, spot_coords):
+            label_img[disk((int(x), int(y)), spot_diameter_fullres / 2)] = int(spId)
 
     tf.imwrite(f"{stem}-label.tif", label_img)
 

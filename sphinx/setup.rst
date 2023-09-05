@@ -425,6 +425,7 @@ Image-data files of type ``visium`` can take the following ``args``
       args:
         obs_subset: ["sample", ["sample_id_1"]] # optional `obs` column name an value(s) to subset the anndata object
         sample_id: ["sample_id_1"] # optional key within anndata.uns["spatial"]. Defaults to the first key.
+        relative_size: "nspots" # optional key within anndata.obs that contains multipliers for the spot size. Only useful for data that has been preprocessed to merge spots or modify spots' sizes. Defaults to None.
 
 
 Image-data files of type ``xenium`` can take the following ``args``

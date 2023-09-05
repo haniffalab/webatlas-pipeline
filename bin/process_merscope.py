@@ -123,7 +123,6 @@ def merscope_label(
     ]
 
     for i, z in [(x, "zIndex_{}".format(x)) for x in z_index]:
-
         label_img = np.zeros((shape[0], shape[1]), dtype=np.uint32)
 
         for fov in fovs:

@@ -49,7 +49,7 @@ def xenium_to_anndata(
 
     adata = sc.read_10x_h5(matrix_file)
 
-    with open(os.path.join(path, "experiment.xenium"),"rt") as f:
+    with open(os.path.join(path, "experiment.xenium"), "rt") as f:
         adata.uns["xenium"] = json.load(f)
 
     adata.obs = pd.read_csv(cells_file, compression="gzip", index_col="cell_id")
@@ -97,7 +97,7 @@ def xenium_to_anndata(
     # pd.Categorical.codes converts them to int this is done manually at this step
     # instead of reindex_anndata so we control what matches the label image
     adata.obs = adata.obs.reset_index()
-    adata.obs.index = pd.Categorical(adata.obs['cell_id']).codes.astype(str)
+    adata.obs.index = pd.Categorical(adata.obs["cell_id"]).codes.astype(str)
 
     return adata
 
@@ -153,12 +153,12 @@ def xenium_label(
 
     with open(os.path.join(path, "experiment.xenium")) as f:
         experiment = json.load(f)
-    sw_version = float(experiment['analysis_sw_version'][7:10])
+    sw_version = float(experiment["analysis_sw_version"][7:10])
 
     if sw_version < 1.3:
         ids = z["cell_id"]
     else:
-        ids = z["cell_id"][:,0]
+        ids = z["cell_id"][:, 0]
 
     # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int

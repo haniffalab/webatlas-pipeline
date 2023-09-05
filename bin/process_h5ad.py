@@ -114,7 +114,7 @@ def h5ad_to_zarr(
             else:
                 logging.info("Batch processing dense matrix...")
                 batch_process_array(path, zarr_file, m, n, batch_size, chunk_size)
-    
+
     if consolidate_metadata:
         zarr.consolidate_metadata(zarr_file)
 
@@ -182,9 +182,9 @@ def preprocess_anndata(
 
     # compute embeddings if not already stored in object
     if compute_embeddings:
-        if not "X_pca" in adata.obsm:
+        if "X_pca" not in adata.obsm:
             sc.tl.pca(adata)
-        if not "X_umap" in adata.obsm:
+        if "X_umap" not in adata.obsm:
             sc.pp.neighbors(adata)
             sc.tl.umap(adata)
 

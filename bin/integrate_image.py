@@ -18,7 +18,6 @@ def reindex_label(label_image: str, offset: int, out_filename: str) -> None:
 
 
 def process_image(label_image: str, **kwargs) -> None:
-
     ext = os.path.splitext(label_image)[-1]
     if ext.lower() in [".tif", ".tiff"]:
         reindex_label(**kwargs)
