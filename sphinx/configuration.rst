@@ -1,17 +1,27 @@
-.. _setup:
+.. _configuration:
 
-#####
-Setup
-#####
+#############
+Configuration
+#############
 
 Currently, the WebAtlas pipeline can process several types of data files as well as images.
 
-- It can handle ``h5ad`` files, SpaceRanger output, Xenium output, MERSCOPE output, and ``molecules`` data in ``csv``/``tsv`` files.
-- It can handle raw and label images in ``tif`` format, as well as generating/preprocessing images from Visium, Xenium and MERFISH data. 
+**Data files**
 
-Running the pipeline requires a ``yaml`` `parameters file`_ that lists the data to be processed.
+* `AnnData <https://anndata.readthedocs.io/en/latest/>`_ files (``h5ad``)
+* `SpaceRanger output <https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/overview>`_ files
+* `Xenium output <https://www.10xgenomics.com/support/in-situ-gene-expression/documentation/steps/onboard-analysis/understanding-xenium-outputs>`_ files
+* MERSCOPE output
+* molecules data in ``csv``/``tsv`` files
 
-Templates of this parameters file are available in the `templates directory <https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/>`__.
+**Image files**
+
+* raw and label images in `tif format <https://en.wikipedia.org/wiki/TIFF>`_
+* images from `Visium <https://www.10xgenomics.com/support/spatial-gene-expression-fresh-frozen/documentation/steps/imaging/visium-spatial-gene-expression-imaging-guidelines>`_
+* imags from `Xenium <https://www.10xgenomics.com/support/in-situ-gene-expression/documentation/steps/onboard-analysis/xenium-algorithms-overview#dapi>`_
+* MERFISH data
+
+Running the pipeline requires a YAML parameters file that lists the data to be processed. Templates of this parameters file are available in the `templates directory <https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/>`__.
 
 
 .. _parameters_file:
@@ -20,11 +30,14 @@ Templates of this parameters file are available in the `templates directory <htt
 Parameters file
 ***************
 
-The parameters file defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets).
+The parameters file defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets). When running the pipeline, the path to the YAML file is indicated through the ``-params-file`` flag in the command line. For example:
 
-Running the pipeline, the path to the ``yaml`` file is indicated through the ``-params-file`` flag in the command line.
+.. code-block:: shell
 
-A parameters file looks like:
+    nextflow run main.nf -params-file params.yaml
+
+
+A parameters file looks like this:
 
 .. code-block:: yaml
 
@@ -39,14 +52,11 @@ A parameters file looks like:
         datasets:
           - dataset: dataset_1
             data:
-              -
-                data_type: h5ad
+              - data_type: h5ad
                 data_path: /path/to/project_1/dataset_1/anndata.h5ad
-              -
-                data_type: raw_image
+              - data_type: raw_image
                 data_path: /path/to/project_1/dataset_1/raw_image.tif
-              -
-                data_type: label_image
+              - data_type: label_image
                 data_path: /path/to/project_1/dataset_1/label_image.tif
 
     vitessce_options:
@@ -57,8 +67,57 @@ A parameters file looks like:
     layout: "simple"
     # custom_layout: "spatial|scatterplot" # overrides `layout`
 
+The YAML file has multiple configuration segements. This is a simple breakdown of the example config file above:
 
-The parameters are as follows:
+  * The ``outdir`` entry in the file tells the pipeline where to deposit the result files.
+
+  .. code-block:: yaml
+
+      outdir: "/path/to/output/"
+  
+  * The ``args.h5ad.compute_embeddings: "True"`` instructs the pipeline to compute dimensional reduction on the input Anndata and store the PCA and UMAP embeddings inside the obsm keys of the oject.
+
+  .. code-block:: yaml
+
+      args:
+        h5ad:
+          compute_embeddings: "True"
+      
+
+  * The ``projects`` section defines the name of the current `project`_ and the ``datasets`` that are part of it. 
+
+  .. code-block:: yaml
+
+      projects:
+        - project: project_1
+          datasets:
+            - dataset: dataset_1
+
+  * Each `dataset`_ has name (ie. dataset_1) and is a collection of `data`_ objects each one containing a type and a path. The path (``data_path``) points to the file that should be processed. The type (``data_type``) specifies what the input file is and how the file will be processed.
+
+  .. code-block:: yaml
+
+    - dataset: dataset_1
+      data:
+        - data_type: h5ad
+          data_path: /path/to/project_1/dataset_1/anndata.h5ad
+        - data_type: raw_image
+          data_path: /path/to/project_1/dataset_1/raw_image.tif
+        - data_type: label_image
+          data_path: /path/to/project_1/dataset_1/label_image.tif
+
+  * The final ``vitessce_options`` section helps configure properties to map the processed that to visual compoentents. For exmaple for Spatial data where the embedings are stored inside the object. For mappings, it tells the embedings to use and the range to map the values to (in this case from 0..1).
+
+  .. code-block:: yaml
+
+      vitessce_options:
+        spatial:
+          xy: "obsm/spatial"
+        mappings:
+          obsm/X_umap: [0,1]
+
+
+The more detailed list of parameters is as follows:
 
 .. list-table:: 
     :widths: 10 15
@@ -120,7 +179,7 @@ Project
 
 
 Multiple projects can be defined in a single parameters file, and each can define multiple datasets.
-Each project item is defined by the following keys
+Each project item is defined by the following keys:
 
 .. list-table:: 
     :widths: 10 15
@@ -159,7 +218,7 @@ Dataset
 
 
 Multiple datasets belong to a single `project`_, and each dataset can contain multiple data files.
-Each dataset item is defined by the following keys
+Each dataset item is defined by the following keys:
 
 .. list-table:: 
     :widths: 10 15
@@ -228,7 +287,7 @@ Multiple data files belong to a single `dataset`_.
 A data item can define data files or images.
 
 Data files are processed into AnnData objects and written to Zarr.
-Image ilres are written to Zarr through `bioformats2raw`.
+Image ilres are written to Zarr through `bioformats2raw <https://github.com/glencoesoftware/bioformats2raw>`__.
 
 For image files the supported image format is ``tif``.
 Images can be either raw images (microscopy images) or label images (containing segmentations).
@@ -242,7 +301,7 @@ are stored in separate ``tif`` files the pipeline can concatenate them to then c
 Each data item must define at least
 its ``data_type`` and ``data_path``.  
 
-Supported values are 
+Supported values are:
 
 .. list-table:: 
     :widths: 10 10
@@ -281,7 +340,7 @@ Supported values are
           * ``merscope`` requires a path to a MERSCOPE output directory
 
 
-Each data item is defined with the following keys
+Each data item is defined with the following keys:
 
 .. list-table:: 
     :widths: 10 15
@@ -352,7 +411,7 @@ Available ``args`` depend of the ``data_type`` of each `data`_ item.
 
 Image files data types ``raw_image`` and ``label_image`` take no ``args``.
 
-Possible values for each of the supported data types are as follows
+Possible values for each of the supported data types are as follows:
 
 .. code-block:: yaml
 
@@ -411,7 +470,7 @@ depending on their ``file_type``.
 | Label images can be generated from data from ``file_type``'s ``visium``, ``xenium`` or ``merscope``.
 | Raw images can be preprocess from ``file_type`` ``merscope``.
 
-Image-data files of type ``visium`` can take the following ``args``
+Image-data files of type ``visium`` can take the following ``args``:
 
 .. code-block:: yaml
 
@@ -425,7 +484,7 @@ Image-data files of type ``visium`` can take the following ``args``
         sample_id: ["sample_id_1"] # optional key within anndata.uns["spatial"]. Defaults to the first key.
 
 
-Image-data files of type ``xenium`` can take the following ``args``
+Image-data files of type ``xenium`` can take the following ``args``:
 
 .. code-block:: yaml
 
@@ -438,7 +497,7 @@ Image-data files of type ``xenium`` can take the following ``args``
         resolution: 0.2125 # optional pixel resolution. Defaults to 0.2125
 
 
-Image-data files of type ``merscope`` can take the following ``args``
+Image-data files of type ``merscope`` can take the following ``args``:
 
 .. code-block:: yaml
 
@@ -462,7 +521,7 @@ One Vitessce config file is generated per `dataset`_.
 Include relevant information from your data to be visualized.
 All values are optional as they depend on them existing in your data.
 
-Values that can be specified are as follows
+Values that can be specified are as follows:
 
 .. code-block:: yaml
 
