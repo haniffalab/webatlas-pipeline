@@ -13,7 +13,7 @@ Sample details
    * - Study Name
      - `High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue <https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast>`__
    * - WebAtlas
-     - `Demo <https://webatlas.cog.sanger.ac.uk/latest/index.html?config=https://webatlas.cog.sanger.ac.uk/configs/dev/visium/human/breast/cancer/config.json>`__     
+     - `Demo <https://webatlas.cog.sanger.ac.uk/latest/index.html?config=https://webatlas.cog.sanger.ac.uk/configs/dev/visium/human/breast/cancer/config.json>`__
    * - Tissue
      - Human breast cancer
    * - Data Source Link
@@ -22,7 +22,7 @@ Sample details
 Steps to reproduce
 ******************
 
-Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
+Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser.
 It can be followed on any POSIX compatible system (Linux, OS X, etc).
 Examples require you to have gone through the :ref:`Environment setup first <environment>`
 
@@ -47,7 +47,7 @@ Examples require you to have gone through the :ref:`Environment setup first <env
    Length: 34479952 (33M) [application/x-tar]
    Saving to: ‘input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz
 
-   ./input/CytAssist_FFPE_Human_Breas 100%[================================================================>]  32.88M  --.-KB/s    in 0s      
+   ./input/CytAssist_FFPE_Human_Breas 100%[================================================================>]  32.88M  --.-KB/s    in 0s
 
    2023-05-17 21:37:58 (7.16 MB/s) - ‘input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz’ saved [34479952/34479952]
 
@@ -76,7 +76,7 @@ Examples require you to have gone through the :ref:`Environment setup first <env
 .. code-block:: shell
    :caption: Input
 
-   nextflow run main.nf \
+   nextflow run haniffalab/webatlas-pipeline -r dev \
          -params-file templates/examples/CytAssist_FFPE_Human_Breast_Cancer.yaml \
          -entry Full_pipeline
 
@@ -98,7 +98,7 @@ Examples require you to have gone through the :ref:`Environment setup first <env
 **#4. Check execution was successful**
 
 The output from the pipeline will indicate if the execution was successful. You can also
-verify the expected directories are created. 
+verify the expected directories are created.
 
 .. code-block:: shell
    :caption: Input
@@ -119,7 +119,7 @@ verify the expected directories are created.
 **#5. Serve the data output through a local web server**
 
 To browse and explore the data, you need to serve the output data through a web server.
-You can use your preferred web server, but you must ensure the data is served over port 3000, 
+You can use your preferred web server, but you must ensure the data is served over port 3000,
 at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-Origin header.
 
 .. code-block:: shell
@@ -134,7 +134,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 
    http-server version: 14.1.1
 
-   http-server settings: 
+   http-server settings:
    CORS: true
    Cache: 3600 seconds
    Connection Timeout: 120 seconds

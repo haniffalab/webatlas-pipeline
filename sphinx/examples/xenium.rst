@@ -13,7 +13,7 @@ Sample details
    * - Study Name
      - `High resolution mapping of the breast cancer tumor microenvironment using integrated single cell, spatial and in situ analysis of FFPE tissue <https://www.10xgenomics.com/products/xenium-in-situ/preview-dataset-human-breast>`__
    * - WebAtlas
-     - `Demo <https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=https://webatlas.cog.sanger.ac.uk/configs/dev/xenium/human/breast/cancer/config.json>`__     
+     - `Demo <https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&config=https://webatlas.cog.sanger.ac.uk/configs/dev/xenium/human/breast/cancer/config.json>`__
    * - Tissue
      - Human breast cancer
    * - Data Source Link
@@ -22,7 +22,7 @@ Sample details
 Steps to reproduce
 ******************
 
-Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
+Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser.
 It can be followed on any POSIX compatible system (Linux, OS X, etc).
 Examples require you to have gone through the :ref:`Environment setup first <environment>`
 
@@ -45,7 +45,7 @@ Examples require you to have gone through the :ref:`Environment setup first <env
    Length: 9861155708 (9.2G) [application/zip]
    Saving to: ‘input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’
 
-   Xenium_FFPE_Human_Breast_Cancer_Rep1 100%[===================================================================>]   9.18G  14.3MB/s    in 10m 6s  
+   Xenium_FFPE_Human_Breast_Cancer_Rep1 100%[===================================================================>]   9.18G  14.3MB/s    in 10m 6s
 
    2023-05-17 15:15:31 (15.5 MB/s) - ‘input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’ saved [9861155708/9861155708]
 
@@ -61,21 +61,21 @@ Examples require you to have gone through the :ref:`Environment setup first <env
 
    Archive:  input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
       creating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
-     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/experiment.xenium  
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/experiment.xenium
       creating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/
-     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz  
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/cell_feature_matrix/barcodes.tsv.gz
             ...
-            ... 
-     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv  
-     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json  
-     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html 
+            ...
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/metrics_summary.csv
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json
+     inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html
 
 **#3. Run the pipeline**
 
 .. code-block:: shell
    :caption: Input
 
-   nextflow run main.nf -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml -entry Full_pipeline
+   nextflow run haniffalab/webatlas-pipeline -r dev -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml -entry Full_pipeline
 
 .. code-block:: shell
    :caption: Output
@@ -96,7 +96,7 @@ Examples require you to have gone through the :ref:`Environment setup first <env
 **#4. Check execution was successful**
 
 The output from the pipeline will indicate if the execution was successful. You can also
-verify the expected directories are created. 
+verify the expected directories are created.
 
 .. code-block:: shell
    :caption: Input
@@ -116,7 +116,7 @@ verify the expected directories are created.
 **#5. Serve the data output through a local web server**
 
 To browse and explore the data, you need to serve the output data through a web server.
-You can use your preferred web server, but you must ensure the data is served over port 3000, 
+You can use your preferred web server, but you must ensure the data is served over port 3000,
 at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-Origin header.
 
 .. code-block:: shell
@@ -131,7 +131,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 
    http-server version: 14.1.1
 
-   http-server settings: 
+   http-server settings:
    CORS: true
    Cache: 3600 seconds
    Connection Timeout: 120 seconds

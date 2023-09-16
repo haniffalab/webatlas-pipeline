@@ -9,86 +9,6 @@
 Installation
 ============
 
-**#1. Download the WebAtlas Pipeline from GitHub**
-
-Download the WebAtlas Pipeline release. You can look for previous `releases on GitHub`_.
-
-.. code-block:: shell
-   :caption: Input
-
-   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.2.tar.gz
-
-.. code-block:: shell
-   :caption: Output
-    
-   Resolving github.com (github.com)... 140.82.121.3
-   Connecting to github.com (github.com)|140.82.121.3|:443... connected.
-   HTTP request sent, awaiting response... 302 Found
-   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2 [following]
-   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2
-   Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
-   Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
-   HTTP request sent, awaiting response... 200 OK
-   Length: unspecified [application/x-gzip]
-   Saving to: ‘v0.3.2.tar.gz’
-
-   v0.3.2.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
-
-   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.2.tar.gz’ saved [2835534]
-
-**#2. Extract the WebAtlas Pipeline**
-
-Extract the WebAtlas compressed tag and change directory into the new repo:
-
-.. code-block:: shell
-   :caption: Input
-
-   tar -xzvf ./v0.3.2.tar.gz
-   cd webatlas-pipeline-0.3.2
-
-.. code-block:: shell
-   :caption: Output
-    
-   webatlas-pipeline-0.3.2/
-   webatlas-pipeline-0.3.2/.github/
-   ...
-   ...
-   webatlas-pipeline-0.3.2/tests/input/simple_config.json
-   webatlas-pipeline-0.3.2/tests/test_class.py
-
-
-**#3. Setup the environment**
-
-Follow the Environment Setup instructions using conda or manually installing the required components to run WebAtlas.
-
-
-.. _environment:
-
-Environment setup
-=================
-
-.. _environment_conda:
-
-Using conda
------------
-
-If you have `conda`_ or `mamba`_ already installed then you can use the ``environment.yaml`` file included in the WebAtlas release to create the environment.
-
-.. code-block:: shell
-   :caption: Input
-
-   conda env create -f environment.yaml
-
-Then make sure you activate the ``webatlas`` environment beforer you use the pipeline.
-
-.. code-block:: shell
-   :caption: Input
-
-   conda activate webatlas
-
-
-.. _environment_manual:
-
 Manual setup
 ------------
 
@@ -119,7 +39,7 @@ Make sure Java 11 or later is installed on your computer by using the command:
 
 .. code-block:: shell
    :caption: Output
-   
+
    openjdk version "11.0.18" 2023-01-17
    OpenJDK Runtime Environment (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1)
    OpenJDK 64-Bit Server VM (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1, mixed mode, sharing)
@@ -135,11 +55,11 @@ Enter the following command in your terminal to install nextflow in the current 
 
 .. code-block:: shell
    :caption: Output
-   
+
    CAPSULE: Downloading dependency org.apache.ivy:ivy:jar:2.5.1
    ...
    CAPSULE: Downloading dependency io.nextflow:nf-commons:jar:23.04.1
-                                                                        
+
          N E X T F L O W
          version 23.04.1 build 5866
          created 15-04-2023 06:51 UTC (07:51 BST)
@@ -177,12 +97,26 @@ Make sure Docker Engine 20.10 or later is installed on your computer by using th
 
 Follow the `official Docker Install guide`_ if it is not installed already.
 
-**#5. Build local docker images (optional)**
+**#5. Clone the repository**
+
+This will clone the repository to your home directory under folder .nextflow/assets/:
+
+.. code-block:: shell
+   :caption: Input
+
+   nextflow pull haniffalab/webatlas-pipeline
+
+.. code-block:: shell
+   :caption: Output
+
+   Checking haniffalab/webatlas-pipeline ...
+        downloaded from https://github.com/haniffalab/webatlas-pipeline.git - revision: 1131fcc69c [main]
+
+**#6. Build local docker images (optional)**
 
 When using docker the pipleine can use local images or pull them from DockerHub. If you want to build the images yourself you can do it like this:
 
-:: 
+::
 
-    cd docker
+    cd ~/.nextflow/assets/haniffalab/webatlas-pipeline/docker/
     ./build-docker-imgs.sh
-
