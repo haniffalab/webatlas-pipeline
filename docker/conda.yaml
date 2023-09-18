@@ -47,4 +47,4 @@ dependencies:
       - xmlschema==1.11.3
       - zarr==2.11.0
       - zipp==3.7.0
-      - vitessce==3.0.4
+      - vitessce==3.1.0
