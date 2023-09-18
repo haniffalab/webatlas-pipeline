@@ -1,17 +1,41 @@
+server_path: localhost
+project_name: HZ_HLB
+vitessce_title: "lowerlimb test"
+vitessce_description: ""
 outdir: ./output/
 
 data:
   -
-    anndata: /path/to/iss/anndata.zarr/
-    label_image: /path/to/iss/label.tif
-    offset: 0
-    features: celltype
+    uid: iss_demo
+    anndata_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-iss-integrated-rotated_90-anndata.zarr
+    id_offset: 0
+    vitessce_factors:
+    vitessce_sets: obs/celltype
+    vitessce_matrix: X
+    with_spatial_view: true
+    raw_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/integrated-test/0.0.1/rotated/hindlimb-iss-rotated_90-raw.zarr
+    label_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230419_multimodal/0.0.1/hindlimb-hindlimb_subtype-label.zarr
+    vitessce_mappings:
+    vitessce_spatial_xy:
+        - obsm/spatial: [0, 1]
   -
-    anndata: /path/to/visium/anndata.zarr/
-    label_image: /path/to/visium/label.tif
-    offset: 1000000
-    features: /path/to/c2l_output.h5ad
+    uid: visium_demo
+    anndata_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-visium-integrated-WSSS_THYst9699525-anndata.zarr
+    id_offset: 1000000
+    vitessce_factors:
+    vitessce_sets: obs/celltype
+    vitessce_matrix: X
+    with_spatial_view: true
+    raw_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/Visium/0.0.1/Hindlimb_visium_slide_7_raw.zarr
+    label_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-visium-integrated-WSSS_THYst9699525-label.zarr
+    vitessce_mappings:
+    vitessce_spatial_xy:
+        - obsm/spatial: [0, 1]
   -
-    anndata: /path/to/scrnaseq/anndata.zarr/
-    offset: 2000000
-    features: celltype
+    uid: scrnaseq_demo
+    anndata_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-scrnaseq-integrated-anndata.zarr
+    id_offset: 2000000
+    vitessce_factors:
+    vitessce_sets: obs/celltype
+    vitessce_matrix: X
+    with_spatial_view: false
