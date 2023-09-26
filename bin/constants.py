@@ -6,6 +6,9 @@ from vitessce import (
     CoordinationType as ct,
 )
 
+ANNDATA_ZARR_SUFFIX = "anndata.zarr"
+MOLECULES_JSON_SUFFIX = "molecules.json"
+
 SINGLE_ZARR = "anndata.zarr"
 OBS = "obs"
 
@@ -93,8 +96,8 @@ DEFAULT_LAYOUTS = {
         cm.LAYER_CONTROLLER.value,
         cm.SPATIAL.value,
         hconcat(
-            vconcat(cm.SCATTERPLOT.value, cm.SCATTERPLOT.value),
-            vconcat(cm.FEATURE_LIST.value, cm.OBS_SETS.value),
+            vconcat(cm.SCATTERPLOT.value, cm.OBS_SETS.value),
+            cm.FEATURE_LIST.value,
         ),
         cm.GENOMIC_PROFILES.value,
     ),

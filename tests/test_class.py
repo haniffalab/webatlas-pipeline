@@ -18,6 +18,7 @@ from bin.consolidate_md import consolidate
 from bin.router import process
 from bin.ome_zarr_metadata import get_metadata
 from bin.generate_image import create_img
+from bin.build_config_multimodal import write_json as write_json_multimodal
 
 # from bin.build_config import write_json
 
@@ -298,3 +299,60 @@ class TestClass:
     #         with open(output_file) as jsonfile:
     #             output_json = json.load(jsonfile)
     #         assert output_json == expected_json
+
+    def test_build_config_multimodal(self):
+        input = {
+            "project": "test_project",
+            "datasets": {
+                "dataset_1": {
+                    "file_paths": ["test_project-dataset_1-anndata.zarr"],
+                    "images": {
+                        "raw": [
+                            {
+                                "path": "/path/to/raw/image.zarr",
+                                "md": {
+                                    "dimOrder": "XYZT",
+                                    "channel_names": ["Channel_1"],
+                                    "X": 10,
+                                    "Y": 10,
+                                    "Z": 1,
+                                    "C": 1,
+                                    "T": 0,
+                                },
+                            }
+                        ],
+                        "label": [
+                            {
+                                "path": "/path/to/label/image.zarr",
+                                "md": {
+                                    "dimOrder": "XYZT",
+                                    "channel_names": ["Channel_1"],
+                                    "X": 10,
+                                    "Y": 10,
+                                    "Z": 1,
+                                    "C": 1,
+                                    "T": 0,
+                                },
+                            }
+                        ],
+                    },
+                    "options": {
+                        "matrix": "X",
+                        "factors": ["obs/sample"],
+                        "mappings": "obsm/X_umap",
+                        "sets": ["obs/cluster"],
+                        "spatial": {"xy": "obsm/spatial"},
+                    },
+                    "extended_features": "celltype",
+                    "obs_type": "cell",
+                    "is_spatial": True,
+                }
+            },
+            "config_filename_suffix": "config.json",
+        }
+
+        write_json_multimodal(**input)
+
+        assert os.path.exists(
+            f"{input['project']}-multimodal-{input['config_filename_suffix']}"
+        )

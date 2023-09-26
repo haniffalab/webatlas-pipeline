@@ -8,8 +8,7 @@ Processes molecules files
 import csv
 import json
 import fire
-
-SUFFIX = "molecules.json"
+from constants import MOLECULES_JSON_SUFFIX
 
 
 def tsv_to_json(
@@ -97,7 +96,7 @@ def tsv_to_json(
                 # TODO: add message
                 raise e
 
-    json_file = f"{stem}-{SUFFIX}"
+    json_file = f"{stem}-{MOLECULES_JSON_SUFFIX}"
 
     with open(json_file, "w") as out_file:
         json.dump(molecules_json, out_file)

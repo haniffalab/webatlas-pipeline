@@ -27,7 +27,7 @@ pytz==2021.3
 pyvips==2.2.1
 PyYAML==6.0
 regex==2022.7.25
-scanpy==1.9.1
+scanpy==1.9.3
 scikit-image==0.19.3
 scipy==1.7.3
 Shapely==1.8.0
@@ -39,4 +39,4 @@ xlrd==1.2.0
 xmlschema==1.11.3
 zarr==2.11.0
 zipp==3.7.0
-vitessce==3.0.4
+vitessce==3.1.0

@@ -67,8 +67,10 @@ def concat_features(
 
     if features.endswith(".h5ad") and os.path.isfile(features):
         adata = concat_matrix_from_cell2location(adata, features)
-    else:
-        adata = concat_matrix_from_obs(adata, features)
+    elif features.startswith("obs/"):
+        adata = concat_matrix_from_obs(adata, features.split("/")[1])
+    elif features.startswith("obsm/"):
+        adata = concat_matrix_from_obsm(adata, features.split("/")[1])
 
     if no_save:
         return adata
@@ -108,6 +110,22 @@ def concat_matrix_from_obs(
     ext_matrix = pd.get_dummies(adata.obs[obs], dtype="float32")
 
     return concat_matrices(adata, ext_matrix, obs, feature_name, obs_feature_name)
+
+
+def concat_matrix_from_obsm(
+    data: Union[ad.AnnData, str],
+    obsm: str = "celltype",
+    feature_name: str = "gene",
+    obsm_feature_name: str = None,
+):
+    if isinstance(data, ad.AnnData):
+        adata = data
+    else:
+        adata = read_anndata(data)
+
+    return concat_matrices(
+        adata, adata.obsm[obsm], "celltype", feature_name, obsm_feature_name
+    )
 
 
 def concat_matrix_from_cell2location(
