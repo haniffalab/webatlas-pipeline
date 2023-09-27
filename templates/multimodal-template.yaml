@@ -3,15 +3,17 @@ project: HZ_HLB
 vitessce_title: "lowerlimb test"
 vitessce_description: ""
 outdir: ./output/
+extend_feature_name: "celltype"
 
 data:
   -
     dataset: iss_demo
     anndata_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-iss-integrated-rotated_90-anndata.zarr
     id_offset: 0
-    with_spatial_view: true
+    is_spatial: true
     raw_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/integrated-test/0.0.1/rotated/hindlimb-iss-rotated_90-raw.zarr
     label_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230419_multimodal/0.0.1/hindlimb-hindlimb_subtype-label.zarr
+    extend_feature_path: obs/celltype
     vitessce_options:
       spatial:
         xy: "obsm/spatial"
@@ -26,9 +28,10 @@ data:
     dataset: visium_demo
     anndata_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-visium-integrated-WSSS_THYst9699525-anndata.zarr
     id_offset: 1000000
-    with_spatial_view: true
+    is_spatial: true
     raw_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/Visium/0.0.1/Hindlimb_visium_slide_7_raw.zarr
     label_image_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-visium-integrated-WSSS_THYst9699525-label.zarr
+    extend_feature_path: /path/to/c2l_output.h5ad
     vitessce_options:
       spatial:
         xy: "obsm/spatial"
@@ -37,7 +40,8 @@ data:
     dataset: scrnaseq_demo
     anndata_path: https://hindlimb.cog.sanger.ac.uk/datasets/20230412_multimodal/integrated/0.0.1/hindlimb-scrnaseq-integrated-anndata.zarr
     id_offset: 2000000
-    with_spatial_view: false
+    is_spatial: false
+    extend_feature_path: obs/celltype
     vitessce_options:
       spatial:
         xy: "obsm/spatial"

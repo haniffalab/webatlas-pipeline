@@ -6,10 +6,14 @@ from bin.build_config_multimodal import write_json as write_json_multimodal
 class TestClass:
     def test_build_config_multimodal(self):
         input = {
+            "integrated": True,
             "project": "test_project",
+            "extended_features": "celltype",
+            "url": "http://localhost/",
+            "config_filename_suffix": "config.json",
             "datasets": {
-                "dataset_1": {
-                    "file_paths": ["test_project-dataset_1-anndata.zarr"],
+                "iss_dataset": {
+                    "file_paths": ["test_project-iss_dataset-anndata.zarr"],
                     "images": {
                         "raw": [
                             {
@@ -47,13 +51,21 @@ class TestClass:
                         "sets": ["obs/cluster"],
                         "spatial": {"xy": "obsm/spatial"},
                     },
-                    "extended_features": "celltype",
                     "obs_type": "cell",
                     "is_spatial": True,
-                }
+                },
+                "scrnaseq_dataset": {
+                    "file_paths": ["test_project-scrnaseq_dataset-anndata.zarr"],
+                    "options": {
+                        "matrix": "X",
+                        "factors": ["obs/sample"],
+                        "mappings": {"obsm/X_umap": [0, 1]},
+                        "spatial": {"xy": "obsm/spatial"},
+                    },
+                    "obs_type": "cell",
+                    "is_spatial": False,
+                },
             },
-            "url": "http://localhost/",
-            "config_filename_suffix": "config.json",
         }
 
         write_json_multimodal(**input)

@@ -23,8 +23,9 @@ from constants import ANNDATA_ZARR_SUFFIX, MOLECULES_JSON_SUFFIX
 def write_json(
     project: str = "",
     datasets: dict[str, dict[str]] = {},
+    extended_features: T.Union[str, list] = [],
     url: str = "",
-    integrated: bool = False,
+    integrated: bool = True,
     layout: str = "minimal",
     custom_layout: str = None,
     config_filename_suffix: str = "config.json",
@@ -41,7 +42,6 @@ def write_json(
                 "file_paths" : [],
                 "images": {"raw": [], "label": []},
                 "options": {},
-                "extended_features": [],
                 "obs_type": "cell"
                 "is_spatial": True // if has images should be enough
                 }
@@ -52,6 +52,7 @@ def write_json(
             Defaults to "".
         integrated (bool, optional): Whether datasets match on features and should
             share same coordination values on them.
+            // @TODO: consider if datasets instead of single dataset should be enough?
         layout (str, optional): Type of predefined layout to use. Defaults to "minimal".
         custom_layout (str, optional): String defining a Vitessce layout following its
             alternative syntax.
@@ -70,20 +71,24 @@ def write_json(
         description=description,
     )
 
+    has_multiple_features = False
+    if len(extended_features):
+        has_multiple_features = True
+        if isinstance(extended_features, str):
+            extended_features = [extended_features]
+
+    features = {"gene": "expression"}
+
     for dataset_name in datasets.keys():
         dataset = datasets[dataset_name]
         config_dataset = config.add_dataset(name=dataset_name, uid=dataset_name)
-        has_multiple_features = False
+
         # Add non-image files
         for file_path in dataset["file_paths"]:
             if ANNDATA_ZARR_SUFFIX in file_path:
                 # if 1 featureType (e.g. genes) then 1 OBS_FEATURE_MATRIX_ANNDATA_ZARR
                 # if 2+ featureTypes (e.g. genes + celltypes) then 1 + n featureTypes OBS_FEATURE_MATRIX_ANNDATA_ZARR
-                if "extended_features" in dataset and len(dataset["extended_features"]):
-                    has_multiple_features = True
-
-                    if isinstance(dataset["extended_features"], str):
-                        dataset["extended_features"] = [dataset["extended_features"]]
+                if has_multiple_features:
                     # Add 'combined' matrix
                     config_dataset.add_file(
                         ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
@@ -115,7 +120,10 @@ def write_json(
                         },
                     )
 
-                    for feature in dataset["extended_features"]:
+                    for feature in extended_features:
+                        feature_value_type = (
+                            "abundance" if feature == "celltype" else "expression"
+                        )
                         # Add extended matrix
                         config_dataset.add_file(
                             ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
@@ -128,12 +136,12 @@ def write_json(
                                 ct.OBS_TYPE.value: dataset["obs_type"]
                                 if "obs_type" in dataset
                                 else "cell",
-                                ct.FEATURE_TYPE.value: dataset,
-                                ct.FEATURE_TYPE.value: "abundance"
-                                if feature == "celltype"
-                                else "expression",
+                                ct.FEATURE_TYPE.value: feature,
+                                ct.FEATURE_VALUE_TYPE.value: feature_value_type,
                             },
                         )
+
+                        features[feature] = feature_value_type
 
                     # Add other options (locations, embeddings, labels)
                     options = build_anndatazarr_options(
@@ -159,9 +167,14 @@ def write_json(
                         coordination_values={
                             ct.OBS_TYPE.value: dataset["obs_type"]
                             if "obs_type" in dataset
-                            else "cell"
+                            else "cell",
+                            ct.FEATURE_TYPE.value: "gene",
+                            ct.FEATURE_VALUE_TYPE.value: "expression",
                         },
                     )
+
+                if not dataset["is_spatial"] and "mappings" in dataset["options"]:
+                    config.add_view(vt.SCATTERPLOT, dataset=config_dataset)
 
             if MOLECULES_JSON_SUFFIX in file_path:
                 config_dataset.add_file(
@@ -189,17 +202,35 @@ def write_json(
                 },
             )
 
-        config_json = config.to_dict()
+            config.add_view(vt.SPATIAL, dataset=config_dataset)
+            config.add_view(
+                vt.LAYER_CONTROLLER,
+                dataset=config_dataset,
+            )
 
-        if outdir and not os.path.isdir(outdir):
-            os.mkdir(outdir)
-        with open(
-            os.path.join(
-                outdir or "", f"{project}-multimodal-{config_filename_suffix}"
-            ),
-            "w",
-        ) as out_file:
-            json.dump(config_json, out_file, indent=2)
+    for feature in features:
+        ftype, fvalue_type = config.add_coordination(
+            ct.FEATURE_TYPE, ct.FEATURE_VALUE_TYPE
+        )
+        ftype.set_value(feature)
+        fvalue_type.set_value(features[feature])
+
+        config.add_view(
+            vt.FEATURE_LIST,
+            dataset_uid=list(datasets.keys())[0],
+        ).use_coordination(ftype, fvalue_type)
+
+    # @TODO: set layout
+
+    config_json = config.to_dict()
+
+    if outdir and not os.path.isdir(outdir):
+        os.mkdir(outdir)
+    with open(
+        os.path.join(outdir or "", f"{project}-multimodal-{config_filename_suffix}"),
+        "w",
+    ) as out_file:
+        json.dump(config_json, out_file, indent=2)
 
 
 def build_anndatazarr_options(
