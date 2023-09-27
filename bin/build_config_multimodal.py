@@ -134,22 +134,7 @@ def write_json(
                         },
                     )
 
-                    # Add gene matrix
-                    config_dataset.add_file(
-                        ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
-                        url=os.path.join(url, os.path.basename(file_path)),
-                        options={
-                            "path": dataset.get("options", {}).get("matrix", "X"),
-                            "featureFilterPath": "var/is_gene",
-                        },
-                        coordination_values={
-                            ct.OBS_TYPE.value: dataset_obs_type,
-                            ct.FEATURE_TYPE.value: "gene",
-                            ct.FEATURE_VALUE_TYPE.value: "expression",
-                        },
-                    )
-
-                    for feature in extended_features:
+                    for feature in ["gene", *extended_features]:
                         # Add extended matrix
                         config_dataset.add_file(
                             ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
@@ -234,11 +219,23 @@ def write_json(
                 },
             )
 
-            config.add_view(vt.SPATIAL, dataset=config_dataset)
+            spatial_coord = [
+                obs_coordination[dataset_obs_type],
+                *config.add_coordination(
+                    ct.SPATIAL_IMAGE_LAYER,
+                    ct.SPATIAL_SEGMENTATION_LAYER,
+                    ct.SPATIAL_ZOOM,
+                ),
+            ]
+
+            config.add_view(vt.SPATIAL, dataset=config_dataset).use_coordination(
+                *spatial_coord,
+                multi_ftype if has_multiple_features else features["gene"]["ftype"],
+            )
             config.add_view(
                 vt.LAYER_CONTROLLER,
                 dataset=config_dataset,
-            )
+            ).use_coordination(*spatial_coord)
 
     # Add feature lists
     for feature in features:
