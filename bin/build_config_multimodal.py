@@ -71,33 +71,64 @@ def write_json(
         description=description,
     )
 
+    features = {
+        "gene": {
+            "value_type": "expression",
+            "ftype": config.add_coordination(ct.FEATURE_TYPE)[0].set_value("gene"),
+            "fvalue_type": config.add_coordination(ct.FEATURE_VALUE_TYPE)[0].set_value(
+                "expression"
+            ),
+        }
+    }
+
     has_multiple_features = False
     if len(extended_features):
         has_multiple_features = True
         if isinstance(extended_features, str):
             extended_features = [extended_features]
 
-    features = {"gene": "expression"}
+        # Set coordination types for features
+        for feature in extended_features:
+            feature_value_type = "abundance" if feature == "celltype" else "expression"
+            features.setdefault(feature, {})["value_type"] = feature_value_type
+            features.setdefault(feature, {})["ftype"] = config.add_coordination(
+                ct.FEATURE_TYPE
+            )[0].set_value(feature)
+            features.setdefault(feature, {})["fvalue_type"] = config.add_coordination(
+                ct.FEATURE_VALUE_TYPE
+            )[0].set_value(feature_value_type)
 
+        multi_ftype, *_ = config.add_coordination(ct.FEATURE_TYPE)
+        multi_ftype.set_value("combined")
+
+    # Use dict to save coordination types for observations
+    obs_coordination = {}
+
+    # Add datasets to config
     for dataset_name in datasets.keys():
         dataset = datasets[dataset_name]
         config_dataset = config.add_dataset(name=dataset_name, uid=dataset_name)
+
+        dataset_obs_type = dataset.get("obs_type", "cell")
+
+        if dataset_obs_type not in obs_coordination:
+            obs_coordination[dataset_obs_type] = config.add_coordination(ct.OBS_TYPE)[
+                0
+            ].set_value(dataset_obs_type)
 
         # Add non-image files
         for file_path in dataset["file_paths"]:
             if ANNDATA_ZARR_SUFFIX in file_path:
                 # if 1 featureType (e.g. genes) then 1 OBS_FEATURE_MATRIX_ANNDATA_ZARR
-                # if 2+ featureTypes (e.g. genes + celltypes) then 1 + n featureTypes OBS_FEATURE_MATRIX_ANNDATA_ZARR
+                # if 2+ featureTypes (e.g. genes + celltypes) then 1 + n * OBS_FEATURE_MATRIX_ANNDATA_ZARR
                 if has_multiple_features:
                     # Add 'combined' matrix
                     config_dataset.add_file(
                         ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
                         url=os.path.join(url, os.path.basename(file_path)),
-                        options={"path": dataset["options"]["matrix"] or "X"},
+                        options={"path": dataset.get("options", {}).get("matrix", "X")},
                         coordination_values={
-                            ct.OBS_TYPE.value: dataset["obs_type"]
-                            if "obs_type" in dataset
-                            else "cell",
+                            ct.OBS_TYPE.value: dataset_obs_type,
                             ct.FEATURE_TYPE.value: "combined",
                             ct.FEATURE_VALUE_TYPE.value: "expression",
                         },
@@ -108,40 +139,33 @@ def write_json(
                         ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
                         url=os.path.join(url, os.path.basename(file_path)),
                         options={
-                            "path": dataset["options"]["matrix"] or "X",
+                            "path": dataset.get("options", {}).get("matrix", "X"),
                             "featureFilterPath": "var/is_gene",
                         },
                         coordination_values={
-                            ct.OBS_TYPE.value: dataset["obs_type"]
-                            if "obs_type" in dataset
-                            else "cell",
+                            ct.OBS_TYPE.value: dataset_obs_type,
                             ct.FEATURE_TYPE.value: "gene",
                             ct.FEATURE_VALUE_TYPE.value: "expression",
                         },
                     )
 
                     for feature in extended_features:
-                        feature_value_type = (
-                            "abundance" if feature == "celltype" else "expression"
-                        )
                         # Add extended matrix
                         config_dataset.add_file(
                             ft.OBS_FEATURE_MATRIX_ANNDATA_ZARR,
                             url=os.path.join(url, os.path.basename(file_path)),
                             options={
-                                "path": dataset["options"]["matrix"] or "X",
+                                "path": dataset.get("options", {}).get("matrix", "X"),
                                 "featureFilterPath": f"var/is_{feature}",
                             },
                             coordination_values={
-                                ct.OBS_TYPE.value: dataset["obs_type"]
-                                if "obs_type" in dataset
-                                else "cell",
+                                ct.OBS_TYPE.value: dataset_obs_type,
                                 ct.FEATURE_TYPE.value: feature,
-                                ct.FEATURE_VALUE_TYPE.value: feature_value_type,
+                                ct.FEATURE_VALUE_TYPE.value: features[feature][
+                                    "value_type"
+                                ],
                             },
                         )
-
-                        features[feature] = feature_value_type
 
                     # Add other options (locations, embeddings, labels)
                     options = build_anndatazarr_options(
@@ -152,11 +176,7 @@ def write_json(
                             ft.ANNDATA_ZARR,
                             url=os.path.join(url, os.path.basename(file_path)),
                             options=options,
-                            coordination_values={
-                                ct.OBS_TYPE.value: dataset["obs_type"]
-                                if "obs_type" in dataset
-                                else "cell"
-                            },
+                            coordination_values={ct.OBS_TYPE.value: dataset_obs_type},
                         )
 
                 else:
@@ -165,16 +185,30 @@ def write_json(
                         url=os.path.join(url, os.path.basename(file_path)),
                         options=build_anndatazarr_options(dataset["options"]),
                         coordination_values={
-                            ct.OBS_TYPE.value: dataset["obs_type"]
-                            if "obs_type" in dataset
-                            else "cell",
+                            ct.OBS_TYPE.value: dataset_obs_type,
                             ct.FEATURE_TYPE.value: "gene",
                             ct.FEATURE_VALUE_TYPE.value: "expression",
                         },
                     )
 
-                if not dataset["is_spatial"] and "mappings" in dataset["options"]:
-                    config.add_view(vt.SCATTERPLOT, dataset=config_dataset)
+                if not dataset["is_spatial"] and len(
+                    dataset.get("options", {}).get("mappings", {})
+                ):
+                    embedding_type, *_ = config.add_coordination(ct.EMBEDDING_TYPE)
+                    embedding_type.set_value(
+                        list(dataset["options"]["mappings"].keys())[0]
+                        .split("/")[-1]
+                        .upper()
+                    )
+                    config.add_view(
+                        vt.SCATTERPLOT, dataset=config_dataset
+                    ).use_coordination(
+                        embedding_type,
+                        obs_coordination[dataset_obs_type],
+                        multi_ftype
+                        if has_multiple_features
+                        else features["gene"]["ftype"],
+                    )
 
             if MOLECULES_JSON_SUFFIX in file_path:
                 config_dataset.add_file(
@@ -193,9 +227,7 @@ def write_json(
                 ft.RASTER_JSON,
                 options=build_raster_options(dataset["images"], url=url),
                 coordination_values={
-                    ct.OBS_TYPE.value: dataset["obs_type"]
-                    if "obs_type" in dataset
-                    else "cell",
+                    ct.OBS_TYPE.value: dataset_obs_type,
                     ct.FEATURE_TYPE.value: "combined"
                     if has_multiple_features
                     else "expression",
@@ -208,20 +240,16 @@ def write_json(
                 dataset=config_dataset,
             )
 
+    # Add feature lists
     for feature in features:
-        ftype, fvalue_type = config.add_coordination(
-            ct.FEATURE_TYPE, ct.FEATURE_VALUE_TYPE
-        )
-        ftype.set_value(feature)
-        fvalue_type.set_value(features[feature])
-
         config.add_view(
             vt.FEATURE_LIST,
             dataset_uid=list(datasets.keys())[0],
-        ).use_coordination(ftype, fvalue_type)
+        ).use_coordination(features[feature]["ftype"], features[feature]["fvalue_type"])
 
     # @TODO: set layout
 
+    # Write json
     config_json = config.to_dict()
 
     if outdir and not os.path.isdir(outdir):
@@ -277,8 +305,10 @@ def build_raster_options(
     """Function that creates the View config's options for image files
 
     Args:
-        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for each image type key (raw and label)
-            a list of dictionaries (one per image of that type) with the corresponding path and metadata for that image.
+        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing
+            for each image type key (raw and label) a list of dictionaries
+            (one per image of that type) with the corresponding path and
+            metadata for that image.
             Defaults to {}.
         url (str): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files
@@ -292,7 +322,7 @@ def build_raster_options(
             image_name = os.path.splitext(os.path.basename(img["path"]))[0]
             channel_names = (
                 img["md"]["channel_names"]
-                if "channel_names" in img["md"] and len(img["md"]["channel_names"])
+                if len(img.get("md", {}).get("channel_names", []))
                 else (
                     ["Labels"]
                     if img_type == "label"
