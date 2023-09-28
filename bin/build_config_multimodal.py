@@ -101,8 +101,9 @@ def write_json(
         multi_ftype, *_ = config.add_coordination(ct.FEATURE_TYPE)
         multi_ftype.set_value("combined")
 
-    # Use dict to save coordination types for observations
+    # Use dicts to save coordination types for observations and embeddings
     obs_coordination = {}
+    embeddings_coordination = {}
 
     # Add datasets to config
     for dataset_name in datasets.keys():
@@ -164,7 +165,7 @@ def write_json(
                             coordination_values={ct.OBS_TYPE.value: dataset_obs_type},
                         )
 
-                else:
+                else:  # just one feature type
                     config_dataset.add_file(
                         ft.ANNDATA_ZARR,
                         url=os.path.join(url, os.path.basename(file_path)),
@@ -176,19 +177,26 @@ def write_json(
                         },
                     )
 
+                # If not spatial dataset add embedding view
                 if not dataset["is_spatial"] and len(
                     dataset.get("options", {}).get("mappings", {})
                 ):
-                    embedding_type, *_ = config.add_coordination(ct.EMBEDDING_TYPE)
-                    embedding_type.set_value(
+                    dataset_embedding_type = (
                         list(dataset["options"]["mappings"].keys())[0]
                         .split("/")[-1]
                         .upper()
                     )
+                    if dataset_embedding_type not in embeddings_coordination:
+                        (
+                            embeddings_coordination[dataset_embedding_type]
+                        ) = config.add_coordination(ct.EMBEDDING_TYPE)[0].set_value(
+                            dataset_embedding_type
+                        )
+
                     config.add_view(
                         vt.SCATTERPLOT, dataset=config_dataset
                     ).use_coordination(
-                        embedding_type,
+                        embeddings_coordination[dataset_embedding_type],
                         obs_coordination[dataset_obs_type],
                         multi_ftype
                         if has_multiple_features
@@ -219,6 +227,7 @@ def write_json(
                 },
             )
 
+            # If spatial dataset add spatial view (no embedding)
             spatial_coord = [
                 obs_coordination[dataset_obs_type],
                 *config.add_coordination(
@@ -232,6 +241,7 @@ def write_json(
                 *spatial_coord,
                 multi_ftype if has_multiple_features else features["gene"]["ftype"],
             )
+            # Make layer controller optional?
             config.add_view(
                 vt.LAYER_CONTROLLER,
                 dataset=config_dataset,

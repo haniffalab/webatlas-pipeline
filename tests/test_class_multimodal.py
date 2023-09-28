@@ -17,7 +17,7 @@ class TestClass:
                     "images": {
                         "raw": [
                             {
-                                "path": "/path/to/raw-image.zarr",
+                                "path": "/path/to/iss/raw-image.zarr",
                                 "md": {
                                     "dimOrder": "XYZT",
                                     "channel_names": ["Channel_1"],
@@ -31,7 +31,7 @@ class TestClass:
                         ],
                         "label": [
                             {
-                                "path": "/path/to/label-image.zarr",
+                                "path": "/path/to/iss/label-image.zarr",
                                 "md": {
                                     "dimOrder": "XYZT",
                                     "channel_names": ["Channel_1"],
@@ -48,10 +48,51 @@ class TestClass:
                         "matrix": "X",
                         "factors": ["obs/sample"],
                         "mappings": {"obsm/X_umap": [0, 1]},
-                        "sets": ["obs/cluster"],
+                        "sets": ["obs/cluster", "obs/celltype"],
                         "spatial": {"xy": "obsm/spatial"},
                     },
                     "obs_type": "cell",
+                    "is_spatial": True,
+                },
+                "visium_dataset": {
+                    "file_paths": ["test_project-visium_dataset-anndata.zarr"],
+                    "images": {
+                        "raw": [
+                            {
+                                "path": "/path/to/visium/raw-image.zarr",
+                                "md": {
+                                    "dimOrder": "XYZT",
+                                    "channel_names": ["Channel_1"],
+                                    "X": 10,
+                                    "Y": 10,
+                                    "Z": 1,
+                                    "C": 1,
+                                    "T": 0,
+                                },
+                            }
+                        ],
+                        "label": [
+                            {
+                                "path": "/path/to/visium/label-image.zarr",
+                                "md": {
+                                    "dimOrder": "XYZT",
+                                    "channel_names": ["Channel_1"],
+                                    "X": 10,
+                                    "Y": 10,
+                                    "Z": 1,
+                                    "C": 1,
+                                    "T": 0,
+                                },
+                            }
+                        ],
+                    },
+                    "options": {
+                        "matrix": "X",
+                        "factors": ["obs/sample"],
+                        "mappings": {"obsm/X_umap": [0, 1]},
+                        "spatial": {"xy": "obsm/spatial"},
+                    },
+                    "obs_type": "spot",
                     "is_spatial": True,
                 },
                 "scrnaseq_dataset": {
@@ -59,6 +100,7 @@ class TestClass:
                     "options": {
                         "matrix": "X",
                         "factors": ["obs/sample"],
+                        "sets": ["obs/celltype"],
                         "mappings": {"obsm/X_umap": [0, 1]},
                         "spatial": {"xy": "obsm/spatial"},
                     },
