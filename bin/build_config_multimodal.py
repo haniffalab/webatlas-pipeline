@@ -47,18 +47,13 @@ def write_json(
                 }
             }
             Defaults to {}.
+        extended_features (Union[list[str], str], optional): List of features or
+            string of single feature on which the expression matrix was extended
+            and var/is_{feature} is present.
+            Defaults to [].
         url (str, optional): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files.
             Defaults to "".
-        integrated (bool, optional): Whether datasets match on features and should
-            share same coordination values on them.
-            // @TODO: consider if datasets instead of single dataset should be enough?
-        layout (str, optional): Type of predefined layout to use. Defaults to "minimal".
-        custom_layout (str, optional): String defining a Vitessce layout following its
-            alternative syntax.
-            https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout
-            https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
-            Defaults to None.
         config_filename_suffix (str, optional): Config filename suffix.
             Defaults to "config.json".
         outdir (str, optional): Directory in which the config file will be written to.
@@ -290,11 +285,13 @@ def concat_views(views: list, axis: str = "v"):
     if len(views) <= 2:
         return hconcat(*views) if axis == "h" else vconcat(*views)
     nviews = []
+    # Make pairs and concatenate them
     for i, j in zip_longest(views[::2], views[1::2]):
         if j is not None:
             nviews.append(hconcat(i, j) if axis == "h" else vconcat(i, j))
         else:
             nviews.append(i)
+    # Recursive to concatenate pairs of concatenated pairs
     return concat_views(nviews, "v" if axis == "h" else "h")
 
 
