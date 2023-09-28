@@ -56,6 +56,9 @@ def write_json(
             Defaults to "".
         config_filename_suffix (str, optional): Config filename suffix.
             Defaults to "config.json".
+        title (str, optional): Data title to show in the visualization. Defaults to "".
+        description (str, optional): Data description to show in the visualization.
+            Defaults to "".
         outdir (str, optional): Directory in which the config file will be written to.
             Defaults to "./".
     """
