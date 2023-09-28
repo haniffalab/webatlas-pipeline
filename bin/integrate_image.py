@@ -9,8 +9,8 @@ from ome_zarr.reader import Reader
 from ome_zarr.io import parse_url
 
 
-def add_offset(label_image, offset: int):
-    max_id = np.max(label_image)
+def add_offset(label, offset: int):
+    max_id = np.max(label)
     mask = label != 0
     reindexed_label = (label + offset) * mask
     reindexed_max_id = np.max(reindexed_label)
