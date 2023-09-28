@@ -6,6 +6,7 @@ Generates a Vitessce View config
 """
 
 from __future__ import annotations
+from itertools import zip_longest
 import typing as T
 import os
 import fire
@@ -16,6 +17,8 @@ from vitessce import (
     FileType as ft,
     CoordinationType as ct,
     ViewType as vt,
+    hconcat,
+    vconcat,
 )
 from constants import ANNDATA_ZARR_SUFFIX, MOLECULES_JSON_SUFFIX
 
@@ -25,9 +28,6 @@ def write_json(
     datasets: dict[str, dict[str]] = {},
     extended_features: T.Union[str, list] = [],
     url: str = "",
-    integrated: bool = True,
-    layout: str = "minimal",
-    custom_layout: str = None,
     config_filename_suffix: str = "config.json",
     title: str = "",
     description: str = "",
@@ -104,6 +104,8 @@ def write_json(
     # Use dicts to save coordination types for observations and embeddings
     obs_coordination = {}
     embeddings_coordination = {}
+
+    config_views = []
 
     # Add datasets to config
     for dataset_name in datasets.keys():
@@ -193,14 +195,16 @@ def write_json(
                             dataset_embedding_type
                         )
 
-                    config.add_view(
-                        vt.SCATTERPLOT, dataset=config_dataset
-                    ).use_coordination(
-                        embeddings_coordination[dataset_embedding_type],
-                        obs_coordination[dataset_obs_type],
-                        multi_ftype
-                        if has_multiple_features
-                        else features["gene"]["ftype"],
+                    config_views.append(
+                        config.add_view(
+                            vt.SCATTERPLOT, dataset=config_dataset
+                        ).use_coordination(
+                            embeddings_coordination[dataset_embedding_type],
+                            obs_coordination[dataset_obs_type],
+                            multi_ftype
+                            if has_multiple_features
+                            else features["gene"]["ftype"],
+                        )
                     )
 
             if MOLECULES_JSON_SUFFIX in file_path:
@@ -237,27 +241,40 @@ def write_json(
                 ),
             ]
 
-            config.add_view(vt.SPATIAL, dataset=config_dataset).use_coordination(
-                *spatial_coord,
-                multi_ftype if has_multiple_features else features["gene"]["ftype"],
+            config_views.append(
+                config.add_view(vt.SPATIAL, dataset=config_dataset).use_coordination(
+                    *spatial_coord,
+                    multi_ftype if has_multiple_features else features["gene"]["ftype"],
+                )
             )
             # Make layer controller optional?
-            config.add_view(
-                vt.LAYER_CONTROLLER,
-                dataset=config_dataset,
-            ).use_coordination(*spatial_coord)
+            config_views.append(
+                config.add_view(
+                    vt.LAYER_CONTROLLER,
+                    dataset=config_dataset,
+                ).use_coordination(*spatial_coord)
+            )
 
     # Add feature lists
     for feature in features:
-        config.add_view(
-            vt.FEATURE_LIST,
-            dataset_uid=list(datasets.keys())[0],
-        ).use_coordination(features[feature]["ftype"], features[feature]["fvalue_type"])
+        config_views.append(
+            config.add_view(
+                vt.FEATURE_LIST,
+                dataset_uid=list(datasets.keys())[0],
+            ).use_coordination(
+                features[feature]["ftype"], features[feature]["fvalue_type"]
+            )
+        )
 
-    # @TODO: set layout
+    # Set layout
+    config.layout(concat_views(config_views))
 
     # Write json
     config_json = config.to_dict()
+    # Ensure views' grid coorindates are integers
+    for component in config_json["layout"]:
+        for k in ("x", "y", "w", "h"):
+            component[k] = round(component[k])
 
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)
@@ -266,6 +283,19 @@ def write_json(
         "w",
     ) as out_file:
         json.dump(config_json, out_file, indent=2)
+
+
+def concat_views(views: list, axis: str = "v"):
+    """Recursively concatenate views"""
+    if len(views) <= 2:
+        return hconcat(*views) if axis == "h" else vconcat(*views)
+    nviews = []
+    for i, j in zip_longest(views[::2], views[1::2]):
+        if j is not None:
+            nviews.append(hconcat(i, j) if axis == "h" else vconcat(i, j))
+        else:
+            nviews.append(i)
+    return concat_views(nviews, "v" if axis == "h" else "h")
 
 
 def build_anndatazarr_options(
