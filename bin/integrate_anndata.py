@@ -12,11 +12,12 @@ from scipy.sparse import spmatrix, hstack, csr_matrix, csc_matrix
 from process_h5ad import h5ad_to_zarr
 
 
-def reindex_and_concat(path: str, offset: int, features: str, **kwargs):
+def reindex_and_concat(path: str, offset: int, features: str = None, **kwargs):
     adata = read_anndata(path)
 
     adata = reindex_anndata(adata, offset, no_save=True)
-    adata = concat_features(adata, features, no_save=True)
+    if features:
+        adata = concat_features(adata, features, no_save=True)
 
     out_filename = "reindexed-concat-{}".format(
         os.path.splitext(os.path.basename(path))[0]
