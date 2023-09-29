@@ -12,6 +12,12 @@ version="0.3.2"
 verbose_log=true
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
+config_map = [
+    title: params.title ?: "",
+    description: params.description ?: "",
+    url: params.url ?: "http://localhost/",
+    extend_feature_name: params.extend_feature_name ?: null
+]
 
 process process_label {
     tag "${label_image}"
@@ -77,7 +83,6 @@ process intersect_anndatas {
     """
 }
 
-// @TODO
 process Build_multimodal_config {
     tag "${project}"
     debug verbose_log
@@ -93,10 +98,11 @@ process Build_multimodal_config {
 
     script:
     url_str = config_map.url?.trim() ? "--url \"${config_map.url.trim()}\"" : ""
+    datasets_str = new JsonBuilder(datasets).toString()
     """
     build_config_multimodal.py \
         --project "${project}" \
-        #@TODO: prepare this as json string --datasets "${datasets}" \
+        --datasets '${datasets_str}' \
         --extended_features "${config_map.extend_feature_name}" \
         ${url_str} \
         --title "${config_map.title}" \
@@ -195,14 +201,25 @@ workflow {
         .groupTuple(by: 0)
         .set{files}
     
-    // @TODO
+    // tmp_data to replace potential nulls for empty list and map
     data.info
         .join(files, by:0)
         .join(img_map, by: 0, remainder: true)
-        .view()
+        .map{[*it[0..3], it[4] ?: [], it[5] ?: [:]]}
+        .set{tmp_data}
+
+    // make map of each dataset
+    tmp_data.map{[
+            "${it[0]}":
+            [
+                obs_type: it[1], is_spatial: it[2], options: it[3],
+                file_paths: it[4], images: it[5]
+            ]
+        ]}
+        .reduce{ a,b -> a + b } // merge maps
+        .map{[params.project, config_map, it]}
+        .set{data_for_config}
     
-    // Build_multimodal_config(
-    //     data_for_config
-    // )
+    Build_multimodal_config(data_for_config)
 
 }
