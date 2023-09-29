@@ -77,6 +77,33 @@ process intersect_anndatas {
     """
 }
 
+// @TODO
+process Build_multimodal_config {
+    tag "${project}"
+    debug verbose_log
+    cache false
+
+    publishDir outdir_with_version, mode: "copy"
+
+    input:
+    tuple val(project), val(config_map), val(datasets)
+
+    output:
+    path("${project}-multimodal-config.json")
+
+    script:
+    url_str = config_map.url?.trim() ? "--url \"${config_map.url.trim()}\"" : ""
+    """
+    build_config_multimodal.py \
+        --project "${project}" \
+        #@TODO: prepare this as json string --datasets "${datasets}" \
+        --extended_features "${config_map.extend_feature_name}" \
+        ${url_str} \
+        --title "${config_map.title}" \
+        --description "${config_map.description}"
+    """
+}
+
 
 workflow {
     Channel.from(params.data)
@@ -168,10 +195,14 @@ workflow {
         .groupTuple(by: 0)
         .set{files}
     
-
+    // @TODO
     data.info
         .join(files, by:0)
         .join(img_map, by: 0, remainder: true)
         .view()
+    
+    // Build_multimodal_config(
+    //     data_for_config
+    // )
 
 }
