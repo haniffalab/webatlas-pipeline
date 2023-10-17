@@ -46,7 +46,8 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Visualising</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cellatlas.io/webatlas">Demos</a></li>
@@ -102,14 +103,14 @@
 This file can then be used to load the views and data as configured in the parameters files.</p>
 <p>You can locally serve and visualize the data in a few steps.</p>
 <p>By default, the base <code class="docutils literal notranslate"><span class="pre">url</span></code> used within the view config is <code class="docutils literal notranslate"><span class="pre">http://localhost:3000/</span></code>
-(this can be changed in the <a class="reference internal" href="setup.html#parameters-file"><span class="std std-ref">parameters file</span></a>).
+(this can be changed in the <a class="reference internal" href="configuration.html#parameters-file"><span class="std std-ref">parameters file</span></a>).
 This <code class="docutils literal notranslate"><span class="pre">url</span></code> indicates Vitessce to look for data at that location.</p>
 <p>You can set up an http server locally to serve the processed files so a Vitessce instance can load them.
 There are several tools that can setup an http server.
 We recommend using <a class="reference external" href="https://www.npmjs.com/package/serve">serve</a> (requires <a class="reference external" href="https://nodejs.org/en/">Node.js</a>),
 but you can use any tool that can enable CORS.</p>
 <p>You can serve the view config file and data by specifying the output directory
-(note that the pipeline adds its version to the <code class="docutils literal notranslate"><span class="pre">outdir</span></code> defined in the <a class="reference internal" href="setup.html#parameters-file"><span class="std std-ref">parameters file</span></a> file).</p>
+(note that the pipeline adds its version to the <code class="docutils literal notranslate"><span class="pre">outdir</span></code> defined in the <a class="reference internal" href="configuration.html#parameters-file"><span class="std std-ref">parameters file</span></a> file).</p>
 <pre class="literal-block">serve -C -p 3000 /path/to/outdir/0.3.2/</pre>
 <p>Make sure to enable CORS and set the appropriate port number.
 In this case, using <a class="reference external" href="https://www.npmjs.com/package/serve">serve</a>, this is done through the <code class="docutils literal notranslate"><span class="pre">-C</span></code> and <code class="docutils literal notranslate"><span class="pre">-p</span></code> flags respectively.</p>

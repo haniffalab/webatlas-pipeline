@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Visualising" href="visualise.html" />
-    <link rel="prev" title="Setup" href="setup.html" /> 
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,8 +46,12 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Running</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-using-docker">Running using Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-using-singularity">Running using Singularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-using-conda">Running using Conda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
 </ul>
 </li>
@@ -113,21 +117,52 @@ builds a Vitessce config file per dataset.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Process_files</span></code> workflow handles data files and their conversions.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Process_images</span></code> workflow handles image files and/or label image data and their conversions.</p></li>
 </ul>
-<p>Configurations and data are input through a <a class="reference internal" href="setup.html#parameters-file"><span class="std std-ref">parameters yaml file</span></a>.</p>
+<p>Configurations and data are input through a <a class="reference internal" href="configuration.html#parameters-file"><span class="std std-ref">parameters yaml file</span></a>.</p>
 <p>To run the <code class="docutils literal notranslate"><span class="pre">Full_pipeline</span></code> use</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
 </pre></div>
 </div>
 <p>This will handle all input files, whether they are data files or images, for all datasets
 defined.</p>
 <p>You can modify the entry point if you’re interested in only getting the converted outputs.
 Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
+<section id="running-using-docker">
+<h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Permalink to this heading"></a></h2>
+<p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Docker containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">docker</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-entry<span class="w"> </span>Full_pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-profile<span class="w"> </span>docker
+</pre></div>
+</div>
+<p>Pulling the containers when the pipline is launched may take a few minutes.</p>
+</section>
+<section id="running-using-singularity">
+<h2>Running using Singularity<a class="headerlink" href="#running-using-singularity" title="Permalink to this heading"></a></h2>
+<p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Singularity containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">singularity</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-entry<span class="w"> </span>Full_pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-profile<span class="w"> </span>singularity
+</pre></div>
+</div>
+<p>Pulling the containers when the pipline is launched may take a few minutes.</p>
+</section>
+<section id="running-using-conda">
+<h2>Running using Conda<a class="headerlink" href="#running-using-conda" title="Permalink to this heading"></a></h2>
+<p>The default pipeline will run on local executor without any type of environment creation. If you’ve already setup your conda environment you don’t have to do anything else.</p>
+<p>However, if you are working on a compute cluster you will need to make sure the conda environment is avaiable and active in your worker nodes. To run the pipeline using a new conda environment use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">conda</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-entry<span class="w"> </span>Full_pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-profile<span class="w"> </span>conda
+</pre></div>
+</div>
+<p>Creating the environment when the pipleine is launched may take a few minutes.</p>
+</section>
 <section id="further-reading">
 <h2>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this heading"></a></h2>
-<p>Docker image pulling/local conda env creation are handled by Nextflow.
-Please refer to
-<a class="reference external" href="https://www.nextflow.io/docs/latest/getstarted.html">this</a> for
-detailed information.</p>
+<p>For more information about Docker image pulling/local conda env creation in Nextflow please refer to Nextflow’s official docs for <a class="reference external" href="https://www.nextflow.io/docs/latest/container.html">containers</a> and <a class="reference external" href="https://www.nextflow.io/docs/latest/conda.html">conda</a>.</p>
 </section>
 </section>
 
@@ -135,7 +170,7 @@ detailed information.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="setup.html" class="btn btn-neutral float-left" title="Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="visualise.html" class="btn btn-neutral float-right" title="Visualising" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
