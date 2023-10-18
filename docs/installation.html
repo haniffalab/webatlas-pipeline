@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Setup" href="setup.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
     <link rel="prev" title="WebAtlas Pipeline" href="index.html" /> 
 </head>
 
@@ -46,7 +46,12 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#environment-setup">Environment setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-conda">Using conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-setup">Manual setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualise.html">Visualising</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cellatlas.io/webatlas">Demos</a></li>
@@ -63,7 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -98,22 +103,163 @@
              
   <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
-<ol class="arabic simple">
-<li><p>Clone the repository</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">haniffalab</span><span class="o">/</span><span class="n">webatlas</span><span class="o">-</span><span class="n">pipeline</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">webatlas</span><span class="o">-</span><span class="n">pipeline</span>
+<p>Download the WebAtlas Pipeline release. You can look for previous <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/releases">releases on GitHub</a>.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.2.tar.gz
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Install nextflow by following the <a class="reference external" href="https://www.nextflow.io/index.html#GetStarted">documentation</a></p></li>
-<li><p>Install <a class="reference external" href="https://docs.docker.com/engine/install/">Docker</a> and make sure it’s in <code class="code docutils literal notranslate"><span class="pre">PATH</span></code></p></li>
-<li><p>Build the docker images.</p></li>
-</ol>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Resolving<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span>...<span class="w"> </span><span class="m">140</span>.82.121.3
+Connecting<span class="w"> </span>to<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span><span class="p">|</span><span class="m">140</span>.82.121.3<span class="p">|</span>:443...<span class="w"> </span>connected.
+HTTP<span class="w"> </span>request<span class="w"> </span>sent,<span class="w"> </span>awaiting<span class="w"> </span>response...<span class="w"> </span><span class="m">302</span><span class="w"> </span>Found
+Location:<span class="w"> </span>https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2<span class="w"> </span><span class="o">[</span>following<span class="o">]</span>
+--2023-05-18<span class="w"> </span><span class="m">09</span>:30:15--<span class="w">  </span>https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2
+Resolving<span class="w"> </span>codeload.github.com<span class="w"> </span><span class="o">(</span>codeload.github.com<span class="o">)</span>...<span class="w"> </span><span class="m">140</span>.82.121.9
+Connecting<span class="w"> </span>to<span class="w"> </span>codeload.github.com<span class="w"> </span><span class="o">(</span>codeload.github.com<span class="o">)</span><span class="p">|</span><span class="m">140</span>.82.121.9<span class="p">|</span>:443...<span class="w"> </span>connected.
+HTTP<span class="w"> </span>request<span class="w"> </span>sent,<span class="w"> </span>awaiting<span class="w"> </span>response...<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
+Length:<span class="w"> </span>unspecified<span class="w"> </span><span class="o">[</span>application/x-gzip<span class="o">]</span>
+Saving<span class="w"> </span>to:<span class="w"> </span>‘v0.3.2.tar.gz’
+
+v0.3.2.tar.gz<span class="w"> </span><span class="o">[</span><span class="w"> </span>&lt;<span class="o">=</span>&gt;<span class="w">                                           </span><span class="o">]</span><span class="w">   </span><span class="m">2</span>.70M<span class="w">  </span><span class="m">9</span>.12MB/s<span class="w">    </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.3s
+
+<span class="m">2023</span>-05-18<span class="w"> </span><span class="m">09</span>:30:16<span class="w"> </span><span class="o">(</span><span class="m">9</span>.12<span class="w"> </span>MB/s<span class="o">)</span><span class="w"> </span>-<span class="w"> </span>‘v0.3.2.tar.gz’<span class="w"> </span>saved<span class="w"> </span><span class="o">[</span><span class="m">2835534</span><span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<p>Extract the WebAtlas compressed tag and change directory into the new repo.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xzvf<span class="w"> </span>./v0.3.2.tar.gz
+<span class="nb">cd</span><span class="w"> </span>webatlas-pipeline-0.3.2
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>webatlas-pipeline-0.3.2/
+webatlas-pipeline-0.3.2/.github/
+...
+...
+webatlas-pipeline-0.3.2/tests/input/simple_config.json
+webatlas-pipeline-0.3.2/tests/test_class.py
+</pre></div>
+</div>
+</div>
+</section>
+<section id="environment-setup">
+<span id="environment"></span><h1>Environment setup<a class="headerlink" href="#environment-setup" title="Permalink to this heading"></a></h1>
+<p id="environment-conda">Follow these Environment Setup instructions using conda or manually installing the required components to run WebAtlas.</p>
+<section id="using-conda">
+<h2>Using conda<a class="headerlink" href="#using-conda" title="Permalink to this heading"></a></h2>
+<p>If you have <a class="reference external" href="https://docs.conda.io/projects/miniconda/en/latest/">conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/mamba-installation.html">mamba</a> already installed then you can use the <code class="docutils literal notranslate"><span class="pre">environment.yaml</span></code> file included in the WebAtlas release to create the environment.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yaml
+</pre></div>
+</div>
+</div>
+<p>Then make sure you activate the <code class="docutils literal notranslate"><span class="pre">webatlas</span></code> environment beforer you use the pipeline.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>webatlas
+</pre></div>
+</div>
+</div>
+</section>
+<section id="manual-setup">
+<span id="environment-manual"></span><h2>Manual setup<a class="headerlink" href="#manual-setup" title="Permalink to this heading"></a></h2>
+<p><strong>#1. Check git is installed</strong></p>
+<p>Make sure git 2.17 or later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>--version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>version<span class="w"> </span><span class="m">2</span>.25.1
+</pre></div>
+</div>
+</div>
+<p>If Git is missing you will have to follow the <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Getting Started Installing Git guide</a>.</p>
+<p><strong>#2. Check java is installed</strong></p>
+<p>Make sure Java 11 or later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11.0.18&quot;</span><span class="w"> </span><span class="m">2023</span>-01-17
+OpenJDK<span class="w"> </span>Runtime<span class="w"> </span>Environment<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1<span class="o">)</span>
+OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </span>Server<span class="w"> </span>VM<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1,<span class="w"> </span>mixed<span class="w"> </span>mode,<span class="w"> </span>sharing<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<p>If not installed, <a class="reference external" href="https://www.java.com/en/download/manual.jsp">download and install Java</a>.</p>
+<p><strong>#3. Install Nextflow</strong></p>
+<p>Enter the following command in your terminal to install nextflow in the current directory:</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id13" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>org.apache.ivy:ivy:jar:2.5.1
+...
+CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>io.nextflow:nf-commons:jar:23.04.1
+
+<span class="w">      </span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W
+<span class="w">      </span>version<span class="w"> </span><span class="m">23</span>.04.1<span class="w"> </span>build<span class="w"> </span><span class="m">5866</span>
+<span class="w">      </span>created<span class="w"> </span><span class="m">15</span>-04-2023<span class="w"> </span><span class="m">06</span>:51<span class="w"> </span>UTC<span class="w"> </span><span class="o">(</span><span class="m">07</span>:51<span class="w"> </span>BST<span class="o">)</span>
+<span class="w">      </span>cite<span class="w"> </span>doi:10.1038/nbt.3820
+<span class="w">      </span>http://nextflow.io
+
+
+Nextflow<span class="w"> </span>installation<span class="w"> </span>completed.<span class="w"> </span>Please<span class="w"> </span>note:
+-<span class="w"> </span>the<span class="w"> </span>executable<span class="w"> </span>file<span class="w"> </span><span class="sb">`</span>nextflow<span class="sb">`</span><span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>created<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>folder:<span class="w"> </span>./webatlas-pipeline
+-<span class="w"> </span>you<span class="w"> </span>may<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>the<span class="w"> </span>installation<span class="w"> </span>by<span class="w"> </span>moving<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>directory<span class="w"> </span><span class="k">in</span><span class="w"> </span>your<span class="w"> </span><span class="nv">$PATH</span>
+</pre></div>
+</div>
+</div>
+<p>You can read more about how to install nextflow in the <a class="reference external" href="https://www.nextflow.io/index.html#GetStarted">official nextflow documentation</a>.</p>
+<p><strong>#4. Check Docker is installed</strong></p>
+<p>Make sure Docker Engine 20.10 or later is installed on your computer by using the command:</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id14" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id15" title="Permalink to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
+Version:<span class="w">           </span><span class="m">23</span>.0.4
+API<span class="w"> </span>version:<span class="w">       </span><span class="m">1</span>.42
+Go<span class="w"> </span>version:<span class="w">        </span>go1.19.8
+Git<span class="w"> </span>commit:<span class="w">        </span>f480fb1
+Built:<span class="w">             </span>Fri<span class="w"> </span>Apr<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">10</span>:32:23<span class="w"> </span><span class="m">2023</span>
+OS/Arch:<span class="w">           </span>linux/amd64
+Context:<span class="w">           </span>default
+</pre></div>
+</div>
+</div>
+<p>Follow the <a class="reference external" href="https://docs.docker.com/engine/install/">official Docker Install guide</a> if it is not installed already.</p>
+<p><strong>#5. Build local docker images (optional)</strong></p>
+<p>When using docker the pipleine can use local images or pull them from DockerHub. If you want to build the images yourself you can do it like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docker</span>
 <span class="o">./</span><span class="n">build</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">imgs</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
+</section>
 </section>
 
 
@@ -121,7 +267,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="WebAtlas Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="setup.html" class="btn btn-neutral float-right" title="Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
