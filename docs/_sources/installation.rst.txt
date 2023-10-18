@@ -9,8 +9,6 @@
 Installation
 ============
 
-**#1. Download the WebAtlas Pipeline from GitHub**
-
 Download the WebAtlas Pipeline release. You can look for previous `releases on GitHub`_.
 
 .. code-block:: shell
@@ -19,8 +17,8 @@ Download the WebAtlas Pipeline release. You can look for previous `releases on G
    wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.2.tar.gz
 
 .. code-block:: shell
-   :caption: Output
-    
+   :caption: Expected Output
+
    Resolving github.com (github.com)... 140.82.121.3
    Connecting to github.com (github.com)|140.82.121.3|:443... connected.
    HTTP request sent, awaiting response... 302 Found
@@ -32,13 +30,11 @@ Download the WebAtlas Pipeline release. You can look for previous `releases on G
    Length: unspecified [application/x-gzip]
    Saving to: ‘v0.3.2.tar.gz’
 
-   v0.3.2.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
+   v0.3.2.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
 
    2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.2.tar.gz’ saved [2835534]
 
-**#2. Extract the WebAtlas Pipeline**
-
-Extract the WebAtlas compressed tag and change directory into the new repo:
+Extract the WebAtlas compressed tag and change directory into the new repo.
 
 .. code-block:: shell
    :caption: Input
@@ -47,7 +43,7 @@ Extract the WebAtlas compressed tag and change directory into the new repo:
    cd webatlas-pipeline-0.3.2
 
 .. code-block:: shell
-   :caption: Output
+   :caption: Expected Output
     
    webatlas-pipeline-0.3.2/
    webatlas-pipeline-0.3.2/.github/
@@ -56,18 +52,14 @@ Extract the WebAtlas compressed tag and change directory into the new repo:
    webatlas-pipeline-0.3.2/tests/input/simple_config.json
    webatlas-pipeline-0.3.2/tests/test_class.py
 
-
-**#3. Setup the environment**
-
-Follow the Environment Setup instructions using conda or manually installing the required components to run WebAtlas.
-
-
 .. _environment:
 
 Environment setup
 =================
 
 .. _environment_conda:
+
+Follow these Environment Setup instructions using conda or manually installing the required components to run WebAtlas.
 
 Using conda
 -----------
@@ -124,6 +116,8 @@ Make sure Java 11 or later is installed on your computer by using the command:
    OpenJDK Runtime Environment (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1)
    OpenJDK 64-Bit Server VM (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1, mixed mode, sharing)
 
+If not installed, `download and install Java <https://www.java.com/en/download/manual.jsp>`__.
+
 **#3. Install Nextflow**
 
 Enter the following command in your terminal to install nextflow in the current directory:
@@ -152,7 +146,6 @@ Enter the following command in your terminal to install nextflow in the current 
    - you may complete the installation by moving it to a directory in your $PATH
 
 You can read more about how to install nextflow in the `official nextflow documentation`_.
-
 
 **#4. Check Docker is installed**
 

@@ -68,7 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -128,9 +128,9 @@
 </section>
 <section id="steps-to-reproduce">
 <h2>Steps to reproduce<a class="headerlink" href="#steps-to-reproduce" title="Permalink to this heading"></a></h2>
-<p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser.
-It can be followed on any POSIX compatible system (Linux, OS X, etc).
-Examples require you to have gone through the <a class="reference internal" href="../installation.html#environment"><span class="std std-ref">Environment setup first</span></a></p>
+<p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself
+in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
+example requires you to have already <a class="reference internal" href="../installation.html#environment"><span class="std std-ref">setup your environment first</span></a>.</p>
 <p><strong>#1. Download the sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
@@ -179,7 +179,9 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 <p><strong>#3. Run the pipeline</strong></p>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml<span class="w"> </span>-entry<span class="w"> </span>Full_pipeline
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>-params-file<span class="w"> </span>templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>-entry<span class="w"> </span>Full_pipeline
 </pre></div>
 </div>
 </div>

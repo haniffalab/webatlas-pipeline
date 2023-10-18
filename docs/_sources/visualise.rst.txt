@@ -12,10 +12,10 @@ By default, the base ``url`` used within the view config is ``http://localhost:3
 (this can be changed in the :ref:`parameters file <parameters_file>`).
 This ``url`` indicates Vitessce to look for data at that location.
 
-You can set up an http server locally to serve the processed files so a Vitessce instance can load them.
-There are several tools that can setup an http server.
+You can set up a ``http`` server locally to serve the processed files so a Vitessce instance can load them.
+There are several tools that can setup a ``http`` server.
 We recommend using `serve <https://www.npmjs.com/package/serve>`__ (requires `Node.js <https://nodejs.org/en/>`__),
-but you can use any tool that can enable CORS.
+but you can use any tool that can enable CORS. 
 
 You can serve the view config file and data by specifying the output directory
 (note that the pipeline adds its version to the ``outdir`` defined in the :ref:`parameters file <parameters_file>` file). 

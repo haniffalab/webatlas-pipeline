@@ -68,7 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -103,7 +103,6 @@
              
   <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
-<p><strong>#1. Download the WebAtlas Pipeline from GitHub</strong></p>
 <p>Download the WebAtlas Pipeline release. You can look for previous <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/releases">releases on GitHub</a>.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
@@ -112,7 +111,7 @@
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Resolving<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span>...<span class="w"> </span><span class="m">140</span>.82.121.3
 Connecting<span class="w"> </span>to<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span><span class="p">|</span><span class="m">140</span>.82.121.3<span class="p">|</span>:443...<span class="w"> </span>connected.
 HTTP<span class="w"> </span>request<span class="w"> </span>sent,<span class="w"> </span>awaiting<span class="w"> </span>response...<span class="w"> </span><span class="m">302</span><span class="w"> </span>Found
@@ -124,14 +123,13 @@ HTTP<span class="w"> </span>request<span class="w"> </span>sent,<span class="w">
 Length:<span class="w"> </span>unspecified<span class="w"> </span><span class="o">[</span>application/x-gzip<span class="o">]</span>
 Saving<span class="w"> </span>to:<span class="w"> </span>‘v0.3.2.tar.gz’
 
-v0.3.2.tar.gz<span class="w">                                                      </span><span class="o">[</span><span class="w">  </span>&lt;<span class="o">=</span>&gt;<span class="w">                                                                                                                                               </span><span class="o">]</span><span class="w">   </span><span class="m">2</span>.70M<span class="w">  </span><span class="m">9</span>.12MB/s<span class="w">    </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.3s
+v0.3.2.tar.gz<span class="w"> </span><span class="o">[</span><span class="w"> </span>&lt;<span class="o">=</span>&gt;<span class="w">                                           </span><span class="o">]</span><span class="w">   </span><span class="m">2</span>.70M<span class="w">  </span><span class="m">9</span>.12MB/s<span class="w">    </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.3s
 
 <span class="m">2023</span>-05-18<span class="w"> </span><span class="m">09</span>:30:16<span class="w"> </span><span class="o">(</span><span class="m">9</span>.12<span class="w"> </span>MB/s<span class="o">)</span><span class="w"> </span>-<span class="w"> </span>‘v0.3.2.tar.gz’<span class="w"> </span>saved<span class="w"> </span><span class="o">[</span><span class="m">2835534</span><span class="o">]</span>
 </pre></div>
 </div>
 </div>
-<p><strong>#2. Extract the WebAtlas Pipeline</strong></p>
-<p>Extract the WebAtlas compressed tag and change directory into the new repo:</p>
+<p>Extract the WebAtlas compressed tag and change directory into the new repo.</p>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xzvf<span class="w"> </span>./v0.3.2.tar.gz
@@ -140,7 +138,7 @@ v0.3.2.tar.gz<span class="w">                                                   
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>webatlas-pipeline-0.3.2/
 webatlas-pipeline-0.3.2/.github/
 ...
@@ -150,13 +148,12 @@ webatlas-pipeline-0.3.2/tests/test_class.py
 </pre></div>
 </div>
 </div>
-<p><strong>#3. Setup the environment</strong></p>
-<p>Follow the Environment Setup instructions using conda or manually installing the required components to run WebAtlas.</p>
 </section>
 <section id="environment-setup">
 <span id="environment"></span><h1>Environment setup<a class="headerlink" href="#environment-setup" title="Permalink to this heading"></a></h1>
+<p id="environment-conda">Follow these Environment Setup instructions using conda or manually installing the required components to run WebAtlas.</p>
 <section id="using-conda">
-<span id="environment-conda"></span><h2>Using conda<a class="headerlink" href="#using-conda" title="Permalink to this heading"></a></h2>
+<h2>Using conda<a class="headerlink" href="#using-conda" title="Permalink to this heading"></a></h2>
 <p>If you have <a class="reference external" href="https://docs.conda.io/projects/miniconda/en/latest/">conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/mamba-installation.html">mamba</a> already installed then you can use the <code class="docutils literal notranslate"><span class="pre">environment.yaml</span></code> file included in the WebAtlas release to create the environment.</p>
 <div class="literal-block-wrapper docutils container" id="id6">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
@@ -205,6 +202,7 @@ OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </s
 </pre></div>
 </div>
 </div>
+<p>If not installed, <a class="reference external" href="https://www.java.com/en/download/manual.jsp">download and install Java</a>.</p>
 <p><strong>#3. Install Nextflow</strong></p>
 <p>Enter the following command in your terminal to install nextflow in the current directory:</p>
 <div class="literal-block-wrapper docutils container" id="id12">

@@ -68,7 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -128,9 +128,9 @@
 </section>
 <section id="steps-to-reproduce">
 <h2>Steps to reproduce<a class="headerlink" href="#steps-to-reproduce" title="Permalink to this heading"></a></h2>
-<p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser.
-It can be followed on any POSIX compatible system (Linux, OS X, etc).
-Examples require you to have gone through the <a class="reference internal" href="../installation.html#environment"><span class="std std-ref">Environment setup first</span></a></p>
+<p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself
+in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
+example requires you to have already <a class="reference internal" href="../installation.html#environment"><span class="std std-ref">setup your environment first</span></a>.</p>
 <p><strong>#1. Download the sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
@@ -196,10 +196,6 @@ Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb
 <span class="o">[</span>f1/efaaae<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:image_to_zarr<span class="w"> </span><span class="o">(</span>tissue_image.tif<span class="o">)</span><span class="w">                              </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="w"> </span>✔
 <span class="o">[</span><span class="m">44</span>/2bcaeb<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_images:ome_zarr_metadata<span class="w"> </span><span class="o">(</span>METADATA.ome.xml<span class="o">)</span><span class="w">                          </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="w"> </span>✔
 <span class="o">[</span><span class="m">43</span>/04893d<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Output_to_config:Build_config<span class="w"> </span><span class="o">([</span>visium,<span class="w"> </span>breast-cancer<span class="o">])</span><span class="w">                      </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
-
-<span class="o">{</span><span class="s2">&quot;dimOrder&quot;</span>:<span class="w"> </span><span class="s2">&quot;XYZCT&quot;</span>,<span class="w"> </span><span class="s2">&quot;channel_names&quot;</span>:<span class="w"> </span><span class="o">[]</span>,<span class="w"> </span><span class="s2">&quot;X&quot;</span>:<span class="w"> </span><span class="s2">&quot;19505&quot;</span>,<span class="w"> </span><span class="s2">&quot;Y&quot;</span>:<span class="w"> </span><span class="s2">&quot;21571&quot;</span>,<span class="w"> </span><span class="s2">&quot;Z&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;C&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;T&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="o">}</span>
-
-<span class="o">{</span><span class="s2">&quot;dimOrder&quot;</span>:<span class="w"> </span><span class="s2">&quot;XYZCT&quot;</span>,<span class="w"> </span><span class="s2">&quot;channel_names&quot;</span>:<span class="w"> </span><span class="o">[]</span>,<span class="w"> </span><span class="s2">&quot;X&quot;</span>:<span class="w"> </span><span class="s2">&quot;19505&quot;</span>,<span class="w"> </span><span class="s2">&quot;Y&quot;</span>:<span class="w"> </span><span class="s2">&quot;21571&quot;</span>,<span class="w"> </span><span class="s2">&quot;Z&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;C&quot;</span>:<span class="w"> </span><span class="s2">&quot;3&quot;</span>,<span class="w"> </span><span class="s2">&quot;T&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
