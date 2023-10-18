@@ -17,6 +17,7 @@ charset-normalizer==3.3.0
 click==8.1.7
 cloudpickle==3.0.0
 contourpy==1.1.1
+coverage==7.3.2
 cycler==0.12.1
 dask==2023.5.0
 distlib==0.3.7
@@ -73,6 +74,7 @@ Pygments==2.16.1
 pynndescent==0.5.10
 pyparsing==3.1.1
 pytest==7.4.2
+pytest-cov==4.1.0
 python-dateutil==2.8.2
 pytz==2023.3.post1
 pyvips==2.2.1
