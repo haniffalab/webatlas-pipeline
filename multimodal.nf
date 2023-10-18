@@ -33,10 +33,10 @@ process process_label {
 
     script:
     basename = label_image.baseName
-    reindexed_label_image = "reindexed-${basename}.*"
+    reindexed_label_image = "reindexed-${basename}.ome.zarr"
     """
     integrate_image.py \
-        --label_image ${label_image} \
+        --label_image_path ${label_image} \
         --offset ${offset} \
         --out_filename ${reindexed_label_image}
     """
@@ -50,13 +50,13 @@ process process_anndata {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(dataset), path(anndata), val(offset), path(features)
+    tuple val(dataset), path(anndata), val(offset), val(features)
 
     output:
     tuple val(dataset), path("*")
 
     script:
-    features_str = features.name != "NO_FT" ? "--features ${features}" : ""
+    features_str = features != "NO_FT" ? "--features ${features}" : ""
     """
     integrate_anndata.py reindex_and_concat \
         --path ${anndata} \
@@ -79,7 +79,7 @@ process intersect_anndatas {
 
     script:
     """
-    integrate_anndata.py intersect_features --paths ${anndatas}
+    integrate_anndata.py intersect_features ${anndatas}
     """
 }
 
@@ -117,10 +117,10 @@ workflow {
             info: [it.dataset, it.obs_type ?: "cell", it.is_spatial ?: false, it.vitessce_options ?: [:]]
             raws : [it.dataset, it.raw_image] // not processed but necessary for writing config
             labels : [it.dataset, it.label_image, it.offset]
-            adatas : [it.dataset, file(it.anndata), it.offset, file(it.extend_feature ?: "NO_FT")]
+            adatas : [it.dataset, file(it.anndata), it.offset, it.extend_feature ?: "NO_FT"]
         }
         .set{data}
-    
+
     // Filter null raw image
     data.raws.filter{ it[1] }.map{ [it[0], file(it[1])] }
         .set{raw_images}
