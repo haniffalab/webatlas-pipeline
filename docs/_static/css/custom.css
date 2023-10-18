@@ -19,9 +19,12 @@
 .admonition.shell-output .admonition-title {
     font-style: italic;
 }
-
-
 .citation {
     font-weight: bold;
     font-style: italic;
+}
+.youtube-video {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    margin-bottom: 30px;
 }
