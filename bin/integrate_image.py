@@ -7,6 +7,12 @@ import numpy as np
 import logging
 from ome_zarr.reader import Reader
 from ome_zarr.io import parse_url
+import shutil
+from ome_zarr.writer import (
+    write_multiscale,
+    write_image
+)
+import zarr
 
 
 def add_offset(label, offset: int):
@@ -25,11 +31,17 @@ def reindex_label(label_image: str, offset: int, out_filename: str) -> None:
 
 
 def reindex_label_zarr(label_image_path: str, offset: int, out_filename: str) -> None:
-    reader = Reader(parse_url(str(label_image_path)))
+    binary_path = label_image_path if label_image_path.endswith("/0") else label_image_path + "/0"
+    reader = Reader(parse_url(binary_path))
     nodes = list(reader())
     label = nodes[0].data[0]
-    reindexed_label = add_offset(label, offset)
-    tf.imwrite(out_filename, reindexed_label)
+    reindexed_label = add_offset(label.squeeze(), offset)
+    os.makedirs(f"{out_filename}/OME", exist_ok=True)
+    store = parse_url("./", mode="w").store
+    temp_group = zarr.group(store=store).create_group(out_filename)
+    # write_multiscale(np.array(reindexed_label), temp_group, axes="yx") # this should be used, but need to bump ome-zarr version
+    write_image(np.array(reindexed_label), temp_group, axes="yx")
+    shutil.copy(label_image_path + "/OME/METADATA.ome.xml", f"{out_filename}/OME/METADATA.ome.xml")
 
 
 def process_image(label_image_path: str, **kwargs) -> None:
@@ -37,8 +49,7 @@ def process_image(label_image_path: str, **kwargs) -> None:
     if ext.lower() in [".tif", ".tiff"]:
         reindex_label(**kwargs)
     elif ext.lower() in [".zarr"]:
-        reindex_label_zarr(**kwargs)
-
+        reindex_label_zarr(label_image_path, **kwargs)
     return
 
 
