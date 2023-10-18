@@ -54,7 +54,7 @@ Indices and tables
    citing
    Source Code <https://github.com/haniffalab/webatlas-pipeline>
    Issue Tracker <https://github.com/haniffalab/webatlas-pipeline/issues>
-   Frontend Client <https://github.com/haniffalab/webatlas-app>
+   WebAtlas App <https://github.com/haniffalab/webatlas-app>
 
 .. toctree::
    :maxdepth: 2

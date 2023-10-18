@@ -22,10 +22,9 @@ Sample details
 Steps to reproduce
 ******************
 
-Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
-It can be followed on any POSIX compatible system (Linux, OS X, etc).
-Examples require you to have gone through the :ref:`Environment setup first <environment>`
-
+Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself 
+in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
+example requires you to have already :ref:`setup your environment first <environment>`.
 
 **#1. Download the sample data**
 
@@ -75,7 +74,9 @@ Examples require you to have gone through the :ref:`Environment setup first <env
 .. code-block:: shell
    :caption: Input
 
-   nextflow run main.nf -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml -entry Full_pipeline
+   nextflow run main.nf \
+         -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml \
+         -entry Full_pipeline
 
 .. code-block:: shell
    :caption: Output

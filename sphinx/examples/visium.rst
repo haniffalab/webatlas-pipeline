@@ -22,9 +22,9 @@ Sample details
 Steps to reproduce
 ******************
 
-Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
-It can be followed on any POSIX compatible system (Linux, OS X, etc).
-Examples require you to have gone through the :ref:`Environment setup first <environment>`
+Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself 
+in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
+example requires you to have already :ref:`setup your environment first <environment>`.
 
 **#1. Download the sample data**
 
@@ -90,10 +90,6 @@ Examples require you to have gone through the :ref:`Environment setup first <env
    [f1/efaaae] process > Full_pipeline:Process_images:image_to_zarr (tissue_image.tif)                              [100%] 2 of 2 ✔
    [44/2bcaeb] process > Full_pipeline:Process_images:ome_zarr_metadata (METADATA.ome.xml)                          [100%] 2 of 2 ✔
    [43/04893d] process > Full_pipeline:Output_to_config:Build_config ([visium, breast-cancer])                      [100%] 1 of 1 ✔
-
-   {"dimOrder": "XYZCT", "channel_names": [], "X": "19505", "Y": "21571", "Z": "1", "C": "1", "T": "1"}
-
-   {"dimOrder": "XYZCT", "channel_names": [], "X": "19505", "Y": "21571", "Z": "1", "C": "3", "T": "1"}
 
 **#4. Check execution was successful**
 
