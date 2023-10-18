@@ -22,7 +22,7 @@ dependencies:
       - matplotlib==3.6
       - natsort==8.1.0
       - numcodecs==0.9.1
-      - numpy==1.21.5
+      - numpy==1.22.0
       - ome_zarr==0.2.1
       - packaging==21.3
       - pandas==1.3.5
@@ -35,7 +35,7 @@ dependencies:
       - pytz==2021.3
       - PyYAML==6.0
       - regex==2022.7.25
-      - scanpy==1.9.1
+      - scanpy==1.9.3
       - scikit-image==0.19.3
       - scipy==1.7.3
       - Shapely==1.8.0
