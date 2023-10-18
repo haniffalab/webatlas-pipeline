@@ -10,6 +10,7 @@ import pandas as pd
 import anndata as ad
 from scipy.sparse import spmatrix, hstack, csr_matrix, csc_matrix
 from process_h5ad import h5ad_to_zarr
+from pathlib import Path
 
 
 def reindex_and_concat(path: str, offset: int, features: str = None, **kwargs):
@@ -80,8 +81,8 @@ def concat_features(
         return
 
 
-def intersect_features(paths: list[str], **kwargs):
-    var_intersect = get_feature_intersection(paths)
+def intersect_features(*paths, **kwargs):
+    var_intersect = get_feature_intersection(*paths)
 
     for path in paths:
         adata = read_anndata(path)
@@ -228,13 +229,13 @@ def concat_matrices(
     return adata_concat
 
 
-def get_feature_intersection(paths: list[str]):
+def get_feature_intersection(*paths):
     var_indices = []
     for path in paths:
-        is_zarr = os.path.splitext(path)[-1] == ".zarr"
+        is_zarr = path.split(".")[-1] == "zarr"
         if is_zarr:
-            z = zarr.open(path)
-            var_indices.append(pd.Index(z.var._index[:]).to_series())
+            z = ad.read_zarr(path)
+            var_indices.append(pd.Index(z.var.index[:]).to_series())
         else:
             with h5py.File(path, "r") as f:
                 var_indices.append(ad._io.h5ad.read_elem(f["var"]).index.to_series())
@@ -262,7 +263,7 @@ def write_anndata(
     if save_h5ad:
         adata.write_h5ad(f"{out_filename}.h5ad")
 
-    h5ad_to_zarr(adata=adata, out_filename=out_filename, **kwargs)
+    h5ad_to_zarr(adata=adata, stem=Path(out_filename).stem, **kwargs)
 
     return
 
