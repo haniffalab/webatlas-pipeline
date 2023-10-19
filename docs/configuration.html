@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setup &mdash; WebAtlas 0.3.2 documentation</title>
+  <title>Configuration &mdash; WebAtlas 0.3.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -46,7 +46,8 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#parameters-file">Parameters file</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#project">Project</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dataset">Dataset</a></li>
@@ -74,7 +75,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -97,9 +98,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Setup</li>
+      <li class="breadcrumb-item active">Configuration</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/setup.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -107,20 +108,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="setup">
-<span id="id1"></span><h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h1>
+  <section id="configuration">
+<span id="id1"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h1>
 <p>Currently, the WebAtlas pipeline can process several types of data files as well as images.</p>
+<p><strong>Data files</strong></p>
 <ul class="simple">
-<li><p>It can handle <code class="docutils literal notranslate"><span class="pre">h5ad</span></code> files, SpaceRanger output, Xenium output, MERSCOPE output, and <code class="docutils literal notranslate"><span class="pre">molecules</span></code> data in <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> files.</p></li>
-<li><p>It can handle raw and label images in <code class="docutils literal notranslate"><span class="pre">tif</span></code> format, as well as generating/preprocessing images from Visium, Xenium and MERFISH data.</p></li>
+<li><p><a class="reference external" href="https://anndata.readthedocs.io/en/latest/">AnnData</a> files (<code class="docutils literal notranslate"><span class="pre">h5ad</span></code>)</p></li>
+<li><p><a class="reference external" href="https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/overview">SpaceRanger output</a> files</p></li>
+<li><p><a class="reference external" href="https://www.10xgenomics.com/support/in-situ-gene-expression/documentation/steps/onboard-analysis/understanding-xenium-outputs">Xenium output</a> files</p></li>
+<li><p>MERSCOPE output</p></li>
+<li><p>molecules data in <code class="docutils literal notranslate"><span class="pre">csv</span></code>/<code class="docutils literal notranslate"><span class="pre">tsv</span></code> files</p></li>
 </ul>
-<p>Running the pipeline requires a <code class="docutils literal notranslate"><span class="pre">yaml</span></code> <a class="reference internal" href="#id2">parameters file</a> that lists the data to be processed.</p>
-<p>Templates of this parameters file are available in the <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/">templates directory</a>.</p>
+<p><strong>Image files</strong></p>
+<ul class="simple">
+<li><p>raw and label images in <a class="reference external" href="https://en.wikipedia.org/wiki/TIFF">tif format</a></p></li>
+<li><p>images from <a class="reference external" href="https://www.10xgenomics.com/support/spatial-gene-expression-fresh-frozen/documentation/steps/imaging/visium-spatial-gene-expression-imaging-guidelines">Visium</a></p></li>
+<li><p>imags from <a class="reference external" href="https://www.10xgenomics.com/support/in-situ-gene-expression/documentation/steps/onboard-analysis/xenium-algorithms-overview#dapi">Xenium</a></p></li>
+<li><p>MERFISH data</p></li>
+</ul>
+<p>Running the pipeline requires a YAML parameters file that lists the data to be processed. Templates of this parameters file are available in the <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/">templates directory</a>.</p>
 <section id="parameters-file">
 <span id="id2"></span><h2>Parameters file<a class="headerlink" href="#parameters-file" title="Permalink to this heading"></a></h2>
-<p>The parameters file defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets).</p>
-<p>Running the pipeline, the path to the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file is indicated through the <code class="docutils literal notranslate"><span class="pre">-params-file</span></code> flag in the command line.</p>
-<p>A parameters file looks like:</p>
+<p>The parameters file defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets). When running the pipeline, the path to the YAML file is indicated through the <code class="docutils literal notranslate"><span class="pre">-params-file</span></code> flag in the command line. For example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-params-file<span class="w"> </span>params.yaml
+</pre></div>
+</div>
+<p>A parameters file looks like this:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">outdir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/output/&quot;</span>
 
 <span class="nt">args</span><span class="p">:</span>
@@ -132,14 +145,11 @@
 <span class="w">    </span><span class="nt">datasets</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dataset_1</span>
 <span class="w">        </span><span class="nt">data</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span>
-<span class="w">            </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h5ad</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h5ad</span>
 <span class="w">            </span><span class="nt">data_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/project_1/dataset_1/anndata.h5ad</span>
-<span class="w">          </span><span class="p p-Indicator">-</span>
-<span class="w">            </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">raw_image</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">raw_image</span>
 <span class="w">            </span><span class="nt">data_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/project_1/dataset_1/raw_image.tif</span>
-<span class="w">          </span><span class="p p-Indicator">-</span>
-<span class="w">            </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label_image</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label_image</span>
 <span class="w">            </span><span class="nt">data_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/project_1/dataset_1/label_image.tif</span>
 
 <span class="nt">vitessce_options</span><span class="p">:</span>
@@ -151,7 +161,56 @@
 <span class="c1"># custom_layout: &quot;spatial|scatterplot&quot; # overrides `layout`</span>
 </pre></div>
 </div>
-<p>The parameters are as follows:</p>
+<p>The YAML file has multiple configuration segements. This is a simple breakdown of the example config file above:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">outdir</span></code> entry in the file tells the pipeline where to deposit the result files.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">outdir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/output/&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">args.h5ad.compute_embeddings:</span> <span class="pre">&quot;True&quot;</span></code> instructs the pipeline to compute dimensional reduction on the input Anndata and store the PCA and UMAP embeddings inside the obsm keys of the oject.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">h5ad</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">compute_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">projects</span></code> section defines the name of the current <a class="reference internal" href="#project">project</a> and the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> that are part of it.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projects</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project_1</span>
+<span class="w">    </span><span class="nt">datasets</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dataset_1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Each <a class="reference internal" href="#dataset">dataset</a> has name (ie. dataset_1) and is a collection of <a class="reference internal" href="#data">data</a> objects each one containing a type and a path. The path (<code class="docutils literal notranslate"><span class="pre">data_path</span></code>) points to the file that should be processed. The type (<code class="docutils literal notranslate"><span class="pre">data_type</span></code>) specifies what the input file is and how the file will be processed.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dataset_1</span>
+<span class="w">  </span><span class="nt">data</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h5ad</span>
+<span class="w">      </span><span class="nt">data_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/project_1/dataset_1/anndata.h5ad</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">raw_image</span>
+<span class="w">      </span><span class="nt">data_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/project_1/dataset_1/raw_image.tif</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label_image</span>
+<span class="w">      </span><span class="nt">data_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/project_1/dataset_1/label_image.tif</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The final <code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code> section helps configure properties to map the processed that to visual compoentents. For exmaple for Spatial data where the embedings are stored inside the object. For mappings, it tells the embedings to use and the range to map the values to (in this case from 0..1).</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">vitessce_options</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">spatial</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">xy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obsm/spatial&quot;</span>
+<span class="w">  </span><span class="nt">mappings</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">obsm/X_umap</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">1</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The more detailed list of parameters is as follows:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 40%" />
@@ -215,7 +274,7 @@ vertically with <code class="docutils literal notranslate"><span class="pre">/</
 </pre></div>
 </div>
 <p>Multiple projects can be defined in a single parameters file, and each can define multiple datasets.
-Each project item is defined by the following keys</p>
+Each project item is defined by the following keys:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 40%" />
@@ -256,7 +315,7 @@ Each project item is defined by the following keys</p>
 </pre></div>
 </div>
 <p>Multiple datasets belong to a single <a class="reference internal" href="#project">project</a>, and each dataset can contain multiple data files.
-Each dataset item is defined by the following keys</p>
+Each dataset item is defined by the following keys:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 40%" />
@@ -331,7 +390,7 @@ to be shown in the Vitessce visualization.</p>
 Multiple data files belong to a single <a class="reference internal" href="#dataset">dataset</a>.</p>
 <p>A data item can define data files or images.</p>
 <p>Data files are processed into AnnData objects and written to Zarr.
-Image ilres are written to Zarr through <cite>bioformats2raw</cite>.</p>
+Image ilres are written to Zarr through <a class="reference external" href="https://github.com/glencoesoftware/bioformats2raw">bioformats2raw</a>.</p>
 <p>For image files the supported image format is <code class="docutils literal notranslate"><span class="pre">tif</span></code>.
 Images can be either raw images (microscopy images) or label images (containing segmentations).
 Additionally, label images can be generated and processed if provided with the necessary data.
@@ -342,7 +401,7 @@ Raw images can also be pre-processed, in the case of MERSCOPE data where the raw
 are stored in separate <code class="docutils literal notranslate"><span class="pre">tif</span></code> files the pipeline can concatenate them to then convert them.</p>
 <p>Each data item must define at least
 its <code class="docutils literal notranslate"><span class="pre">data_type</span></code> and <code class="docutils literal notranslate"><span class="pre">data_path</span></code>.</p>
-<p>Supported values are</p>
+<p>Supported values are:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 50%" />
@@ -400,7 +459,7 @@ where image channels are stored as <code class="docutils literal notranslate"><s
 </tr>
 </tbody>
 </table>
-<p>Each data item is defined with the following keys</p>
+<p>Each data item is defined with the following keys:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 40%" />
@@ -481,7 +540,7 @@ shape of the desired label image as <code class="docutils literal notranslate"><
 <span id="id6"></span><h3>Args<a class="headerlink" href="#args" title="Permalink to this heading"></a></h3>
 <p>Available <code class="docutils literal notranslate"><span class="pre">args</span></code> depend of the <code class="docutils literal notranslate"><span class="pre">data_type</span></code> of each <a class="reference internal" href="#data">data</a> item.</p>
 <p>Image files data types <code class="docutils literal notranslate"><span class="pre">raw_image</span></code> and <code class="docutils literal notranslate"><span class="pre">label_image</span></code> take no <code class="docutils literal notranslate"><span class="pre">args</span></code>.</p>
-<p>Possible values for each of the supported data types are as follows</p>
+<p>Possible values for each of the supported data types are as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">args</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">h5ad</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">compute_embeddings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;True&quot;</span><span class="w"> </span><span class="c1"># set to `True` to compute PCA and UMAP if not already within the anndata object</span>
@@ -535,7 +594,7 @@ you can define both the <code class="docutils literal notranslate"><span class="
 depending on their <code class="docutils literal notranslate"><span class="pre">file_type</span></code>.
 | Label images can be generated from data from <code class="docutils literal notranslate"><span class="pre">file_type</span></code>’s <code class="docutils literal notranslate"><span class="pre">visium</span></code>, <code class="docutils literal notranslate"><span class="pre">xenium</span></code> or <code class="docutils literal notranslate"><span class="pre">merscope</span></code>.
 | Raw images can be preprocess from <code class="docutils literal notranslate"><span class="pre">file_type</span></code> <code class="docutils literal notranslate"><span class="pre">merscope</span></code>.</p>
-<p>Image-data files of type <code class="docutils literal notranslate"><span class="pre">visium</span></code> can take the following <code class="docutils literal notranslate"><span class="pre">args</span></code></p>
+<p>Image-data files of type <code class="docutils literal notranslate"><span class="pre">visium</span></code> can take the following <code class="docutils literal notranslate"><span class="pre">args</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">data</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span>
 <span class="w">    </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label_image_data</span>
@@ -547,7 +606,7 @@ depending on their <code class="docutils literal notranslate"><span class="pre">
 <span class="w">      </span><span class="nt">relative_size</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;nspots&quot;</span><span class="w"> </span><span class="c1"># optional key within anndata.obs that contains multipliers for the spot size. Only useful for data that has been preprocessed to merge spots or modify spots&#39; sizes. Defaults to None.</span>
 </pre></div>
 </div>
-<p>Image-data files of type <code class="docutils literal notranslate"><span class="pre">xenium</span></code> can take the following <code class="docutils literal notranslate"><span class="pre">args</span></code></p>
+<p>Image-data files of type <code class="docutils literal notranslate"><span class="pre">xenium</span></code> can take the following <code class="docutils literal notranslate"><span class="pre">args</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">data</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span>
 <span class="w">    </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label_image_data</span>
@@ -557,7 +616,7 @@ depending on their <code class="docutils literal notranslate"><span class="pre">
 <span class="w">      </span><span class="nt">resolution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2125</span><span class="w"> </span><span class="c1"># optional pixel resolution. Defaults to 0.2125</span>
 </pre></div>
 </div>
-<p>Image-data files of type <code class="docutils literal notranslate"><span class="pre">merscope</span></code> can take the following <code class="docutils literal notranslate"><span class="pre">args</span></code></p>
+<p>Image-data files of type <code class="docutils literal notranslate"><span class="pre">merscope</span></code> can take the following <code class="docutils literal notranslate"><span class="pre">args</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">data</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span>
 <span class="w">    </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">label_image_data</span><span class="w"> </span><span class="c1"># or raw_image_data</span>
@@ -574,7 +633,7 @@ depending on their <code class="docutils literal notranslate"><span class="pre">
 One Vitessce config file is generated per <a class="reference internal" href="#dataset">dataset</a>.
 Include relevant information from your data to be visualized.
 All values are optional as they depend on them existing in your data.</p>
-<p>Values that can be specified are as follows</p>
+<p>Values that can be specified are as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">vitessce_options</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">spatial</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">xy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;obsm/spatial&quot;</span><span class="w"> </span><span class="c1"># where the Anndata object holds spatial coordinates</span>

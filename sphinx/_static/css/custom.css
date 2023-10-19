@@ -1,7 +1,25 @@
 .rst-content .code-block-caption {
     text-align: left;
-    padding: 2px;
+    font-weight: 700;
+    display: block;
+    color: #fff;
+    background: #6ab0de;
+    padding: 6px 12px;
 }
+.rst-content div[class^=highlight] {
+    margin-top: 0;
+}
+.admonition.shell-output {
+    font-size: 85%;
+    line-height: 1;
+} 
+.admonition.shell-output .admonition-title:before {
+    content: None;
+}
+.admonition.shell-output .admonition-title {
+    font-style: italic;
+}
+
 
 .citation {
     font-weight: bold;
