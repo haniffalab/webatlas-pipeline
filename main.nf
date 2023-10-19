@@ -108,6 +108,8 @@ process image_to_zarr {
     tag "${image}"
     debug verbose_log
 
+    label large
+
     publishDir outdir_with_version, mode: "copy"
 
     input:
@@ -140,6 +142,8 @@ process ome_zarr_metadata{
     tag "${zarr}, ${img_type}"
     debug verbose_log
 
+    label small
+
     input:
     tuple val(stem), val(img_type), path(zarr)
 
@@ -156,6 +160,8 @@ process route_file {
     tag "${type}, ${file}"
     debug verbose_log
     cache "lenient"
+
+    label small
 
     publishDir outdir_with_version, mode:"copy"
 
@@ -179,6 +185,8 @@ process Build_config {
     tag "${stem}"
     debug verbose_log
     cache false
+
+    label small
 
     publishDir outdir_with_version, mode: "copy"
 
@@ -212,6 +220,8 @@ process Build_config {
 process Generate_image {
     tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
+
+    label large
 
     publishDir outdir_with_version, mode:"copy"
 
