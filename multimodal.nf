@@ -142,7 +142,11 @@ workflow {
     intersect_anndatas(process_anndata.out.collect{ it[1] })
     intersect_anndatas.out
         .flatMap()
-        .map{[(it.baseName.split("intersect-")[-1]), it]}
+        .map{
+            // strip the extra 'intersect-' and '-anndata' from file basename
+            def basename = it.baseName.split("intersect-")[-1]
+            [(basename.substring(0, basename.length() - 8)), it]
+        }
         .set{intersect_output}
     
     // Get ome zarr metadata from raw and label images
