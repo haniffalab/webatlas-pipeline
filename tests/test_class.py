@@ -339,7 +339,7 @@ class TestClass:
                     "options": {
                         "matrix": "X",
                         "factors": ["obs/sample"],
-                        "mappings": "obsm/X_umap",
+                        "mappings": {"obsm/X_umap": [0, 1]},
                         "sets": ["obs/cluster"],
                         "spatial": {"xy": "obsm/spatial"},
                     },
