@@ -110,6 +110,8 @@ def write_json(
         dataset = datasets[dataset_name]
         config_dataset = config.add_dataset(name=dataset_name, uid=dataset_name)
 
+        if isinstance(dataset["is_spatial"], str):
+            dataset["is_spatial"] = dataset["is_spatial"].lower() == "true"
         dataset["is_spatial"] = (
             dataset["is_spatial"] and dataset.get("images", {}).keys()
         )
