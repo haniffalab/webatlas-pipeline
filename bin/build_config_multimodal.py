@@ -20,7 +20,7 @@ from vitessce import (
     hconcat,
     vconcat,
 )
-from constants import ANNDATA_ZARR_SUFFIX, MOLECULES_JSON_SUFFIX
+from constants.suffixes import ANNDATA_ZARR_SUFFIX, MOLECULES_JSON_SUFFIX
 
 
 def write_json(

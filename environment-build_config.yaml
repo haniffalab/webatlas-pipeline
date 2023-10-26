@@ -1,0 +1,8 @@
+name: webatlas-build_config
+channels:
+  - conda-forge
+dependencies:
+  - fire=0.5.0
+  - regex=2023.8.8
+  - pip:
+      - vitessce==3.0.7

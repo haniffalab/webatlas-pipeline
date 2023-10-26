@@ -234,8 +234,8 @@ def get_feature_intersection(*paths):
     for path in paths:
         is_zarr = path.split(".")[-1] == "zarr"
         if is_zarr:
-            z = ad.read_zarr(path)
-            var_indices.append(pd.Index(z.var.index[:]).to_series())
+            z = zarr.open(path)
+            var_indices.append(pd.Index(z.var._index[:]).to_series())
         else:
             with h5py.File(path, "r") as f:
                 var_indices.append(ad._io.h5ad.read_elem(f["var"]).index.to_series())

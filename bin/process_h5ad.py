@@ -17,7 +17,7 @@ import zarr
 import logging
 import warnings
 from scipy.sparse import spmatrix, csr_matrix, csc_matrix
-from constants import ANNDATA_ZARR_SUFFIX
+from constants.suffixes import ANNDATA_ZARR_SUFFIX
 
 warnings.filterwarnings("ignore")
 logging.getLogger().setLevel(logging.INFO)

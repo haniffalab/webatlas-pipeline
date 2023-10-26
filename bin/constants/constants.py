@@ -6,9 +6,6 @@ from vitessce import (
     CoordinationType as ct,
 )
 
-ANNDATA_ZARR_SUFFIX = "anndata.zarr"
-MOLECULES_JSON_SUFFIX = "molecules.json"
-
 SINGLE_ZARR = "anndata.zarr"
 OBS = "obs"
 

@@ -8,7 +8,7 @@ Processes molecules files
 import csv
 import json
 import fire
-from constants import MOLECULES_JSON_SUFFIX
+from constants.suffixes import MOLECULES_JSON_SUFFIX
 
 
 def tsv_to_json(

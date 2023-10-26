@@ -177,6 +177,7 @@ process route_file {
 
 process Build_config {
     tag "${stem}"
+    label 'build_config'
     debug verbose_log
     cache false
 
