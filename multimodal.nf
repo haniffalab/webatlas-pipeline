@@ -144,9 +144,9 @@ workflow {
     intersect_anndatas.out
         .flatMap()
         .map{
-            // strip the extra 'intersect-' and '-anndata' from file basename
+            // strip the extra 'intersect-' from file basename
             def basename = it.baseName.split("intersect-")[-1]
-            [(basename.substring(0, basename.length() - 8)), it]
+            [basename, it]
         }
         .set{intersect_output}
     
@@ -217,7 +217,7 @@ workflow {
     tmp_data.map{[
             "${it[0]}":
             [
-                obs_type: it[1], is_spatial: it[2], options: it[3],
+		obs_type: it[1], is_spatial: it[2], options: it[3],
                 file_paths: it[4], images: it[5]
             ]
         ]}
