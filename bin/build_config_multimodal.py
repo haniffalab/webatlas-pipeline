@@ -110,6 +110,10 @@ def write_json(
         dataset = datasets[dataset_name]
         config_dataset = config.add_dataset(name=dataset_name, uid=dataset_name)
 
+        dataset["is_spatial"] = (
+            dataset["is_spatial"] and dataset.get("images", {}).keys()
+        )
+
         dataset_obs_type = dataset.get("obs_type", "cell")
 
         if dataset_obs_type not in obs_coordination:
