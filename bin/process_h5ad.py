@@ -7,6 +7,7 @@ Processes H5AD files into AnnData-Zarr
 
 from __future__ import annotations
 import typing as T
+import os
 import fire
 import scanpy as sc
 import anndata as ad
@@ -77,7 +78,11 @@ def h5ad_to_zarr(
 
     adata = preprocess_anndata(adata, **kwargs)
 
-    zarr_file = f"{stem}-{ANNDATA_ZARR_SUFFIX}"
+    zarr_file = (
+        f"{stem}-{ANNDATA_ZARR_SUFFIX}"
+        if not stem.endswith("-" + os.path.splitext(ANNDATA_ZARR_SUFFIX)[0])
+        else f"{stem}.{os.path.splitext(ANNDATA_ZARR_SUFFIX)[1]}"
+    )
 
     if not batch_processing:
         # matrix sparse to dense
