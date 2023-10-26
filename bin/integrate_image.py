@@ -38,10 +38,10 @@ def reindex_label_zarr(label_image_path: str, offset: int, out_filename: str) ->
     os.makedirs(f"{out_filename}/OME", exist_ok=True)
     store = parse_url("./", mode="w").store
     temp_group = zarr.group(store=store).create_group(out_filename)
-    write_multiscale(
-        np.array(reindexed_label), temp_group, axes="yx"
-    )  # this should be used, but need to bump ome-zarr version
-    # write_image(np.array(reindexed_label), temp_group, axes="yx")
+    # write_multiscale(
+    #     np.array(reindexed_label), temp_group, axes="yx"
+    # )  # this should be used, but need to bump ome-zarr version
+    write_image(np.array(reindexed_label), temp_group, axes="yx")
     shutil.copy(
         label_image_path + "/OME/METADATA.ome.xml",
         f"{out_filename}/OME/METADATA.ome.xml",
