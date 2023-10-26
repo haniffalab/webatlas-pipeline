@@ -29,7 +29,9 @@ def reindex_label(label_image: str, offset: int, out_filename: str) -> None:
 
 def reindex_label_zarr(label_image_path: str, offset: int, out_filename: str) -> None:
     binary_path = (
-        label_image_path if label_image_path.endswith("/0") else label_image_path + "/0"
+        label_image_path
+        if label_image_path.endswith("/0")
+        else os.path.join(label_image_path, "0")
     )
     reader = Reader(parse_url(binary_path))
     nodes = list(reader())
