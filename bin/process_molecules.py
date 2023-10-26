@@ -101,7 +101,7 @@ def tsv_to_json(
     json_file = (
         f"{stem}-{MOLECULES_JSON_SUFFIX}"
         if not stem.endswith("-" + os.path.splitext(MOLECULES_JSON_SUFFIX)[0])
-        else f"{stem}.{os.path.splitext(MOLECULES_JSON_SUFFIX)[1]}"
+        else f"{stem}{os.path.splitext(MOLECULES_JSON_SUFFIX)[1]}"
     )
 
     with open(json_file, "w") as out_file:

@@ -81,7 +81,7 @@ def h5ad_to_zarr(
     zarr_file = (
         f"{stem}-{ANNDATA_ZARR_SUFFIX}"
         if not stem.endswith("-" + os.path.splitext(ANNDATA_ZARR_SUFFIX)[0])
-        else f"{stem}.{os.path.splitext(ANNDATA_ZARR_SUFFIX)[1]}"
+        else f"{stem}{os.path.splitext(ANNDATA_ZARR_SUFFIX)[1]}"
     )
 
     if not batch_processing:
