@@ -2,6 +2,7 @@ name: webatlas
 channels:
   - conda-forge
 dependencies:
+  - python=3.9
   - colorama=0.4.6
   - dask=2023.9.0
   - fire=0.5.0
