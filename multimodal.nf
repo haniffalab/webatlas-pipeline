@@ -50,13 +50,15 @@ process process_anndata {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(dataset), path(anndata), val(offset), path(features)
+    tuple val(dataset), path(anndata), val(offset), val(features), path(features_file)
 
     output:
     tuple val(dataset), path("*")
 
     script:
-    features_str = features.name != "NO_FT" ? "--features ${features}" : ""
+    features_str = features
+        ? "--features ${features_file.name != 'NO_FT' ? features_file : features}"
+        : ""
     """
     integrate_anndata.py reindex_and_concat \
         --path ${anndata} \
@@ -118,7 +120,9 @@ workflow {
             info: [it.dataset, it.obs_type ?: "cell", it.is_spatial ?: false, it.vitessce_options ?: [:]]
             raws : [it.dataset, it.raw_image] // not processed but necessary for writing config
             labels : [it.dataset, it.label_image, it.offset]
-            adatas : [it.dataset, file(it.anndata), it.offset, file(it.extend_feature ?: "NO_FT")]
+            adatas : [it.dataset, file(it.anndata), it.offset, it.extend_feature,
+                file(it.extend_feature && it.extend_feature.endsWith(".h5ad") ? it.extend_feature : "NO_FT")
+            ]
         }
         .set{data}
 
