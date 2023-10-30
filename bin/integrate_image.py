@@ -8,7 +8,7 @@ import logging
 from ome_zarr.reader import Reader
 from ome_zarr.io import parse_url
 import shutil
-from ome_zarr.writer import write_multiscale, write_image
+from ome_zarr.writer import write_multiscale
 import zarr
 
 
@@ -35,13 +35,12 @@ def reindex_label_zarr(label_image_path: str, offset: int, out_filename: str) ->
     )
     reader = Reader(parse_url(binary_path))
     nodes = list(reader())
-    label = nodes[0].data[0]
-    reindex_label = add_offset(label, offset)
+    labels = nodes[0].data
+    reindexed_labels = [add_offset(x, offset) for x in labels]
     os.makedirs(f"{out_filename}/OME", exist_ok=True)
     store = parse_url(out_filename, mode="w").store
     tmp_group = zarr.group(store=store)
-    write_image(reindex_label, tmp_group)
-    # write_multiscale([np.array(reindexed_label)], tmp_group, axes="yx")
+    write_multiscale(reindexed_labels, tmp_group)
     zarr.consolidate_metadata(out_filename)
     shutil.copy(
         label_image_path + "/OME/METADATA.ome.xml",
