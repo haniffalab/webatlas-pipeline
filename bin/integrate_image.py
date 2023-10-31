@@ -40,7 +40,7 @@ def reindex_label_zarr(label_image_path: str, offset: int, out_filename: str) ->
     os.makedirs(f"{out_filename}/OME", exist_ok=True)
     store = parse_url(out_filename, mode="w").store
     tmp_group = zarr.group(store=store)
-    write_multiscale(reindexed_labels, tmp_group)
+    write_multiscale(reindexed_labels, tmp_group, compute=True)
     zarr.consolidate_metadata(out_filename)
     shutil.copy(
         label_image_path + "/OME/METADATA.ome.xml",
