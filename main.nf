@@ -36,6 +36,8 @@ params.s3_keys = [
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
+params.projects = []
+
 //////////////////////////////////////////////////////
 
 data_types = ["h5ad","spaceranger","xenium","merscope","molecules"]
