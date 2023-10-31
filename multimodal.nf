@@ -128,7 +128,8 @@ workflow {
         .set{data}
 
     // Filter null raw image
-    data.raws.filter{ it[1] }.map{ [it[0], params.copy_raw ? file(it[1]).copyTo(outdir_with_version) : file(it[1])] }
+    data.raws.filter{ it[1] }
+        .map{ [it[0], params.copy_raw ? file(it[1]).copyTo(outdir_with_version) : file(it[1])] }
         .set{raw_images}
 
     // Process labels filtered out nulls

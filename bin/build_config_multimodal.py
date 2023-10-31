@@ -242,6 +242,8 @@ def write_json(
                     ct.SPATIAL_IMAGE_LAYER,
                     ct.SPATIAL_SEGMENTATION_LAYER,
                     ct.SPATIAL_ZOOM,
+                    ct.SPATIAL_TARGET_X,
+                    ct.SPATIAL_TARGET_Y,
                 ),
             ]
 
