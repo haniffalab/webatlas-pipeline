@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - fire=0.5.0
-  - python=3.10.12
-  - regex=2023.8.8
+  - python=3.9
+  - regex=2023.10.3
   - pip:
       - vitessce==3.0.7
