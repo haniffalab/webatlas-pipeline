@@ -116,6 +116,8 @@ process Build_multimodal_config {
 
 
 workflow {
+    file(outdir_with_version).mkdirs()
+
     Channel.from(params.data)
         .multiMap{ it ->
             info: [it.dataset, it.obs_type ?: "cell", it.is_spatial ?: false, it.vitessce_options ?: [:]]
