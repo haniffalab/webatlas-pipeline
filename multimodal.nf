@@ -9,7 +9,7 @@ nextflow.enable.dsl=2
 params.outdir = ""
 params.copy_raw = true
 
-version="0.3.2"
+version="0.4.0"
 verbose_log=true
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
