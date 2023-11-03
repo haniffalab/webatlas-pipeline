@@ -6,7 +6,7 @@ From the project root directory:
 python -m venv venv
 . venv/bin/activate
 pip install --upgrade pip
-pip install -r ./docker/requirements.txt 
+pip install -r ./envs/requirements.txt 
 cd sphinx/
 make html
 ```

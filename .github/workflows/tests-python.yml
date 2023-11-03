@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./docker/requirements.txt
+          pip install -r ./envs/requirements.txt
           cd ./ome-zarr-metadata && pre-commit install && pip install -e . && cd ../
       - name: Run tests
         run: python -m pytest --cov=bin tests/test_class.py

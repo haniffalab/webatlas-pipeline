@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./docker/requirements.txt          
+          pip install -r ./envs/requirements.txt          
           pip install sphinx sphinx-rtd-theme
       - name: Sphinx Build
         working-directory: ./sphinx
