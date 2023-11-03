@@ -36,6 +36,8 @@ params.s3_keys = [
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
 
+params.projects = []
+
 //////////////////////////////////////////////////////
 
 data_types = ["h5ad","spaceranger","xenium","merscope","molecules"]
@@ -177,6 +179,7 @@ process route_file {
 
 process Build_config {
     tag "${stem}"
+    label 'build_config'
     debug verbose_log
     cache false
 
@@ -312,7 +315,7 @@ workflow Process_images {
             data_map.data_type.replace("_image_data",""),
             file(data_map.data_path),
             data_map.file_type,
-            file(data_map.ref_img ?: file("NO_REF")) ,
+            file(data_map.ref_img ?: "NO_REF") ,
             data_map.args ?: [:]
         ]
     }

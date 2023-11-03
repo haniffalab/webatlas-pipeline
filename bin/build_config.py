@@ -21,7 +21,7 @@ from vitessce import (
     CoordinationType as ct,
     Component as cm,
 )
-from constants import (
+from constants.constants import (
     DATA_TYPES,
     DEFAULT_OPTIONS,
     DEFAULT_LAYOUTS,
