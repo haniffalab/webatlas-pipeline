@@ -1,4 +1,4 @@
-Tested with Python 3.8
+Tested with Python 3.10
 
 From the project root directory:
 
