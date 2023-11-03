@@ -22,141 +22,17 @@ Sample details
 Steps to reproduce
 ******************
 
-Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself in your web browser. 
-It can be followed on any POSIX compatible system (Linux, OS X, etc).
+Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself 
+in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
+example requires you to have already :ref:`setup your environment first <environment>`.
 
-**#1. Check git is installed**
-
-Make sure git 2.17 or later is installed on your computer by using the command:
-
-.. code-block:: shell
-   :caption: Input
-
-   git --version
-
-.. code-block:: shell
-   :caption: Output
-
-   git version 2.25.1
-
-**#2. Download lthe WebAtlas Pipeline**
-
-Download the WebAtlas Pipeline: 
+**#1. Download the sample data**
 
 .. code-block:: shell
    :caption: Input
 
-   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.3.2.tar.gz
-
-.. code-block:: shell
-   :caption: Output
-    
-   Resolving github.com (github.com)... 140.82.121.3
-   Connecting to github.com (github.com)|140.82.121.3|:443... connected.
-   HTTP request sent, awaiting response... 302 Found
-   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2 [following]
-   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.3.2
-   Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
-   Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
-   HTTP request sent, awaiting response... 200 OK
-   Length: unspecified [application/x-gzip]
-   Saving to: ‘v0.3.2.tar.gz’
-
-   v0.3.2.tar.gz                                                      [  <=>                                                                                                                                               ]   2.70M  9.12MB/s    in 0.3s    
-
-   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.3.2.tar.gz’ saved [2835534]
-
-**#2. Extract the WebAtlas Pipeline**
-
-Download and extract a  of the WebAtlas repo and change directory into the new repo: 
-
-.. code-block:: shell
-   :caption: Input
-
-   tar -xzvf ./v0.3.2.tar.gz
-   cd webatlas-pipeline-0.3.2
-
-.. code-block:: shell
-   :caption: Output
-    
-   webatlas-pipeline-0.3.2/
-   webatlas-pipeline-0.3.2/.github/
-   ...
-   ...
-   webatlas-pipeline-0.3.2/tests/input/simple_config.json
-   webatlas-pipeline-0.3.2/tests/test_class.py
-
-**#3. Check java is installed**
-
-Make sure java 11 later is installed on your computer by using the command:
-
-.. code-block:: shell
-   :caption: Input
-
-   java -version
-
-.. code-block:: shell
-   :caption: Output
-   
-   openjdk version "11.0.18" 2023-01-17
-   OpenJDK Runtime Environment (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1)
-   OpenJDK 64-Bit Server VM (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1, mixed mode, sharing)
-
-**#4. Install Nextflow**
-
-Enter this command in your terminal to install nextflow in the current directory:
-
-.. code-block:: shell
-   :caption: Input
-
-   curl -s https://get.nextflow.io | bash
-
-.. code-block:: shell
-   :caption: Output
-   
-   CAPSULE: Downloading dependency org.apache.ivy:ivy:jar:2.5.1
-   ...
-   CAPSULE: Downloading dependency io.nextflow:nf-commons:jar:23.04.1
-                                                                        
-         N E X T F L O W
-         version 23.04.1 build 5866
-         created 15-04-2023 06:51 UTC (07:51 BST)
-         cite doi:10.1038/nbt.3820
-         http://nextflow.io
-
-
-   Nextflow installation completed. Please note:
-   - the executable file `nextflow` has been created in the folder: ./webatlas-pipeline
-   - you may complete the installation by moving it to a directory in your $PATH
-
-**#5. Check Docker is installed**
-
-Make sure Docker Engine 20.10 later is installed on your computer by using the command:
-
-.. code-block:: shell
-   :caption: Input
-
-   docker version
-
-.. code-block:: shell
-   :caption: Output
-
-   Client: Docker Engine - Community
-   Version:           23.0.4
-   API version:       1.42
-   Go version:        go1.19.8
-   Git commit:        f480fb1
-   Built:             Fri Apr 14 10:32:23 2023
-   OS/Arch:           linux/amd64
-   Context:           default
-
-**#6. Download the sample data**
-
-.. code-block:: shell
-   :caption: Input
-
-   mkdir -p ./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
-   wget https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip -P ./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
+   mkdir -p input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
+   wget https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip -P input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
 
 .. code-block:: shell
    :caption: Output
@@ -166,13 +42,13 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
    Connecting to cf.10xgenomics.com (cf.10xgenomics.com)|104.18.0.173|:443... connected.
    HTTP request sent, awaiting response... 200 OK
    Length: 9861155708 (9.2G) [application/zip]
-   Saving to: ‘./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’
+   Saving to: ‘input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’
 
    Xenium_FFPE_Human_Breast_Cancer_Rep1 100%[===================================================================>]   9.18G  14.3MB/s    in 10m 6s  
 
-   2023-05-17 15:15:31 (15.5 MB/s) - ‘./input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’ saved [9861155708/9861155708]
+   2023-05-17 15:15:31 (15.5 MB/s) - ‘input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’ saved [9861155708/9861155708]
 
-**#6. Extract the sample data**
+**#2. Extract the sample data**
 
 .. code-block:: shell
    :caption: Input
@@ -193,12 +69,14 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
      inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json  
      inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html 
 
-**#7. Run the pipeline**
+**#3. Run the pipeline**
 
 .. code-block:: shell
    :caption: Input
 
-   NXF_VER=22.04.5 ./nextflow run main.nf -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml -entry Full_pipeline
+   nextflow run main.nf \
+         -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml \
+         -entry Full_pipeline
 
 .. code-block:: shell
    :caption: Output
@@ -216,7 +94,7 @@ Make sure Docker Engine 20.10 later is installed on your computer by using the c
     CPU hours   : 0.6
     Succeeded   : 7
 
-**#8. Check execution was successful**
+**#4. Check execution was successful**
 
 The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created. 
@@ -224,19 +102,19 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.2
+   ls -l output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.4.0
 
 .. code-block:: shell
    :caption: Output
 
     total 3566252
-    drwxrwxr-x 11 ndh74 ndh74       4096 May 17 16:08 xenium-breast-cancer-anndata.zarr
-    -rw-r--r--  1 ndh74 ndh74       4984 May 17 16:40 xenium-breast-cancer-config.json
-    -rw-r--r--  1 ndh74 ndh74 3651814848 May 17 16:12 xenium-breast-cancer-label.tif
-    drwxrwxr-x  4 ndh74 ndh74       4096 May 17 16:13 xenium-breast-cancer-label.zarr
-    drwxrwxr-x  4 ndh74 ndh74       4096 May 17 16:40 xenium-breast-cancer-raw.zarr
+    drwxrwxr-x 11 dh74 dh74       4096 May 17 16:08 xenium-breast-cancer-anndata.zarr
+    -rw-r--r--  1 dh74 dh74       4984 May 17 16:40 xenium-breast-cancer-config.json
+    -rw-r--r--  1 dh74 dh74 3651814848 May 17 16:12 xenium-breast-cancer-label.tif
+    drwxrwxr-x  4 dh74 dh74       4096 May 17 16:13 xenium-breast-cancer-label.zarr
+    drwxrwxr-x  4 dh74 dh74       4096 May 17 16:40 xenium-breast-cancer-raw.zarr
 
-**#9. Serve the data output through a local web server**
+**#5. Serve the data output through a local web server**
 
 To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000, 
@@ -245,7 +123,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server ./output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.2 --port 3000 --cors
+   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.4.0 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output

@@ -23,6 +23,7 @@ def spaceranger_to_anndata(
     path: str,
     load_clusters: bool = True,
     load_embeddings: bool = True,
+    load_raw: bool = False,
 ) -> sc.AnnData:
     """Function to create an AnnData object from a SpaceRanger output directory.
 
@@ -32,21 +33,29 @@ def spaceranger_to_anndata(
             AnnData object. Defaults to True.
         load_embeddings (bool, optional): If embedding coordinates files should be included
             in the AnnData object. Defaults to True.
+        load_raw (bool, optional): If the raw matrix count file should be loaded
+            instead of the filtered matrix. Defaults to False.
 
     Returns:
         AnnData: AnnData object created from the SpaceRanger output data
     """
 
     p = Path(path)
-    
-    # Temporary fix to support spacerangerr v1.2.0 and v2.0.
-    # until scanpy 1.10.0 is released and scanpy.read_visium can handle it 
-    if os.path.isfile(p/"spatial"/"tissue_positions.csv"):
-        shutil.copyfile(
-            p/"spatial"/"tissue_positions.csv",
-            p/"spatial"/"tissue_positions_list.csv")
 
-    adata = sc.read_visium(path)
+    # Temporary fix to support spacerangerr v1.2.0 and v2.0.
+    # until scanpy 1.10.0 is released and scanpy.read_visium can handle it
+    if (p / "spatial" / "tissue_positions.csv").is_file():
+        shutil.copyfile(
+            p / "spatial" / "tissue_positions.csv",
+            p / "spatial" / "tissue_positions_list.csv",
+        )
+
+    adata = sc.read_visium(
+        p,
+        count_file="raw_feature_bc_matrix.h5"
+        if load_raw
+        else "filtered_feature_bc_matrix.h5",
+    )
 
     if load_clusters:
         for cluster in [
@@ -74,9 +83,7 @@ def spaceranger_to_anndata(
                 else f"gene_expression_{components}"
             )
             embedding_df = pd.read_csv(
-                os.path.join(
-                    p / "analysis" / embedding / components_name / "projection.csv"
-                ),
+                (p / "analysis" / embedding / components_name / "projection.csv"),
                 index_col="Barcode",
             )
 
@@ -91,6 +98,7 @@ def spaceranger_to_zarr(
     stem: str,
     load_clusters: bool = True,
     load_embeddings: bool = True,
+    load_raw: bool = False,
     save_h5ad: bool = False,
     **kwargs,
 ) -> str:
@@ -100,16 +108,19 @@ def spaceranger_to_zarr(
         path (str): Path to a SpaceRanger output directory
         stem (str): Prefix for the output Zarr filename
         load_clusters (bool, optional): If cluster files should be included in the
-            AnnData object. Defaults to False.
+            AnnData object. Defaults to True.
         load_embeddings (bool, optional): If embedding coordinates files should be included
-            in the AnnData object. Defaults to False.
-        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.
+            in the AnnData object. Defaults to True.
+        load_raw (bool, optional): If the raw matrix count file should be loaded
+            instead of the filtered matrix. Defaults to False.
+        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file.
+            Defaults to False.
 
     Returns:
         str: Output Zarr filename
     """
 
-    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings)
+    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings, load_raw)
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
@@ -123,6 +134,7 @@ def visium_label(
     shape: tuple[int, int] = None,
     obs_subset: tuple[int, T.Any] = None,
     sample_id: str = None,
+    relative_size: str = None,
 ) -> None:
     """This function writes a label image tif file with drawn labels according to an
     Anndata object with necessary metadata stored within `uns["spatial"]`.
@@ -134,6 +146,9 @@ def visium_label(
         obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
             to use to subset the AnnData object. Defaults to None.
         sample_id (str, optional): Sample ID string within the Anndata object. Defaults to None.
+        relative_size (str, optional): Optional numerical `obs` column name that holds
+            a multiplier for the spot diameter. Only useful for data that has been
+            processed to merge spots. Defaults to None.
     """
     # sample_id = sample_id or Path(file_path).stem
 
@@ -183,8 +198,25 @@ def visium_label(
         dtype=np.min_scalar_type(adata.obs.index.astype(int).max()),
     )
 
-    for spId, (y, x) in zip(adata.obs.index, spot_coords):
-        label_img[disk((int(x), int(y)), spot_diameter_fullres / 2)] = int(spId)
+    if relative_size and relative_size in adata.obs:
+        for spId, (y, x), m in zip(
+            adata.obs.index, spot_coords, adata.obs[relative_size]
+        ):
+            label_img[disk((int(x), int(y)), (spot_diameter_fullres / 2) * m)] = int(
+                spId
+            )
+    else:
+        for spId, (y, x) in zip(adata.obs.index, spot_coords):
+            label_img[
+                disk(
+                    (
+                        int(x),
+                        int(y),
+                    ),
+                    spot_diameter_fullres / 2,
+                    shape=shape,
+                )
+            ] = int(spId)
 
     tf.imwrite(f"{stem}-label.tif", label_img)
 

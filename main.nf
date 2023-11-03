@@ -5,7 +5,7 @@ import groovy.json.*
 nextflow.enable.dsl=2
 
 verbose_log = true
-version = "0.3.2"
+version = "0.4.0"
 
 //////////////////////////////////////////////////////
 
@@ -35,6 +35,8 @@ params.s3_keys = [
     "YOUR_SECRET_KEY"
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
+
+params.projects = []
 
 //////////////////////////////////////////////////////
 
@@ -137,7 +139,7 @@ process image_to_zarr {
 }
 
 process ome_zarr_metadata{
-    tag "${zarr}"
+    tag "${zarr}, ${img_type}"
     debug verbose_log
 
     input:
@@ -177,6 +179,7 @@ process route_file {
 
 process Build_config {
     tag "${stem}"
+    label 'build_config'
     debug verbose_log
     cache false
 
@@ -312,7 +315,7 @@ workflow Process_images {
             data_map.data_type.replace("_image_data",""),
             file(data_map.data_path),
             data_map.file_type,
-            file(data_map.ref_img) ?: file("NO_REF"),
+            file(data_map.ref_img ?: "NO_REF") ,
             data_map.args ?: [:]
         ]
     }

@@ -1,0 +1,26 @@
+name: webatlas
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - ome::bioformats2raw==0.7.0
+  - pillow==10.1.0
+  - xmlschema==2.5.0
+  - pip==23.2.1
+  - scipy==1.11.3
+  - fire==0.5.0
+  - regex==2023.8.8
+  - scikit-image==0.22.0
+  - ome::bioformats2raw-libs==0.7.0
+  - ome::raw2ometiff-libs==0.5.0=0
+  - tifffile==2023.9.26
+  - numpy==1.24.4
+  - ome::raw2ometiff==0.5.0=0
+  - pandas==2.1.0
+  - pyvips==2.2.1
+  - scanpy==1.9.4
+  - ome-zarr==0.8
+  - python==3.10
+  - anndata==0.8.0
+  - zarr==2.16.1
+  - h5py==3.10.0

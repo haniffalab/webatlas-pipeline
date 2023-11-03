@@ -21,7 +21,7 @@ from vitessce import (
     CoordinationType as ct,
     Component as cm,
 )
-from constants import (
+from constants.constants import (
     DATA_TYPES,
     DEFAULT_OPTIONS,
     DEFAULT_LAYOUTS,
@@ -231,7 +231,6 @@ def write_json(
 
     for data_type in DATA_TYPES:
         for file_name, file_type in DATA_TYPES[data_type]:
-
             # first file type found will be used in the config file
             file_exists = False
             if file_name in file_paths_names:
@@ -326,7 +325,7 @@ def write_json(
         views_indx.append((m.start(), m.end(), "views[{}]".format(len(views) - 1)))
 
     # Replace components names in layout string with the corresponding view object
-    for (start, end, view) in sorted(views_indx, key=lambda x: x[0], reverse=True):
+    for start, end, view in sorted(views_indx, key=lambda x: x[0], reverse=True):
         config_layout = config_layout[:start] + view + config_layout[end:]
 
     # Remove remaining | and / operators and empty parenthesis

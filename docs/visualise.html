@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualising &mdash; WebAtlas 0.3.2 documentation</title>
+  <title>Visualising &mdash; WebAtlas 0.4.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -12,9 +12,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=6c02275b"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,7 +46,8 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Visualising</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cellatlas.io/webatlas">Demos</a></li>
@@ -61,7 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">Frontend Client</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
 <ul>
@@ -95,20 +98,20 @@
            <div itemprop="articleBody">
              
   <section id="visualising">
-<span id="visualise"></span><h1>Visualising<a class="headerlink" href="#visualising" title="Permalink to this heading"></a></h1>
+<span id="visualise"></span><h1>Visualising<a class="headerlink" href="#visualising" title="Link to this heading"></a></h1>
 <p>The pipeline generates a Vitessce view config file for each processed dataset.
 This file can then be used to load the views and data as configured in the parameters files.</p>
 <p>You can locally serve and visualize the data in a few steps.</p>
 <p>By default, the base <code class="docutils literal notranslate"><span class="pre">url</span></code> used within the view config is <code class="docutils literal notranslate"><span class="pre">http://localhost:3000/</span></code>
-(this can be changed in the <a class="reference internal" href="setup.html#parameters-file"><span class="std std-ref">parameters file</span></a>).
+(this can be changed in the <a class="reference internal" href="configuration.html#parameters-file"><span class="std std-ref">parameters file</span></a>).
 This <code class="docutils literal notranslate"><span class="pre">url</span></code> indicates Vitessce to look for data at that location.</p>
-<p>You can set up an http server locally to serve the processed files so a Vitessce instance can load them.
-There are several tools that can setup an http server.
+<p>You can set up a <code class="docutils literal notranslate"><span class="pre">http</span></code> server locally to serve the processed files so a Vitessce instance can load them.
+There are several tools that can setup a <code class="docutils literal notranslate"><span class="pre">http</span></code> server.
 We recommend using <a class="reference external" href="https://www.npmjs.com/package/serve">serve</a> (requires <a class="reference external" href="https://nodejs.org/en/">Node.js</a>),
 but you can use any tool that can enable CORS.</p>
 <p>You can serve the view config file and data by specifying the output directory
-(note that the pipeline adds its version to the <code class="docutils literal notranslate"><span class="pre">outdir</span></code> defined in the <a class="reference internal" href="setup.html#parameters-file"><span class="std std-ref">parameters file</span></a> file).</p>
-<pre class="literal-block">serve -C -p 3000 /path/to/outdir/0.3.2/</pre>
+(note that the pipeline adds its version to the <code class="docutils literal notranslate"><span class="pre">outdir</span></code> defined in the <a class="reference internal" href="configuration.html#parameters-file"><span class="std std-ref">parameters file</span></a> file).</p>
+<pre class="literal-block">serve -C -p 3000 /path/to/outdir/0.4.0/</pre>
 <p>Make sure to enable CORS and set the appropriate port number.
 In this case, using <a class="reference external" href="https://www.npmjs.com/package/serve">serve</a>, this is done through the <code class="docutils literal notranslate"><span class="pre">-C</span></code> and <code class="docutils literal notranslate"><span class="pre">-p</span></code> flags respectively.</p>
 <p>Your view configs should then be accessible at <code class="docutils literal notranslate"><span class="pre">http://localhost:3000/{project}-{dataset}-config.json</span></code>.</p>
