@@ -59,6 +59,8 @@ pycparser==2.21
 pynndescent==0.5.10
 pyparsing==3.1.1
 PySocks==1.7.1
+pytest==7.4.3
+pytest-cov==4.1.0
 python-dateutil==2.8.2
 pytz==2023.3.post1
 pyvips==2.2.1
