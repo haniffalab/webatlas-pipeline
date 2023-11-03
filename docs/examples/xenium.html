@@ -14,9 +14,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=53a30eae"></script>
+        <script src="../_static/documentation_options.js?v=71d9d8e6"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -102,9 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="xenium">
-<span id="example-xenium"></span><h1>Xenium<a class="headerlink" href="#xenium" title="Permalink to this heading"></a></h1>
+<span id="example-xenium"></span><h1>Xenium<a class="headerlink" href="#xenium" title="Link to this heading"></a></h1>
 <section id="sample-details">
-<h2>Sample details<a class="headerlink" href="#sample-details" title="Permalink to this heading"></a></h2>
+<h2>Sample details<a class="headerlink" href="#sample-details" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25%" />
@@ -127,20 +127,20 @@
 </table>
 </section>
 <section id="steps-to-reproduce">
-<h2>Steps to reproduce<a class="headerlink" href="#steps-to-reproduce" title="Permalink to this heading"></a></h2>
+<h2>Steps to reproduce<a class="headerlink" href="#steps-to-reproduce" title="Link to this heading"></a></h2>
 <p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself
 in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
 example requires you to have already <a class="reference internal" href="../installation.html#environment"><span class="std std-ref">setup your environment first</span></a>.</p>
 <p><strong>#1. Download the sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
 wget<span class="w"> </span>https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip<span class="w"> </span>-P<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>--2023-05-17<span class="w"> </span><span class="m">15</span>:05:24--<span class="w">  </span>https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
 Resolving<span class="w"> </span>cf.10xgenomics.com<span class="w"> </span><span class="o">(</span>cf.10xgenomics.com<span class="o">)</span>...<span class="w"> </span><span class="m">104</span>.18.0.173,<span class="w"> </span><span class="m">104</span>.18.1.173,<span class="w"> </span><span class="m">2606</span>:4700::6812:ad,<span class="w"> </span>...
 Connecting<span class="w"> </span>to<span class="w"> </span>cf.10xgenomics.com<span class="w"> </span><span class="o">(</span>cf.10xgenomics.com<span class="o">)</span><span class="p">|</span><span class="m">104</span>.18.0.173<span class="p">|</span>:443...<span class="w"> </span>connected.
@@ -156,13 +156,13 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 </div>
 <p><strong>#2. Extract the sample data</strong></p>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip<span class="w"> </span>-d<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Archive:<span class="w">  </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
 <span class="w">   </span>creating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/
 <span class="w">  </span>inflating:<span class="w"> </span>input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/experiment.xenium
@@ -178,7 +178,7 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 </div>
 <p><strong>#3. Run the pipeline</strong></p>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-params-file<span class="w"> </span>templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-entry<span class="w"> </span>Full_pipeline
@@ -186,7 +186,7 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W<span class="w">  </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">22</span>.10.6
 <span class="w"> </span>Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb">`</span><span class="w"> </span><span class="o">[</span>gigantic_murdock<span class="o">]</span><span class="w"> </span>DSL2<span class="w"> </span>-<span class="w"> </span>revision:<span class="w"> </span>1b6a73f4d6
 <span class="w"> </span><span class="o">[</span>fc/782a3f<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_files:route_file<span class="w"> </span><span class="o">(</span>xenium,<span class="w"> </span>outs<span class="o">)</span><span class="w">                              </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
@@ -206,13 +206,13 @@ Xenium_FFPE_Human_Breast_Cancer_Rep1<span class="w"> </span><span class="m">100<
 <p>The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created.</p>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.2
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>total<span class="w"> </span><span class="m">3566252</span>
 <span class="w"> </span>drwxrwxr-x<span class="w"> </span><span class="m">11</span><span class="w"> </span>dh74<span class="w"> </span>dh74<span class="w">       </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:08<span class="w"> </span>xenium-breast-cancer-anndata.zarr
 <span class="w"> </span>-rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dh74<span class="w"> </span>dh74<span class="w">       </span><span class="m">4984</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">16</span>:40<span class="w"> </span>xenium-breast-cancer-config.json
@@ -227,13 +227,13 @@ verify the expected directories are created.</p>
 You can use your preferred web server, but you must ensure the data is served over port 3000,
 at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, and that CORS is enabled via the Access-Control-Allow-Origin header.</p>
 <div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.2<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Starting<span class="w"> </span>up<span class="w"> </span>http-server,<span class="w"> </span>serving<span class="w"> </span>./
 
 http-server<span class="w"> </span>version:<span class="w"> </span><span class="m">14</span>.1.1

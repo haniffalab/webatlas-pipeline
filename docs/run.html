@@ -14,9 +14,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=53a30eae"></script>
+        <script src="_static/documentation_options.js?v=71d9d8e6"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +104,7 @@
            <div itemprop="articleBody">
              
   <section id="running">
-<span id="run"></span><h1>Running<a class="headerlink" href="#running" title="Permalink to this heading"></a></h1>
+<span id="run"></span><h1>Running<a class="headerlink" href="#running" title="Link to this heading"></a></h1>
 <p>The pipeline offers a workflow that processes files, images, and
 builds a Vitessce config file from the generated files.
 Alternatively, the workflow to process files only, or the workflow to process images only
@@ -127,7 +127,7 @@ defined.</p>
 <p>You can modify the entry point if you’re interested in only getting the converted outputs.
 Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
 <section id="running-using-docker">
-<h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Permalink to this heading"></a></h2>
+<h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Link to this heading"></a></h2>
 <p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Docker containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">docker</span></code> option:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span><span class="se">\</span>
@@ -138,7 +138,7 @@ Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <
 <p>Pulling the containers when the pipline is launched may take a few minutes.</p>
 </section>
 <section id="running-using-singularity">
-<h2>Running using Singularity<a class="headerlink" href="#running-using-singularity" title="Permalink to this heading"></a></h2>
+<h2>Running using Singularity<a class="headerlink" href="#running-using-singularity" title="Link to this heading"></a></h2>
 <p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Singularity containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">singularity</span></code> option:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span><span class="se">\</span>
@@ -149,7 +149,7 @@ Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <
 <p>Pulling the containers when the pipline is launched may take a few minutes.</p>
 </section>
 <section id="running-using-conda">
-<h2>Running using Conda<a class="headerlink" href="#running-using-conda" title="Permalink to this heading"></a></h2>
+<h2>Running using Conda<a class="headerlink" href="#running-using-conda" title="Link to this heading"></a></h2>
 <p>The default pipeline will run on local executor without any type of environment creation. If you’ve already setup your conda environment you don’t have to do anything else.</p>
 <p>However, if you are working on a compute cluster you will need to make sure the conda environment is avaiable and active in your worker nodes. To run the pipeline using a new conda environment use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">conda</span></code> option:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
@@ -161,7 +161,7 @@ Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <
 <p>Creating the environment when the pipleine is launched may take a few minutes.</p>
 </section>
 <section id="further-reading">
-<h2>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this heading"></a></h2>
+<h2>Further reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
 <p>For more information about Docker image pulling/local conda env creation in Nextflow please refer to Nextflow’s official docs for <a class="reference external" href="https://www.nextflow.io/docs/latest/container.html">containers</a> and <a class="reference external" href="https://www.nextflow.io/docs/latest/conda.html">conda</a>.</p>
 </section>
 </section>
