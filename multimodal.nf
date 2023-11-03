@@ -7,6 +7,7 @@ include { ome_zarr_metadata } from "./main.nf"
 nextflow.enable.dsl=2
 
 params.outdir = ""
+params.copy_raw = true
 
 version="0.3.2"
 verbose_log=true
@@ -50,13 +51,15 @@ process process_anndata {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(dataset), path(anndata), val(offset), val(features)
+    tuple val(dataset), path(anndata), val(offset), val(features), path(features_file)
 
     output:
     tuple val(dataset), path("*")
 
     script:
-    features_str = features != "NO_FT" ? "--features ${features}" : ""
+    features_str = features
+        ? "--features ${features_file.name != 'NO_FT' ? features_file : features}"
+        : ""
     """
     integrate_anndata.py reindex_and_concat \
         --path ${anndata} \
@@ -85,6 +88,7 @@ process intersect_anndatas {
 
 process Build_multimodal_config {
     tag "${project}"
+    label 'build_config'
     debug verbose_log
     cache false
 
@@ -112,19 +116,24 @@ process Build_multimodal_config {
 
 
 workflow {
+    file(outdir_with_version).mkdirs()
+
     Channel.from(params.data)
         .multiMap{ it ->
             info: [it.dataset, it.obs_type ?: "cell", it.is_spatial ?: false, it.vitessce_options ?: [:]]
             raws : [it.dataset, it.raw_image] // not processed but necessary for writing config
             labels : [it.dataset, it.label_image, it.offset]
-            adatas : [it.dataset, file(it.anndata), it.offset, it.extend_feature ?: "NO_FT"]
+            adatas : [it.dataset, file(it.anndata), it.offset, it.extend_feature,
+                file(it.extend_feature && it.extend_feature.endsWith(".h5ad") ? it.extend_feature : "NO_FT")
+            ]
         }
         .set{data}
 
     // Filter null raw image
-    data.raws.filter{ it[1] }.map{ [it[0], file(it[1])] }
+    data.raws.filter{ it[1] }
+        .map{ [it[0], params.copy_raw ? file(it[1]).copyTo(outdir_with_version) : file(it[1])] }
         .set{raw_images}
-    
+
     // Process labels filtered out nulls
     process_label(data.labels.filter { it[1] }.map{ [it[0], file(it[1]), it[2]] })
 
@@ -143,9 +152,9 @@ workflow {
     intersect_anndatas.out
         .flatMap()
         .map{
-            // strip the extra 'intersect-' and '-anndata' from file basename
+            // strip the extra 'intersect-' from file basename
             def basename = it.baseName.split("intersect-")[-1]
-            [(basename.substring(0, basename.length() - 8)), it]
+            [basename, it]
         }
         .set{intersect_output}
     
@@ -216,7 +225,7 @@ workflow {
     tmp_data.map{[
             "${it[0]}":
             [
-                obs_type: it[1], is_spatial: it[2], options: it[3],
+		obs_type: it[1], is_spatial: it[2], options: it[3],
                 file_paths: it[4], images: it[5]
             ]
         ]}

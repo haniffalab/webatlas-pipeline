@@ -5,10 +5,11 @@ process_molecules.py
 Processes molecules files
 """
 
+import os
 import csv
 import json
 import fire
-from constants import MOLECULES_JSON_SUFFIX
+from constants.suffixes import MOLECULES_JSON_SUFFIX
 
 
 def tsv_to_json(
@@ -97,6 +98,11 @@ def tsv_to_json(
                 raise e
 
     json_file = f"{stem}-{MOLECULES_JSON_SUFFIX}"
+    json_file = (
+        f"{stem}-{MOLECULES_JSON_SUFFIX}"
+        if not stem.endswith("-" + os.path.splitext(MOLECULES_JSON_SUFFIX)[0])
+        else f"{stem}{os.path.splitext(MOLECULES_JSON_SUFFIX)[1]}"
+    )
 
     with open(json_file, "w") as out_file:
         json.dump(molecules_json, out_file)
