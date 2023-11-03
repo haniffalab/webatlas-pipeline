@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10
 
 COPY ./requirements-build_config.txt /requirements.txt
 RUN apt-get update && \
