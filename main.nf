@@ -14,6 +14,7 @@ params.max_n_worker = 30
 
 params.outdir = ""
 params.args = [:]
+params.projects = []
 
 params.vitessce_options = [:]
 params.layout = "minimal"
@@ -35,8 +36,6 @@ params.s3_keys = [
     "YOUR_SECRET_KEY"
 ]
 params.outdir_s3 = "cog.sanger.ac.uk/webatlas/"
-
-params.projects = []
 
 //////////////////////////////////////////////////////
 
@@ -102,6 +101,14 @@ def mergeArgs (stem, data_type, args) {
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
     (args ?: [:])
+}
+
+//////////////////////////////////////////////////////
+
+def warnParams () {
+    if (!workflow.commandLine.contains("-params-file")){
+        log.warn "No -params-file provided"
+    }
 }
 
 //////////////////////////////////////////////////////
@@ -242,6 +249,8 @@ process Generate_image {
 
 workflow Full_pipeline {
 
+    warnParams()
+
     Process_files()
 
     Process_images()
@@ -255,6 +264,9 @@ workflow Full_pipeline {
 
 
 workflow Process_files {
+
+    warnParams()
+
     // Map inputs to: 
     // tuple val(stem), val(prefix), path(file), val(type), val(args)
     data_list = inputs.data.flatMap { stem, data_map ->
@@ -288,6 +300,9 @@ workflow Process_files {
 
 
 workflow Process_images {
+
+    warnParams()
+
     // Map tif inputs to:
     // tuple val(stem), val(prefix), val(img_type), path(image)
     img_tifs = inputs.images.filter { stem, data_map ->
