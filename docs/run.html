@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Visualising" href="visualise.html" />
-    <link rel="prev" title="Configuration" href="configuration.html" /> 
+    <link rel="prev" title="Configuration for multimodal integration" href="multimodal_configuration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,7 +48,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal_configuration.html">Configuration for multimodal integration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Running</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multimodal-integration">Multimodal integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-using-docker">Running using Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-using-singularity">Running using Singularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-using-conda">Running using Conda</a></li>
@@ -126,6 +128,16 @@ builds a Vitessce config file per dataset.</p></li>
 defined.</p>
 <p>You can modify the entry point if you’re interested in only getting the converted outputs.
 Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
+<section id="multimodal-integration">
+<h2>Multimodal integration<a class="headerlink" href="#multimodal-integration" title="Link to this heading"></a></h2>
+<p>Additional to the main conversion pipeline, we offer a subsequent pipeline to process multiple datasets with matching features to be able to visualise and query across all of them in a single portal.
+This pipeline can also process extra features (e.g. celltypes) to visualise them across datasets in addition to their expression matrices.</p>
+<p>Configurations and data are input through a <a class="reference internal" href="multimodal_configuration.html#multimodal-configuration"><span class="std std-ref">parameters yaml file</span></a> (slightly different from the parameters file required by the main pipeline.)</p>
+<p>To run this pipeline use</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>multimodal.nf<span class="w"> </span>-params-file<span class="w"> </span>/path/to/multimodal-params.yaml
+</pre></div>
+</div>
+</section>
 <section id="running-using-docker">
 <h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Link to this heading"></a></h2>
 <p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Docker containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">docker</span></code> option:</p>
@@ -170,7 +182,7 @@ Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multimodal_configuration.html" class="btn btn-neutral float-left" title="Configuration for multimodal integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="visualise.html" class="btn btn-neutral float-right" title="Visualising" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
