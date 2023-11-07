@@ -1,17 +1,57 @@
+url: http://localhost/
+project: HZ_HLB
+title: "lowerlimb test"
+description: ""
 outdir: ./output/
+extend_feature_name: "celltype"
 
 data:
   -
-    anndata: /path/to/iss/anndata.zarr/
-    label_image: /path/to/iss/label.tif
+    dataset: iss_demo
+    obs_type: "cell"
+    anndata: test-iss-anndata.zarr
     offset: 0
-    features: celltype
+    is_spatial: true
+    raw_image: test-iss-raw.zarr
+    label_image: test-iss-label.zarr
+    extend_feature: obs/celltype
+    vitessce_options:
+      spatial:
+        xy: "obsm/spatial"
+      mappings:
+        obsm/X_umap: [0,1]
+      factors:
+        - "obs/celltype"
+      sets:
+        - "obs/celltype"
+      matrix: "X"
   -
-    anndata: /path/to/visium/anndata.zarr/
-    label_image: /path/to/visium/label.tif
+    dataset: visium_demo
+    obs_type: "spot"
+    anndata: test-visium-anndata.zarr
     offset: 1000000
-    features: /path/to/c2l_output.h5ad
+    is_spatial: true
+    raw_image: test-visium-raw.zarr
+    label_image: test-visium-label.zarr
+    extend_feature: /path/to/c2l_output.h5ad # obsm/celltype or obsm/q05_cell_abundance_w_sf
+    vitessce_options:
+      spatial:
+        xy: "obsm/spatial"
+      matrix: "X"
   -
-    anndata: /path/to/scrnaseq/anndata.zarr/
+    dataset: scrnaseq_demo
+    obs_type: "cell"
+    anndata: test-scrnaseq-anndata.zarr
     offset: 2000000
-    features: celltype
+    is_spatial: false
+    extend_feature: obs/celltype
+    vitessce_options:
+      spatial:
+        xy: "obsm/spatial"
+      mappings:
+        obsm/X_umap: [0,1]
+      factors:
+        - "obs/celltype"
+      sets:
+        - "obs/celltype"
+      matrix: "X"

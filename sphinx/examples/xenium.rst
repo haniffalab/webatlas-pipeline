@@ -102,7 +102,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.2
+   ls -l output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.4.0
 
 .. code-block:: shell
    :caption: Output
@@ -123,7 +123,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.3.2 --port 3000 --cors
+   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.4.0 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
