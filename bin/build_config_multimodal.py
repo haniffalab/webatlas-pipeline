@@ -42,8 +42,8 @@ def write_json(
                 "file_paths" : [],
                 "images": {"raw": [], "label": []},
                 "options": {},
-                "obs_type": "cell"
-                "is_spatial": True // if has images should be enough
+                "obs_type": "cell",
+                "is_spatial": True
                 }
             }
             Defaults to {}.
@@ -62,7 +62,6 @@ def write_json(
         outdir (str, optional): Directory in which the config file will be written to.
             Defaults to "./".
     """
-
     config = VitessceConfig(
         "1.0.15",
         name=str(title) if len(title) else str(project),

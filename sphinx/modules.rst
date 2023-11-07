@@ -38,5 +38,5 @@ Modules
 .. automodule:: integrate_image
     :members:
 
-.. automodule:: write_spatialdata
+.. automodule:: build_config_multimodal
     :members:
