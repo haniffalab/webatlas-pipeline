@@ -2,10 +2,10 @@ name: python-tests
 
 on:
   push:
-    branches: [ main, dev ]
-    
+    branches: [main, dev]
+
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
 
 jobs:
   run:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: "3.10"
       - name: Clone ome-zarr-metadata
         uses: actions/checkout@v2
         with:
@@ -31,6 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ./envs/requirements.txt
+          pip install -r ./envs/dev/requirements.txt
           cd ./ome-zarr-metadata && pre-commit install && pip install -e . && cd ../
       - name: Run tests
         run: python -m pytest --cov=bin tests/test_class.py
