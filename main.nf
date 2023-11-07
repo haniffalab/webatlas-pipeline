@@ -116,6 +116,8 @@ def warnParams () {
 process image_to_zarr {
     tag "${image}"
     debug verbose_log
+    label 'big_mem'
+    label 'big_cpu'
 
     publishDir outdir_with_version, mode: "copy"
 
@@ -148,6 +150,8 @@ process image_to_zarr {
 process ome_zarr_metadata{
     tag "${zarr}, ${img_type}"
     debug verbose_log
+    label 'std_mem'
+    label 'std_cpu'
 
     input:
     tuple val(stem), val(img_type), path(zarr)
@@ -164,6 +168,8 @@ process ome_zarr_metadata{
 process route_file {
     tag "${type}, ${file}"
     debug verbose_log
+    label 'std_mem'
+    label 'std_cpu'
     cache "lenient"
 
     publishDir outdir_with_version, mode:"copy"
@@ -186,8 +192,10 @@ process route_file {
 
 process Build_config {
     tag "${stem}"
-    label 'build_config'
     debug verbose_log
+    label 'build_config'
+    label 'std_mem'
+    label 'std_cpu'
     cache false
 
     publishDir outdir_with_version, mode: "copy"
@@ -222,6 +230,8 @@ process Build_config {
 process Generate_image {
     tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
+    label 'big_mem'
+    label 'big_cpu'
 
     publishDir outdir_with_version, mode:"copy"
 
