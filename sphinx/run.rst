@@ -31,6 +31,20 @@ defined.
 You can modify the entry point if you're interested in only getting the converted outputs.
 Use ``-entry Process_files`` or ``-entry Process_images`` as you need.
 
+Multimodal integration
+----------------------
+
+Additional to the main conversion pipeline, we offer a subsequent pipeline to process multiple datasets with matching features to be able to visualise and query across all of them in a single portal.
+This pipeline can also process extra features (e.g. celltypes) to visualise them across datasets in addition to their expression matrices.
+
+Configurations and data are input through a :ref:`parameters yaml file <multimodal_configuration>` (slightly different from the parameters file required by the main pipeline.)
+
+To run this pipeline use
+
+.. code-block:: shell
+
+   nextflow run multimodal.nf -params-file /path/to/multimodal-params.yaml
+
 Running using Docker 
 --------------------
 
@@ -60,7 +74,7 @@ The default pipeline will run on local executor without any type of environment 
 Pulling the containers when the pipline is launched may take a few minutes.
 
 Running using Conda 
--------------------------
+-------------------
 
 The default pipeline will run on local executor without any type of environment creation. If you've already setup your conda environment you don't have to do anything else.
 
