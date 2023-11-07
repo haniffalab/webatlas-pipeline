@@ -23,6 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./envs/requirements.txt          
           pip install -r ./envs/dev/requirements.txt
+          pip install -r ./envs/build_config/requirements.txt
       - name: Sphinx Build
         working-directory: ./sphinx
         run: |
