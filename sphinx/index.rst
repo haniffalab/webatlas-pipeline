@@ -9,7 +9,7 @@
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg
    :target: https://doi.org/10.5281/zenodo.7405818
 
-WebAtlas Pipeline
+WebAtlas pipeline
 =================
 
 This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in `WebAtlas App`_. 
@@ -26,7 +26,6 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
 
    installation
    configuration
-   multimodal_configuration
    run
    visualise
    Demos <https://cellatlas.io/webatlas>
@@ -38,6 +37,15 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Multimodal
+  
+   multimodal/overview
+   multimodal/configuration
+   multimodal/run
+   multimodal/visualise
 
 .. toctree::
    :maxdepth: 2
