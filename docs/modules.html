@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Visium" href="examples/visium.html" />
+    <link rel="next" title="Multimodal overview" href="multimodal/overview.html" />
     <link rel="prev" title="Testing" href="testing.html" /> 
 </head>
 
@@ -76,8 +76,19 @@
 <li class="toctree-l2"><a class="reference internal" href="#process_xenium.xenium_label"><code class="docutils literal notranslate"><span class="pre">xenium_label()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_xenium.xenium_to_anndata"><code class="docutils literal notranslate"><span class="pre">xenium_to_anndata()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#process_xenium.xenium_to_zarr"><code class="docutils literal notranslate"><span class="pre">xenium_to_zarr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-build_config_multimodal">build_config.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build_config_multimodal.build_raster_options"><code class="docutils literal notranslate"><span class="pre">build_raster_options()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build_config_multimodal.concat_views"><code class="docutils literal notranslate"><span class="pre">concat_views()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build_config_multimodal.write_json"><code class="docutils literal notranslate"><span class="pre">write_json()</span></code></a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Multimodal</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/overview.html">Multimodal overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/configuration.html">Multimodal configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/run.html">Multimodal run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/visualise.html">Multimodal visualision</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
 <ul>
@@ -541,14 +552,89 @@ in the AnnData object. Defaults to True.</p></li>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-integrate_image"><span id="module-integrate_anndata"></span></span></section>
+<section id="module-build_config_multimodal">
+<span id="module-integrate_image"></span><span id="module-integrate_anndata"></span><span id="id1"></span><h2>build_config.py<a class="headerlink" href="#module-build_config_multimodal" title="Link to this heading"></a></h2>
+<p>Generates a Vitessce View config</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="build_config_multimodal.build_raster_options">
+<span class="sig-prename descclassname"><span class="pre">build_config_multimodal.</span></span><span class="sig-name descname"><span class="pre">build_raster_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#build_config_multimodal.build_raster_options" title="Link to this definition"></a></dt>
+<dd><p>Function that creates the View config’s options for image files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>T.Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Dictionary containing
+for each image type key (raw and label) a list of dictionaries
+(one per image of that type) with the corresponding path and
+metadata for that image.
+Defaults to {}.</p></li>
+<li><p><strong>url</strong> (<em>str</em>) – URL to prepend to each file in the config file.
+The URL to the local or remote server that will serve the files</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Options dictionary for View config file</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, T.Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="build_config_multimodal.concat_views">
+<span class="sig-prename descclassname"><span class="pre">build_config_multimodal.</span></span><span class="sig-name descname"><span class="pre">concat_views</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">views</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'v'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#build_config_multimodal.concat_views" title="Link to this definition"></a></dt>
+<dd><p>Recursively concatenate views</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="build_config_multimodal.write_json">
+<span class="sig-prename descclassname"><span class="pre">build_config_multimodal.</span></span><span class="sig-name descname"><span class="pre">write_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extended_features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_filename_suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'config.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#build_config_multimodal.write_json" title="Link to this definition"></a></dt>
+<dd><p>This function writes a Vitessce View config JSON file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project</strong> (<em>str</em><em>, </em><em>optional</em>) – Project name. Defaults to “”.</p></li>
+<li><p><strong>datasets</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – <p>Dictionary of datasets.
+Expected structure: { dataset_name: {</p>
+<blockquote>
+<div><p>”file_paths” : [],
+“images”: {“raw”: [], “label”: []},
+“options”: {},
+“obs_type”: “cell”,
+“is_spatial”: True
+}</p>
+</div></blockquote>
+<p>}
+Defaults to {}.</p>
+</p></li>
+<li><p><strong>extended_features</strong> (<em>Union</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – List of features or
+string of single feature on which the expression matrix was extended
+and var/is_{feature} is present.
+Defaults to [].</p></li>
+<li><p><strong>url</strong> (<em>str</em><em>, </em><em>optional</em>) – URL to prepend to each file in the config file.
+The URL to the local or remote server that will serve the files.
+Defaults to “”.</p></li>
+<li><p><strong>config_filename_suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – Config filename suffix.
+Defaults to “config.json”.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Data title to show in the visualization. Defaults to “”.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – Data description to show in the visualization.
+Defaults to “”.</p></li>
+<li><p><strong>outdir</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory in which the config file will be written to.
+Defaults to “./”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="testing.html" class="btn btn-neutral float-left" title="Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="examples/visium.html" class="btn btn-neutral float-right" title="Visium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="multimodal/overview.html" class="btn btn-neutral float-right" title="Multimodal overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

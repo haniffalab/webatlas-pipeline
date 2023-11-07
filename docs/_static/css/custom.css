@@ -1,27 +1,28 @@
 .rst-content .code-block-caption {
-    text-align: left;
-    font-weight: 700;
-    display: block;
-    color: #fff;
-    background: #6ab0de;
-    padding: 6px 12px;
+  text-align: left;
+  font-weight: 700;
+  display: block;
+  color: #fff;
+  background: #6ab0de;
+  padding: 6px 12px;
 }
-.rst-content div[class^=highlight] {
-    margin-top: 0;
+.rst-content div[class^="highlight"] {
+  margin-top: 0;
 }
 .admonition.shell-output {
-    font-size: 85%;
-    line-height: 1;
-} 
+  font-size: 85%;
+  line-height: 1;
+}
 .admonition.shell-output .admonition-title:before {
-    content: None;
+  content: None;
 }
 .admonition.shell-output .admonition-title {
-    font-style: italic;
+  font-style: italic;
 }
-
-
 .citation {
-    font-weight: bold;
-    font-style: italic;
+  font-weight: bold;
+  font-style: italic;
+}
+code.docutils.literal.notranslate {
+  white-space: nowrap;
 }

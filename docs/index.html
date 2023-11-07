@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebAtlas Pipeline &mdash; WebAtlas 0.4.0 documentation</title>
+  <title>WebAtlas pipeline &mdash; WebAtlas 0.4.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -53,6 +53,13 @@
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Multimodal</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/overview.html">Multimodal overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/configuration.html">Multimodal configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/run.html">Multimodal run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/visualise.html">Multimodal visualision</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples/visium.html">Visium</a></li>
@@ -86,7 +93,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">WebAtlas Pipeline</li>
+      <li class="breadcrumb-item active">WebAtlas pipeline</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -98,7 +105,7 @@
              
   <p><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml"><img alt="Tests" src="https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml"><img alt="Sphinx" src="https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml/badge.svg" /></a> <a class="reference external" href="https://app.codecov.io/gh/haniffalab/webatlas-pipeline"><img alt="Coverage" src="https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.7405818"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg" /></a></p>
 <section id="webatlas-pipeline">
-<h1>WebAtlas Pipeline<a class="headerlink" href="#webatlas-pipeline" title="Link to this heading"></a></h1>
+<h1>WebAtlas pipeline<a class="headerlink" href="#webatlas-pipeline" title="Link to this heading"></a></h1>
 <p>This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in <a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a>.
 The pipeline generates data files for <a class="reference external" href="https://vitessce.io/docs/data-types-file-types/">supported data types</a>, and builds a <a class="reference external" href="https://vitessce.io/docs/view-config-json/">view config</a>.</p>
 <div class="toctree-wrapper compound">
@@ -122,6 +129,28 @@ The pipeline generates data files for <a class="reference external" href="https:
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Multimodal</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/overview.html">Multimodal overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/overview.html#running-the-multimodal-pipeline">Running the multimodal pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/overview.html#tasks-completed-by-the-pipeline">Tasks completed by the pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/configuration.html">Multimodal configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/configuration.html#parameters-file">Parameters file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/run.html">Multimodal run</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/run.html#running-using-docker">Running using Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/run.html#running-using-singularity">Running using Singularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/run.html#running-using-conda">Running using Conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multimodal/run.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/visualise.html">Multimodal visualision</a></li>
+</ul>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
