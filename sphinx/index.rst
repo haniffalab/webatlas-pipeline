@@ -26,7 +26,6 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
 
    installation
    configuration
-   multimodal_configuration
    run
    visualise
    Demos <https://cellatlas.io/webatlas>
