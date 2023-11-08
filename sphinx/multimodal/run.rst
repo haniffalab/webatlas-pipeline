@@ -1,12 +1,12 @@
 .. _multimodal_run:
 
 Multimodal run
-===========
+==============
 
-In additional to the main conversion pipeline, we offer a subsequent pipeline to process multiple datasets with matching features. This allows the users to 
+In addition to the main conversion pipeline, we offer a subsequent pipeline to process multiple datasets with matching features. This allows the users to 
 visualise and query all common features such as genes and cell types across all modalities from a single web portal.
 
-Configurations and data are input through a :ref:`parameters yaml file <multimodal_configuration>` (slightly different from the parameters file required by the main pipeline).
+Configurations and data are inputted through a :ref:`parameters yaml file <multimodal_configuration>` (slightly different from the parameters file required by the main pipeline).
 
 To run this pipeline use
 

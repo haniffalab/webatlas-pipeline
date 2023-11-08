@@ -1,10 +1,21 @@
 .. _multimodal_visualise:
 
 Multimodal visualision
-===========
+======================
 
-The pipeline generates a Vitessce view config file for each processed dataset.
+The pipeline generates a Vitessce view config file for each ``project`` to visualise its multiple ``datasets`` together.
 This file can then be used to load the views and data as configured in the parameters files.
+Unlike the main conversion pipeline, the layout of the view config file generated for multimodal datasets cannot be configured.
+
+For each spatial ``dataset`` (has ``is_spatial: true`` and contains either a ``raw_image`` or ``label_image``) the pipeline adds an spatial image component and a layer controller to the view config.
+For each non-spatial ``dataset`` (has ``is_spatial: false`` or contains no images) the pipeline adds a scatterplot component to the view config to visualise an embedding.
+As datasets have been subsetted to the shared features only, the pipeline adds one feature selection component to the view config from which the user can query across datasets.
+If an additional feature has been specified, the pipeline adds another feature selection component to the view config for that particular feature type.
+
+To set the layout of the view config the pipeline just concatenates components in a recursive manner.
+Thus, components might end up with sizes that are not the most ideal.
+During visualisation the user can resize and reorganise the components as needed.
+Alternatively, the generated view config file can be manually modified to set a more appropriate layout.
 
 You can locally serve and visualize the data in a few steps.
 
