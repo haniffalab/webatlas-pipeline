@@ -1,9 +1,8 @@
-name: docs
+name: build-docs
 
 on:
   push:
-    branches: [main, dev]
-    tags: ["v*"]
+    branches: [dev]
 
   pull_request:
     branches: [main, dev]
@@ -29,10 +28,3 @@ jobs:
         run: |
           make html
           touch _build/html/.nojekyll
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          branch: dev
-          folder: sphinx/_build/html
-          target-folder: docs
-          clean: true
