@@ -19,6 +19,10 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
 .. _supported data types: https://vitessce.io/docs/data-types-file-types/
 .. _view config: https://vitessce.io/docs/view-config-json/
 
+.. raw:: html
+
+   <iframe class="youtube-video" src="https://www.youtube.com/embed/0rdYWJZ1EdE?si=zVtMC8AcZ8IUl0zH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 .. toctree::
    :maxdepth: 1
    :caption: Documentation
