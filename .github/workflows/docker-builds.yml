@@ -17,7 +17,11 @@ jobs:
         with:
           repository: haniffalab/webatlas-pipeline
           releases-only: true
-        id: previoustag
+        id: find-latest-tag
+      - name: Set version
+        run: |
+          TAG=${{ steps.find-latest-tag.outputs.tag }}
+          echo "find-latest-tag=${TAG#v}" >> $GITHUB_ENV
       - name: Docker login
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -27,12 +31,12 @@ jobs:
       - name: Build docker (webatlas-pipeline)
         working-directory: ./envs
         run: |
-          docker build --platform=linux/amd64 -t webatlas-pipeline:latest -t webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
       - name: Build docker (webatlas-pipeline-build-config)
         working-directory: ./envs/build_config
         run: |
-          docker build --platform=linux/amd64 -t webatlas-pipeline-build-config:latest -t webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
       - name: Push Docker images
         run: |
-          docker push webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
-          docker push webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
+          docker push haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
+          docker push haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
