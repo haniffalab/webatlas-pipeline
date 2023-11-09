@@ -32,12 +32,12 @@ jobs:
       - name: Build Docker (webatlas-pipeline)
         working-directory: ./envs
         run: |
-          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:${ VERSION } -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:${VERSION} -f ./Dockerfile .
       - name: Build Docker (webatlas-pipeline-build-config)
         working-directory: ./envs/build_config
         run: |
-          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:${ VERSION } -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:${VERSION} -f ./Dockerfile .
       - name: Push Docker images
         run: |
-          docker push haniffalab/webatlas-pipeline:${ VERSION }
-          docker push haniffalab/webatlas-pipeline-build-config:${ VERSION }
+          docker push haniffalab/webatlas-pipeline:${VERSION}
+          docker push haniffalab/webatlas-pipeline-build-config:${VERSION}
