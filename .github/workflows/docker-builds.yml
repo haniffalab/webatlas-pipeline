@@ -13,10 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Get tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        uses: oprypin/find-latest-tag@v1
         with:
-          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+          repository: haniffalab/webatlas-pipeline # The repository to scan.
+          releases-only: true # We know that all relevant tags have a GitHub release for them.
+        id: previoustag # The step ID to refer to later.
       - name: Docker login
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -31,7 +32,7 @@ jobs:
         working-directory: ./envs/build_config
         run: |
           docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:latest -t haniffalab/haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
-      - name: docker push
+      - name: Push Docker images
         run: |
           docker push haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
           docker push haniffalab/webatlas-pipeline:latest
