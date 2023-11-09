@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; WebAtlas 0.4.0 documentation</title>
+  <title>Index &mdash; WebAtlas 0.4.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -13,7 +13,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=6c02275b"></script>
+        <script src="_static/documentation_options.js?v=c87aa342"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -50,6 +50,13 @@
 <li class="toctree-l1"><a class="reference external" href="https://cellatlas.io/webatlas">Demos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Multimodal</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/overview.html">Multimodal overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/configuration.html">Multimodal configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/run.html">Multimodal run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multimodal/visualise.html">Multimodal visualision</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
 <ul>
@@ -108,6 +115,7 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  
 </div>
@@ -116,16 +124,40 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#process_h5ad.batch_process_array">batch_process_array() (in module process_h5ad)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#process_h5ad.batch_process_sparse">batch_process_sparse() (in module process_h5ad)</a>
 </li>
+      <li>
+    build_config
+
+      <ul>
+        <li><a href="modules.html#module-build_config">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    build_config_multimodal
+
+      <ul>
+        <li><a href="modules.html#module-build_config_multimodal">module</a>
+</li>
+      </ul></li>
+      <li><a href="modules.html#build_config.build_options">build_options() (in module build_config)</a>
+</li>
+      <li><a href="modules.html#build_config.build_raster_options">build_raster_options() (in module build_config)</a>
+
+      <ul>
+        <li><a href="modules.html#build_config_multimodal.build_raster_options">(in module build_config_multimodal)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#build_config_multimodal.concat_views">concat_views() (in module build_config_multimodal)</a>
+</li>
       <li><a href="modules.html#consolidate_md.consolidate">consolidate() (in module consolidate_md)</a>
 </li>
       <li>
@@ -192,6 +224,10 @@
     module
 
       <ul>
+        <li><a href="modules.html#module-build_config">build_config</a>
+</li>
+        <li><a href="modules.html#module-build_config_multimodal">build_config_multimodal</a>
+</li>
         <li><a href="modules.html#module-consolidate_md">consolidate_md</a>
 </li>
         <li><a href="modules.html#module-constants">constants</a>
@@ -290,6 +326,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#process_spaceranger.visium_label">visium_label() (in module process_spaceranger)</a>
 </li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#build_config.write_json">write_json() (in module build_config)</a>
+
+      <ul>
+        <li><a href="modules.html#build_config_multimodal.write_json">(in module build_config_multimodal)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
