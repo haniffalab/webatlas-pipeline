@@ -15,9 +15,9 @@ jobs:
       - name: Get tag
         uses: oprypin/find-latest-tag@v1
         with:
-          repository: haniffalab/webatlas-pipeline # The repository to scan.
-          releases-only: true # We know that all relevant tags have a GitHub release for them.
-        id: previoustag # The step ID to refer to later.
+          repository: haniffalab/webatlas-pipeline
+          releases-only: true
+        id: previoustag
       - name: Docker login
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -27,14 +27,12 @@ jobs:
       - name: Build docker (webatlas-pipeline)
         working-directory: ./envs
         run: |
-          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:latest -t haniffalab/haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t webatlas-pipeline:latest -t webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
       - name: Build docker (webatlas-pipeline-build-config)
         working-directory: ./envs/build_config
         run: |
-          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:latest -t haniffalab/haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t webatlas-pipeline-build-config:latest -t webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
       - name: Push Docker images
         run: |
-          docker push haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
-          docker push haniffalab/webatlas-pipeline:latest
-          docker push haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
-          docker push haniffalab/webatlas-pipeline-build-config:latest
+          docker push webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
+          docker push webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
