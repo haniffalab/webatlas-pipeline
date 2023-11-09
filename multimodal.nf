@@ -3,13 +3,15 @@
 import groovy.json.*
 
 include { ome_zarr_metadata } from "./main.nf"
+include { warnParams } from "./main.nf"
 
 nextflow.enable.dsl=2
 
 params.outdir = ""
 params.copy_raw = true
+params.description = ""
 
-version="0.4.0"
+version="0.4.1"
 verbose_log=true
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
@@ -19,6 +21,17 @@ config_map = [
     url: params.url ?: "http://localhost/",
     extend_feature_name: params.extend_feature_name ?: null
 ]
+
+def copyFile (inputFile, outdir) {
+    def outfile = file(outdir) / "$inputFile.name"
+    if (outfile.exists()){
+        log.warn "File $inputFile.name already exists in $outdir. Skipping copy."
+    }
+    else {
+        inputFile.copyTo(outdir)
+    }
+    return inputFile
+}
 
 process process_label {
     tag "${label_image}"
@@ -116,6 +129,9 @@ process Build_multimodal_config {
 
 
 workflow {
+
+    warnParams()
+
     file(outdir_with_version).mkdirs()
 
     Channel.from(params.data)
@@ -131,9 +147,9 @@ workflow {
 
     // Filter null raw image
     data.raws.filter{ it[1] }
-        .map{ [it[0], params.copy_raw ? file(it[1]).copyTo(outdir_with_version) : file(it[1])] }
+        .map{ [it[0], params.copy_raw ? copyFile(file(it[1]), outdir_with_version) : file(it[1])] }
         .set{raw_images}
-
+        
     // Process labels filtered out nulls
     process_label(data.labels.filter { it[1] }.map{ [it[0], file(it[1]), it[2]] })
 

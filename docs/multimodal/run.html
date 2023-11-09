@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multimodal run &mdash; WebAtlas 0.4.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=6c02275b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multimodal visualision" href="visualise.html" />
+    <link rel="prev" title="Multimodal configuration" href="configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            WebAtlas
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#environment-setup">Environment setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../run.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualise.html">Visualising</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cellatlas.io/webatlas">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Modules</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Multimodal</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Multimodal overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Multimodal configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multimodal run</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-using-docker">Running using Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-using-singularity">Running using Singularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-using-conda">Running using Conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualise.html">Multimodal visualision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/visium.html">Visium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/xenium.html">Xenium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/issues">Issue Tracker</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/webatlas-app">WebAtlas App</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project Teams</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://www.sanger.ac.uk/group/bayraktar-group">Bayraktar Lab</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://haniffalab.com">Haniffa Lab</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.openmicroscopy.org/">Open Microscopy Environment</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WebAtlas</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multimodal run</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/multimodal/run.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multimodal-run">
+<span id="id1"></span><h1>Multimodal run<a class="headerlink" href="#multimodal-run" title="Link to this heading"></a></h1>
+<p>In additional to the main conversion pipeline, we offer a subsequent pipeline to process multiple datasets with matching features. This allows the users to
+visualise and query all common features such as genes and cell types across all modalities from a single web portal.</p>
+<p>Configurations and data are input through a <a class="reference internal" href="configuration.html#multimodal-configuration"><span class="std std-ref">parameters yaml file</span></a> (slightly different from the parameters file required by the main pipeline).</p>
+<p>To run this pipeline use</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>multimodal.nf<span class="w"> </span>-params-file<span class="w"> </span>/path/to/multimodal-params.yaml
+</pre></div>
+</div>
+<section id="running-using-docker">
+<h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Link to this heading"></a></h2>
+<p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Docker containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">docker</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>multimodal.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-params-file<span class="w"> </span>/path/to/multimodal-params.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-profile<span class="w"> </span>docker
+</pre></div>
+</div>
+<p>Pulling the containers when the pipline is launched may take a few minutes.</p>
+</section>
+<section id="running-using-singularity">
+<h2>Running using Singularity<a class="headerlink" href="#running-using-singularity" title="Link to this heading"></a></h2>
+<p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Singularity containers use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">singularity</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>multimodal.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-params-file<span class="w"> </span>/path/to/multimodal-params.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-profile<span class="w"> </span>singularity
+</pre></div>
+</div>
+<p>Pulling the containers when the pipline is launched may take a few minutes.</p>
+</section>
+<section id="running-using-conda">
+<h2>Running using Conda<a class="headerlink" href="#running-using-conda" title="Link to this heading"></a></h2>
+<p>The default pipeline will run on local executor without any type of environment creation. If you’ve already setup your conda environment you don’t have to do anything else.</p>
+<p>However, if you are working on a compute cluster you will need to make sure the conda environment is avaiable and active in your worker nodes. To run the pipeline using a new conda environment use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">conda</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>multimodal.nf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-params-file<span class="w"> </span>/path/to/multimodal-params.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-profile<span class="w"> </span>conda
+</pre></div>
+</div>
+<p>Creating the environment when the pipleine is launched may take a few minutes.</p>
+</section>
+<section id="further-reading">
+<h2>Further reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<p>For more information about Docker image pulling/local conda env creation in Nextflow please refer to Nextflow’s official docs for <a class="reference external" href="https://www.nextflow.io/docs/latest/container.html">containers</a> and <a class="reference external" href="https://www.nextflow.io/docs/latest/conda.html">conda</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Multimodal configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="visualise.html" class="btn btn-neutral float-right" title="Multimodal visualision" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Haniffa Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -53,14 +53,11 @@ patsy==0.5.3
 Pillow==10.1.0
 pip==23.2.1
 pkgconfig==1.5.5
-pre-commit==3.5.0
 psutil==5.9.5
 pycparser==2.21
 pynndescent==0.5.10
 pyparsing==3.1.1
 PySocks==1.7.1
-pytest==7.4.3
-pytest-cov==4.1.0
 python-dateutil==2.8.2
 pytz==2023.3.post1
 pyvips==2.2.1
@@ -77,6 +74,8 @@ session-info==1.0.0
 setuptools==68.2.2
 six==1.16.0
 sortedcontainers==2.4.0
+Sphinx==7.2.6
+sphinx-rtd-theme==1.3.0
 statsmodels==0.14.0
 stdlib-list==0.8.0
 tblib==2.0.0

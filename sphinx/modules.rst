@@ -37,3 +37,6 @@ Modules
 
 .. automodule:: integrate_image
     :members:
+
+.. automodule:: build_config_multimodal
+    :members:
