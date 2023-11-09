@@ -1,5 +1,5 @@
 #! /bin/sh
-VERSION=0.4.0
+VERSION=0.4.1
 
 docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:${VERSION} -f ./Dockerfile .
 cd build_config/
