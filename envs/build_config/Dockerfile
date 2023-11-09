@@ -1,6 +1,6 @@
 FROM python:3.10
 
-COPY ./requirements-build_config.txt /requirements.txt
+COPY ./requirements.txt /requirements.txt
 RUN apt-get update && \
     apt-get install -y --no-install-recommends && \
     apt-get clean && \

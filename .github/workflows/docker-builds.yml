@@ -12,9 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-      - name: GetTag
+      - name: Get tag
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
@@ -25,14 +23,11 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - name: docker build
+      - name: Build webatlas-pipeline docker
+        working-directory: ./envs
         run: |
-          docker build . -f ./envs/Dockerfile -t latest -t webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
-          docker build . -f ./envs/build_config/Dockerfile -t latest -t webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
-
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:latest -t haniffalab/haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
       - name: docker push
         run: |
           docker push webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
           docker push webatlas-pipeline:latest
-          docker push webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
-          docker push webatlas-pipeline-build-config:latest
