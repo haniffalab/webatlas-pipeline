@@ -1,0 +1,40 @@
+name: Docker Builds
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+      - name: LatestTag
+        id: Latest Tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+
+      - name: docker login
+        env:
+          DOCKER_USER: ${{ secrets.ARC_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.ARC_SECRET }}
+        run: |
+          docker login fintrust.azurecr.io -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: docker build
+        run: |
+          docker build . -f ./deployment/app.prod.dockerfile -t fintrust.azurecr.io/fintrust-bot-app:${GITHUB_REF##*/}
+          docker build . -f ./deployment/app.prod.dockerfile -t fintrust.azurecr.io/fintrust-bot-app:latest
+          docker build . -f ./deployment/web.prod.dockerfile -t fintrust.azurecr.io/fintrust-bot-web:${GITHUB_REF##*/}
+          docker build . -f ./deployment/web.prod.dockerfile -t fintrust.azurecr.io/fintrust-bot-web:latest
+      - name: docker push
+        run: |
+          docker push fintrust.azurecr.io/fintrust-bot-app:${GITHUB_REF##*/}
+          docker push fintrust.azurecr.io/fintrust-bot-app:latest
+          docker push fintrust.azurecr.io/fintrust-bot-web:${GITHUB_REF##*/}
+          docker push fintrust.azurecr.io/fintrust-bot-web:latest
