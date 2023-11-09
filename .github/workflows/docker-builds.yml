@@ -31,12 +31,12 @@ jobs:
       - name: Build docker (webatlas-pipeline)
         working-directory: ./envs
         run: |
-          docker build --platform=linux/amd64 -t webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t webatlas-pipeline:${{ steps.find-latest-tag.outputs.tag }} -f ./Dockerfile .
       - name: Build docker (webatlas-pipeline-build-config)
         working-directory: ./envs/build_config
         run: |
-          docker build --platform=linux/amd64 -t webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t webatlas-pipeline-build-config:${{ steps.find-latest-tag.outputs.tag }} -f ./Dockerfile .
       - name: Push Docker images
         run: |
-          docker push haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
-          docker push haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
+          docker push haniffalab/webatlas-pipeline:${{ steps.find-latest-tag.outputs.tag }}
+          docker push haniffalab/webatlas-pipeline-build-config:${{ steps.find-latest-tag.outputs.tag }}
