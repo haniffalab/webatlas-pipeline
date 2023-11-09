@@ -2,9 +2,7 @@ name: docker-builds
 
 on:
   push:
-    branches: [dev]
-  pull_request:
-    branches: [dev]
+    tags: ["v*"]
 
 jobs:
   build:
@@ -20,7 +18,8 @@ jobs:
         id: find-latest-tag
       - name: Set version
         run: |
-          TAG=${{ steps.find-latest-tag.outputs.tag }}
+          # TAG=${{ steps.find-latest-tag.outputs.tag }}
+          TAG=${GITHUB_REF#refs/*/}
           VERSION=${TAG#v}
           echo Version: $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
