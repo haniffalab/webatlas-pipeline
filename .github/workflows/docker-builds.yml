@@ -21,8 +21,8 @@ jobs:
           fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
       - name: docker login
         env:
-          DOCKER_USER: ${{ secrets.ARC_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.ARC_SECRET }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: docker build
