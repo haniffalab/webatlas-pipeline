@@ -22,20 +22,19 @@ jobs:
         run: |
           TAG=${{ steps.find-latest-tag.outputs.tag }}
           echo "find-latest-tag=${TAG#v}" >> $GITHUB_ENV
-      - name: Docker login
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - name: Build docker (webatlas-pipeline)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build Docker (webatlas-pipeline)
         working-directory: ./envs
         run: |
-          docker build --platform=linux/amd64 -t webatlas-pipeline:${{ steps.find-latest-tag.outputs.tag }} -f ./Dockerfile .
-      - name: Build docker (webatlas-pipeline-build-config)
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:${{ steps.find-latest-tag.outputs.tag }} -f ./Dockerfile .
+      - name: Build Docker (webatlas-pipeline-build-config)
         working-directory: ./envs/build_config
         run: |
-          docker build --platform=linux/amd64 -t webatlas-pipeline-build-config:${{ steps.find-latest-tag.outputs.tag }} -f ./Dockerfile .
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:${{ steps.find-latest-tag.outputs.tag }} -f ./Dockerfile .
       - name: Push Docker images
         run: |
           docker push haniffalab/webatlas-pipeline:${{ steps.find-latest-tag.outputs.tag }}
