@@ -1,4 +1,4 @@
-name: Docker Builds
+name: docker-builds
 
 on:
   push:
@@ -17,17 +17,23 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
           fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
-      - name: docker login
+      - name: Docker login
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - name: Build webatlas-pipeline docker
+      - name: Build docker (webatlas-pipeline)
         working-directory: ./envs
         run: |
           docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:latest -t haniffalab/haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
+      - name: Build docker (webatlas-pipeline-build-config)
+        working-directory: ./envs/build_config
+        run: |
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:latest -t haniffalab/haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }} -f ./Dockerfile .
       - name: docker push
         run: |
-          docker push webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
-          docker push webatlas-pipeline:latest
+          docker push haniffalab/webatlas-pipeline:${{ steps.previoustag.outputs.tag }}
+          docker push haniffalab/webatlas-pipeline:latest
+          docker push haniffalab/webatlas-pipeline-build-config:${{ steps.previoustag.outputs.tag }}
+          docker push haniffalab/webatlas-pipeline-build-config:latest
