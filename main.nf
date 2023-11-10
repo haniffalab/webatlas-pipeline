@@ -15,6 +15,7 @@ params.max_n_worker = 30
 params.outdir = ""
 params.args = [:]
 params.projects = []
+params.write_spatialdata = false
 
 params.vitessce_options = [:]
 params.layout = "minimal"
@@ -173,6 +174,7 @@ process route_file {
 
     output:
     tuple val(stem), stdout, emit: out_file_paths
+    tuple val(stem), path("${stem_str}-anndata.zarr"), emit: converted_anndata, optional: true
     tuple val(stem), path("${stem_str}*"), emit: converted_files, optional: true
     tuple val(stem), path("tmp-${stem_str}*"), emit: extra_files, optional: true
 

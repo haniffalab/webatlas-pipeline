@@ -97,7 +97,7 @@ def xenium_to_anndata(
     # pd.Categorical.codes converts them to int this is done manually at this step
     # instead of reindex_anndata so we control what matches the label image
     adata.obs = adata.obs.reset_index()
-    adata.obs.index = pd.Categorical(adata.obs["cell_id"]).codes.astype(str)
+    adata.obs.index = (pd.Categorical(adata.obs["cell_id"]).codes + 1).astype(str)
 
     return adata
 
@@ -163,7 +163,7 @@ def xenium_label(
     # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int
     # this is required so the label image matches the h5ad ids
-    ids = pd.Categorical(ids).codes
+    ids = pd.Categorical(ids).codes + 1
 
     pols = z["polygon_vertices"][1]
 
