@@ -15,7 +15,7 @@ params.max_n_worker = 30
 params.outdir = ""
 params.args = [:]
 params.projects = []
-params.write_spatialdata = false
+params.write_spatialdata = true
 
 params.vitessce_options = [:]
 params.layout = "minimal"
@@ -167,14 +167,14 @@ process route_file {
     debug verbose_log
     cache "lenient"
 
-    publishDir outdir_with_version, mode:"copy"
+    publishDir outdir_with_version, mode: "copy"
 
     input:
     tuple val(stem), val(prefix), path(file), val(type), val(args)
 
     output:
     tuple val(stem), stdout, emit: out_file_paths
-    tuple val(stem), path("${stem_str}-anndata.zarr"), emit: converted_anndata, optional: true
+    tuple val(stem), path("${stem_str}-anndata.zarr"), emit: converted_anndatas, optional: true
     tuple val(stem), path("${stem_str}*"), emit: converted_files, optional: true
     tuple val(stem), path("tmp-${stem_str}*"), emit: extra_files, optional: true
 
@@ -221,11 +221,34 @@ process Build_config {
     """
 }
 
+process write_spatialdata {
+    tag "${stem}"
+    debug verbose_log
+    
+    publishDir outdir_with_version, mode: "copy"
+    
+    input:
+    tuple val(stem), path(anndata_path), path(raw_img_path), path(label_img_path)
+    
+    output:
+    path("${stem_str}-spatialdata.zarr")
+    
+    script:
+    stem_str = stem.join("-")
+    """
+    write_spatialdata.py \
+        --stem ${stem_str} \
+        --anndata_path ${anndata_path} \
+        --raw_img_path ${raw_img_path} \
+        --label_img_path ${label_img_path}
+    """
+}
+
 process Generate_image {
     tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
 
-    publishDir outdir_with_version, mode:"copy"
+    publishDir outdir_with_version, mode: "copy"
 
     input:
     tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)
@@ -260,7 +283,14 @@ workflow Full_pipeline {
     Output_to_config(
         Process_files.out.file_paths,
         Process_images.out.img_zarrs
+    )
+        
+    if (params.write_spatialdata) {
+        Output_to_spatialdata(
+            Process_files.out.anndata_files,
+            Process_images.out.img_tifs
         )
+    }
     
 }
 
@@ -294,10 +324,13 @@ workflow Process_files {
     file_paths = files.map { stem, it -> 
         [ stem, it.name ]
     }
+    anndata_files = route_file.out.converted_anndatas
+//         .groupTuple(by:0)
 
     emit:
     files = files
     file_paths = file_paths
+    anndata_files = anndata_files
 }
 
 
@@ -368,6 +401,7 @@ workflow Process_images {
 
     emit:
     img_zarrs = img_zarrs
+    img_tifs = all_tifs
 }
 
 
@@ -408,4 +442,36 @@ workflow Output_to_config {
         Build_config(
             data_for_config
             )
+}
+
+
+workflow Output_to_spatialdata {
+    take: anndata_files
+    take: img_tifs
+    main:
+        
+        img_tifs
+            .map { stem, prefix, type, img, k -> 
+                [stem, [type: type, img: img]]
+            }
+            .branch { stem, data ->
+                raw: data.type == "raw"
+                label: data.type == "label"
+            }
+        .set{tif_files}
+    
+        anndata_files
+            .join(tif_files.raw, remainder: true)
+            .join(tif_files.label, remainder: true)
+            .map { stem, anndata, raw_tif, label_tif -> [
+                stem, anndata,
+                raw_tif ? raw_tif.img : [],
+                label_tif ? label_tif.img : []
+            ]}
+            .set{data_for_sd}
+    
+        write_spatialdata(
+            data_for_sd
+        )
+        
 }

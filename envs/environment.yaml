@@ -21,6 +21,9 @@ dependencies:
   - scanpy==1.9.4
   - ome-zarr==0.8
   - python==3.10
-  - anndata==0.8.0
+  - anndata==0.9.1
   - zarr==2.16.1
   - h5py==3.10.0
+  - rioxarray==0.15.0
+  - pip:
+      - spatialdata==0.0.15

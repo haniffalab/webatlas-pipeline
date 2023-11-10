@@ -6,12 +6,10 @@ Processes H5AD and images into SpatialData
 """
 
 from __future__ import annotations
-import typing as T
-import os
+from typing import Union
 import logging
 import warnings
 import fire
-import zarr
 import anndata as ad
 import xarray as xr
 import spatialdata as sd
@@ -31,10 +29,10 @@ def read_image(path: str, is_label: bool = False):
 
 
 def write_spatialdata(
-    adata_path: str,
+    anndata_path: str,
     stem: str = "",
-    raw_img_path: str = None,
-    label_img_path: str = None,
+    raw_img_path: Union[str, list[str]] = [],
+    label_img_path: Union[str, list[str]] = [],
 ) -> str:
     """This function takes an AnnData object and image files to
     write to a SpatialData objetc
@@ -48,16 +46,16 @@ def write_spatialdata(
     Returns:
         str: Output SpatialData filename
     """
-    if adata_path.endswith(".h5ad"):
-        adata = ad.read(adata_path, backed=True)
-    elif adata_path.endswith(".zarr"):
-        adata = ad.read_zarr(adata_path)
+    if anndata_path.endswith(".h5ad"):
+        adata = ad.read(anndata_path, backed=True)
+    elif anndata_path.endswith(".zarr"):
+        adata = ad.read_zarr(anndata_path)
     else:
         raise SystemError("Path to AnnData not .h5ad nor .zarr")
 
     OBS_IDX_NAME = "webatlas_index"
-    adata.obs.reset_index(names=OBS_IDX_NAME).set_index(
-        OBS_IDX_NAME, drop=False, inplace=True
+    adata.obs = adata.obs.reset_index(names=OBS_IDX_NAME).set_index(
+        OBS_IDX_NAME, drop=False
     )  # have index as both index and column
     adata.obs[OBS_IDX_NAME] = adata.obs[OBS_IDX_NAME].astype(int)
 
@@ -77,9 +75,14 @@ def write_spatialdata(
 
     sdata = sd.SpatialData(table=adata)
 
-    if raw_img_path:
-        sdata.add_image("raw", read_image(raw_img_path))
-    if label_img_path:
+    if isinstance(raw_img_path, str):
+        raw_img_path = [raw_img_path]
+    for raw_img in raw_img_path:
+        sdata.add_image("raw", read_image(raw_img))
+
+    if isinstance(label_img_path, str):
+        label_img_path = [label_img_path]
+    for label_img in label_img_path:
         sdata.add_labels("label", read_image(label_img_path, is_label=True))
 
     zarr_file = f"{stem}-spatialdata.zarr"
