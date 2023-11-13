@@ -83,7 +83,7 @@ def write_spatialdata(
     if isinstance(label_img_path, str):
         label_img_path = [label_img_path]
     for label_img in label_img_path:
-        sdata.add_labels("label", read_image(label_img_path, is_label=True))
+        sdata.add_labels("label", read_image(label_img, is_label=True))
 
     zarr_file = f"{stem}-spatialdata.zarr"
     sdata.write(zarr_file)

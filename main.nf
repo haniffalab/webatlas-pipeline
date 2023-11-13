@@ -15,7 +15,7 @@ params.max_n_worker = 30
 params.outdir = ""
 params.args = [:]
 params.projects = []
-params.write_spatialdata = true
+params.write_spatialdata = false
 
 params.vitessce_options = [:]
 params.layout = "minimal"
@@ -235,12 +235,14 @@ process write_spatialdata {
     
     script:
     stem_str = stem.join("-")
+    raw_img_str = raw_img_path ? "--raw_img_path ${raw_img_path}" : ""
+    label_img_str = label_img_path ? "--label_img_path ${label_img_path}" : ""
     """
     write_spatialdata.py \
         --stem ${stem_str} \
         --anndata_path ${anndata_path} \
-        --raw_img_path ${raw_img_path} \
-        --label_img_path ${label_img_path}
+        ${raw_img_str} \
+        ${label_img_str}
     """
 }
 
@@ -325,7 +327,6 @@ workflow Process_files {
         [ stem, it.name ]
     }
     anndata_files = route_file.out.converted_anndatas
-//         .groupTuple(by:0)
 
     emit:
     files = files
@@ -386,6 +387,7 @@ workflow Process_images {
         .set {label_tifs}
 
     all_tifs = img_tifs.mix(label_tifs)
+    all_tifs.tap{tifs}
     image_to_zarr(all_tifs)
 
     ome_zarr_metadata(image_to_zarr.out.ome_xml)
@@ -401,13 +403,15 @@ workflow Process_images {
 
     emit:
     img_zarrs = img_zarrs
-    img_tifs = all_tifs
+    img_tifs = tifs
 }
 
 
 workflow Output_to_config {
-    take: out_file_paths
-    take: out_img_zarrs
+    take: 
+    out_file_paths
+    out_img_zarrs
+    
     main:
 
         // Map workflows' outputs to:
@@ -446,10 +450,11 @@ workflow Output_to_config {
 
 
 workflow Output_to_spatialdata {
-    take: anndata_files
-    take: img_tifs
+    take: 
+    anndata_files
+    img_tifs
+    
     main:
-        
         img_tifs
             .map { stem, prefix, type, img, k -> 
                 [stem, [type: type, img: img]]
@@ -459,7 +464,7 @@ workflow Output_to_spatialdata {
                 label: data.type == "label"
             }
         .set{tif_files}
-    
+
         anndata_files
             .join(tif_files.raw, remainder: true)
             .join(tif_files.label, remainder: true)
@@ -469,7 +474,7 @@ workflow Output_to_spatialdata {
                 label_tif ? label_tif.img : []
             ]}
             .set{data_for_sd}
-    
+
         write_spatialdata(
             data_for_sd
         )
