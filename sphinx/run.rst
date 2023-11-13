@@ -17,6 +17,7 @@ pipeline through the command line.
 - The ``Process_images`` workflow handles image files and/or label image data and their conversions.
 
 Configurations and data are input through a :ref:`parameters yaml file <parameters_file>`.
+If specified in the parameters file, the pipeline can additionally write datasets to `SpatialData <https://spatialdata.scverse.org/en/latest/index.html>`_.
 
 To run the ``Full_pipeline`` use
 
