@@ -14,7 +14,7 @@ Download the WebAtlas Pipeline release. You can look for previous `releases on G
 .. code-block:: shell
    :caption: Input
 
-   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.4.0.tar.gz
+   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.4.1.tar.gz
 
 .. code-block:: shell
    :caption: Expected Output
@@ -22,35 +22,35 @@ Download the WebAtlas Pipeline release. You can look for previous `releases on G
    Resolving github.com (github.com)... 140.82.121.3
    Connecting to github.com (github.com)|140.82.121.3|:443... connected.
    HTTP request sent, awaiting response... 302 Found
-   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.4.0 [following]
-   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.4.0
+   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.4.1 [following]
+   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.4.1
    Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
    Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
    HTTP request sent, awaiting response... 200 OK
    Length: unspecified [application/x-gzip]
-   Saving to: ‘v0.4.0.tar.gz’
+   Saving to: ‘v0.4.1.tar.gz’
 
-   v0.4.0.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
+   v0.4.1.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
 
-   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.4.0.tar.gz’ saved [2835534]
+   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.4.1.tar.gz’ saved [2835534]
 
 Extract the WebAtlas compressed tag and change directory into the new repo.
 
 .. code-block:: shell
    :caption: Input
 
-   tar -xzvf ./v0.4.0.tar.gz
-   cd webatlas-pipeline-0.4.0
+   tar -xzvf ./v0.4.1.tar.gz
+   cd webatlas-pipeline-0.4.1
 
 .. code-block:: shell
    :caption: Expected Output
     
-   webatlas-pipeline-0.4.0/
-   webatlas-pipeline-0.4.0/.github/
+   webatlas-pipeline-0.4.1/
+   webatlas-pipeline-0.4.1/.github/
    ...
    ...
-   webatlas-pipeline-0.4.0/tests/input/simple_config.json
-   webatlas-pipeline-0.4.0/tests/test_class.py
+   webatlas-pipeline-0.4.1/tests/input/simple_config.json
+   webatlas-pipeline-0.4.1/tests/test_class.py
 
 .. _environment:
 

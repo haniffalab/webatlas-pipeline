@@ -61,7 +61,7 @@ The default pipeline will run on local executor without any type of environment 
 Pulling the containers when the pipline is launched may take a few minutes.
 
 Running using Conda 
--------------------------
+-------------------
 
 The default pipeline will run on local executor without any type of environment creation. If you've already setup your conda environment you don't have to do anything else.
 

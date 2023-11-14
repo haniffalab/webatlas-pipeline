@@ -38,14 +38,10 @@ def write_json(
     Args:
         project (str, optional): Project name. Defaults to "".
         datasets (dict[str, dict[str]], optional): Dictionary of datasets.
-            Expected structure: { dataset_name: {
-                "file_paths" : [],
-                "images": {"raw": [], "label": []},
-                "options": {},
-                "obs_type": "cell"
-                "is_spatial": True // if has images should be enough
-                }
-            }
+            Expected structure: { dataset_name: { "file_paths" : [],
+            "images": {"raw": [], "label": []},
+            "options": {}, "obs_type": "cell",
+            "is_spatial": True } }
             Defaults to {}.
         extended_features (Union[list[str], str], optional): List of features or
             string of single feature on which the expression matrix was extended
@@ -62,7 +58,6 @@ def write_json(
         outdir (str, optional): Directory in which the config file will be written to.
             Defaults to "./".
     """
-
     config = VitessceConfig(
         "1.0.15",
         name=str(title) if len(title) else str(project),

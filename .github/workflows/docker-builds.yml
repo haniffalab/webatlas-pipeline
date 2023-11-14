@@ -1,0 +1,42 @@
+name: docker-builds
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get tag
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: haniffalab/webatlas-pipeline
+          releases-only: true
+        id: find-latest-tag
+      - name: Set version
+        run: |
+          # TAG=${{ steps.find-latest-tag.outputs.tag }}
+          TAG=${GITHUB_REF#refs/*/}
+          VERSION=${TAG#v}
+          echo Version: $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build Docker (webatlas-pipeline)
+        working-directory: ./envs
+        run: |
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline:${VERSION} -f ./Dockerfile .
+      - name: Build Docker (webatlas-pipeline-build-config)
+        working-directory: ./envs/build_config
+        run: |
+          docker build --platform=linux/amd64 -t haniffalab/webatlas-pipeline-build-config:${VERSION} -f ./Dockerfile .
+      - name: Push Docker images
+        run: |
+          docker push haniffalab/webatlas-pipeline:${VERSION}
+          docker push haniffalab/webatlas-pipeline-build-config:${VERSION}
