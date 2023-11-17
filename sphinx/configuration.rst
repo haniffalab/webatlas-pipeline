@@ -23,8 +23,10 @@ Currently, the WebAtlas pipeline can process several types of data files as well
 
 Running the pipeline requires a YAML parameters file that lists the data to be processed. Templates of this parameters file are available in the `templates directory <https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/>`__.
 
-Optionally, the pipeline can also write datasets (table data, raw images and label images) to `SpatialData <https://spatialdata.scverse.org/en/latest/index.html>`_.
-
+.. note::
+  The pipeline can optionally write datasets to the
+  `SpatialData <https://spatialdata.scverse.org/en/latest/index.html>`_ format. Please see the ``write_spatialdata``
+  flag in the :ref:`list of parameters <parameters_table>` for more information. 
 
 .. _parameters_file:
 
@@ -118,6 +120,7 @@ The YAML file has multiple configuration segements. This is a simple breakdown o
         mappings:
           obsm/X_umap: [0,1]
 
+.. _parameters_table:
 
 The more detailed list of parameters is as follows:
 
