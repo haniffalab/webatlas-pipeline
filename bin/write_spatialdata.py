@@ -22,9 +22,12 @@ logging.getLogger().setLevel(logging.INFO)
 
 def read_image(path: str, is_label: bool = False):
     tif = tf.TiffFile(path)
-    dims = list(tif.series[0].axes.lower().replace("s", "c"))
+    dims = list(tif.series[0].axes.lower()
+                .replace("s", "c")
+                .replace("i", "c")
+               )
     image = imread(path).squeeze()
-    imarray = xr.DataArray(image, dims=dims)
+    imarray = xr.DataArray(image, dims=dims).chunk(chunks="auto")
     if is_label:
         return sd.models.Labels2DModel.parse(imarray)
     else:
