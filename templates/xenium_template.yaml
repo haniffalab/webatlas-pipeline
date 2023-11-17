@@ -9,16 +9,13 @@ projects:
     datasets:
       - dataset: xenium
         title: "Test Xenium Dataset"
-        url: ''
+        url: ""
         data:
-          -
-            data_type: xenium
+          - data_type: xenium
             data_path: /path/to/test/xenium/
-          -
-            data_type: raw_image
+          - data_type: raw_image
             data_path: /path/to/xenium/raw_image.tif
-          -
-            data_type: label_image_data
+          - data_type: label_image_data
             data_path: /path/to/xenium/
             file_type: xenium
             ref_img: /path/to/xenium/raw_image.tif
@@ -27,8 +24,8 @@ vitessce_options:
   spatial:
     xy: "obsm/X_spatial"
   mappings:
-    obsm/X_umap: [0,1]
-    obsm/X_pca: [0,1]
+    obsm/X_umap: [0, 1]
+    obsm/X_pca: [0, 1]
   sets:
     - "obs/graphclust"
   matrix: "X"

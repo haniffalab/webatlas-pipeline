@@ -12,14 +12,11 @@ projects:
       - dataset: visium
         title: "Test Visium Dataset"
         data:
-          -
-            data_type: spaceranger
+          - data_type: spaceranger
             data_path: /path/to/test/visium/slide_1/
-          -
-            data_type: raw_image
+          - data_type: raw_image
             data_path: /path/to/visium/slide_1/raw_image.tif
-          -
-            data_type: label_image_data
+          - data_type: label_image_data
             data_path: /path/to/visium/slide_1/
             file_type: visium
             ref_img: /path/to/visium/slide_1/raw_image.tif
@@ -28,8 +25,8 @@ vitessce_options:
   spatial:
     xy: "obsm/spatial"
   mappings:
-    obsm/X_umap: [0,1]
-    obsm/X_pca: [0,1]
+    obsm/X_umap: [0, 1]
+    obsm/X_pca: [0, 1]
   factors:
     - "obs/sample"
   sets:
