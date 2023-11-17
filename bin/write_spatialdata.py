@@ -10,21 +10,24 @@ from typing import Union
 import logging
 import warnings
 import fire
+import tifffile as tf
 import anndata as ad
 import xarray as xr
 import spatialdata as sd
+from dask_image.imread import imread
 
 warnings.filterwarnings("ignore")
 logging.getLogger().setLevel(logging.INFO)
 
 
 def read_image(path: str, is_label: bool = False):
-    imarray = xr.open_dataarray(path, engine="rasterio", mask_and_scale=False)
+    tif = tf.TiffFile(path)
+    dims = list(tif.series[0].axes.lower().replace("s", "c"))
+    image = imread(path).squeeze()
+    imarray = xr.DataArray(image, dims=dims)
     if is_label:
-        imarray = imarray.squeeze()
         return sd.models.Labels2DModel.parse(imarray)
     else:
-        imarray = imarray.rename({"band": "c"})
         return sd.models.Image2DModel.parse(imarray)
 
 
