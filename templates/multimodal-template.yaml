@@ -6,8 +6,7 @@ outdir: ./output/
 extend_feature_name: "celltype"
 
 data:
-  -
-    dataset: iss_demo
+  - dataset: iss_demo
     obs_type: "cell"
     anndata: test-iss-anndata.zarr
     offset: 0
@@ -19,14 +18,13 @@ data:
       spatial:
         xy: "obsm/spatial"
       mappings:
-        obsm/X_umap: [0,1]
+        obsm/X_umap: [0, 1]
       factors:
         - "obs/celltype"
       sets:
         - "obs/celltype"
       matrix: "X"
-  -
-    dataset: visium_demo
+  - dataset: visium_demo
     obs_type: "spot"
     anndata: test-visium-anndata.zarr
     offset: 1000000
@@ -38,8 +36,7 @@ data:
       spatial:
         xy: "obsm/spatial"
       matrix: "X"
-  -
-    dataset: scrnaseq_demo
+  - dataset: scrnaseq_demo
     obs_type: "cell"
     anndata: test-scrnaseq-anndata.zarr
     offset: 2000000
@@ -49,7 +46,7 @@ data:
       spatial:
         xy: "obsm/spatial"
       mappings:
-        obsm/X_umap: [0,1]
+        obsm/X_umap: [0, 1]
       factors:
         - "obs/celltype"
       sets:

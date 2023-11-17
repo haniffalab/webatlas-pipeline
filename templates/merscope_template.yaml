@@ -10,15 +10,12 @@ projects:
       - dataset: merscope
         title: "Test MERSCOPE Dataset"
         data:
-          -
-            data_type: merscope
+          - data_type: merscope
             data_path: /path/to/test/merscope/
-          -
-            data_type: raw_image_data
+          - data_type: raw_image_data
             data_path: /path/to/merscope/
             file_type: merscope
-          -
-            data_type: label_image_data
+          - data_type: label_image_data
             data_path: /path/to/merscope/
             file_type: merscope
             shape: [10000, 10000]
@@ -27,8 +24,8 @@ vitessce_options:
   spatial:
     xy: "obsm/spatial"
   mappings:
-    obsm/X_umap: [0,1]
-    obsm/X_pca: [0,1]
+    obsm/X_umap: [0, 1]
+    obsm/X_pca: [0, 1]
   factors:
     - "obs/sample"
   sets:

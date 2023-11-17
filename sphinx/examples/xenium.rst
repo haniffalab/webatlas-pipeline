@@ -76,7 +76,8 @@ example requires you to have already :ref:`setup your environment first <environ
 
    nextflow run main.nf \
          -params-file templates/examples/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.yaml \
-         -entry Full_pipeline
+         -entry Full_pipeline \
+         -profile conda
 
 .. code-block:: shell
    :caption: Output

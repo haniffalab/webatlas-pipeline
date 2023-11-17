@@ -10,22 +10,19 @@ projects:
       - dataset: iss
         title: "Test ISS Dataset"
         data:
-          -
-            data_type: h5ad
+          - data_type: h5ad
             data_path: /path/to/test/iss/anndata.h5ad
-          -
-            data_type: raw_image
+          - data_type: raw_image
             data_path: /path/to/test/iss/raw_image.tif
-          -
-            data_type: label_image
+          - data_type: label_image
             data_path: /path/to/iss/label_image.tif
 
 vitessce_options:
   spatial:
     xy: "obsm/spatial"
   mappings:
-    obsm/X_umap: [0,1]
-    obsm/X_pca: [0,1]
+    obsm/X_umap: [0, 1]
+    obsm/X_pca: [0, 1]
   factors:
     - "obs/sample"
   sets:
