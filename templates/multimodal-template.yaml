@@ -33,7 +33,10 @@ data:
     is_spatial: true
     raw_image: test-visium-raw.zarr
     label_image: test-visium-label.zarr
-    extend_feature: /path/to/c2l_output.h5ad # obsm/celltype or obsm/q05_cell_abundance_w_sf
+    extend_feature: 
+      path: /path/to/c2l_output.h5ad
+      args:
+        sample: ["library_id", "sample_1"]
     vitessce_options:
       spatial:
         xy: "obsm/spatial"
