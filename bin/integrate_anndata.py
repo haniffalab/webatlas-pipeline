@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Union
+import typing as T
 import os
 import fire
 import zarr
@@ -13,17 +14,19 @@ from process_h5ad import h5ad_to_zarr
 from pathlib import Path
 
 
-def reindex_and_concat(path: str, offset: int, features: str = None, **kwargs):
+def reindex_and_concat(
+    path: str, offset: int, features: str = None, args: dict[str, T.Any] = {}, **kwargs
+):
     adata = read_anndata(path)
 
-    adata = reindex_anndata(adata, offset, no_save=True)
+    adata = reindex_anndata(adata, offset, **args, **kwargs)
     if features:
-        adata = concat_features(adata, features, no_save=True)
+        adata = concat_features(adata, features, **args, **kwargs)
 
     out_filename = "reindexed-concat-{}".format(
         os.path.splitext(os.path.basename(path))[0]
     )
-    write_anndata(adata, out_filename, **kwargs)
+    write_anndata(adata, out_filename, **args, **kwargs)
 
     return
 
@@ -31,7 +34,7 @@ def reindex_and_concat(path: str, offset: int, features: str = None, **kwargs):
 def reindex_anndata(
     data: Union[ad.AnnData, str],
     offset: int,
-    no_save: bool = False,
+    no_save: bool = True,
     out_filename: str = None,
     **kwargs,
 ):
@@ -55,7 +58,7 @@ def reindex_anndata(
 def concat_features(
     data: Union[ad.AnnData, str],
     features: str,
-    no_save: bool = False,
+    no_save: bool = True,
     out_filename: str = None,
     **kwargs,
 ):
@@ -68,11 +71,11 @@ def concat_features(
         )
 
     if features.endswith(".h5ad") and os.path.isfile(features):
-        adata = concat_matrix_from_cell2location(adata, features)
+        adata = concat_matrix_from_cell2location(adata, features, **kwargs)
     elif features.startswith("obs/"):
-        adata = concat_matrix_from_obs(adata, features.split("/")[1])
+        adata = concat_matrix_from_obs(adata, features.split("/")[1], **kwargs)
     elif features.startswith("obsm/"):
-        adata = concat_matrix_from_obsm(adata, features.split("/")[1])
+        adata = concat_matrix_from_obsm(adata, features.split("/")[1], **kwargs)
 
     if no_save:
         return adata
@@ -134,9 +137,10 @@ def concat_matrix_from_cell2location(
     data: Union[ad.AnnData, str],
     c2l_file: str,
     q: str = "q05_cell_abundance_w_sf",
-    sample: str = None,
+    sample: tuple[str, str] = None,
     feature_name: str = "gene",
     obs_feature_name: str = None,
+    **kwargs,
 ):
     if isinstance(data, ad.AnnData):
         adata = data
@@ -162,7 +166,9 @@ def concat_matrix_from_cell2location(
         dtype="float32",
     )
 
-    return concat_matrices(adata, c2l_df, "celltype", feature_name, obs_feature_name)
+    return concat_matrices(
+        adata, c2l_df, "celltype", feature_name, obs_feature_name, **kwargs
+    )
 
 
 def concat_matrices(

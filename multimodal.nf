@@ -33,6 +33,30 @@ def copyFile (inputFile, outdir) {
     return inputFile
 }
 
+def parseExtendFeature (extend_feature){
+    if (!extend_feature){
+        return [ file("NO_FT"), [:] ]
+    }
+    else if (extend_feature instanceof String ){
+        return [
+            file(extend_feature.endsWith(".h5ad") ? extend_feature : "NO_FT"),
+            [:]
+        ]
+    }
+    else if (extend_feature instanceof Map){
+        if (extend_feature["path"]){
+            if (!(extend_feature.path instanceof String && extend_feature.path.endsWith(".h5ad"))){
+                error "Invalid value for `extend_feature.path`. Expecting an .h5ad file."
+            }
+            return [ file(extend_feature.path), extend_feature.args ?: [:] ]
+        }
+        else {
+            error "Invalid map for `extend_feature`. Expecting key `path`."
+        }
+    }
+    error "Invalid value for `extend_feature`"
+}
+
 process process_label {
     tag "${label_image}"
     debug verbose_log
@@ -64,7 +88,7 @@ process process_anndata {
     publishDir outdir_with_version, mode:"copy"
 
     input:
-    tuple val(dataset), path(anndata), val(offset), val(features), path(features_file)
+    tuple val(dataset), path(anndata), val(offset), val(features), path(features_file), val(features_args)
 
     output:
     tuple val(dataset), path("*")
@@ -73,11 +97,13 @@ process process_anndata {
     features_str = features
         ? "--features ${features_file.name != 'NO_FT' ? features_file : features}"
         : ""
+    args_str = features_file.name != 'NO_FT' && features_args
+        ? "--args '" + new JsonBuilder(features_args).toString() + "'" : ""
     """
     integrate_anndata.py reindex_and_concat \
         --path ${anndata} \
         --offset ${offset} \
-        ${features_str}
+        ${features_str} ${args_str}
     """
 }
 
@@ -140,7 +166,7 @@ workflow {
             raws : [it.dataset, it.raw_image] // not processed but necessary for writing config
             labels : [it.dataset, it.label_image, it.offset]
             adatas : [it.dataset, file(it.anndata), it.offset, it.extend_feature,
-                file(it.extend_feature && it.extend_feature.endsWith(".h5ad") ? it.extend_feature : "NO_FT")
+                *parseExtendFeature(it.extend_feature)
             ]
         }
         .set{data}
