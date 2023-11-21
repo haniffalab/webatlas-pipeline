@@ -23,6 +23,8 @@ config_map = [
 process process_label {
     tag "${label_image}"
     debug verbose_log
+    label 'big_mem'
+    label 'std_cpu'
 
     publishDir outdir_with_version, mode:"copy"
 
@@ -47,6 +49,8 @@ process process_label {
 process process_anndata {
     tag "${anndata}"
     debug verbose_log
+    label 'big_mem'
+    label 'std_cpu'
 
     publishDir outdir_with_version, mode:"copy"
 
@@ -71,6 +75,8 @@ process process_anndata {
 
 process intersect_anndatas {
     debug verbose_log
+    label 'big_mem'
+    label 'std_cpu'
 
     publishDir outdir_with_version, mode:"copy"
 
@@ -88,8 +94,10 @@ process intersect_anndatas {
 
 process Build_multimodal_config {
     tag "${project}"
-    label 'build_config'
     debug verbose_log
+    label 'build_config'
+    label 'std_mem'
+    label 'std_cpu'
     cache false
 
     publishDir outdir_with_version, mode: "copy"
