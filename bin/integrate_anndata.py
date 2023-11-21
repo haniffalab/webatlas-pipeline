@@ -140,8 +140,11 @@ def concat_matrix_from_cell2location(
     sample: tuple[str, str] = None,
     feature_name: str = "gene",
     obs_feature_name: str = None,
+    sort: bool = True,
+    sort_index: str = None,
     **kwargs,
 ):
+    sort = sort or sort_index is not None
     if isinstance(data, ad.AnnData):
         adata = data
     else:
@@ -156,6 +159,21 @@ def concat_matrix_from_cell2location(
 
     if sample:
         c2l_adata = c2l_adata[c2l_adata.obs[sample[0]] == sample[1]]
+
+    if sort:
+        if not sort_index and adata.uns.get("webatlas_reindexed"):
+            sort_index = "label_id"
+        if sort_index:
+            idx = c2l_adata.obs.index.get_indexer(adata.obs[sort_index].tolist())
+        else:
+            idx = c2l_adata.obs.index.get_indexer(adata.obs.index.tolist())
+        if -1 in idx:
+            raise SystemError(
+                "Values do not match between AnnData object's"
+                f" `{sort_index or 'index'}`"
+                " and cell2location output index."
+            )
+        c2l_adata = c2l_adata[idx,]
 
     c2l_df = pd.DataFrame(
         c2l_adata.obsm[q].to_numpy(),

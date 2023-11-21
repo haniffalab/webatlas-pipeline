@@ -125,10 +125,13 @@ def reindex_anndata_obs(adata: ad.AnnData) -> ad.AnnData:
         adata.obs.index.is_object() and all(adata.obs.index.str.isnumeric())
     ):
         IDX_NAME = "label_id"
+        if IDX_NAME in adata.obs:
+            adata.obs.rename(columns={IDX_NAME: f"_{IDX_NAME}"})
         adata.obs = adata.obs.reset_index(names=IDX_NAME)
         adata.obs.index = (
             pd.Categorical(adata.obs[IDX_NAME]).codes + 1
         )  # avoid 0's for possible label images
+        adata.uns["webatlas_reindexed"] = True
     adata.obs.index = adata.obs.index.astype(str)
 
     return adata
