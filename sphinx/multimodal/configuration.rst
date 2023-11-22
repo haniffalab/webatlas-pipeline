@@ -134,7 +134,7 @@ The full parameters file will then look like this
             xy: obsm/spatial
           matrix: X
 
-With this parameters the multimodal integration pipeline will concatenate the expression matrix with the additional feature values so both can be queried and visualised across datasets within the same portal.
+With these parameters the multimodal integration pipeline will concatenate the expression matrix with the additional feature values so both can be queried and visualised across datasets within the same portal.
 
 In the case of providing a *cell2location* output file, you can further configure ``extend_feature`` with arguments for how the file should be processed.
 Instead of only setting the path to the file you would need to define ``extend_feature`` as a map containing ``path`` and optional ``args``.
