@@ -2,8 +2,8 @@
  
 .. |Tests| image:: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml/badge.svg
    :target: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml
-.. |Sphinx| image:: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml/badge.svg
-   :target: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/sphinx-build.yml
+.. |Sphinx| image:: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/deploy-sphinx.yml/badge.svg
+   :target: https://github.com/haniffalab/webatlas-pipeline/actions/workflows/deploy-sphinx.yml
 .. |Coverage| image:: https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ
    :target: https://app.codecov.io/gh/haniffalab/webatlas-pipeline
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg

@@ -10,14 +10,13 @@ projects:
       - dataset: scRNAseq
         title: "Test scRNAseq Dataset"
         data:
-          -
-            data_type: h5ad
+          - data_type: h5ad
             data_path: /path/to/test/scrnaseq/anndata.h5ad
 
 vitessce_options:
   mappings:
-    obsm/X_umap: [0,1]
-    obsm/X_pca: [0,1]
+    obsm/X_umap: [0, 1]
+    obsm/X_pca: [0, 1]
   sets:
     - "obs/tissue"
     - name: "obs/celltype"

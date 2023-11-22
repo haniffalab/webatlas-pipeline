@@ -40,3 +40,6 @@ Modules
 
 .. automodule:: build_config_multimodal
     :members:
+
+.. automodule:: write_spatialdata
+    :members:

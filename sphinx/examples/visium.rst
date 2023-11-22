@@ -78,7 +78,8 @@ example requires you to have already :ref:`setup your environment first <environ
 
    nextflow run main.nf \
          -params-file templates/examples/CytAssist_FFPE_Human_Breast_Cancer.yaml \
-         -entry Full_pipeline
+         -entry Full_pipeline \
+         -profile conda
 
 .. code-block:: shell
    :caption: Output

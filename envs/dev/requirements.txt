@@ -3,3 +3,4 @@ pytest-cov==4.1.0
 pre-commit==3.5.0
 Sphinx==7.2.6
 sphinx-rtd-theme==1.3.0
+vitessce==3.1.0
