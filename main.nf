@@ -4,7 +4,7 @@ import groovy.json.*
 
 nextflow.enable.dsl=2
 
-verbose_log = true
+verbose_log = false
 version = "0.4.0"
 
 //////////////////////////////////////////////////////

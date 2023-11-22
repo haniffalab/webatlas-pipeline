@@ -10,7 +10,7 @@ params.outdir = ""
 params.copy_raw = true
 
 version="0.4.0"
-verbose_log=true
+verbose_log=false
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
 config_map = [
