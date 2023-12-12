@@ -168,6 +168,6 @@ By default the pipeline will try to ensure the order of observations between the
 so values are correctly concatenated.
 The pipeline will attempt to order the prediction matrix given the index of the AnnData object 
 (or the original index if the main pipeline re-indexed it).
-However you can override the observations column of the AnnData object that contains the index that the prediction matrix should match.
+However you can override the observations column of the AnnData object that contains the index that the prediction matrix should match using ``sort_index``.
 ``sort`` can be set to ``False`` to disable any re-ordering. If disabled, the prediction matrix would be concatenated as-is into the AnnData object
 without checking if observations' IDs match.
