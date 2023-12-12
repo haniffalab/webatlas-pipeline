@@ -6,6 +6,7 @@ import os
 import fire
 import zarr
 import h5py
+import logging
 import numpy as np
 import pandas as pd
 import anndata as ad
@@ -164,15 +165,32 @@ def concat_matrix_from_cell2location(
         if not sort_index and adata.uns.get("webatlas_reindexed"):
             sort_index = "label_id"
         if sort_index:
-            idx = c2l_adata.obs.index.get_indexer(adata.obs[sort_index].tolist())
+            data_idx = adata.obs[sort_index]
         else:
-            idx = c2l_adata.obs.index.get_indexer(adata.obs.index.tolist())
-        if -1 in idx:
-            raise SystemError(
+            data_idx = adata.obs.index
+        idx = c2l_adata.obs.index.get_indexer(data_idx.tolist())
+        if -1 in idx:  # Indices do not match
+            logging.error(
                 "Values do not match between AnnData object's"
                 f" `{sort_index or 'index'}`"
                 " and cell2location output index."
             )
+
+            logging.info("Attempting to match indices as substrings")
+            try:
+                data_idx = match_substring_indices(c2l_adata.obs.index, data_idx)
+                if not data_idx.is_unique:
+                    raise Exception(
+                        "Found non-unique matches between indices as substrings."
+                    )
+                idx = c2l_adata.obs.index.get_indexer(data_idx.tolist())
+                if -1 in idx:
+                    raise Exception("Non-matching indices present.")
+            except Exception:
+                raise SystemError(
+                    "Failed to find a match between indices as substrings."
+                )
+
         c2l_adata = c2l_adata[idx,]
 
     c2l_df = pd.DataFrame(
@@ -291,6 +309,12 @@ def write_anndata(
     h5ad_to_zarr(adata=adata, stem=Path(out_filename).stem, **kwargs)
 
     return
+
+
+def match_substring_indices(fullstring_idx, substring_idx):
+    return pd.Series(substring_idx).apply(
+        lambda x: fullstring_idx[fullstring_idx.str.contains(x)].values[0]
+    )
 
 
 if __name__ == "__main__":
