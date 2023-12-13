@@ -169,6 +169,7 @@ def preprocess_anndata(
     var_index: str = None,
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
+    **kwargs,
 ):
     """This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion
 
