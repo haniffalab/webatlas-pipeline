@@ -10,14 +10,11 @@ projects:
       - dataset: breast-cancer
         title: "Visium CytAssist - High resolution mapping of the breast cancer tumor microenvironment"
         data:
-          -
-            data_type: spaceranger
+          - data_type: spaceranger
             data_path: ./input/CytAssist_FFPE_Human_Breast_Cancer/
-          -
-            data_type: raw_image
+          - data_type: raw_image
             data_path: ./input/CytAssist_FFPE_Human_Breast_Cancer/tissue_image.tif
-          -
-            data_type: label_image_data
+          - data_type: label_image_data
             data_path: ./input/CytAssist_FFPE_Human_Breast_Cancer/
             file_type: visium
             ref_img: ./input/CytAssist_FFPE_Human_Breast_Cancer/tissue_image.tif

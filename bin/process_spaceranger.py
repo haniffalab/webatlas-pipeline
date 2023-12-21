@@ -16,7 +16,7 @@ import pandas as pd
 import tifffile as tf
 from pathlib import Path
 from skimage.draw import disk
-from process_h5ad import h5ad_to_zarr
+from process_h5ad import h5ad_to_zarr, reindex_anndata_obs, subset_anndata
 
 
 def spaceranger_to_anndata(
@@ -164,23 +164,9 @@ def visium_label(
         scalef = adata.uns["spatial"][sample_id]["scalefactors"]["tissue_hires_scalef"]
         shape = [int(hires_shape[0] / scalef), int(hires_shape[1] / scalef)]
 
-    # Subset adata by obs
-    if obs_subset:
-        obs_subset[1] = (
-            [obs_subset[1]]
-            if not isinstance(obs_subset[1], (list, tuple))
-            else obs_subset[1]
-        )
-        adata = adata[adata.obs[obs_subset[0]].isin(obs_subset[1])]
+    adata = subset_anndata(adata, obs_subset=obs_subset)
 
-    # check if index is numerical, if not reindex
-    if not adata.obs.index.is_integer() and not (
-        adata.obs.index.is_object() and all(adata.obs.index.str.isnumeric())
-    ):
-        adata.obs["label_id"] = adata.obs.index
-        adata.obs.index = pd.Categorical(adata.obs.index)
-        adata.obs.index = adata.obs.index.codes
-        adata.obs.index = adata.obs.index.astype(str)
+    adata = reindex_anndata_obs(adata)
 
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
@@ -189,7 +175,6 @@ def visium_label(
     spot_diameter_fullres = adata.uns["spatial"][sample_id]["scalefactors"][
         "spot_diameter_fullres"
     ]
-    # hires_scalef = adata.uns["spatial"][sample_id]["scalefactors"]["tissue_hires_scalef"]
     spot_coords = adata.obsm["spatial"]
     assert adata.obs.shape[0] == spot_coords.shape[0]
 
