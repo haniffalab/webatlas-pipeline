@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multimodal configuration &mdash; WebAtlas 0.4.1 documentation</title>
+  <title>Multimodal configuration &mdash; WebAtlas 0.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c87aa342"></script>
+        <script src="../_static/documentation_options.js?v=1dd76d02"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -225,7 +225,38 @@ For example, <code class="docutils literal notranslate"><span class="pre">/path/
 <span class="w">      </span><span class="nt">matrix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">X</span>
 </pre></div>
 </div>
-<p>With this parameters the multimodal integration pipeline will concatenate the expression matrix with the additional feature values so both can be queried and visualised across datasets within the same portal.</p>
+<p>With these parameters the multimodal integration pipeline will concatenate the expression matrix with the additional feature values so both can be queried and visualised across datasets within the same portal.</p>
+<p>In the case of providing a <em>cell2location</em> output file, you can further configure <code class="docutils literal notranslate"><span class="pre">extend_feature</span></code> with arguments for how the file should be processed.
+Instead of only setting the path to the file you would need to define <code class="docutils literal notranslate"><span class="pre">extend_feature</span></code> as a map containing <code class="docutils literal notranslate"><span class="pre">path</span></code> and optional <code class="docutils literal notranslate"><span class="pre">args</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">extend_feature_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">celltype</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span>
+<span class="w">    </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">visium</span>
+<span class="w">    </span><span class="nt">obs_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spot</span>
+<span class="w">    </span><span class="nt">anndata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/main/output/visium-anndata.zarr</span>
+<span class="w">    </span><span class="nt">extend_feature</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/c2l.h5ad</span>
+<span class="w">      </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">sample</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;library_id&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;sample_1&quot;</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># tuple containing the obs column name and value to filter the object. By default the object is not filtered.</span>
+<span class="w">        </span><span class="nt">q</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;q05_cell_abundance_w_sf&quot;</span><span class="w"> </span><span class="c1"># matrix in obsm to use. Defaults to &quot;q05_cell_abundance_w_sf&quot;.</span>
+<span class="w">        </span><span class="nt">sort_index</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;index_column&quot;</span><span class="w"> </span><span class="c1"># column in the AnnData object that contains an index that matches the index in cell2location.</span>
+<span class="w">        </span><span class="nt">sort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"> </span><span class="c1"># can be set to False to skip ordering the cell2location matrix but observations might not match in order between files. Defaults to True.</span>
+</pre></div>
+</div>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">sample</span></code> can be used when a <em>cell2location</em> output file contains predictions for multiple samples.
+Setting <code class="docutils literal notranslate"><span class="pre">sample</span></code> to filter the output file enables the pipeline to obtain the appropriate prediction matrix for the data being processed,
+without having to split the <em>cell2location</em> output file for each sample. Otherwise, if a file with multiple sample prediction is input
+it will not match the number of observations of the AnnData object and the process will throw an error.</p>
+<p><code class="docutils literal notranslate"><span class="pre">q</span></code> can be set to use a different prediction matrix from the <em>cell2location</em> output file.
+It defaults to <code class="docutils literal notranslate"><span class="pre">&quot;q05_cell_abundance_w_sf&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">sort</span></code> and <code class="docutils literal notranslate"><span class="pre">sort_index</span></code> can be used to define how a <em>cell2location</em> output file matches the AnnData object.
+By default the pipeline will try to ensure the order of observations between the prediction matrix and AnnData object match
+so values are correctly concatenated.
+The pipeline will attempt to order the prediction matrix given the index of the AnnData object
+(or the original index if the main pipeline re-indexed it).
+However you can override the observations column of the AnnData object that contains the index that the prediction matrix should match using <code class="docutils literal notranslate"><span class="pre">sort_index</span></code>.
+<code class="docutils literal notranslate"><span class="pre">sort</span></code> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> to disable any re-ordering. If disabled, the prediction matrix would be concatenated as-is into the AnnData object
+without checking if observations’ IDs match.</p>
 </section>
 </section>
 </section>

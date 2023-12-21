@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Configuration &mdash; WebAtlas 0.4.1 documentation</title>
+  <title>Configuration &mdash; WebAtlas 0.5.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=c87aa342"></script>
+        <script src="_static/documentation_options.js?v=1dd76d02"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -134,6 +134,12 @@
 <li><p>MERFISH data</p></li>
 </ul>
 <p>Running the pipeline requires a YAML parameters file that lists the data to be processed. Templates of this parameters file are available in the <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/tree/main/templates/">templates directory</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pipeline can optionally write datasets to the
+<a class="reference external" href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a> format. Please see the <code class="docutils literal notranslate"><span class="pre">write_spatialdata</span></code>
+flag in the <a class="reference internal" href="#parameters-table"><span class="std std-ref">list of parameters</span></a> for more information.</p>
+</div>
 <section id="parameters-file">
 <span id="id2"></span><h2>Parameters file<a class="headerlink" href="#parameters-file" title="Link to this heading"></a></h2>
 <p>The parameters file defines several configuration options which apply to a full run of the pipeline (which can process one or more datasets). When running the pipeline, the path to the YAML file is indicated through the <code class="docutils literal notranslate"><span class="pre">-params-file</span></code> flag in the command line. For example:</p>
@@ -217,7 +223,7 @@
 </pre></div>
 </div>
 </div></blockquote>
-<p>The more detailed list of parameters is as follows:</p>
+<p id="parameters-table">The more detailed list of parameters is as follows:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 40%" />
@@ -232,32 +238,35 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">outdir</span></code></p></td>
 <td><p>the path to the directory to which output files will be written.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">args</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">write_spatialdata</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>, if processed datasets should also get each written to <a class="reference external" href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">args</span></code></p></td>
 <td><p>a map of optional arguments per data type for the scripts that process them.</p>
 <p>These serve as the default values for all projects.</p>
 <p>See <a class="reference internal" href="#args">args</a>.</p>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">projects</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">projects</span></code></p></td>
 <td><p>a list of projects where each contain a list of datasets that hold one or more
 data files to process.</p>
 <p>See <a class="reference internal" href="#project">project</a>.</p>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code></p></td>
 <td><p>a map of the contents of an input Anndata object
 to be shown in the Vitessce visualization.</p>
 <p>These values serve as the default for all projects.</p>
 <p>See <a class="reference internal" href="#vitessce-options">vitessce_options</a>.</p>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
 <td><p>a predefined Vitessce layout to use, it can be either
 <code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code>.</p>
 <p>This value serves as the default for all projects.</p>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code></p></td>
 <td><p><cite>optional</cite> string that defines a Vitessce layout
 following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
 syntax</a>
@@ -270,7 +279,7 @@ vertically with <code class="docutils literal notranslate"><span class="pre">/</
 </tbody>
 </table>
 <section id="project">
-<span id="id3"></span><h3>Project<a class="headerlink" href="#project" title="Link to this heading"></a></h3>
+<span id="id4"></span><h3>Project<a class="headerlink" href="#project" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projects</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project_1</span>
 <span class="w">    </span><span class="nt">datasets</span><span class="p">:</span>
@@ -309,7 +318,7 @@ Each project item is defined by the following keys:</p>
 </tbody>
 </table>
 <section id="dataset">
-<span id="id4"></span><h4>Dataset<a class="headerlink" href="#dataset" title="Link to this heading"></a></h4>
+<span id="id5"></span><h4>Dataset<a class="headerlink" href="#dataset" title="Link to this heading"></a></h4>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
 <span class="w">  </span><span class="nt">datasets</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dataset_1</span>
@@ -378,7 +387,7 @@ to be shown in the Vitessce visualization.</p>
 </tbody>
 </table>
 <section id="data">
-<span id="id5"></span><h5>Data<a class="headerlink" href="#data" title="Link to this heading"></a></h5>
+<span id="id6"></span><h5>Data<a class="headerlink" href="#data" title="Link to this heading"></a></h5>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
 <span class="w">  </span><span class="nt">data</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span>
@@ -544,7 +553,7 @@ shape of the desired label image as <code class="docutils literal notranslate"><
 </section>
 </section>
 <section id="args">
-<span id="id6"></span><h3>Args<a class="headerlink" href="#args" title="Link to this heading"></a></h3>
+<span id="id7"></span><h3>Args<a class="headerlink" href="#args" title="Link to this heading"></a></h3>
 <p>Available <code class="docutils literal notranslate"><span class="pre">args</span></code> depend of the <code class="docutils literal notranslate"><span class="pre">data_type</span></code> of each <a class="reference internal" href="#data">data</a> item.</p>
 <p>Image files data types <code class="docutils literal notranslate"><span class="pre">raw_image</span></code> and <code class="docutils literal notranslate"><span class="pre">label_image</span></code> take no <code class="docutils literal notranslate"><span class="pre">args</span></code>.</p>
 <p>Possible values for each of the supported data types are as follows:</p>
@@ -635,7 +644,7 @@ depending on their <code class="docutils literal notranslate"><span class="pre">
 </div>
 </section>
 <section id="vitessce-options">
-<span id="id7"></span><h3>Vitessce options<a class="headerlink" href="#vitessce-options" title="Link to this heading"></a></h3>
+<span id="id8"></span><h3>Vitessce options<a class="headerlink" href="#vitessce-options" title="Link to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code> map is used to write Vitessce config files.
 One Vitessce config file is generated per <a class="reference internal" href="#dataset">dataset</a>.
 Include relevant information from your data to be visualized.

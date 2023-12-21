@@ -134,4 +134,40 @@ The full parameters file will then look like this
             xy: obsm/spatial
           matrix: X
 
-With this parameters the multimodal integration pipeline will concatenate the expression matrix with the additional feature values so both can be queried and visualised across datasets within the same portal.
+With these parameters the multimodal integration pipeline will concatenate the expression matrix with the additional feature values so both can be queried and visualised across datasets within the same portal.
+
+In the case of providing a *cell2location* output file, you can further configure ``extend_feature`` with arguments for how the file should be processed.
+Instead of only setting the path to the file you would need to define ``extend_feature`` as a map containing ``path`` and optional ``args``.
+
+.. code-block:: yaml
+
+    extend_feature_name: celltype
+    data:
+      -
+        dataset: visium
+        obs_type: spot
+        anndata: /path/to/main/output/visium-anndata.zarr
+        extend_feature: 
+          path: /path/to/c2l.h5ad
+          args:
+            sample: ["library_id", "sample_1"] # tuple containing the obs column name and value to filter the object. By default the object is not filtered.
+            q: "q05_cell_abundance_w_sf" # matrix in obsm to use. Defaults to "q05_cell_abundance_w_sf".
+            sort_index: "index_column" # column in the AnnData object that contains an index that matches the index in cell2location.
+            sort: True # can be set to False to skip ordering the cell2location matrix but observations might not match in order between files. Defaults to True.
+
+For example, ``sample`` can be used when a *cell2location* output file contains predictions for multiple samples.
+Setting ``sample`` to filter the output file enables the pipeline to obtain the appropriate prediction matrix for the data being processed,
+without having to split the *cell2location* output file for each sample. Otherwise, if a file with multiple sample prediction is input
+it will not match the number of observations of the AnnData object and the process will throw an error.
+
+``q`` can be set to use a different prediction matrix from the *cell2location* output file.
+It defaults to ``"q05_cell_abundance_w_sf"``
+
+``sort`` and ``sort_index`` can be used to define how a *cell2location* output file matches the AnnData object.
+By default the pipeline will try to ensure the order of observations between the prediction matrix and AnnData object match
+so values are correctly concatenated.
+The pipeline will attempt to order the prediction matrix given the index of the AnnData object 
+(or the original index if the main pipeline re-indexed it).
+However you can override the observations column of the AnnData object that contains the index that the prediction matrix should match using ``sort_index``.
+``sort`` can be set to ``False`` to disable any re-ordering. If disabled, the prediction matrix would be concatenated as-is into the AnnData object
+without checking if observations' IDs match.
