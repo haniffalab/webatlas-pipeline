@@ -100,7 +100,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l output/CytAssist_FFPE_Human_Breast_Cancer/0.4.1
+   ls -l output/CytAssist_FFPE_Human_Breast_Cancer/0.5.0
 
 .. code-block:: shell
    :caption: Output
@@ -122,7 +122,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server output/CytAssist_FFPE_Human_Breast_Cancer/0.4.1 --port 3000 --cors
+   npx http-server output/CytAssist_FFPE_Human_Breast_Cancer/0.5.0 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
