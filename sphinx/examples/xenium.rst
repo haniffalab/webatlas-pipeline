@@ -26,7 +26,11 @@ Follow the steps below to reproduce this sample in the pipeline, and visualise t
 in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
 example requires you to have already :ref:`setup your environment first <environment>`.
 
-**#1. Download the sample data**
+1. Download the sample data
+---------------------------
+
+Using `wget`
+""""""""""""
 
 .. code-block:: shell
    :caption: Input
@@ -48,7 +52,26 @@ example requires you to have already :ref:`setup your environment first <environ
 
    2023-05-17 15:15:31 (15.5 MB/s) - ‘input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip’ saved [9861155708/9861155708]
 
-**#2. Extract the sample data**
+
+Using `curl`
+""""""""""""
+
+.. code-block:: shell
+   :caption: Input
+
+   mkdir -p input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs
+   curl -O --output-dir input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs https://cf.10xgenomics.com/samples/xenium/1.0.1/Xenium_FFPE_Human_Breast_Cancer_Rep1/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs.zip
+
+.. code-block:: shell
+   :caption: Output
+
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+   100 9404M  100 9404M    0     0  9607k      0  0:16:42  0:16:42 --:--:--  9.8M
+
+
+2. Extract the sample data
+--------------------------
 
 .. code-block:: shell
    :caption: Input
@@ -69,7 +92,20 @@ example requires you to have already :ref:`setup your environment first <environ
      inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/gene_panel.json  
      inflating: input/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/outs/analysis_summary.html 
 
-**#3. Run the pipeline**
+
+3. Run the pipeline
+-------------------
+
+.. warning::
+   Users working on newer Silicon-based Macs may encounter problems with the conda environment.
+   Some packages have not yet been compiled for Apple silicon processors therefore, 
+   we recommend you install the packages originally compiled for Mac computers with Intel processors. Set
+   an environment variable that specifies the architecture before running the pipeline, like this:
+
+   .. code-block:: shell
+      :caption: Input
+
+      export CONDA_SUBDIR=osx-64
 
 .. code-block:: shell
    :caption: Input
@@ -95,7 +131,9 @@ example requires you to have already :ref:`setup your environment first <environ
     CPU hours   : 0.6
     Succeeded   : 7
 
-**#4. Check execution was successful**
+
+4. Check execution was successful
+---------------------------------
 
 The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created. 
@@ -103,7 +141,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.5.0
+   ls -l output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.5.1
 
 .. code-block:: shell
    :caption: Output
@@ -115,7 +153,9 @@ verify the expected directories are created.
     drwxrwxr-x  4 dh74 dh74       4096 May 17 16:13 xenium-breast-cancer-label.zarr
     drwxrwxr-x  4 dh74 dh74       4096 May 17 16:40 xenium-breast-cancer-raw.zarr
 
-**#5. Serve the data output through a local web server**
+
+5. Serve the data output through a local web server
+---------------------------------------------------
 
 To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000, 
@@ -124,7 +164,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.5.0 --port 3000 --cors
+   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.5.1 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
@@ -148,7 +188,9 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
    http://192.168.0.23:3000
    Hit CTRL-C to stop the server
 
-**#10. Explore data in your browser**
+
+6. Explore data in your browser
+--------------------------------
 
 Start your web browser and open:
 

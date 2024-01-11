@@ -71,7 +71,7 @@ If you have `conda`_ or `mamba`_ already installed then you can use the ``enviro
 
    conda env create -f envs/environment.yaml
 
-Then make sure you activate the ``webatlas`` environment beforer you use the pipeline.
+Then make sure you activate the ``webatlas`` environment before you use the pipeline.
 
 .. code-block:: shell
    :caption: Input

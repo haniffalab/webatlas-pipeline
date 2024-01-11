@@ -21,7 +21,7 @@ projects:
 
 vitessce_options:
   spatial:
-    xy: "obsm/spatial"
+    xy: "obsm/X_spatial"
   mappings:
     obsm/X_umap: [0, 1]
   matrix: "X"
