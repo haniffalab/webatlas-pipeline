@@ -11,7 +11,7 @@ params.outdir = ""
 params.copy_raw = true
 params.description = ""
 
-version="0.5.0"
+version="0.5.1"
 verbose_log=true
 outdir_with_version = "${params.outdir.replaceFirst(/\/*$/, "")}\/${version}"
 
