@@ -69,7 +69,7 @@ If you have `conda`_ or `mamba`_ already installed then you can use the ``enviro
 .. code-block:: shell
    :caption: Input
 
-   conda env create -f environment.yaml
+   conda env create -f envs/environment.yaml
 
 Then make sure you activate the ``webatlas`` environment beforer you use the pipeline.
 
@@ -78,6 +78,19 @@ Then make sure you activate the ``webatlas`` environment beforer you use the pip
 
    conda activate webatlas
 
+.. warning::
+   Users working on newer Silicon-based Macs may encounter problems installing this environment.
+   Some packages have not yet been compiled for Apple silicon processors therefore, 
+   we recommend you install the packages originally compiled for Mac computers with Intel processors. Set
+   an environment variable that specifies the architecture before installing and activating the Conda
+   environment, like this:
+
+   .. code-block:: shell
+      :caption: Input
+
+      export CONDA_SUBDIR=osx-64
+      conda env create -f envs/environment.yaml 
+      conda activate webatlas
 
 .. _environment_manual:
 
@@ -147,9 +160,9 @@ Enter the following command in your terminal to install nextflow in the current 
 
 You can read more about how to install nextflow in the `official nextflow documentation`_.
 
-**#4. Check Docker is installed**
+**#4. Check Docker is installed (optional)**
 
-Make sure Docker Engine 20.10 or later is installed on your computer by using the command:
+If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:
 
 .. code-block:: shell
    :caption: Input
@@ -169,13 +182,3 @@ Make sure Docker Engine 20.10 or later is installed on your computer by using th
    Context:           default
 
 Follow the `official Docker Install guide`_ if it is not installed already.
-
-**#5. Build local docker images (optional)**
-
-When using docker the pipleine can use local images or pull them from DockerHub. If you want to build the images yourself you can do it like this:
-
-:: 
-
-    cd docker
-    ./build-docker-imgs.sh
-
