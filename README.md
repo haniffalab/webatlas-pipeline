@@ -14,7 +14,7 @@ The WebAtlas Pipeline uses Nextflow to process spatial and single-cell experimen
 The pipeline can handle data from `h5ad` files, `tif` image files, SpaceRanger, Xenium and MERSCOPE output. It can also generate label image files from data files.
 
 Running the pipeline requires a parameters file that defines configuration options and the data to be processed.
-Full instructions and parameters definitions for this files are available in the [documentation](https://haniffalab.com/webatlas-pipeline/setup.html)
+Full instructions and parameters definitions for this files are available in the [documentation](https://haniffalab.com/webatlas-pipeline/configuration.html)
 
 A parameters file looks like:
 
@@ -22,29 +22,26 @@ A parameters file looks like:
 outdir: "/path/to/output/"
 
 args:
-    h5ad:
-        compute_embeddings: "True"
+  h5ad:
+    compute_embeddings: "True"
 
 projects:
   - project: project_1
     datasets:
       - dataset: dataset_1
         data:
-          -
-            data_type: h5ad
+          - data_type: h5ad
             data_path: /path/to/project_1/dataset_1/anndata.h5ad
-          -
-            data_type: raw_image
+          - data_type: raw_image
             data_path: /path/to/project_1/dataset_1/raw_image.tif
-          -
-            data_type: label_image
+          - data_type: label_image
             data_path: /path/to/project_1/dataset_1/label_image.tif
 
 vitessce_options:
-    spatial:
-        xy: "obsm/spatial"
-    mappings:
-        obsm/X_umap: [0,1]
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0, 1]
 layout: "simple"
 ```
 
