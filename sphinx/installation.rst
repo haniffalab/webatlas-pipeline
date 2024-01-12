@@ -113,27 +113,11 @@ Make sure git 2.17 or later is installed on your computer by using the command:
 
 If Git is missing you will have to follow the `Getting Started Installing Git guide <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`__.
 
-**#2. Check java is installed**
+**#2. Install Nextflow**
 
-Make sure Java 11 or later is installed on your computer by using the command:
+Java is required by Nextflow. Refer to `Nextflow's guidelines <https://www.nextflow.io/docs/latest/getstarted.html#requirements>`__ to install it.
 
-.. code-block:: shell
-   :caption: Input
-
-   java -version
-
-.. code-block:: shell
-   :caption: Output
-   
-   openjdk version "11.0.18" 2023-01-17
-   OpenJDK Runtime Environment (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1)
-   OpenJDK 64-Bit Server VM (build 11.0.18+10-post-Ubuntu-0ubuntu120.04.1, mixed mode, sharing)
-
-If not installed, `download and install Java <https://www.java.com/en/download/manual.jsp>`__.
-
-**#3. Install Nextflow**
-
-Enter the following command in your terminal to install nextflow in the current directory:
+Enter the following command in your terminal to install Nextflow in the current directory:
 
 .. code-block:: shell
    :caption: Input
@@ -160,7 +144,7 @@ Enter the following command in your terminal to install nextflow in the current 
 
 You can read more about how to install nextflow in the `official nextflow documentation`_.
 
-**#4. Check Docker is installed (optional)**
+**#3. Check Docker is installed (optional)**
 
 If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:
 
