@@ -11,6 +11,9 @@ Installation
 
 Download the WebAtlas Pipeline release. You can look for previous `releases on GitHub`_.
 
+Using `wget`
+""""""""""""
+
 .. code-block:: shell
    :caption: Input
 
@@ -33,6 +36,23 @@ Download the WebAtlas Pipeline release. You can look for previous `releases on G
    v0.5.1.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
 
    2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.5.1.tar.gz’ saved [2835534]
+
+
+Using `curl`
+""""""""""""
+
+.. code-block:: shell
+   :caption: Input
+
+   curl -o v0.5.1.tar.gz https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.1.tar.gz
+
+.. code-block:: shell
+   :caption: Expected Output
+
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+      0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
 
 Extract the WebAtlas compressed tag and change directory into the new repo.
 
@@ -119,10 +139,23 @@ Java is required by Nextflow. Refer to `Nextflow's guidelines <https://www.nextf
 
 Enter the following command in your terminal to install Nextflow in the current directory:
 
+Using `wget`
+""""""""""""
+
+.. code-block:: shell
+   :caption: Input
+
+   wget -qO- https://get.nextflow.io | bash
+
+
+Using `curl`
+""""""""""""
+
 .. code-block:: shell
    :caption: Input
 
    curl -s https://get.nextflow.io | bash
+
 
 .. code-block:: shell
    :caption: Output

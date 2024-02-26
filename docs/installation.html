@@ -45,10 +45,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-wget">Using <cite>wget</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-curl">Using <cite>curl</cite></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="#environment-setup">Environment setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#using-conda">Using conda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#manual-setup">Manual setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Using <cite>wget</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">Using <cite>curl</cite></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -111,14 +115,16 @@
   <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>Download the WebAtlas Pipeline release. You can look for previous <a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/releases">releases on GitHub</a>.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<section id="using-wget">
+<h2>Using <cite>wget</cite><a class="headerlink" href="#using-wget" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.1.tar.gz
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Resolving<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span>...<span class="w"> </span><span class="m">140</span>.82.121.3
 Connecting<span class="w"> </span>to<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span><span class="p">|</span><span class="m">140</span>.82.121.3<span class="p">|</span>:443...<span class="w"> </span>connected.
 HTTP<span class="w"> </span>request<span class="w"> </span>sent,<span class="w"> </span>awaiting<span class="w"> </span>response...<span class="w"> </span><span class="m">302</span><span class="w"> </span>Found
@@ -136,16 +142,33 @@ v0.5.1.tar.gz<span class="w"> </span><span class="o">[</span><span class="w"> </
 </pre></div>
 </div>
 </div>
+</section>
+<section id="using-curl">
+<h2>Using <cite>curl</cite><a class="headerlink" href="#using-curl" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-o<span class="w"> </span>v0.5.1.tar.gz<span class="w"> </span>https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.1.tar.gz
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>%<span class="w"> </span>Total<span class="w">    </span>%<span class="w"> </span>Received<span class="w"> </span>%<span class="w"> </span>Xferd<span class="w">  </span>Average<span class="w"> </span>Speed<span class="w">   </span>Time<span class="w">    </span>Time<span class="w">     </span>Time<span class="w">  </span>Current
+<span class="w">                                 </span>Dload<span class="w">  </span>Upload<span class="w">   </span>Total<span class="w">   </span>Spent<span class="w">    </span>Left<span class="w">  </span>Speed
+<span class="w">   </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">    </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">    </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">      </span><span class="m">0</span><span class="w">      </span><span class="m">0</span><span class="w"> </span>--:--:--<span class="w"> </span>--:--:--<span class="w"> </span>--:--:--<span class="w">     </span><span class="m">0</span>
+</pre></div>
+</div>
+</div>
 <p>Extract the WebAtlas compressed tag and change directory into the new repo.</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xzvf<span class="w"> </span>./v0.5.1.tar.gz
 <span class="nb">cd</span><span class="w"> </span>webatlas-pipeline-0.5.1
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>webatlas-pipeline-0.5.1/
 webatlas-pipeline-0.5.1/.github/
 ...
@@ -156,21 +179,20 @@ webatlas-pipeline-0.5.1/tests/test_class.py
 </div>
 </div>
 </section>
+</section>
 <section id="environment-setup">
 <span id="environment"></span><h1>Environment setup<a class="headerlink" href="#environment-setup" title="Link to this heading"></a></h1>
 <p id="environment-conda">Follow these Environment Setup instructions using conda or manually installing the required components to run WebAtlas.</p>
-<section id="using-conda">
-<h2>Using conda<a class="headerlink" href="#using-conda" title="Link to this heading"></a></h2>
 <p>If you have <a class="reference external" href="https://docs.conda.io/projects/miniconda/en/latest/">conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/mamba-installation.html">mamba</a> already installed then you can use the <code class="docutils literal notranslate"><span class="pre">environment.yaml</span></code> file included in the WebAtlas release to create the environment.</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>envs/environment.yaml
 </pre></div>
 </div>
 </div>
 <p>Then make sure you activate the <code class="docutils literal notranslate"><span class="pre">webatlas</span></code> environment before you use the pipeline.</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>webatlas
 </pre></div>
 </div>
@@ -182,8 +204,8 @@ Some packages have not yet been compiled for Apple silicon processors therefore,
 we recommend you install the packages originally compiled for Mac computers with Intel processors. Set
 an environment variable that specifies the architecture before installing and activating the Conda
 environment, like this:</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CONDA_SUBDIR</span><span class="o">=</span>osx-64
 conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>envs/environment.yaml
 conda<span class="w"> </span>activate<span class="w"> </span>webatlas
@@ -191,19 +213,16 @@ conda<span class="w"> </span>activate<span class="w"> </span>webatlas
 </div>
 </div>
 </div>
-</section>
-<section id="manual-setup">
-<span id="environment-manual"></span><h2>Manual setup<a class="headerlink" href="#manual-setup" title="Link to this heading"></a></h2>
-<p><strong>#1. Check git is installed</strong></p>
+<p id="environment-manual"><strong>#1. Check git is installed</strong></p>
 <p>Make sure git 2.17 or later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>--version
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>version<span class="w"> </span><span class="m">2</span>.25.1
 </pre></div>
 </div>
@@ -212,14 +231,25 @@ conda<span class="w"> </span>activate<span class="w"> </span>webatlas
 <p><strong>#2. Install Nextflow</strong></p>
 <p>Java is required by Nextflow. Refer to <a class="reference external" href="https://www.nextflow.io/docs/latest/getstarted.html#requirements">Nextflow’s guidelines</a> to install it.</p>
 <p>Enter the following command in your terminal to install Nextflow in the current directory:</p>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
+<section id="id2">
+<h2>Using <cite>wget</cite><a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>-qO-<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id3">
+<h2>Using <cite>curl</cite><a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id16" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id17" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>org.apache.ivy:ivy:jar:2.5.1
 ...
 CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>io.nextflow:nf-commons:jar:23.04.1
@@ -240,14 +270,14 @@ Nextflow<span class="w"> </span>installation<span class="w"> </span>completed.<s
 <p>You can read more about how to install nextflow in the <a class="reference external" href="https://www.nextflow.io/index.html#GetStarted">official nextflow documentation</a>.</p>
 <p><strong>#3. Check Docker is installed (optional)</strong></p>
 <p>If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id18" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id19" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
 Version:<span class="w">           </span><span class="m">23</span>.0.4
 API<span class="w"> </span>version:<span class="w">       </span><span class="m">1</span>.42
