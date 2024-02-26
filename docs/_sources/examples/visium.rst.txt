@@ -26,7 +26,11 @@ Follow the steps below to reproduce this sample in the pipeline, and visualise t
 in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
 example requires you to have already :ref:`setup your environment first <environment>`.
 
-**#1. Download the sample data**
+1. Download the sample data
+---------------------------
+
+Using `wget`
+""""""""""""
 
 .. code-block:: shell
    :caption: Input
@@ -51,7 +55,38 @@ example requires you to have already :ref:`setup your environment first <environ
 
    2023-05-17 21:37:58 (7.16 MB/s) - ‘input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz’ saved [34479952/34479952]
 
-**#2. Extract and process sample data**
+
+Using `curl`
+""""""""""""
+
+.. code-block:: shell
+   :caption: Input
+
+   mkdir -p input/CytAssist_FFPE_Human_Breast_Cancer
+   curl -o input/CytAssist_FFPE_Human_Breast_Cancer/tissue_image.tif https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_tissue_image.tif 
+   curl -o input/CytAssist_FFPE_Human_Breast_Cancer/analysis.tar.gz https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_analysis.tar.gz 
+   curl -o input/CytAssist_FFPE_Human_Breast_Cancer/filtered_feature_bc_matrix.h5 https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.h5 
+   curl -o input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_spatial.tar.gz 
+
+.. code-block:: shell
+   :caption: Output
+
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+   100 1207M  100 1207M    0     0  8156k      0  0:02:31  0:02:31 --:--:-- 8416k
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+   100 35.8M  100 35.8M    0     0  7986k      0  0:00:04  0:00:04 --:--:-- 7994k
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+   100 31.7M  100 31.7M    0     0  8071k      0  0:00:04  0:00:04 --:--:-- 8091k
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                    Dload  Upload   Total   Spent    Left  Speed
+   100 32.8M  100 32.8M    0     0  8443k      0  0:00:03  0:00:03 --:--:-- 8451k
+
+
+2. Extract and process sample data
+----------------------------------
 
 .. code-block:: shell
    :caption: Input
@@ -71,7 +106,20 @@ example requires you to have already :ref:`setup your environment first <environ
    spatial/aligned_fiducials.jpg
    spatial/tissue_hires_image.png
 
-**#3. Run the pipeline**
+
+3. Run the pipeline
+-------------------
+
+.. warning::
+   Users working on newer Silicon-based Macs may encounter problems with the conda environment.
+   Some packages have not yet been compiled for Apple silicon processors therefore, 
+   we recommend you install the packages originally compiled for Mac computers with Intel processors. Set
+   an environment variable that specifies the architecture before running the pipeline, like this:
+
+   .. code-block:: shell
+      :caption: Input
+
+      export CONDA_SUBDIR=osx-64
 
 .. code-block:: shell
    :caption: Input
@@ -92,7 +140,9 @@ example requires you to have already :ref:`setup your environment first <environ
    [44/2bcaeb] process > Full_pipeline:Process_images:ome_zarr_metadata (METADATA.ome.xml)                          [100%] 2 of 2 ✔
    [43/04893d] process > Full_pipeline:Output_to_config:Build_config ([visium, breast-cancer])                      [100%] 1 of 1 ✔
 
-**#4. Check execution was successful**
+
+4. Check execution was successful
+---------------------------------
 
 The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created. 
@@ -100,7 +150,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l output/CytAssist_FFPE_Human_Breast_Cancer/0.5.0
+   ls -l output/CytAssist_FFPE_Human_Breast_Cancer/0.5.1
 
 .. code-block:: shell
    :caption: Output
@@ -113,7 +163,9 @@ verify the expected directories are created.
    drwxrwxr-x  4 dh74 dh74      4096 May 17 21:43 visium-breast-cancer-label.zarr
    drwxrwxr-x  4 dh74 dh74      4096 May 17 21:43 visium-breast-cancer-raw.zarr
 
-**#5. Serve the data output through a local web server**
+
+5. Serve the data output through a local web server
+---------------------------------------------------
 
 To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000, 
@@ -122,7 +174,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server output/CytAssist_FFPE_Human_Breast_Cancer/0.5.0 --port 3000 --cors
+   npx http-server output/CytAssist_FFPE_Human_Breast_Cancer/0.5.1 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
@@ -146,7 +198,9 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
    http://192.168.0.23:3000
    Hit CTRL-C to stop the server
 
-**#6. Explore data in your browser**
+
+6. Explore data in your browser
+-------------------------------
 
 Start your web browser and open:
 

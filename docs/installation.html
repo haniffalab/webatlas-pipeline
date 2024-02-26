@@ -168,7 +168,7 @@ webatlas-pipeline-0.5.1/tests/test_class.py
 </pre></div>
 </div>
 </div>
-<p>Then make sure you activate the <code class="docutils literal notranslate"><span class="pre">webatlas</span></code> environment beforer you use the pipeline.</p>
+<p>Then make sure you activate the <code class="docutils literal notranslate"><span class="pre">webatlas</span></code> environment before you use the pipeline.</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>webatlas
@@ -209,33 +209,17 @@ conda<span class="w"> </span>activate<span class="w"> </span>webatlas
 </div>
 </div>
 <p>If Git is missing you will have to follow the <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Getting Started Installing Git guide</a>.</p>
-<p><strong>#2. Check java is installed</strong></p>
-<p>Make sure Java 11 or later is installed on your computer by using the command:</p>
+<p><strong>#2. Install Nextflow</strong></p>
+<p>Java is required by Nextflow. Refer to <a class="reference external" href="https://www.nextflow.io/docs/latest/getstarted.html#requirements">Nextflow’s guidelines</a> to install it.</p>
+<p>Enter the following command in your terminal to install Nextflow in the current directory:</p>
 <div class="literal-block-wrapper docutils container" id="id11">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-version
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id12">
 <div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11.0.18&quot;</span><span class="w"> </span><span class="m">2023</span>-01-17
-OpenJDK<span class="w"> </span>Runtime<span class="w"> </span>Environment<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1<span class="o">)</span>
-OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </span>Server<span class="w"> </span>VM<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1,<span class="w"> </span>mixed<span class="w"> </span>mode,<span class="w"> </span>sharing<span class="o">)</span>
-</pre></div>
-</div>
-</div>
-<p>If not installed, <a class="reference external" href="https://www.java.com/en/download/manual.jsp">download and install Java</a>.</p>
-<p><strong>#3. Install Nextflow</strong></p>
-<p>Enter the following command in your terminal to install nextflow in the current directory:</p>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>org.apache.ivy:ivy:jar:2.5.1
 ...
 CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>io.nextflow:nf-commons:jar:23.04.1
@@ -254,16 +238,16 @@ Nextflow<span class="w"> </span>installation<span class="w"> </span>completed.<s
 </div>
 </div>
 <p>You can read more about how to install nextflow in the <a class="reference external" href="https://www.nextflow.io/index.html#GetStarted">official nextflow documentation</a>.</p>
-<p><strong>#4. Check Docker is installed (optional)</strong></p>
+<p><strong>#3. Check Docker is installed (optional)</strong></p>
 <p>If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id15" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id16" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
 Version:<span class="w">           </span><span class="m">23</span>.0.4
 API<span class="w"> </span>version:<span class="w">       </span><span class="m">1</span>.42

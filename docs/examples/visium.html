@@ -65,7 +65,19 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Visium</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sample-details">Sample details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#steps-to-reproduce">Steps to reproduce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#steps-to-reproduce">Steps to reproduce</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-the-sample-data">1. Download the sample data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-wget">Using <cite>wget</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-curl">Using <cite>curl</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extract-and-process-sample-data">2. Extract and process sample data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-the-pipeline">3. Run the pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-execution-was-successful">4. Check execution was successful</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#serve-the-data-output-through-a-local-web-server">5. Serve the data output through a local web server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explore-data-in-your-browser">6. Explore data in your browser</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="xenium.html">Xenium</a></li>
@@ -138,7 +150,10 @@
 <p>Follow the steps below to reproduce this sample in the pipeline, and visualise the data yourself
 in your web browser. It can be followed on any POSIX compatible system (Linux, OS X, etc). This
 example requires you to have already <a class="reference internal" href="../installation.html#environment"><span class="std std-ref">setup your environment first</span></a>.</p>
-<p><strong>#1. Download the sample data</strong></p>
+<section id="download-the-sample-data">
+<h3>1. Download the sample data<a class="headerlink" href="#download-the-sample-data" title="Link to this heading"></a></h3>
+<section id="using-wget">
+<h4>Using <cite>wget</cite><a class="headerlink" href="#using-wget" title="Link to this heading"></a></h4>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer
@@ -164,16 +179,49 @@ Saving<span class="w"> </span>to:<span class="w"> </span>‘input/CytAssist_FFPE
 </pre></div>
 </div>
 </div>
-<p><strong>#2. Extract and process sample data</strong></p>
+</section>
+<section id="using-curl">
+<h4>Using <cite>curl</cite><a class="headerlink" href="#using-curl" title="Link to this heading"></a></h4>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xzvf<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/analysis.tar.gz<span class="w"> </span>-C<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer
-tar<span class="w"> </span>-xzvf<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz<span class="w"> </span>-C<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer
+curl<span class="w"> </span>-o<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/tissue_image.tif<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_tissue_image.tif
+curl<span class="w"> </span>-o<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/analysis.tar.gz<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_analysis.tar.gz
+curl<span class="w"> </span>-o<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/filtered_feature_bc_matrix.h5<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_filtered_feature_bc_matrix.h5
+curl<span class="w"> </span>-o<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz<span class="w"> </span>https://cf.10xgenomics.com/samples/spatial-exp/2.0.0/CytAssist_FFPE_Human_Breast_Cancer/CytAssist_FFPE_Human_Breast_Cancer_spatial.tar.gz
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>%<span class="w"> </span>Total<span class="w">    </span>%<span class="w"> </span>Received<span class="w"> </span>%<span class="w"> </span>Xferd<span class="w">  </span>Average<span class="w"> </span>Speed<span class="w">   </span>Time<span class="w">    </span>Time<span class="w">     </span>Time<span class="w">  </span>Current
+<span class="w">                                 </span>Dload<span class="w">  </span>Upload<span class="w">   </span>Total<span class="w">   </span>Spent<span class="w">    </span>Left<span class="w">  </span>Speed
+<span class="m">100</span><span class="w"> </span>1207M<span class="w">  </span><span class="m">100</span><span class="w"> </span>1207M<span class="w">    </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">  </span>8156k<span class="w">      </span><span class="m">0</span><span class="w">  </span><span class="m">0</span>:02:31<span class="w">  </span><span class="m">0</span>:02:31<span class="w"> </span>--:--:--<span class="w"> </span>8416k
+<span class="w">  </span>%<span class="w"> </span>Total<span class="w">    </span>%<span class="w"> </span>Received<span class="w"> </span>%<span class="w"> </span>Xferd<span class="w">  </span>Average<span class="w"> </span>Speed<span class="w">   </span>Time<span class="w">    </span>Time<span class="w">     </span>Time<span class="w">  </span>Current
+<span class="w">                                 </span>Dload<span class="w">  </span>Upload<span class="w">   </span>Total<span class="w">   </span>Spent<span class="w">    </span>Left<span class="w">  </span>Speed
+<span class="m">100</span><span class="w"> </span><span class="m">35</span>.8M<span class="w">  </span><span class="m">100</span><span class="w"> </span><span class="m">35</span>.8M<span class="w">    </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">  </span>7986k<span class="w">      </span><span class="m">0</span><span class="w">  </span><span class="m">0</span>:00:04<span class="w">  </span><span class="m">0</span>:00:04<span class="w"> </span>--:--:--<span class="w"> </span>7994k
+<span class="w">  </span>%<span class="w"> </span>Total<span class="w">    </span>%<span class="w"> </span>Received<span class="w"> </span>%<span class="w"> </span>Xferd<span class="w">  </span>Average<span class="w"> </span>Speed<span class="w">   </span>Time<span class="w">    </span>Time<span class="w">     </span>Time<span class="w">  </span>Current
+<span class="w">                                 </span>Dload<span class="w">  </span>Upload<span class="w">   </span>Total<span class="w">   </span>Spent<span class="w">    </span>Left<span class="w">  </span>Speed
+<span class="m">100</span><span class="w"> </span><span class="m">31</span>.7M<span class="w">  </span><span class="m">100</span><span class="w"> </span><span class="m">31</span>.7M<span class="w">    </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">  </span>8071k<span class="w">      </span><span class="m">0</span><span class="w">  </span><span class="m">0</span>:00:04<span class="w">  </span><span class="m">0</span>:00:04<span class="w"> </span>--:--:--<span class="w"> </span>8091k
+<span class="w">  </span>%<span class="w"> </span>Total<span class="w">    </span>%<span class="w"> </span>Received<span class="w"> </span>%<span class="w"> </span>Xferd<span class="w">  </span>Average<span class="w"> </span>Speed<span class="w">   </span>Time<span class="w">    </span>Time<span class="w">     </span>Time<span class="w">  </span>Current
+<span class="w">                                 </span>Dload<span class="w">  </span>Upload<span class="w">   </span>Total<span class="w">   </span>Spent<span class="w">    </span>Left<span class="w">  </span>Speed
+<span class="m">100</span><span class="w"> </span><span class="m">32</span>.8M<span class="w">  </span><span class="m">100</span><span class="w"> </span><span class="m">32</span>.8M<span class="w">    </span><span class="m">0</span><span class="w">     </span><span class="m">0</span><span class="w">  </span>8443k<span class="w">      </span><span class="m">0</span><span class="w">  </span><span class="m">0</span>:00:03<span class="w">  </span><span class="m">0</span>:00:03<span class="w"> </span>--:--:--<span class="w"> </span>8451k
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="extract-and-process-sample-data">
+<h3>2. Extract and process sample data<a class="headerlink" href="#extract-and-process-sample-data" title="Link to this heading"></a></h3>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xzvf<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/analysis.tar.gz<span class="w"> </span>-C<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer
+tar<span class="w"> </span>-xzvf<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer/spatial.tar.gz<span class="w"> </span>-C<span class="w"> </span>input/CytAssist_FFPE_Human_Breast_Cancer
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>analysis/
 analysis/umap/
 analysis/umap/gene_expression_2_components/
@@ -185,9 +233,24 @@ spatial/tissue_hires_image.png
 </pre></div>
 </div>
 </div>
-<p><strong>#3. Run the pipeline</strong></p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+</section>
+<section id="run-the-pipeline">
+<h3>3. Run the pipeline<a class="headerlink" href="#run-the-pipeline" title="Link to this heading"></a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Users working on newer Silicon-based Macs may encounter problems with the conda environment.
+Some packages have not yet been compiled for Apple silicon processors therefore,
+we recommend you install the packages originally compiled for Mac computers with Intel processors. Set
+an environment variable that specifies the architecture before running the pipeline, like this:</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CONDA_SUBDIR</span><span class="o">=</span>osx-64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-params-file<span class="w"> </span>templates/examples/CytAssist_FFPE_Human_Breast_Cancer.yaml<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-entry<span class="w"> </span>Full_pipeline<span class="w"> </span><span class="se">\</span>
@@ -195,8 +258,8 @@ spatial/tissue_hires_image.png
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W<span class="w">  </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">22</span>.04.5
 Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb">`</span><span class="w"> </span><span class="o">[</span>insane_dijkstra<span class="o">]</span><span class="w"> </span>DSL2<span class="w"> </span>-<span class="w"> </span>revision:<span class="w"> </span>1b6a73f4d6
 <span class="o">[</span><span class="m">05</span>/d2276b<span class="o">]</span><span class="w"> </span>process<span class="w"> </span>&gt;<span class="w"> </span>Full_pipeline:Process_files:route_file<span class="w"> </span><span class="o">(</span>spaceranger,<span class="w"> </span>CytAssist_FFPE_Human_Breast_Cancer<span class="o">)</span><span class="w">   </span><span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="w"> </span>✔
@@ -207,17 +270,19 @@ Launching<span class="w"> </span><span class="sb">`</span>main.nf<span class="sb
 </pre></div>
 </div>
 </div>
-<p><strong>#4. Check execution was successful</strong></p>
+</section>
+<section id="check-execution-was-successful">
+<h3>4. Check execution was successful<a class="headerlink" href="#check-execution-was-successful" title="Link to this heading"></a></h3>
 <p>The output from the pipeline will indicate if the execution was successful. You can also
 verify the expected directories are created.</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>output/CytAssist_FFPE_Human_Breast_Cancer/0.5.0
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>output/CytAssist_FFPE_Human_Breast_Cancer/0.5.1
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>total<span class="w"> </span><span class="m">1103476</span>
 -rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>dh74<span class="w"> </span>dh74<span class="w"> </span><span class="m">288446018</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">21</span>:42<span class="w"> </span>tmp-visium-breast-cancer.h5ad
 drwxrwxr-x<span class="w"> </span><span class="m">11</span><span class="w"> </span>dh74<span class="w"> </span>dh74<span class="w">      </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">21</span>:42<span class="w"> </span>visium-breast-cancer-anndata.zarr
@@ -228,18 +293,20 @@ drwxrwxr-x<span class="w">  </span><span class="m">4</span><span class="w"> </sp
 </pre></div>
 </div>
 </div>
-<p><strong>#5. Serve the data output through a local web server</strong></p>
+</section>
+<section id="serve-the-data-output-through-a-local-web-server">
+<h3>5. Serve the data output through a local web server<a class="headerlink" href="#serve-the-data-output-through-a-local-web-server" title="Link to this heading"></a></h3>
 <p>To browse and explore the data, you need to serve the output data through a web server.
 You can use your preferred web server, but you must ensure the data is served over port 3000,
 at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, and that CORS is enabled via the Access-Control-Allow-Origin header.</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>output/CytAssist_FFPE_Human_Breast_Cancer/0.5.0<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>http-server<span class="w"> </span>output/CytAssist_FFPE_Human_Breast_Cancer/0.5.1<span class="w"> </span>--port<span class="w"> </span><span class="m">3000</span><span class="w"> </span>--cors
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Starting<span class="w"> </span>up<span class="w"> </span>http-server,<span class="w"> </span>serving<span class="w"> </span>./
 
 http-server<span class="w"> </span>version:<span class="w"> </span><span class="m">14</span>.1.1
@@ -261,9 +328,12 @@ Hit<span class="w"> </span>CTRL-C<span class="w"> </span>to<span class="w"> </sp
 </pre></div>
 </div>
 </div>
-<p><strong>#6. Explore data in your browser</strong></p>
+</section>
+<section id="explore-data-in-your-browser">
+<h3>6. Explore data in your browser<a class="headerlink" href="#explore-data-in-your-browser" title="Link to this heading"></a></h3>
 <p>Start your web browser and open:</p>
 <p><a class="reference external" href="https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&amp;config=http://127.0.0.1:3000/visium-breast-cancer-config.json">https://webatlas.cog.sanger.ac.uk/latest/index.html?theme=dark&amp;config=http://127.0.0.1:3000/visium-breast-cancer-config.json</a></p>
+</section>
 </section>
 </section>
 
