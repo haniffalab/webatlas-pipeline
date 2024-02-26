@@ -44,14 +44,15 @@ Using `curl`
 .. code-block:: shell
    :caption: Input
 
-   curl -o v0.5.1.tar.gz https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.1.tar.gz
+   curl -L -o v0.5.1.tar.gz https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.1.tar.gz
 
 .. code-block:: shell
    :caption: Expected Output
 
-     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                     Dload  Upload   Total   Spent    Left  Speed
-      0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+   100 2844k    0 2844k    0     0  1970k      0 --:--:--  0:00:01 --:--:-- 2539k
 
 
 Extract the WebAtlas compressed tag and change directory into the new repo.
