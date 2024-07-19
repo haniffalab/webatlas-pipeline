@@ -165,7 +165,11 @@ def xenium_label(
     # this is required so the label image matches the h5ad ids
     ids = pd.Categorical(ids).codes + 1
 
-    pols = z["polygon_vertices"][1]
+    # starting on v2.0 vertices change location
+    if sw_version < 2.0:
+        pols = z["polygon_vertices"][1]
+    else:
+        pols = z["polygon_sets"][1]["vertices"]
 
     label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
 
