@@ -11,4 +11,4 @@ Citation
 
 If you use this software in a scientific publication, please cite using the following Zenodo reference. 
 
-**Li, Tong, Horsfall, David, Basurto-Lozada, Daniela, Prete, Martin, Jessica, Cox, & Iolo, Squires. (2023). WebAtlas Pipeline (v0.5.1). Zenodo. https://doi.org/10.5281/zenodo.7863308**
+**Li, Tong, Horsfall, David, Basurto-Lozada, Daniela, Prete, Martin, Jessica, Cox, & Iolo, Squires. (2023). WebAtlas Pipeline (v0.5.2). Zenodo. https://doi.org/10.5281/zenodo.7863308**

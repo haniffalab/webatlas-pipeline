@@ -36,9 +36,7 @@ Use ``-entry Process_files`` or ``-entry Process_images`` as you need.
 Running using Conda 
 -------------------
 
-The default pipeline will run on local executor without any type of environment creation. If you've already setup your conda environment you don't have to do anything else.
-
-However, if you are working on a compute cluster you will need to make sure the conda environment is avaiable and active in your worker nodes. To run the pipeline using a new conda environment use the ``-profile conda`` option:
+The default pipeline will run on local executor without any type of environment creation. To run the pipeline using conda environments use the ``-profile conda`` option:
 
 .. code-block:: shell
 
@@ -47,7 +45,7 @@ However, if you are working on a compute cluster you will need to make sure the 
             -entry Full_pipeline \
             -profile conda
 
-Creating the environment when the pipleine is launched may take a few minutes.
+Creating the environment when the pipeline is launched may take a few minutes.
 
 Running using Docker 
 --------------------
