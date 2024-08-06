@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running &mdash; WebAtlas 0.5.1 documentation</title>
+  <title>Running &mdash; WebAtlas 0.5.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=b9afe91b"></script>
+        <script src="_static/documentation_options.js?v=8e576371"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -137,15 +137,14 @@ defined.</p>
 Use <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_files</span></code> or <code class="docutils literal notranslate"><span class="pre">-entry</span> <span class="pre">Process_images</span></code> as you need.</p>
 <section id="running-using-conda">
 <h2>Running using Conda<a class="headerlink" href="#running-using-conda" title="Link to this heading"></a></h2>
-<p>The default pipeline will run on local executor without any type of environment creation. If you’ve already setup your conda environment you don’t have to do anything else.</p>
-<p>However, if you are working on a compute cluster you will need to make sure the conda environment is avaiable and active in your worker nodes. To run the pipeline using a new conda environment use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">conda</span></code> option:</p>
+<p>The default pipeline will run on local executor without any type of environment creation. To run the pipeline using conda environments use the <code class="docutils literal notranslate"><span class="pre">-profile</span> <span class="pre">conda</span></code> option:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>-params-file<span class="w"> </span>/path/to/params.yaml<span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>-entry<span class="w"> </span>Full_pipeline<span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>-profile<span class="w"> </span>conda
 </pre></div>
 </div>
-<p>Creating the environment when the pipleine is launched may take a few minutes.</p>
+<p>Creating the environment when the pipeline is launched may take a few minutes.</p>
 </section>
 <section id="running-using-docker">
 <h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Link to this heading"></a></h2>
