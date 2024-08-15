@@ -239,34 +239,37 @@ flag in the <a class="reference internal" href="#parameters-table"><span class="
 <td><p>the path to the directory to which output files will be written.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">write_spatialdata</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>, if processed datasets should also get each written to <a class="reference external" href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>, if processed datasets should also get each written to <a class="reference external" href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a> . Defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">args</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">publish_generated_img</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>, if the pipeline should publish generated images’ <code class="docutils literal notranslate"><span class="pre">.tif</span></code> files to the output directory. Defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">args</span></code></p></td>
 <td><p>a map of optional arguments per data type for the scripts that process them.</p>
 <p>These serve as the default values for all projects.</p>
 <p>See <a class="reference internal" href="#args">args</a>.</p>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">projects</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">projects</span></code></p></td>
 <td><p>a list of projects where each contain a list of datasets that hold one or more
 data files to process.</p>
 <p>See <a class="reference internal" href="#project">project</a>.</p>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vitessce_options</span></code></p></td>
 <td><p>a map of the contents of an input Anndata object
 to be shown in the Vitessce visualization.</p>
 <p>These values serve as the default for all projects.</p>
 <p>See <a class="reference internal" href="#vitessce-options">vitessce_options</a>.</p>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">layout</span></code></p></td>
 <td><p>a predefined Vitessce layout to use, it can be either
 <code class="docutils literal notranslate"><span class="pre">minimal</span></code>, <code class="docutils literal notranslate"><span class="pre">simple</span></code> or <code class="docutils literal notranslate"><span class="pre">advanced</span></code>.</p>
 <p>This value serves as the default for all projects.</p>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">custom_layout</span></code></p></td>
 <td><p><cite>optional</cite> string that defines a Vitessce layout
 following <a class="reference external" href="https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout">Vitessce’s View Config API’s layout alternative
 syntax</a>
