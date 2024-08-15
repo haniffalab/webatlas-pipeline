@@ -133,7 +133,9 @@ The more detailed list of parameters is as follows:
     * - ``outdir``
       - the path to the directory to which output files will be written.
     * - ``write_spatialdata``
-      - ``true`` or ``false``, if processed datasets should also get each written to `SpatialData <https://spatialdata.scverse.org/en/latest/index.html>`_
+      - ``true`` or ``false``, if processed datasets should also get each written to `SpatialData <https://spatialdata.scverse.org/en/latest/index.html>`_ . Defaults to ``false``.
+    * - ``publish_generated_img``
+      - ``true`` or ``false``, if the pipeline should publish generated images' ``.tif`` files to the output directory. Defaults to ``false``.
     * - ``args``
       - a map of optional arguments per data type for the scripts that process them. 
         
