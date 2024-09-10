@@ -16,6 +16,7 @@ params.outdir = ""
 params.args = [:]
 params.projects = []
 params.write_spatialdata = false
+params.publish_generated_img = false
 
 params.vitessce_options = [:]
 params.layout = "minimal"
@@ -250,7 +251,7 @@ process Generate_image {
     tag "${stem}, ${img_type}, ${file_path}"
     debug verbose_log
 
-    publishDir outdir_with_version, mode: "copy"
+    publishDir outdir_with_version, mode: "copy", enabled: params.publish_generated_img
 
     input:
     tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)

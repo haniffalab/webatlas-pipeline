@@ -43,7 +43,7 @@ def reindex_anndata(
         adata = data
     else:
         adata = read_anndata(data)
-        out_filename = out_filename or "concat-{}".format(
+        out_filename = out_filename or "reindexed-{}".format(
             os.path.splitext(os.path.basename(data))[0]
         )
 
@@ -106,7 +106,7 @@ def concat_matrix_from_obs(
     data: Union[ad.AnnData, str],
     obs: str = "celltype",
     feature_name: str = "gene",
-    obs_feature_name: str = None,
+    concat_feature_name: str = None,
 ):
     if isinstance(data, ad.AnnData):
         adata = data
@@ -115,14 +115,14 @@ def concat_matrix_from_obs(
 
     ext_matrix = pd.get_dummies(adata.obs[obs], dtype="float32")
 
-    return concat_matrices(adata, ext_matrix, obs, feature_name, obs_feature_name)
+    return concat_matrices(adata, ext_matrix, feature_name, concat_feature_name or obs)
 
 
 def concat_matrix_from_obsm(
     data: Union[ad.AnnData, str],
     obsm: str = "celltype",
     feature_name: str = "gene",
-    obsm_feature_name: str = None,
+    concat_feature_name: str = None,
 ):
     if isinstance(data, ad.AnnData):
         adata = data
@@ -130,7 +130,7 @@ def concat_matrix_from_obsm(
         adata = read_anndata(data)
 
     return concat_matrices(
-        adata, adata.obsm[obsm], "celltype", feature_name, obsm_feature_name
+        adata, adata.obsm[obsm], feature_name, concat_feature_name or obsm
     )
 
 
@@ -140,7 +140,7 @@ def concat_matrix_from_cell2location(
     q: str = "q05_cell_abundance_w_sf",
     sample: tuple[str, str] = None,
     feature_name: str = "gene",
-    obs_feature_name: str = None,
+    concat_feature_name: str = "celltype",
     sort: bool = True,
     sort_index: str = None,
     **kwargs,
@@ -202,39 +202,37 @@ def concat_matrix_from_cell2location(
         dtype="float32",
     )
 
-    return concat_matrices(
-        adata, c2l_df, "celltype", feature_name, obs_feature_name, **kwargs
-    )
+    return concat_matrices(adata, c2l_df, feature_name, concat_feature_name, **kwargs)
 
 
 def concat_matrices(
     adata: ad.AnnData,
     ext_df: pd.DataFrame,
-    obs: str = "celltype",
     feature_name: str = "gene",
-    obs_feature_name: str = None,
+    concat_feature_name: str = "celltype",
 ):
     assert adata.shape[0] == ext_df.shape[0]
 
-    obs_feature_name = obs_feature_name or obs
     prev_features_bool = "is_{}".format(feature_name)
-    new_features_bool = "is_{}".format(obs_feature_name)
+    new_features_bool = "is_{}".format(concat_feature_name)
 
     if isinstance(adata.X, spmatrix):
         adata_concat = ad.AnnData(
             hstack(
                 (
                     adata.X,
-                    csr_matrix(ext_df.values)
-                    if isinstance(adata.X, csr_matrix)
-                    else csc_matrix(ext_df.values),
+                    (
+                        csr_matrix(ext_df.values)
+                        if isinstance(adata.X, csr_matrix)
+                        else csc_matrix(ext_df.values)
+                    ),
                 )
             ),
             obs=adata.obs,
             var=pd.concat(
                 [
                     adata.var.assign(**{prev_features_bool: True}),
-                    ext_df.columns.to_frame(obs_feature_name)
+                    ext_df.columns.to_frame(concat_feature_name)
                     .drop(columns=0)
                     .assign(**{new_features_bool: True}),
                 ]
@@ -249,7 +247,7 @@ def concat_matrices(
             var=pd.concat(
                 [
                     adata.var.assign(**{prev_features_bool: True}),
-                    ext_df.columns.to_frame(obs_feature_name)
+                    ext_df.columns.to_frame(concat_feature_name)
                     .drop(columns=0)
                     .assign(**{new_features_bool: True}),
                 ]
