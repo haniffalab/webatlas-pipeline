@@ -83,10 +83,10 @@ class TestClass:
         self, monkeypatch, anndata_with_celltype_obs
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obs))
-        FEATURE_NAME = "celltype"
+        CONCAT_FEATURE_NAME = "celltype"
         adata = ad.read(anndata_with_celltype_obs)
         adata_concat = concat_matrix_from_obs(
-            adata, "obs1", concat_feature_name=FEATURE_NAME
+            adata, "obs1", concat_feature_name=CONCAT_FEATURE_NAME
         )
         assert adata_concat.X.shape == (3, 7)
         assert np.array_equal(
@@ -99,27 +99,32 @@ class TestClass:
             ),
         )
         assert all(
-            [x in adata_concat.var.columns for x in ["is_gene", f"is_{FEATURE_NAME}"]]
+            [
+                x in adata_concat.var.columns
+                for x in ["is_gene", f"is_{CONCAT_FEATURE_NAME}"]
+            ]
         )
         assert adata_concat.var["is_gene"].tolist() == [True] * 4 + [False] * 3
         assert (
-            adata_concat.var[f"is_{FEATURE_NAME}"].tolist() == [False] * 4 + [True] * 3
+            adata_concat.var[f"is_{CONCAT_FEATURE_NAME}"].tolist()
+            == [False] * 4 + [True] * 3
         )
         assert all(
-            adata_concat.var["is_gene"] + adata_concat.var[f"is_{FEATURE_NAME}"] == 1
+            adata_concat.var["is_gene"] + adata_concat.var[f"is_{CONCAT_FEATURE_NAME}"]
+            == 1
         )
 
     def test_concat_features_from_obs_with_concat_name(
         self, monkeypatch, anndata_with_celltype_obs
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obs))
-        FEATURE_NAME = "celltype"
+        CONCAT_FEATURE_NAME = "celltype"
         adata = ad.read(anndata_with_celltype_obs)
         adata_concat_1 = concat_matrix_from_obs(
-            adata, "obs1", concat_feature_name=FEATURE_NAME
+            adata, "obs1", concat_feature_name=CONCAT_FEATURE_NAME
         )
         adata_concat_2 = concat_features(
-            adata, "obs/obs1", concat_feature_name=FEATURE_NAME
+            adata, "obs/obs1", concat_feature_name=CONCAT_FEATURE_NAME
         )
         pd.testing.assert_frame_equal(adata_concat_1.obs, adata_concat_2.obs)
         pd.testing.assert_frame_equal(adata_concat_1.var, adata_concat_2.var)
@@ -158,10 +163,10 @@ class TestClass:
         self, monkeypatch, anndata_with_celltype_obsm
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obsm))
-        FEATURE_NAME = "celltype"
+        CONCAT_FEATURE_NAME = "celltype"
         adata = ad.read(anndata_with_celltype_obsm)
         adata_concat = concat_matrix_from_obsm(
-            adata, "obsm1", concat_feature_name=FEATURE_NAME
+            adata, "obsm1", concat_feature_name=CONCAT_FEATURE_NAME
         )
         assert adata_concat.X.shape == (3, 7)
         assert np.array_equal(
@@ -175,27 +180,32 @@ class TestClass:
             ),
         )
         assert all(
-            [x in adata_concat.var.columns for x in ["is_gene", f"is_{FEATURE_NAME}"]]
+            [
+                x in adata_concat.var.columns
+                for x in ["is_gene", f"is_{CONCAT_FEATURE_NAME}"]
+            ]
         )
         assert adata_concat.var["is_gene"].tolist() == [True] * 4 + [False] * 3
         assert (
-            adata_concat.var[f"is_{FEATURE_NAME}"].tolist() == [False] * 4 + [True] * 3
+            adata_concat.var[f"is_{CONCAT_FEATURE_NAME}"].tolist()
+            == [False] * 4 + [True] * 3
         )
         assert all(
-            adata_concat.var["is_gene"] + adata_concat.var[f"is_{FEATURE_NAME}"] == 1
+            adata_concat.var["is_gene"] + adata_concat.var[f"is_{CONCAT_FEATURE_NAME}"]
+            == 1
         )
 
     def test_concat_features_from_obsm_with_concat_name(
         self, monkeypatch, anndata_with_celltype_obsm
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obsm))
-        FEATURE_NAME = "celltype"
+        CONCAT_FEATURE_NAME = "celltype"
         adata = ad.read(anndata_with_celltype_obsm)
         adata_concat_1 = concat_matrix_from_obsm(
-            adata, "obsm1", concat_feature_name=FEATURE_NAME
+            adata, "obsm1", concat_feature_name=CONCAT_FEATURE_NAME
         )
         adata_concat_2 = concat_features(
-            adata, "obsm/obsm1", concat_feature_name=FEATURE_NAME
+            adata, "obsm/obsm1", concat_feature_name=CONCAT_FEATURE_NAME
         )
         pd.testing.assert_frame_equal(adata_concat_1.obs, adata_concat_2.obs)
         pd.testing.assert_frame_equal(adata_concat_1.var, adata_concat_2.var)
