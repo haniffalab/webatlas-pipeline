@@ -143,6 +143,7 @@ def concat_matrix_from_cell2location(
     concat_feature_name: str = "celltype",
     sort: bool = True,
     sort_index: str = None,
+    fill_missing: bool = False,
     **kwargs,
 ):
     sort = sort or sort_index is not None
@@ -185,7 +186,15 @@ def concat_matrix_from_cell2location(
                     )
                 idx = c2l_adata.obs.index.get_indexer(data_idx.tolist())
                 if -1 in idx:
-                    raise Exception("Non-matching indices present.")
+                    if not fill_missing:
+                        raise Exception("Non-matching indices present.")
+                    else:
+                        logging.info(
+                            "Filling missing indices in cell2location output with NaN values."
+                        )
+                        c2l_adata, idx = fill_missing_indices(
+                            idx, data_idx, adata, c2l_adata, sort_index
+                        )
             except Exception:
                 raise SystemError(
                     "Failed to find a match between indices as substrings."
@@ -311,8 +320,20 @@ def write_anndata(
 
 def match_substring_indices(fullstring_idx, substring_idx):
     return pd.Series(substring_idx).apply(
-        lambda x: fullstring_idx[fullstring_idx.str.contains(x)].values[0]
+        lambda x: (
+            lambda y=fullstring_idx[fullstring_idx.str.contains(x)]: (
+                y.values[0] if len(y.values) else x
+            )
+        )()
     )
+
+
+def fill_missing_indices(idx, data_idx, adata, c2l_adata, sort_index):
+    adata_missing = ad.AnnData(obs=pd.DataFrame(adata.obs.iloc[idx == -1][sort_index]))
+    adata_missing.obs.set_index(sort_index, inplace=True)
+    c2l_adata_w_missing = ad.concat([c2l_adata, adata_missing], join="outer")
+    idx = c2l_adata_w_missing.obs.index.get_indexer(data_idx.tolist())
+    return c2l_adata_w_missing, idx
 
 
 if __name__ == "__main__":
