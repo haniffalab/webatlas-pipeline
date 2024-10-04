@@ -3,6 +3,7 @@
 from typing import Union
 import typing as T
 import os
+import gc
 import fire
 import zarr
 import h5py
@@ -98,6 +99,9 @@ def intersect_features(*paths, **kwargs):
         )
 
         write_anndata(adata, out_filename, **kwargs)
+
+        del adata
+        gc.collect()
 
     return
 
@@ -291,6 +295,7 @@ def get_feature_intersection(*paths):
                 var_indices.append(ad._io.h5ad.read_elem(f["var"]).index.to_series())
 
     var_intersect = pd.concat(var_indices, axis=1, join="inner").index
+    logging.info(f"Got intersection of {len(var_intersect)} features")
 
     return var_intersect
 
