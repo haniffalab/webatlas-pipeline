@@ -199,8 +199,7 @@ def visium_label(
     
     adata = reindex_anndata_obs(adata)
     adata = subset_anndata(adata, obs_subset=obs_subset)
-    print('adata.obs after subset label')
-    print(adata.obs)
+    
 
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
