@@ -77,8 +77,6 @@ def h5ad_to_zarr(
                 )
 
     adata = preprocess_anndata(adata, **kwargs)
-    print('adata.obs to save in zarr')
-    print(adata.obs)
     zarr_file = (
         f"{stem}-{ANNDATA_ZARR_SUFFIX}"
         if not stem.endswith("-" + os.path.splitext(ANNDATA_ZARR_SUFFIX)[0])
