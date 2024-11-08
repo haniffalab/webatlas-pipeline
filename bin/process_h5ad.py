@@ -77,7 +77,8 @@ def h5ad_to_zarr(
                 )
 
     adata = preprocess_anndata(adata, **kwargs)
-
+    print('adata.obs to save in zarr')
+    print(adata.obs)
     zarr_file = (
         f"{stem}-{ANNDATA_ZARR_SUFFIX}"
         if not stem.endswith("-" + os.path.splitext(ANNDATA_ZARR_SUFFIX)[0])
@@ -188,14 +189,15 @@ def preprocess_anndata(
     adata = subset_anndata(adata, obs_subset=obs_subset, var_subset=var_subset)
 
     # reindex var with a specified column
+    '''
     if var_index and var_index in adata.var:
         adata.var.reset_index(inplace=True)
         adata.var.set_index(var_index, inplace=True)
         adata.var.index = adata.var.index.astype(str)
+    '''
     adata.var_names_make_unique()
 
-    adata = reindex_anndata_obs(adata)
-
+    #adata = reindex_anndata_obs(adata)
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
         adata.obsm[k] = np.array(adata.obsm[k])

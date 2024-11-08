@@ -16,7 +16,20 @@ import pandas as pd
 import tifffile as tf
 from pathlib import Path
 from skimage.draw import polygon
-from process_h5ad import h5ad_to_zarr
+from process_h5ad import h5ad_to_zarr, subset_anndata
+
+
+def add_csv_to_adata_obs(adata_obs, annotations_path, annotations_column_index):
+    annot_df = pd.read_csv(annotations_path)
+    if annotations_column_index in annot_df.columns:
+        annot_df.set_index(annotations_column_index, inplace=True)
+    else:
+        #using simply first column if none were specified
+        annot_df.set_index(annot_df.columns[0], inplace=True)
+    #adata_obs.set_index('cell_id', inplace=True)
+    adata_obs = pd.merge(adata_obs, annot_df, left_index=True, right_index=True, how='left')
+    return adata_obs
+    
 
 
 def xenium_to_anndata(
@@ -25,6 +38,9 @@ def xenium_to_anndata(
     resolution: float = 0.2125,
     load_clusters: bool = True,
     load_embeddings: bool = True,
+    annotations: str = 'None',
+    annotations_column_index: str = 'None',
+    obs_subset: tuple[int, T.Any] = None,
 ) -> sc.AnnData:
     """Function to create an AnnData object from Xenium output.
 
@@ -43,7 +59,6 @@ def xenium_to_anndata(
     """
 
     path = Path(path)
-
     matrix_file = os.path.join(path, "cell_feature_matrix.h5")
     cells_file = os.path.join(path, "cells.csv.gz")
 
@@ -92,15 +107,25 @@ def xenium_to_anndata(
 
             emb = embedding_df.reindex(adata.obs.index, fill_value=0)
             adata.obsm[f"X_{embedding}"] = emb.values
-
-    # starting on v1.3 cell_id looks like "aaabinlp-1"
+   
+    
+    if annotations != 'None':
+        adata.obs = add_csv_to_adata_obs(adata.obs, annotations, annotations_column_index)
+    
+      # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int this is done manually at this step
     # instead of reindex_anndata so we control what matches the label image
     adata.obs = adata.obs.reset_index()
     adata.obs.index = (pd.Categorical(adata.obs["cell_id"]).codes + 1).astype(str)
-
+    
+    #important to do subsetting after new reindexing
+    if obs_subset:
+        adata = subset_anndata(adata = adata, obs_subset = obs_subset)
+    
+    
     return adata
-
+    
+    
 
 def xenium_to_zarr(
     path: str,
@@ -108,12 +133,15 @@ def xenium_to_zarr(
     spatial_as_pixel: bool = True,
     resolution: float = 0.2125,
     save_h5ad: bool = False,
+    annotations: str = 'None',
+    annotations_column_index: str = 'None',
+    obs_subset: tuple[int, T.Any] = None,
     **kwargs,
 ) -> str:
     """Function to write to Zarr an AnnData object created from xenium output data
 
     Args:
-        path (str): Path to a xenium output directory
+        path (str): Path to a xenium output directory[
         stem (str): Prefix for the output Zarr filename
         spatial_as_pixel (bool, optional): Boolean indicating whether spatial coordinates should be
         converted to pixels. Defaults to True.
@@ -123,17 +151,25 @@ def xenium_to_zarr(
     Returns:
         str: Output Zarr filename
     """
-
-    adata = xenium_to_anndata(path, spatial_as_pixel, resolution)
+    
+    adata = xenium_to_anndata(path, spatial_as_pixel = spatial_as_pixel, resolution = resolution, annotations = annotations, annotations_column_index = annotations_column_index, obs_subset = obs_subset)
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
+    
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
 
     return zarr_file
 
 
 def xenium_label(
-    stem: str, path: str, shape: tuple[int, int], resolution: float = 0.2125
+    stem: str, 
+    path: str, 
+    shape: tuple[int, int], 
+    resolution: float = 0.2125, 
+    obs_subset: tuple[str, T.Any] = None,
+    var_subset: tuple[str, T.Any] = None,
+    annotations: str = 'None',
+    annotations_column_index: str = 'None',
 ) -> None:
     """This function writes a label image tif file with drawn labels according to
     cell segmentation polygons from Xenium output cells.zarr.zip file
@@ -144,6 +180,9 @@ def xenium_label(
         shape (tuple[int, int]): Output image shape. Defaults to None.
         resolution (float, optional): Pixel resolution. Defaults to 0.2125.
     """
+        
+    
+    
     if os.path.isdir(path):
         cells_file = os.path.join(path, "cells.zarr.zip")
     else:
@@ -154,17 +193,32 @@ def xenium_label(
     with open(os.path.join(path, "experiment.xenium")) as f:
         experiment = json.load(f)
     sw_version = float(experiment["analysis_sw_version"][7:10])
-
-    if sw_version < 1.3:
-        ids = z["cell_id"]
+    
+    if obs_subset:
+        #firstly prepare dict of cell numbers (new) correponding to (old)
+        cells_file = os.path.join(path, "cells.csv.gz")
+        adata_obs = pd.read_csv(cells_file, compression="gzip", index_col="cell_id")
+        #print(adata_obs)
+        if annotations != 'None':
+            adata_obs = add_csv_to_adata_obs(adata_obs, annotations, annotations_column_index)
+        
+        #reindexing (as in original anndata)
+        adata_obs = adata_obs.reset_index()
+        adata_obs.index = (pd.Categorical(adata_obs["cell_id"]).codes + 1).astype(str)
+        adata_obs_sub = adata_obs[adata_obs[obs_subset[0]].isin(obs_subset[1])]
+        ids = adata_obs_sub.index.to_numpy()
     else:
-        ids = z["cell_id"][:, 0]
-
+        if sw_version < 1.3:
+            ids = z["cell_id"]
+        else:
+            ids = z["cell_id"][:, 0]
+    
     # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int
     # this is required so the label image matches the h5ad ids
-    ids = pd.Categorical(ids).codes + 1
-
+    #ids = pd.Categorical(ids).codes + 1
+    #we keep the same ids as in original dataset
+    ids = np.array(ids).astype('uint32')
     # starting on v2.0 vertices change location
     if sw_version < 2.0:
         pols = z["polygon_vertices"][1]
@@ -172,13 +226,11 @@ def xenium_label(
         pols = z["polygon_sets"][1]["vertices"]
 
     label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
-
     for id, pol in zip(ids, pols):
         pol = pol / resolution
         pol = np.array(list(map(list, pol.reshape(pol.shape[0] // 2, 2))))
         rr, cc = polygon(pol[:, 1], pol[:, 0])
         label_img[rr - 1, cc - 1] = int(id)
-
     tf.imwrite(f"{stem}-label.tif", label_img)
 
     return
