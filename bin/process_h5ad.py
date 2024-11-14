@@ -163,12 +163,53 @@ def subset_anndata(
     return adata
 
 
+def rotate_anndata(
+    adata: ad.AnnData,
+    degrees: T.Literal[90, 180, 270],
+) -> ad.AnnData:
+    """
+    Counterclockwise rotate the spatial coordinates and images in an AnnData object
+    """
+    if degrees not in [90, 180, 270]:
+        raise SystemError("Invalid rotation degrees. Must be 90, 180, or 270.")
+
+    for sample in adata.uns["spatial"].keys():
+        hiresfactor = adata.uns["spatial"][sample]["scalefactors"][
+            "tissue_hires_scalef"
+        ]
+        n, m, _ = adata.uns["spatial"][sample]["images"]["hires"].shape
+        m = int(m / hiresfactor)
+        n = int(n / hiresfactor)
+
+        rot_spatial = []
+        for [x, y] in adata.obsm["spatial"]:
+            if degrees == 90:
+                rot_spatial.append([y, m - x])
+            elif degrees == 180:
+                rot_spatial.append([m - x, n - y])
+            elif degrees == 270:
+                rot_spatial.append([n - y, x])
+
+        adata.obsm["spatial"] = np.array(rot_spatial)
+
+        hires = adata.uns["spatial"][sample]["images"]["hires"]
+        rot_hires = np.rot90(hires, k=degrees // 90)
+        adata.uns["spatial"][sample]["images"]["hires"] = rot_hires
+
+        lowres = adata.uns["spatial"][sample]["images"]["lowres"]
+        rot_lowres = np.rot90(lowres, k=degrees // 90)
+        adata.uns["spatial"][sample]["images"]["lowres"] = rot_lowres
+
+    return adata
+
+
 def preprocess_anndata(
     adata: ad.AnnData,
     compute_embeddings: bool = False,
     var_index: str = None,
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
+    rotate_degrees: T.Literal[90, 180, 270] = None,
     **kwargs,
 ):
     """This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion
@@ -186,6 +227,9 @@ def preprocess_anndata(
     """
 
     adata = subset_anndata(adata, obs_subset=obs_subset, var_subset=var_subset)
+
+    if rotate_degrees:
+        adata = rotate_anndata(adata, degrees=rotate_degrees)
 
     # reindex var with a specified column
     if var_index and var_index in adata.var:
