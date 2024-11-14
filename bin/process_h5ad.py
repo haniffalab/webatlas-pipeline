@@ -144,6 +144,7 @@ def subset_anndata(
 ) -> ad.AnnData:
     # Subset adata by obs
     if obs_subset:
+        logging.info(f"Subsetting AnnData by {obs_subset[0]}")
         obs_subset[1] = (
             [obs_subset[1]]
             if not isinstance(obs_subset[1], (list, tuple))
@@ -153,6 +154,7 @@ def subset_anndata(
 
     # Subset adata by var
     if var_subset:
+        logging.info(f"Subsetting AnnData by {var_subset[0]}")
         var_subset[1] = (
             [var_subset[1]]
             if not isinstance(var_subset[1], (list, tuple))
@@ -173,6 +175,7 @@ def rotate_anndata(
     if degrees not in [90, 180, 270]:
         raise SystemError("Invalid rotation degrees. Must be 90, 180, or 270.")
 
+    logging.info(f"Rotating spatial coordinates and images by {degrees} degrees")
     for sample in adata.uns["spatial"].keys():
         hiresfactor = adata.uns["spatial"][sample]["scalefactors"][
             "tissue_hires_scalef"
