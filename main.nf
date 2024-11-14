@@ -102,7 +102,7 @@ def mergeArgs (stem, data_type, args) {
     getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
-    dataset_args[stem]["rotate"] +
+    [rotate_degrees: dataset_args[stem]?.rotate_degrees] +
     (args ?: [:])
 }
 
@@ -135,7 +135,7 @@ process image_to_zarr {
     """
     if [! -z ${rotate_degrees}]
     then
-        if [[ $deg != 90 && $deg != 180 && $deg != 270 ]]
+        if [[ $rotate_degrees != 90 && $rotate_degrees != 180 && $rotate_degrees != 270 ]]
         then
             echo "Invalid rotation value: ${rotate_degrees}"
             exit 1
@@ -365,8 +365,8 @@ workflow Process_images {
             data_map.prefix,
             data_map.data_type.replace("_image",""),
             file(data_map.data_path),
-            false // keep_filename,
-            dataset_args[stem]["rotate"]["rotate_degrees"] // rotate
+            false, // keep_filename
+            dataset_args[stem]?.rotate_degrees // rotate
         ]
     }
 
@@ -396,8 +396,8 @@ workflow Process_images {
                 prefix,
                 type,
                 [paths].flatten(),
-                true // keep_filename,
-                dataset_args[stem]["rotate"]["rotate_degrees"] // rotate
+                true, // keep_filename
+                dataset_args[stem]?.rotate_degrees // rotate
             ]
         }
         .transpose(by: 3)
@@ -496,4 +496,8 @@ workflow Output_to_spatialdata {
             data_for_sd
         )
         
+}
+
+workflow {
+    Full_pipeline()
 }
