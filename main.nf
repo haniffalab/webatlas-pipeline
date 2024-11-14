@@ -116,6 +116,7 @@ def warnParams () {
 
 //////////////////////////////////////////////////////
 
+// @TODO: move rotation to separate process and run with all_tifs
 process image_to_zarr {
     tag "${image}"
     debug verbose_log
@@ -133,8 +134,7 @@ process image_to_zarr {
     filename = keep_filename ? image.baseName : ([*stem, prefix, img_type] - null - "").join("-")
     tmp_image = "tmp-${filename}.tif"
     """
-    echo ${rotate_degrees}
-    if [ ! -z ${rotate_degrees} ]
+    if [[ ${rotate_degrees} != "NO_ROT" ]]
     then
         if [[ ${rotate_degrees} != 90 && ${rotate_degrees} != 180 && ${rotate_degrees} != 270 ]]
         then
@@ -367,7 +367,7 @@ workflow Process_images {
             data_map.data_type.replace("_image",""),
             file(data_map.data_path),
             false, // keep_filename
-            dataset_args[stem]?.rotate_degrees // rotate
+            dataset_args[stem]?.rotate_degrees ?: "NO_ROT" // rotate
         ]
     }
 
@@ -398,7 +398,7 @@ workflow Process_images {
                 type,
                 [paths].flatten(),
                 true, // keep_filename
-                dataset_args[stem]?.rotate_degrees // rotate
+                dataset_args[stem]?.rotate_degrees ?: "NO_ROT" // rotate
             ]
         }
         .transpose(by: 3)
