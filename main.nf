@@ -131,11 +131,12 @@ process image_to_zarr {
 
     script:
     filename = keep_filename ? image.baseName : ([*stem, prefix, img_type] - null - "").join("-")
-    tmp_image = "tmp_${filename}.tif"
+    tmp_image = "tmp-${filename}.tif"
     """
-    if [! -z ${rotate_degrees}]
+    echo ${rotate_degrees}
+    if [ ! -z ${rotate_degrees} ]
     then
-        if [[ $rotate_degrees != 90 && $rotate_degrees != 180 && $rotate_degrees != 270 ]]
+        if [[ ${rotate_degrees} != 90 && ${rotate_degrees} != 180 && ${rotate_degrees} != 270 ]]
         then
             echo "Invalid rotation value: ${rotate_degrees}"
             exit 1
