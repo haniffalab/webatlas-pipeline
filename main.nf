@@ -102,7 +102,7 @@ def mergeArgs (stem, data_type, args) {
     getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
-    [rotate_degrees: dataset_args[stem]?.rotate_degrees] +
+    (dataset_args[stem]?.rotate_degrees ? [rotate_degrees: dataset_args[stem]?.rotate_degrees] : [:]) +
     (args ?: [:])
 }
 
