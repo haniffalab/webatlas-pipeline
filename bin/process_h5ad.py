@@ -229,7 +229,7 @@ def preprocess_anndata(
     adata = subset_anndata(adata, obs_subset=obs_subset, var_subset=var_subset)
 
     if rotate_degrees:
-        adata = rotate_anndata(adata, degrees=rotate_degrees)
+        adata = rotate_anndata(adata, rotate_degrees)
 
     # reindex var with a specified column
     if var_index and var_index in adata.var:
