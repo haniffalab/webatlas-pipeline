@@ -102,7 +102,7 @@ def mergeArgs (stem, data_type, args) {
     getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
-    (dataset_args[stem]?.rotate_degrees ? [rotate_degrees: dataset_args[stem]?.rotate_degrees] : [:]) +
+    (dataset_args[stem]?.rotate ?: [:]) + // rotate: {rotate_degrees: 90, spatial_shape: [width, height]}
     (args ?: [:])
 }
 
@@ -367,7 +367,7 @@ workflow Process_images {
             data_map.data_type.replace("_image",""),
             file(data_map.data_path),
             false, // keep_filename
-            dataset_args[stem]?.rotate_degrees ?: "NO_ROT" // rotate
+            dataset_args[stem]?.rotate?.rotate_degrees ?: "NO_ROT" // rotate
         ]
     }
 
@@ -398,7 +398,7 @@ workflow Process_images {
                 type,
                 [paths].flatten(),
                 true, // keep_filename
-                dataset_args[stem]?.rotate_degrees ?: "NO_ROT" // rotate
+                dataset_args[stem]?.rotate?.rotate_degrees ?: "NO_ROT" // rotate
             ]
         }
         .transpose(by: 3)

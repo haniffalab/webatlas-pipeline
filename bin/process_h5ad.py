@@ -141,6 +141,7 @@ def subset_anndata(
     adata: ad.AnnData,
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
+    sample: str = None,
 ) -> ad.AnnData:
     # Subset adata by obs
     if obs_subset:
@@ -162,11 +163,19 @@ def subset_anndata(
         )
         adata = adata[:, adata.var[var_subset[0]].isin(var_subset[1])]
 
+    # Remove other samples' spatial data
+    if sample and "spatial" in adata.uns:
+        spatial_samples = list(adata.uns["spatial"].keys())
+        for spatial_sample in spatial_samples:
+            if spatial_sample != sample:
+                del adata.uns["spatial"][spatial_sample]
+
     return adata
 
 
 def rotate_anndata(
     adata: ad.AnnData,
+    shape: tuple[int, int],
     degrees: T.Literal[90, 180, 270],
 ) -> ad.AnnData:
     """
@@ -176,32 +185,21 @@ def rotate_anndata(
         raise SystemError("Invalid rotation degrees. Must be 90, 180, or 270.")
 
     logging.info(f"Rotating spatial coordinates and images by {degrees} degrees")
-    for sample in adata.uns["spatial"].keys():
-        hiresfactor = adata.uns["spatial"][sample]["scalefactors"][
-            "tissue_hires_scalef"
-        ]
-        n, m, _ = adata.uns["spatial"][sample]["images"]["hires"].shape
-        m = int(m / hiresfactor)
-        n = int(n / hiresfactor)
 
-        rot_spatial = []
-        for [x, y] in adata.obsm["spatial"]:
-            if degrees == 90:
-                rot_spatial.append([y, m - x])
-            elif degrees == 180:
-                rot_spatial.append([m - x, n - y])
-            elif degrees == 270:
-                rot_spatial.append([n - y, x])
+    m, n = shape[0], shape[1]
 
-        adata.obsm["spatial"] = np.array(rot_spatial)
+    rot_spatial = []
+    for [x, y] in adata.obsm["spatial"]:
+        if degrees == 90:
+            rot_spatial.append([y, m - x])
+        elif degrees == 180:
+            rot_spatial.append([m - x, n - y])
+        elif degrees == 270:
+            rot_spatial.append([n - y, x])
 
-        hires = adata.uns["spatial"][sample]["images"]["hires"]
-        rot_hires = np.rot90(hires, k=degrees // 90)
-        adata.uns["spatial"][sample]["images"]["hires"] = rot_hires
+    adata.obsm["spatial"] = np.array(rot_spatial)
 
-        lowres = adata.uns["spatial"][sample]["images"]["lowres"]
-        rot_lowres = np.rot90(lowres, k=degrees // 90)
-        adata.uns["spatial"][sample]["images"]["lowres"] = rot_lowres
+    adata.uns["webatlas_rotation"] = degrees
 
     return adata
 
@@ -212,7 +210,9 @@ def preprocess_anndata(
     var_index: str = None,
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
+    spatial_shape: tuple[int, int] = None,
     rotate_degrees: T.Literal[90, 180, 270] = None,
+    sample: str = None,
     **kwargs,
 ):
     """This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion
@@ -229,10 +229,12 @@ def preprocess_anndata(
             to use to subset the AnnData object. Defaults to None.
     """
 
-    adata = subset_anndata(adata, obs_subset=obs_subset, var_subset=var_subset)
+    adata = subset_anndata(
+        adata, obs_subset=obs_subset, var_subset=var_subset, sample=sample
+    )
 
     if rotate_degrees:
-        adata = rotate_anndata(adata, rotate_degrees)
+        adata = rotate_anndata(adata, spatial_shape, rotate_degrees)
 
     # reindex var with a specified column
     if var_index and var_index in adata.var:
