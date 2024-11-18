@@ -93,6 +93,17 @@ def spaceranger_to_anndata(
     return adata
 
 
+def get_image_size(
+    adata: sc.AnnData,
+):
+    sample = list(adata.uns["spatial"].keys())[0]
+    hiresfactor = adata.uns["spatial"][sample]["scalefactors"]["tissue_hires_scalef"]
+    n, m, _ = adata.uns["spatial"][sample]["images"]["hires"].shape
+    m = int(m / hiresfactor)
+    n = int(n / hiresfactor)
+    return [m, n]
+
+
 def spaceranger_to_zarr(
     path: str,
     stem: str,
@@ -123,7 +134,11 @@ def spaceranger_to_zarr(
     adata = spaceranger_to_anndata(path, load_clusters, load_embeddings, load_raw)
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
-    zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
+
+    # Get shape
+    image_size = get_image_size(adata)
+
+    zarr_file = h5ad_to_zarr(adata=adata, stem=stem, spatial_shape=image_size, **kwargs)
 
     return zarr_file
 

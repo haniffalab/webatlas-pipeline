@@ -19,6 +19,7 @@ import logging
 import warnings
 from scipy.sparse import spmatrix, csr_matrix, csc_matrix
 from constants.suffixes import ANNDATA_ZARR_SUFFIX
+from process_spaceranger import get_image_size
 
 warnings.filterwarnings("ignore")
 logging.getLogger().setLevel(logging.INFO)
@@ -188,16 +189,18 @@ def rotate_anndata(
 
     m, n = shape[0], shape[1]
 
-    rot_spatial = []
-    for [x, y] in adata.obsm["spatial"]:
-        if degrees == 90:
-            rot_spatial.append([y, m - x])
-        elif degrees == 180:
-            rot_spatial.append([m - x, n - y])
-        elif degrees == 270:
-            rot_spatial.append([n - y, x])
+    for spatial_key in ["spatial", "X_spatial"]:
+        if spatial_key in adata.obsm:
+            rot_spatial = []
+            for [x, y] in adata.obsm[spatial_key]:
+                if degrees == 90:
+                    rot_spatial.append([y, m - x])
+                elif degrees == 180:
+                    rot_spatial.append([m - x, n - y])
+                elif degrees == 270:
+                    rot_spatial.append([n - y, x])
 
-    adata.obsm["spatial"] = np.array(rot_spatial)
+            adata.obsm[spatial_key] = np.array(rot_spatial)
 
     adata.uns["webatlas_rotation"] = degrees
 
@@ -234,6 +237,11 @@ def preprocess_anndata(
     )
 
     if rotate_degrees:
+        if not spatial_shape:
+            try:
+                spatial_shape = get_image_size(adata)
+            except:
+                raise SystemError("Must provide spatial shape to rotate spatial data.")
         adata = rotate_anndata(adata, spatial_shape, rotate_degrees)
 
     # reindex var with a specified column
