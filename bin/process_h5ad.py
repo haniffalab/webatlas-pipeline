@@ -19,7 +19,7 @@ import logging
 import warnings
 from scipy.sparse import spmatrix, csr_matrix, csc_matrix
 from constants.suffixes import ANNDATA_ZARR_SUFFIX
-from process_spaceranger import get_image_size
+from utils import visium_image_size
 
 warnings.filterwarnings("ignore")
 logging.getLogger().setLevel(logging.INFO)
@@ -239,7 +239,7 @@ def preprocess_anndata(
     if rotate_degrees:
         if not spatial_shape:
             try:
-                spatial_shape = get_image_size(adata)
+                spatial_shape = visium_image_size(adata)
             except:
                 raise SystemError("Must provide spatial shape to rotate spatial data.")
         adata = rotate_anndata(adata, spatial_shape, rotate_degrees)
