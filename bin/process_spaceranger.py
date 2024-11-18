@@ -100,6 +100,10 @@ def spaceranger_to_anndata(
             #using simply first column if none were specified
             annot_df.set_index(annot_df.columns[0], inplace=True)
         adata.obs = pd.merge(adata.obs, annot_df, left_index=True, right_index=True, how='left')
+
+    adata.obs.index.names = ['label_id']
+    adata.obs = adata.obs.reset_index()
+    adata.obs.index = (pd.Categorical(adata.obs["label_id"]).codes + 1).astype(str)
     
     '''
     if filter_obs_column != 'None':
