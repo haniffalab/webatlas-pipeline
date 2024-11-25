@@ -38,8 +38,8 @@ def xenium_to_anndata(
     resolution: float = 0.2125,
     load_clusters: bool = True,
     load_embeddings: bool = True,
-    annotations: str = 'None',
-    annotations_column_index: str = 'None',
+    annotations: str = None,
+    annotations_column_index: str = None,
     obs_subset: tuple[int, T.Any] = None,
 ) -> sc.AnnData:
     """Function to create an AnnData object from Xenium output.
@@ -109,10 +109,10 @@ def xenium_to_anndata(
             adata.obsm[f"X_{embedding}"] = emb.values
    
     
-    if annotations != 'None':
+    if annotations:
         adata.obs = add_csv_to_adata_obs(adata.obs, annotations, annotations_column_index)
     
-      # starting on v1.3 cell_id looks like "aaabinlp-1"
+    # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int this is done manually at this step
     # instead of reindex_anndata so we control what matches the label image
     adata.obs = adata.obs.reset_index()
@@ -133,8 +133,8 @@ def xenium_to_zarr(
     spatial_as_pixel: bool = True,
     resolution: float = 0.2125,
     save_h5ad: bool = False,
-    annotations: str = 'None',
-    annotations_column_index: str = 'None',
+    annotations: str = None,
+    annotations_column_index: str = None,
     obs_subset: tuple[int, T.Any] = None,
     **kwargs,
 ) -> str:
@@ -147,7 +147,10 @@ def xenium_to_zarr(
         converted to pixels. Defaults to True.
         resolution (float, optional): Pixel resolution. Defaults to 0.2125.
         save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.
-
+        annotations (str): path to csv file with annotations or any additional information for "obs"
+        annotations_column_index (str): name of column in the csv with barcodes information of visium spots
+        obs_subset (tuple(str, T.Any), optional): Tuple containing an `obs` column name and one or more values
+            to use to subset the AnnData object. Defaults to None.
     Returns:
         str: Output Zarr filename
     """
@@ -168,8 +171,8 @@ def xenium_label(
     resolution: float = 0.2125, 
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
-    annotations: str = 'None',
-    annotations_column_index: str = 'None',
+    annotations: str = None,
+    annotations_column_index: str = None,
 ) -> None:
     """This function writes a label image tif file with drawn labels according to
     cell segmentation polygons from Xenium output cells.zarr.zip file
@@ -198,8 +201,7 @@ def xenium_label(
         #firstly prepare dict of cell numbers (new) correponding to (old)
         cells_file = os.path.join(path, "cells.csv.gz")
         adata_obs = pd.read_csv(cells_file, compression="gzip", index_col="cell_id")
-        #print(adata_obs)
-        if annotations != 'None':
+        if annotations:
             adata_obs = add_csv_to_adata_obs(adata_obs, annotations, annotations_column_index)
         
         #reindexing (as in original anndata)
