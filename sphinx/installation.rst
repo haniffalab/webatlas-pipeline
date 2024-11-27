@@ -17,7 +17,7 @@ Using `wget`
 .. code-block:: shell
    :caption: Input
 
-   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.2.tar.gz
+   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.3.tar.gz
 
 .. code-block:: shell
    :caption: Expected Output
@@ -25,17 +25,17 @@ Using `wget`
    Resolving github.com (github.com)... 140.82.121.3
    Connecting to github.com (github.com)|140.82.121.3|:443... connected.
    HTTP request sent, awaiting response... 302 Found
-   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.5.2 [following]
-   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.5.2
+   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.5.3 [following]
+   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.5.3
    Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
    Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
    HTTP request sent, awaiting response... 200 OK
    Length: unspecified [application/x-gzip]
-   Saving to: ‘v0.5.2.tar.gz’
+   Saving to: ‘v0.5.3.tar.gz’
 
-   v0.5.2.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
+   v0.5.3.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
 
-   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.5.2.tar.gz’ saved [2835534]
+   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.5.3.tar.gz’ saved [2835534]
 
 
 Using `curl`
@@ -44,7 +44,7 @@ Using `curl`
 .. code-block:: shell
    :caption: Input
 
-   curl -L -o v0.5.2.tar.gz https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.2.tar.gz
+   curl -L -o v0.5.3.tar.gz https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.5.3.tar.gz
 
 .. code-block:: shell
    :caption: Expected Output
@@ -60,18 +60,18 @@ Extract the WebAtlas compressed tag and change directory into the new repo.
 .. code-block:: shell
    :caption: Input
 
-   tar -xzvf ./v0.5.2.tar.gz
-   cd webatlas-pipeline-0.5.2
+   tar -xzvf ./v0.5.3.tar.gz
+   cd webatlas-pipeline-0.5.3
 
 .. code-block:: shell
    :caption: Expected Output
     
-   webatlas-pipeline-0.5.2/
-   webatlas-pipeline-0.5.2/.github/
+   webatlas-pipeline-0.5.3/
+   webatlas-pipeline-0.5.3/.github/
    ...
    ...
-   webatlas-pipeline-0.5.2/tests/input/simple_config.json
-   webatlas-pipeline-0.5.2/tests/test_class.py
+   webatlas-pipeline-0.5.3/tests/input/simple_config.json
+   webatlas-pipeline-0.5.3/tests/test_class.py
 
 .. _environment:
 
