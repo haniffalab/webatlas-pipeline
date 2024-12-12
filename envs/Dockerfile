@@ -1,5 +1,5 @@
 FROM python:3.10
-ARG BIOFORMATS2RAW="0.4.0"
+ARG BIOFORMATS2RAW="0.7.0"
 
 COPY ./requirements.txt /requirements.txt
 RUN apt-get update && \
