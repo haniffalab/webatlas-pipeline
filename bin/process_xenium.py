@@ -116,7 +116,7 @@ def xenium_to_anndata(
     # pd.Categorical.codes converts them to int this is done manually at this step
     # instead of reindex_anndata so we control what matches the label image
     adata.obs = adata.obs.reset_index()
-    adata.obs.index = (pd.Categorical(adata.obs["cell_id"]).codes + 1).astype(str)
+    adata.obs.index = (pd.Categorical(adata.obs.index).codes + 1).astype(str)
     
     #important to do subsetting after new reindexing
     if obs_subset:
