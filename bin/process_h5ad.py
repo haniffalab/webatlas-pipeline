@@ -207,6 +207,22 @@ def rotate_anndata(
     return adata
 
 
+def rescale_spatial(adata: ad.AnnData, factor: float) -> ad.AnnData:
+    """
+    Rescale spatial coordinates in an AnnData object
+    """
+    
+    logging.info(f"Rescaling spatial coordinates by {factor}")
+    
+    for spatial_key in ["spatial", "X_spatial"]:
+        if spatial_key in adata.obsm:
+            adata.obsm[spatial_key] = adata.obsm[spatial_key] * factor
+
+    adata.uns["webatlas_rescale"] = factor
+
+    return adata
+
+
 def preprocess_anndata(
     adata: ad.AnnData,
     compute_embeddings: bool = False,
@@ -215,6 +231,7 @@ def preprocess_anndata(
     var_subset: tuple[str, T.Any] = None,
     spatial_shape: tuple[int, int] = None,
     rotate_degrees: T.Literal[90, 180, 270] = None,
+    rescale_factor: float = None,
     sample: str = None,
     **kwargs,
 ):
@@ -235,6 +252,9 @@ def preprocess_anndata(
     adata = subset_anndata(
         adata, obs_subset=obs_subset, var_subset=var_subset, sample=sample
     )
+    
+    if rescale_factor:
+        adata = rescale_spatial(adata, rescale_factor)
 
     if rotate_degrees:
         if not spatial_shape:
@@ -243,7 +263,7 @@ def preprocess_anndata(
             except:
                 raise SystemError("Must provide spatial shape to rotate spatial data.")
         adata = rotate_anndata(adata, spatial_shape, rotate_degrees)
-
+    
     # reindex var with a specified column
     if var_index and var_index in adata.var:
         try:
