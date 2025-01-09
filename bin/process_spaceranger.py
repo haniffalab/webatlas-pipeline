@@ -24,6 +24,8 @@ def spaceranger_to_anndata(
     load_clusters: bool = True,
     load_embeddings: bool = True,
     load_raw: bool = False,
+    annotations: str = None,
+    annotations_column_index: str = None,
 ) -> sc.AnnData:
     """Function to create an AnnData object from a SpaceRanger output directory.
 
@@ -89,7 +91,31 @@ def spaceranger_to_anndata(
 
             emb = embedding_df.reindex(adata.obs.index)
             adata.obsm[f"X_{embedding}"] = emb.values
+    
+    if annotations:
+        annot_df = pd.read_csv(annotations)
+        if annotations_column_index in annot_df.columns:
+            annot_df.set_index(annotations_column_index, inplace=True)
+        else:
+            #using simply first column if none were specified
+            annot_df.set_index(annot_df.columns[0], inplace=True)
+        adata.obs = pd.merge(adata.obs, annot_df, left_index=True, right_index=True, how='left')
+       
+    adata.obs.index.names = ['label_id']
+    adata.obs = adata.obs.reset_index()
+    adata.obs.index = (pd.Categorical(adata.obs["label_id"]).codes + 1).astype(str)
+    
+    '''
+    if filter_obs_column != 'None':
+        if len(filter_obs_values)>0:
+            adata = adata[adata.obs['ROI_one'].isin(filter_obs_values)]
+    '''        
 
+
+    adata.obs.index.names = ['label_id']
+    adata.obs = adata.obs.reset_index()
+    adata.obs.index = (pd.Categorical(adata.obs["label_id"]).codes + 1).astype(str)
+     
     return adata
 
 
@@ -100,6 +126,8 @@ def spaceranger_to_zarr(
     load_embeddings: bool = True,
     load_raw: bool = False,
     save_h5ad: bool = False,
+    annotations: str = None,
+    annotations_column_index: str = None,
     **kwargs,
 ) -> str:
     """Function to write to Zarr an AnnData object created from SpaceRanger output data
@@ -115,12 +143,19 @@ def spaceranger_to_zarr(
             instead of the filtered matrix. Defaults to False.
         save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file.
             Defaults to False.
+        annotations (str): path to csv file with annotations or any additional information for "obs"
+        annotations_column_index (str): name of column in the csv with barcodes information of visium spots
+<<<<<<< HEAD
+        filter_obs_column (str): name of the column which will be used to perform data filtering
+        filter_obs_values (list): list of strings that has to pass the filter inside the column specified
 
+=======
+>>>>>>> f4cd6259b647c7919c15260dc0aa73e6fb161e11
     Returns:
         str: Output Zarr filename
     """
 
-    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings, load_raw)
+    adata = spaceranger_to_anndata(path, load_clusters, load_embeddings, load_raw, annotations, annotations_column_index)
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
     zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
@@ -135,6 +170,8 @@ def visium_label(
     obs_subset: tuple[int, T.Any] = None,
     sample_id: str = None,
     relative_size: str = None,
+    annotations: str = None,
+    annotations_column_index: str = None,
 ) -> None:
     """This function writes a label image tif file with drawn labels according to an
     Anndata object with necessary metadata stored within `uns["spatial"]`.
@@ -164,9 +201,23 @@ def visium_label(
         scalef = adata.uns["spatial"][sample_id]["scalefactors"]["tissue_hires_scalef"]
         shape = [int(hires_shape[0] / scalef), int(hires_shape[1] / scalef)]
 
-    adata = subset_anndata(adata, obs_subset=obs_subset)
-
+    if annotations:
+        annot_df = pd.read_csv(annotations)
+        if annotations_column_index in annot_df.columns:
+            annot_df.set_index(annotations_column_index, inplace=True)
+        else:
+            #using simply first column if none were specified
+            annot_df.set_index(annot_df.columns[0], inplace=True)
+        adata.obs = pd.merge(adata.obs, annot_df, left_index=True, right_index=True, how='left')
     adata = reindex_anndata_obs(adata)
+    if obs_subset:
+        adata = subset_anndata(adata, obs_subset=obs_subset)
+
+
+    #it is important to do reindexing before subsetting and not after to keep original ids
+    adata = reindex_anndata_obs(adata)
+    adata = subset_anndata(adata, obs_subset=obs_subset)
+    
 
     # turn obsm into a numpy array
     for k in adata.obsm_keys():

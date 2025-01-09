@@ -434,15 +434,23 @@ Possible values for each of the supported data types are as follows:
       batch_processing: "False" # set to `True` to process the file in batches to avoid loading the whole object into memory if it is too large
       batch_size: 1000 # batch size (number of columns to process at a time if matrix is dense/csc, number of rows if matrix is csr) if `batch_processing` is set to `True`
       consolidate_metadata: "True" # whether to consolidate output zarr metadata. Defaults to `True`
+      annotations: path/to/table.csv #path to the table you want to add to adata.obs columns
+      annotations_column_index: "cell_id" #column name within "annotations" which will be used as index column to merge with adata.obs (should have the same cell identifiers as in adata.obs)
     spaceranger:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
       load_embeddings: "True" # set to `False` to disable loading the embeddings (UMAP, tSNE and PCA) from the `analysis` directory
       load_raw: "False" # set to `True` to load the raw count file instead of the filtered count file
+      obs_subset: ["sample", ["sample_id_1"]] # please make sure you specified the same subsetting in anndata object and in label_image
+      annotations: path/to/table.csv #path to the table you want to add to adata.obs columns
+      annotations_column_index: "cell_id" #column name within "annotations" which will be used as index column to merge with adata.obs (should have the same cell identifiers as in adata.obs)
     xenium:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       spatial_as_pixel: "True" # convert spatial coordinates to pixel coordinates. Defaults to `True`
       resolution: 0.2125 # pixel resolution used to convert the spatial coordinates. Defaults to 0.2125
+      obs_subset: ["sample", ["sample_id_1"]] # please make sure you specified the same subsetting in anndata object and in label_image
+      annotations: path/to/table.csv #path to the table you want to add to adata.obs columns
+      annotations_column_index: "cell_id" #column name within "annotations" which will be used as index column to merge with adata.obs (should have the same cell identifiers as in adata.obs)
     merscope:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       filter_prefix: "Blank-" # prefix to filter out data from the cell by gene data. Defaults to `Blank-`

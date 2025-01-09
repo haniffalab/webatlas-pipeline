@@ -36,7 +36,6 @@ def create_img(
         args (dict[str,T.Any], optional): Args to be passed to the appropriate processing function.
             Defaults to {}.
     """
-
     if ref_img:
         tif_img = tf.TiffFile(ref_img)
         args["shape"] = tif_img.pages[0].shape[:2]
