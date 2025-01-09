@@ -100,7 +100,6 @@ def spaceranger_to_anndata(
             #using simply first column if none were specified
             annot_df.set_index(annot_df.columns[0], inplace=True)
         adata.obs = pd.merge(adata.obs, annot_df, left_index=True, right_index=True, how='left')
-<<<<<<< HEAD
        
     adata.obs.index.names = ['label_id']
     adata.obs = adata.obs.reset_index()
@@ -111,13 +110,12 @@ def spaceranger_to_anndata(
         if len(filter_obs_values)>0:
             adata = adata[adata.obs['ROI_one'].isin(filter_obs_values)]
     '''        
-=======
+
 
     adata.obs.index.names = ['label_id']
     adata.obs = adata.obs.reset_index()
     adata.obs.index = (pd.Categorical(adata.obs["label_id"]).codes + 1).astype(str)
      
->>>>>>> f4cd6259b647c7919c15260dc0aa73e6fb161e11
     return adata
 
 
@@ -211,18 +209,15 @@ def visium_label(
             #using simply first column if none were specified
             annot_df.set_index(annot_df.columns[0], inplace=True)
         adata.obs = pd.merge(adata.obs, annot_df, left_index=True, right_index=True, how='left')
-<<<<<<< HEAD
     adata = reindex_anndata_obs(adata)
     if obs_subset:
         adata = subset_anndata(adata, obs_subset=obs_subset)
 
-=======
 
     #it is important to do reindexing before subsetting and not after to keep original ids
     adata = reindex_anndata_obs(adata)
     adata = subset_anndata(adata, obs_subset=obs_subset)
     
->>>>>>> f4cd6259b647c7919c15260dc0aa73e6fb161e11
 
     # turn obsm into a numpy array
     for k in adata.obsm_keys():
