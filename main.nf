@@ -141,7 +141,12 @@ process image_to_zarr {
             echo "Invalid rotation value: ${rotate_degrees}"
             exit 1
         else
-            convert ${image} -rotate -${rotate_degrees} ${tmp_image}
+            if convert ${image} -rotate -${rotate_degrees} ${tmp_image}
+            then
+                :
+            else
+                convert ${image} -rotate -${rotate_degrees} tiff64:${tmp_image}
+            fi
         fi
     else
         ln -s ${image} ${tmp_image}
