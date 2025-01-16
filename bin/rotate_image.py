@@ -63,7 +63,7 @@ def rotate_image(
             pixels = root.find("./*/ome:Pixels", NS)
             if pixels is not None:
                 pixels.set("SizeX", str(rotated_image.width))
-                pixels.set("SizeY", str(rotated_image.height))
+                pixels.set("SizeY", str(rotated_image.height // rotated_image.get_n_pages()))
             rotated_image.set_type(
                 pyvips.GValue.gstr_type,
                 "image-description",
