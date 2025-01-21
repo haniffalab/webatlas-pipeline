@@ -22,6 +22,8 @@ from timeit import default_timer as timer
 def generate_webatlas2_data(
         zarr_dir, project, project_annotations_path
 ) -> None:
+    if not project_annotations_path:
+        return
     output_dir = os.path.join(zarr_dir, project)
     # Create output_dir if it doesn't exist already
     Path(output_dir).mkdir(parents=True, exist_ok=True)
