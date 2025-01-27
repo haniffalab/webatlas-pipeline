@@ -65,10 +65,20 @@ def process(section_annotations_path, feature_coordinates_path, anndata_zarrs):
                         entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name]
 
                     feature_type = consts.entity_type2_feature_type[entity_type]
-                    # TODO: Check if o.var.feature_type==feature_type test can be used for all projects and feature types
-                    features = list(o.var.index[o.var.feature_type==feature_type])
+                    features = None
+                    feature_type_series = None
+                    for col_name in consts.feature_type_colnames_alternatives:
+                        if col_name in o.var:
+                            feature_type_series = o.var[col_name]
+                            features = list(o.var.index[feature_type_series==feature_type])
+                            break
+                    if features is None:
+                        print(
+                            "ERROR: none of the feature_type col name alternatives: {} where found in o.var for {}".format(
+                                ", ".join(consts.feature_type_colnames_alternatives), zarr_dir))
+                        sys.exit(1)
                     if len(features) > 0:
-                        filtered_x = o.X.T[o.var.feature_type==feature_type].copy()
+                        filtered_x = o.X.T[feature_type_series==feature_type].copy()
                         visium_intensity_cutoff = image_name2entity_type2visium_intensity_cutoff[img_name][entity_type]
                         # Initialise feature2xy_coords_intensity_list for all features
                         for feature in features:
@@ -89,14 +99,13 @@ def process(section_annotations_path, feature_coordinates_path, anndata_zarrs):
                                   ", ".join(barcode_colnames_alternatives), zarr_dir))
                             sys.exit(1)
                         spatial_xy = None
-                        spatialxy_colnames_alternatives = ['spatial', 'X_spatial']
-                        for col_name in spatialxy_colnames_alternatives:
+                        for col_name in consts.spatialxy_colnames_alternatives:
                             if col_name in o.obsm.keys():
                                 spatial_xy = list(o.obsm[col_name])
                                 break
                         if spatial_xy is None:
                             print("ERROR: none of the spatial_xy col name alternatives: {} where found in o.obsm for {}".format(
-                                  ", ".join(spatialxy_colnames_alternatives), zarr_dir))
+                                  ", ".join(consts.spatialxy_colnames_alternatives), zarr_dir))
                             sys.exit(1)
                         df = pd.DataFrame(data=filtered_x, index=features, columns=barcodes)
                         df = remove_zeros_rows_cols(df)

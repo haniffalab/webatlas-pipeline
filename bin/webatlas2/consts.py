@@ -6,3 +6,5 @@ entity_type2_feature_type = {
     "cell_type_lvl3" : "cell_type_lvl3",
     "annotation" : "annotations"
 }
+spatialxy_colnames_alternatives = ['spatial', 'X_spatial']
+feature_type_colnames_alternatives = ['feature_type', 'feature_types']

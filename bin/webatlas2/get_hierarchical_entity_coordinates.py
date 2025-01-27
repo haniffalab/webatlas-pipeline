@@ -2,6 +2,8 @@ from anndata import read_zarr
 import json
 import sys
 import csv
+import webatlas2.consts as consts
+
 
 def get_project_annotation(project_annotations_path, data_key) -> str:
     value = None
@@ -65,7 +67,17 @@ def process(output_path, entity_type, project_annotations_path, zarr_anndata_pat
             img_name = "{}.jpeg".format(zarr_fname.replace("-anndata.zarr",""))
             img_name2entity2xy_coords_list[img_name] = {}
             o = read_zarr(zarr_dir)
-            spatial_xy = o.obsm['spatial']
+
+            spatial_xy = None
+            for col_name in consts.spatialxy_colnames_alternatives:
+                if col_name in o.obsm.keys():
+                    spatial_xy = list(o.obsm[col_name])
+                    break
+            if spatial_xy is None:
+                print("ERROR: none of the spatial_xy col name alternatives: {} where found in o.obsm for {}".format(
+                    ", ".join(consts.spatialxy_colnames_alternatives), zarr_dir))
+                sys.exit(1)
+
             obsColName = get_project_annotation(project_annotations_path, "{}_obs_col".format(entity_type))
             hierarchical_entity_values = o.obs[obsColName].values.tolist()
             for idx, entity in enumerate(hierarchical_entity_values):
