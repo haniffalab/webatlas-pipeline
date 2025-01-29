@@ -278,10 +278,10 @@ process Generate_image {
     """
 }
 
-process Generate_webatlas2_data {
+process Process_for_webatlas2 {
     tag "${project}, ${webatlas2_annotations_path}"
     input:
-    tuple val(project), path(webatlas2_annotations_path)
+    tuple val(project), val(webatlas2_annotations_path)
     script:
     """
     generate_webatlas2_data.py ${outdir_with_version} ${project} ${webatlas2_annotations_path}
@@ -289,6 +289,10 @@ process Generate_webatlas2_data {
 }
 
 //////////////////////////////////////////////////////
+
+workflow Generate_webatlas2_data {
+    Process_for_webatlas2(webatlas2_projects)
+}
 
 workflow Full_pipeline {
 
@@ -309,9 +313,6 @@ workflow Full_pipeline {
             Process_images.out.img_tifs
         )
     }
-
-    Generate_webatlas2_data(webatlas2_projects)
-    
 }
 
 

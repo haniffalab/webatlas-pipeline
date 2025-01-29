@@ -1,8 +1,10 @@
+import os
 from anndata import read_zarr
 import json
 import sys
 import csv
 import webatlas2.consts as consts
+
 
 
 def get_project_annotation(project_annotations_path, data_key) -> str:
@@ -20,8 +22,9 @@ def get_project_annotation(project_annotations_path, data_key) -> str:
 
 def get_entity2children(output_path: str, project_annotations_path: str, entity_type: str):
     entity2children = {}
-    hierarchy_tsv_fpath = get_project_annotation(project_annotations_path, entity_type)
-    if hierarchy_tsv_fpath is not None:
+    hierarchy_tsv_fname = get_project_annotation(project_annotations_path, entity_type)
+    if hierarchy_tsv_fname is not None:
+        hierarchy_tsv_fpath = os.path.join(os.path.dirname(project_annotations_path), hierarchy_tsv_fname)
         with open(hierarchy_tsv_fpath, 'r') as csvfile:
             csvreader = csv.reader(csvfile, delimiter='\t')
             # skip header
