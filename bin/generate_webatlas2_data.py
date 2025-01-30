@@ -60,8 +60,6 @@ def generate_webatlas2_data(
             print("Copying config json to {}".format(output_dir))
             anndata_zarr = zarr.replace(raw_zarr_regex, anndata_zarr_regex)
             anndata_zarrs.append(anndata_zarr)
-            vitessce_config = zarr.replace(raw_zarr_regex, config_regex)
-            shutil.copy2(vitessce_config, output_dir)
             print("Retrieving thumbnail from {}".format(zarr))
             (section_title, min_visium_intensities) = zarr2jpeg.process(output_dir, zarr, thumbnail_level_in_pyramid)
             # Note that the front-end does not use min_visium_intensities - it is output into
