@@ -102,6 +102,7 @@ def mergeArgs (stem, data_type, args) {
     getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
+    (dataset_args[stem]?.rotate ?: [:]) + // rotate: {rotate_degrees: 90, spatial_shape: [width, height]}
     (args ?: [:])
 }
 
@@ -115,6 +116,7 @@ def warnParams () {
 
 //////////////////////////////////////////////////////
 
+// @TODO: move rotation to separate process and run with all_tifs
 process image_to_zarr {
     tag "${image}"
     debug verbose_log
@@ -122,7 +124,7 @@ process image_to_zarr {
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(prefix), val(img_type), path(image), val(keep_filename)
+    tuple val(stem), val(prefix), val(img_type), path(image), val(keep_filename), val(rotate_degrees)
 
     output:
     tuple val(stem), val(img_type), path("${filename}.zarr"), emit: img_zarr
@@ -130,18 +132,31 @@ process image_to_zarr {
 
     script:
     filename = keep_filename ? image.baseName : ([*stem, prefix, img_type] - null - "").join("-")
+    tmp_image = "tmp-${filename}.tif"
     """
-    if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
+    if [[ ${rotate_degrees} != "NO_ROT" ]]
     then
-        if od -h -j2 -N2 ${image} | head -n1 | sed 's/[0-9]*  *//' | grep -q -E '002b|2b00'
+        if [[ ${rotate_degrees} != 90 && ${rotate_degrees} != 180 && ${rotate_degrees} != 270 ]]
         then
-            tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+            echo "Invalid rotation value: ${rotate_degrees}"
+            exit 1
         else
-            tiffcp -c none -m 0 ${image} uncompressed.tif || tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+            rotate_image.py ${image} ${tmp_image} ${rotate_degrees}
+        fi
+    else
+        ln -s ${image} ${tmp_image}
+    fi
+    if tiffinfo ${tmp_image} | grep "Compression Scheme:" | grep -wq "JPEG"
+    then
+        if od -h -j2 -N2 ${tmp_image} | head -n1 | sed 's/[0-9]*  *//' | grep -q -E '002b|2b00'
+        then
+            tiffcp -c none -m 0 -8 ${tmp_image} uncompressed.tif
+        else
+            tiffcp -c none -m 0 ${tmp_image} uncompressed.tif || tiffcp -c none -m 0 -8 ${tmp_image} uncompressed.tif
         fi
         bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
-        bioformats2raw --no-hcs ${image} ${filename}.zarr
+        bioformats2raw --no-hcs ${tmp_image} ${filename}.zarr
     fi
     consolidate_md.py ${filename}.zarr
     """
@@ -351,7 +366,8 @@ workflow Process_images {
             data_map.prefix,
             data_map.data_type.replace("_image",""),
             file(data_map.data_path),
-            false // keep_filename
+            false, // keep_filename
+            dataset_args[stem]?.rotate?.rotate_degrees ?: "NO_ROT" // rotate
         ]
     }
 
@@ -381,7 +397,8 @@ workflow Process_images {
                 prefix,
                 type,
                 [paths].flatten(),
-                true // keep_filename
+                true, // keep_filename
+                dataset_args[stem]?.rotate?.rotate_degrees ?: "NO_ROT" // rotate
             ]
         }
         .transpose(by: 3)
@@ -480,4 +497,8 @@ workflow Output_to_spatialdata {
             data_for_sd
         )
         
+}
+
+workflow {
+    Full_pipeline()
 }

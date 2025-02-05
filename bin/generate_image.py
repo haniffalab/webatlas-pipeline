@@ -8,10 +8,10 @@ Generates raw/label images from spatial data
 from __future__ import annotations
 import fire
 import typing as T
-import tifffile as tf
 from process_spaceranger import visium_label
 from process_xenium import xenium_label
 from process_merscope import merscope_label, merscope_raw
+from utils import tiff_image_size
 
 
 def create_img(
@@ -38,8 +38,7 @@ def create_img(
     """
 
     if ref_img:
-        tif_img = tf.TiffFile(ref_img)
-        args["shape"] = tif_img.pages[0].shape[:2]
+        args["shape"] = tiff_image_size(ref_img)
 
     if img_type == "label":
         if file_type == "visium":

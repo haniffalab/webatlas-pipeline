@@ -17,6 +17,7 @@ import tifffile as tf
 from pathlib import Path
 from skimage.draw import disk
 from process_h5ad import h5ad_to_zarr, reindex_anndata_obs, subset_anndata
+from utils import visium_image_size
 
 
 def spaceranger_to_anndata(
@@ -123,7 +124,11 @@ def spaceranger_to_zarr(
     adata = spaceranger_to_anndata(path, load_clusters, load_embeddings, load_raw)
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
-    zarr_file = h5ad_to_zarr(adata=adata, stem=stem, **kwargs)
+
+    # Get shape
+    image_size = visium_image_size(adata)
+
+    zarr_file = h5ad_to_zarr(adata=adata, stem=stem, spatial_shape=image_size, **kwargs)
 
     return zarr_file
 

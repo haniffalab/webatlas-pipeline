@@ -19,6 +19,7 @@ import logging
 import warnings
 from scipy.sparse import spmatrix, csr_matrix, csc_matrix
 from constants.suffixes import ANNDATA_ZARR_SUFFIX
+from utils import visium_image_size
 
 warnings.filterwarnings("ignore")
 logging.getLogger().setLevel(logging.INFO)
@@ -141,9 +142,11 @@ def subset_anndata(
     adata: ad.AnnData,
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
+    sample: str = None,
 ) -> ad.AnnData:
     # Subset adata by obs
     if obs_subset:
+        logging.info(f"Subsetting AnnData by {obs_subset[0]}")
         obs_subset[1] = (
             [obs_subset[1]]
             if not isinstance(obs_subset[1], (list, tuple))
@@ -153,12 +156,69 @@ def subset_anndata(
 
     # Subset adata by var
     if var_subset:
+        logging.info(f"Subsetting AnnData by {var_subset[0]}")
         var_subset[1] = (
             [var_subset[1]]
             if not isinstance(var_subset[1], (list, tuple))
             else var_subset[1]
         )
         adata = adata[:, adata.var[var_subset[0]].isin(var_subset[1])]
+
+    # Remove other samples' spatial data
+    if sample and "spatial" in adata.uns:
+        spatial_samples = list(adata.uns["spatial"].keys())
+        for spatial_sample in spatial_samples:
+            if spatial_sample != sample:
+                del adata.uns["spatial"][spatial_sample]
+
+    return adata
+
+
+def rotate_anndata(
+    adata: ad.AnnData,
+    shape: tuple[int, int],
+    degrees: T.Literal[90, 180, 270],
+) -> ad.AnnData:
+    """
+    Counterclockwise rotate the spatial coordinates and images in an AnnData object
+    """
+    if degrees not in [90, 180, 270]:
+        raise SystemError("Invalid rotation degrees. Must be 90, 180, or 270.")
+
+    logging.info(f"Rotating spatial coordinates and images by {degrees} degrees")
+
+    m, n = shape[0], shape[1]
+
+    for spatial_key in ["spatial", "X_spatial"]:
+        if spatial_key in adata.obsm:
+            rot_spatial = []
+            for [x, y] in adata.obsm[spatial_key]:
+                if degrees == 90:
+                    rot_spatial.append([y, m - x])
+                elif degrees == 180:
+                    rot_spatial.append([m - x, n - y])
+                elif degrees == 270:
+                    rot_spatial.append([n - y, x])
+
+            adata.obsm[spatial_key] = np.array(rot_spatial)
+
+    adata.uns["webatlas_rotation"] = degrees
+
+    return adata
+
+
+def rescale_spatial(adata: ad.AnnData, factor: float) -> ad.AnnData:
+    """
+    Rescale spatial coordinates in an AnnData object
+    """
+    
+    logging.info(f"Rescaling spatial coordinates by {factor}")
+    
+    for spatial_key in ["spatial", "X_spatial"]:
+        if spatial_key in adata.obsm:
+            adata.obsm[spatial_key] = adata.obsm[spatial_key] * factor
+
+    adata.uns["webatlas_rescale"] = factor
 
     return adata
 
@@ -169,6 +229,10 @@ def preprocess_anndata(
     var_index: str = None,
     obs_subset: tuple[str, T.Any] = None,
     var_subset: tuple[str, T.Any] = None,
+    spatial_shape: tuple[int, int] = None,
+    rotate_degrees: T.Literal[90, 180, 270] = None,
+    rescale_factor: float = None,
+    sample: str = None,
     **kwargs,
 ):
     """This function preprocesses an AnnData object, ensuring correct dtypes for zarr conversion
@@ -185,8 +249,21 @@ def preprocess_anndata(
             to use to subset the AnnData object. Defaults to None.
     """
 
-    adata = subset_anndata(adata, obs_subset=obs_subset, var_subset=var_subset)
+    adata = subset_anndata(
+        adata, obs_subset=obs_subset, var_subset=var_subset, sample=sample
+    )
+    
+    if rescale_factor:
+        adata = rescale_spatial(adata, rescale_factor)
 
+    if rotate_degrees:
+        if not spatial_shape:
+            try:
+                spatial_shape = visium_image_size(adata)
+            except:
+                raise SystemError("Must provide spatial shape to rotate spatial data.")
+        adata = rotate_anndata(adata, spatial_shape, rotate_degrees)
+    
     # reindex var with a specified column
     if var_index and var_index in adata.var:
         try:
