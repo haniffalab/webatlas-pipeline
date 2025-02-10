@@ -6,12 +6,12 @@ from ome_zarr.reader import Node, Plate, Reader, Well
 import tifffile as tiff
 import numpy as np
 from anndata import read_zarr
-import webatlas2.consts as consts
+import webatlas2.utils as utils
 
 RAW_ZARR_REGEX='raw.zarr'
 ANNDATA_ZARR_REGEX='anndata.zarr'
 
-def process(output_dir, in_zarr_fname, level):
+def process(output_dir, in_zarr_fname, level, project_annotations_path):
 
     if not output_dir or not in_zarr_fname or not level:
         print("Please provide the output dir, the zarr file name and the level of the thumbnail to be extracted")
@@ -40,17 +40,22 @@ def process(output_dir, in_zarr_fname, level):
     anndata_zarr_fname = in_zarr_fname.replace("-{}".format(RAW_ZARR_REGEX), "-{}".format(ANNDATA_ZARR_REGEX))
     o = read_zarr(anndata_zarr_fname)
     visium_intensity_cutoffs = ""
-    for entity_type in consts.entity_type2_feature_type:
-        feature_type = consts.entity_type2_feature_type[entity_type]
-        if o.var[o.var.feature_type == feature_type].shape[0] > 0:
-            # features of feature_type are present in o.var
-            hist, bins = np.histogram(o.X.T[o.var.feature_type == feature_type], 100)
-            # DEBUG print(out_fname, hist[0:5], bins[4])
-            # The Visium intensity cutoff corresponds to >=0.05 chance of encountering it
-            visium_intensity_cutoff = bins[4]
-            prefix = ""
-            if visium_intensity_cutoffs != "":
-                prefix = ","
-            visium_intensity_cutoffs = \
-                visium_intensity_cutoffs + prefix + entity_type + ":" + str(visium_intensity_cutoff)
+    continuous_entity_types = \
+        utils.get_project_annotation(project_annotations_path, "continuous_entity_types").split(",")
+    for entity_type in continuous_entity_types:
+        feature_type = utils.get_project_annotation(project_annotations_path, entity_type)
+        for col_name in utils.feature_type_colnames_alternatives:
+            if col_name in o.var:
+                if o.var[o.var[col_name]== feature_type].shape[0] > 0:
+                    # features of feature_type are present in o.var
+                    hist, bins = np.histogram(o.X.T[o.var[col_name] == feature_type], 100)
+                    # DEBUG print(out_fname, hist[0:5], bins[4])
+                    # The Visium intensity cutoff corresponds to >=0.05 chance of encountering it
+                    visium_intensity_cutoff = bins[4]
+                    prefix = ""
+                    if visium_intensity_cutoffs != "":
+                        prefix = ","
+                    visium_intensity_cutoffs = \
+                        visium_intensity_cutoffs + prefix + entity_type + ":" + str(visium_intensity_cutoff)
+                break
     return (title, visium_intensity_cutoffs)

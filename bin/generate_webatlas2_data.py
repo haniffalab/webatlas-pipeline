@@ -61,7 +61,7 @@ def generate_webatlas2_data(
             anndata_zarr = zarr.replace(raw_zarr_regex, anndata_zarr_regex)
             anndata_zarrs.append(anndata_zarr)
             print("Retrieving thumbnail from {}".format(zarr))
-            (section_title, min_visium_intensities) = zarr2jpeg.process(output_dir, zarr, thumbnail_level_in_pyramid)
+            (section_title, min_visium_intensities) = zarr2jpeg.process(output_dir, zarr, thumbnail_level_in_pyramid, project_annotations_path)
             # Note that the front-end does not use min_visium_intensities - it is output into
             # section_annotations_path just for reference - to help explain the difference between
             # what is highlighted in the thumbnail and what is highlighted in the image inside Vitessce.
@@ -78,7 +78,7 @@ def generate_webatlas2_data(
 
     if anndata_zarrs:
         print("About to retrieve feature coordinates ..")
-        get_feature_coordinates.process(section_annotations_path, feature_coordinates_path, anndata_zarrs)
+        get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
         for entity_type in ['anatomical_region', 'cell_state', 'cell_type_hierarchical']:
             print("About to retrieve hierarchical entity coordinates for entity_type: {} ..".format(entity_type))
             get_hierarchical_entity_coordinates.process(output_dir, entity_type, project_annotations_path, anndata_zarrs)

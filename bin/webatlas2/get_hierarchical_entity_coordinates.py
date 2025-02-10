@@ -3,26 +3,11 @@ from anndata import read_zarr
 import json
 import sys
 import csv
-import webatlas2.consts as consts
-
-
-
-def get_project_annotation(project_annotations_path, data_key) -> str:
-    value = None
-    with open(project_annotations_path, 'r') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter='\t')
-        # skip header
-        next(csvreader)
-        for row in csvreader:
-            key = row[0]
-            if key == data_key:
-                value = row[1]
-                break
-    return value
+import webatlas2.utils as utils
 
 def get_entity2children(output_path: str, project_annotations_path: str, entity_type: str):
     entity2children = {}
-    hierarchy_tsv_fname = get_project_annotation(project_annotations_path, entity_type)
+    hierarchy_tsv_fname = utils.get_project_annotation(project_annotations_path, entity_type)
     if hierarchy_tsv_fname is not None:
         hierarchy_tsv_fpath = os.path.join(os.path.dirname(project_annotations_path), hierarchy_tsv_fname)
         with open(hierarchy_tsv_fpath, 'r') as csvfile:
@@ -72,16 +57,16 @@ def process(output_path, entity_type, project_annotations_path, zarr_anndata_pat
             o = read_zarr(zarr_dir)
 
             spatial_xy = None
-            for col_name in consts.spatialxy_colnames_alternatives:
+            for col_name in utils.spatialxy_colnames_alternatives:
                 if col_name in o.obsm.keys():
                     spatial_xy = list(o.obsm[col_name])
                     break
             if spatial_xy is None:
                 print("ERROR: none of the spatial_xy col name alternatives: {} where found in o.obsm for {}".format(
-                    ", ".join(consts.spatialxy_colnames_alternatives), zarr_dir))
+                    ", ".join(utils.spatialxy_colnames_alternatives), zarr_dir))
                 sys.exit(1)
 
-            obsColName = get_project_annotation(project_annotations_path, "{}_obs_col".format(entity_type))
+            obsColName = utils.get_project_annotation(project_annotations_path, "{}_obs_col".format(entity_type))
             hierarchical_entity_values = o.obs[obsColName].values.tolist()
             for idx, entity in enumerate(hierarchical_entity_values):
                 if entity not in img_name2entity2xy_coords_list[img_name]:
