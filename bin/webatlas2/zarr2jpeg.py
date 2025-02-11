@@ -34,8 +34,8 @@ def process(output_dir, in_zarr_fname, level, project_annotations_path):
     tiff.imwrite(output_fpath, nd_arr, compression='jpeg')
     # Retrieve title
     # TODO: Review if the section title extraction logic works for all projects
-    m = re.search(r'section_{0,1}\d+(\-\d+){0,1}', out_fname)
-    title = m.group()
+    m = re.search(r'^.+?\-(.*)\.jpeg$', out_fname)
+    section_title = m.group()
     # Retrieve min Visium intensity from ANNDATA_ZARR_REGEX
     anndata_zarr_fname = in_zarr_fname.replace("-{}".format(RAW_ZARR_REGEX), "-{}".format(ANNDATA_ZARR_REGEX))
     o = read_zarr(anndata_zarr_fname)
@@ -58,4 +58,4 @@ def process(output_dir, in_zarr_fname, level, project_annotations_path):
                     visium_intensity_cutoffs = \
                         visium_intensity_cutoffs + prefix + entity_type + ":" + str(visium_intensity_cutoff)
                 break
-    return (title, visium_intensity_cutoffs)
+    return (section_title, visium_intensity_cutoffs)
