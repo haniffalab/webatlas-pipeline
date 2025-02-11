@@ -79,9 +79,7 @@ def generate_webatlas2_data(
     if anndata_zarrs:
         print("About to retrieve feature coordinates ..")
         get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
-        for entity_type in ['anatomical_region', 'cell_state', 'cell_type_hierarchical']:
-            print("About to retrieve hierarchical entity coordinates for entity_type: {} ..".format(entity_type))
-            get_hierarchical_entity_coordinates.process(output_dir, entity_type, project_annotations_path, anndata_zarrs)
+        get_hierarchical_entity_coordinates.process(output_dir, project_annotations_path, anndata_zarrs)
 
     end = timer()
     print("The pipeline took: {}s to run".format(int(end - start)))
