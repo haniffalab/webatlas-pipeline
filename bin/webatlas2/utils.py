@@ -1,3 +1,5 @@
+import csv
+
 # Map entity types used in WebAtlas2.0 UI to the o.var.feature_types values in -anndata.zarr files
 spatialxy_colnames_alternatives = ['spatial', 'X_spatial']
 feature_type_colnames_alternatives = ['feature_type', 'feature_types']
