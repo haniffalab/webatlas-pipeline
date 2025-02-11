@@ -62,8 +62,9 @@ def process(project_annotations_path,
             o = read_zarr(zarr_dir)
             for entity_type in continuous_entity_types:
                 if entity_type not in image_name2entity_type2visium_intensity_cutoff[img_name]:
-                    print("ERROR: visium_intensity_cutoff missing for section: {} - entity_type: {} - exiting".format(img_name, entity_type))
-                    sys.exit(1)
+                    print("WARNING: visium_intensity_cutoff missing for section: {} - entity_type: {} - defaulting to 0".format(img_name, entity_type))
+                    # It may be that some features are missing in certain sections - if that's the case, defaulting the cutoff to 0 is a no-op
+                    image_name2entity_type2visium_intensity_cutoff[img_name][entity_type] = 0
                 # Initialise data structure for entity_type - img_name
                 if entity_type not in entity_type2img_name2feature2xy_coords_intensity_list:
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type] = {}
