@@ -138,7 +138,7 @@ def process(project_annotations_path,
                                 xy = spatial_xy[idx]
                                 x = int(xy[0].astype(object))
                                 y = int(xy[1].astype(object))
-                                feature2xy_coords_intensity_list[feature].append((x, y, int(intensity)))
+                                feature2xy_coords_intensity_list[feature].append((x, y, round(intensity, 2)))
         except Exception as e:
             print("WARNING: there was an error {} reading zarr {} - skipping".format(e, zarr_dir))
             continue
