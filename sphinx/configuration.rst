@@ -435,7 +435,7 @@ Possible values for each of the supported data types are as follows:
       batch_size: 1000 # batch size (number of columns to process at a time if matrix is dense/csc, number of rows if matrix is csr) if `batch_processing` is set to `True`
       consolidate_metadata: "True" # whether to consolidate output zarr metadata. Defaults to `True`
       annotations: path/to/table.csv #path to the table you want to add to adata.obs columns
-      annotations_column_index: "cell_id" #column name within "annotations" which will be used as index column to merge with adata.obs (should have the same cell identifiers as in adata.obs)
+      annotations_column_index: "cell_id" # Name of the column in the "annotations" file to be used as the index for merging with adata.obs. This column must contain the same cell identifiers as those in adata.obs.
     spaceranger:
       save_h5ad: "True" # save the intermediate h5ad to the output directory. Defaults to `False`
       load_clusters: "True" # set to `False` to disable loading the clusters from the `analysis` directory
