@@ -150,7 +150,7 @@ def xenium_to_zarr(
     """Function to write to Zarr an AnnData object created from xenium output data
 
     Args:
-        path (str): Path to a xenium output directory[
+        path (str): Path to a xenium output directory
         stem (str): Prefix for the output Zarr filename
         spatial_as_pixel (bool, optional): Boolean indicating whether spatial coordinates should be
         converted to pixels. Defaults to True.
