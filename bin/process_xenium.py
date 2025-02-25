@@ -117,7 +117,7 @@ def xenium_to_anndata(
     # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int this is done manually at this step
     # instead of reindex_anndata so we control what matches the label image
-    #just to make sure the column with name as index name column is not exists in adata.obs
+    #just to make sure the column with name as index name column does not exist in adata.obs
     index_name = adata.obs.index.name
     if index_name in adata.obs.columns:
         # Drop the existing column with the same name
