@@ -145,12 +145,8 @@ def spaceranger_to_zarr(
             Defaults to False.
         annotations (str): path to csv file with annotations or any additional information for "obs"
         annotations_column_index (str): name of column in the csv with barcodes information of visium spots
-<<<<<<< HEAD
         filter_obs_column (str): name of the column which will be used to perform data filtering
         filter_obs_values (list): list of strings that has to pass the filter inside the column specified
-
-=======
->>>>>>> f4cd6259b647c7919c15260dc0aa73e6fb161e11
     Returns:
         str: Output Zarr filename
     """
