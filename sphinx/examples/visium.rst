@@ -150,7 +150,7 @@ verify the expected directories are created.
 .. code-block:: shell
    :caption: Input
 
-   ls -l output/CytAssist_FFPE_Human_Breast_Cancer/0.5.3
+   ls -l output/CytAssist_FFPE_Human_Breast_Cancer/0.5.4
 
 .. code-block:: shell
    :caption: Output
