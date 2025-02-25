@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - ome::bioformats2raw==0.7.0
+  - ome::bioformats2raw==0.9.4
   - pillow==10.1.0
   - xmlschema==2.5.0
   - pip==23.2.1
