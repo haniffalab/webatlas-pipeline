@@ -164,7 +164,7 @@ at http://localhost:3000, and that CORS is enabled via the Access-Control-Allow-
 .. code-block:: shell
    :caption: Input
 
-   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.5.3 --port 3000 --cors
+   npx http-server output/Xenium_FFPE_Human_Breast_Cancer_Rep1_outs/0.5.4 --port 3000 --cors
 
 .. code-block:: shell
    :caption: Output
