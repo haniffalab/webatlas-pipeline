@@ -1,0 +1,40 @@
+outdir: ./output_pipeline_4
+
+args:
+  h5ad:
+    var_index: "gene_name"
+  spaceranger:
+    annotations: /lustre/scratch127/cellgen/cellgeni/tickets/tic-3224/workin_dir/out_annot/wEMBsp13458120.csv
+    annotations_column_index: "barcode"
+    
+projects:
+  - project: oh_yes
+    datasets:
+      - dataset: test_dataset
+        title: "Visium_annotations_subset"
+        data:
+          - data_type: spaceranger
+            data_path: /nfs/team283_imaging/0Hamamatsu/NJ_EMB/Cytassist_SOB26_SpaceRanger/section_046_SOB26_46909_WTSI_wEMBsp13458120
+            args:
+                obs_subset: ['ROI_one', ['Midbrain', 'Hindbrain', 'Stomach']]
+                annotations: /lustre/scratch127/cellgen/cellgeni/tickets/tic-3224/workin_dir/out_annot/wEMBsp13458120.csv
+                annotations_column_index: "barcode"
+          - data_type: raw_image
+            data_path: /nfs/team283_imaging/0Hamamatsu/NJ_EMB/Cytassist_SOB26_SpaceRanger/section_046_SOB26_46909_WTSI_wEMBsp13458120/section046_SOB26-WEM-FFPE-1_x40_z0.tif
+          - data_type: label_image_data
+            file_type: visium
+            data_path: /nfs/team283_imaging/0Hamamatsu/NJ_EMB/Cytassist_SOB26_SpaceRanger/section_046_SOB26_46909_WTSI_wEMBsp13458120/
+            args:
+                obs_subset: ['ROI_one', ['Midbrain', 'Hindbrain', 'Stomach']]
+                annotations: /lustre/scratch127/cellgen/cellgeni/tickets/tic-3224/workin_dir/out_annot/wEMBsp13458120.csv
+                annotations_column_index: "barcode"
+
+vitessce_options:
+  spatial:
+    xy: "obsm/spatial"
+  mappings:
+    obsm/X_umap: [0, 1]
+  matrix: "X"
+  sets:
+    - name: "obs/ROI_one"
+layout: advanced
