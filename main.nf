@@ -63,6 +63,19 @@ Channel.from(params.projects)
     }
     .set {datasets}
 
+//Handling the raw_img_path defined in args for the data item. If data type is spaceranger - if raw_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
+datasets.data
+    .transpose(by:1)
+    .filter { it[1].data_type == 'spaceranger' }  // Ensure data_type is 'spaceranger'
+    .map { item -> 
+        def metadata = item[0]
+        def dataInfo = item[1]
+        def rawImgPath = dataInfo.args?.raw_img_path ?: dataInfo.data_path  // Use raw_img_path if present, otherwise use data_path
+
+        return [ metadata, [ data_type: 'raw_image', data_path: rawImgPath ] ]
+    }
+    .set{raw_images_for_spaceranger}
+
 datasets.data
     .transpose(by:1)
     .branch{ stem, d ->
@@ -71,6 +84,8 @@ datasets.data
         other: true
     }
     .set{inputs}
+
+all_images = inputs.images.mix(raw_images_for_spaceranger) //Ensure images used are both the ones defined in the images branch and the ones identified as data args.
 
 inputs.other
     .collect { stem, d -> d.data_type }
@@ -342,22 +357,55 @@ workflow Process_images {
 
     // Map tif inputs to:
     // tuple val(stem), val(prefix), val(img_type), path(image)
-    img_tifs = inputs.images.filter { stem, data_map ->
+    img_tifs = all_images.filter { stem, data_map ->
         data_map.data_type in ["raw_image", "label_image"]
     }
     .map { stem, data_map ->
-        [ 
+        def filePath = file(data_map.data_path)
+
+        if (!filePath.exists()) {
+            log.error "File not found: ${filePath}"
+            throw new IllegalStateException("File not found: ${filePath}")
+        }
+
+        if (filePath.isDirectory()) {
+            // Get all .tiff/.tif files in the directory
+            def tiffFiles = filePath.listFiles().findAll { it.name.toLowerCase().endsWith('.tiff') || it.name.toLowerCase().endsWith('.tif') }
+
+            if (tiffFiles.isEmpty()) {
+                log.error "No .tiff files found in directory: ${filePath}"
+                throw new IllegalStateException("No .tiff files found in directory: ${filePath}")
+            }
+            if (tiffFiles.size() > 1) {
+                log.error "Multiple .tiff files found in directory: ${filePath}. Expected only one."
+                throw new IllegalStateException("Multiple .tiff files found in directory: ${filePath}. Expected only one.")
+            }
+
+            // Use the single .tiff file found
+            filePath = tiffFiles.first()
+        }
+
+        // Ensure the selected path is a .tiff file
+        if (!filePath.name.toLowerCase().endsWith('.tiff') && !filePath.name.toLowerCase().endsWith('.tif')) {
+            log.error "Invalid file format: ${filePath}. Expected .tiff or .tif"
+            throw new IllegalStateException("Invalid file format: ${filePath}. Expected .tiff or .tif")
+        }
+
+        // If checks pass, return the structured output
+        return [
             stem,
             data_map.prefix,
-            data_map.data_type.replace("_image",""),
-            file(data_map.data_path),
+            data_map.data_type.replace("_image", ""),
+            filePath,
             false // keep_filename
         ]
     }
+    
+    img_tifs.view()
 
     // Map raw/label data inputs to:
     // tuple val(stem), val(prefix), val(img_type), path(file_path), val(file_type), path(ref_img), val(args)
-    img_data = inputs.images.filter { stem, data_map ->
+    img_data = all_images.filter { stem, data_map ->
         data_map.data_type in ["raw_image_data", "label_image_data"]
     }
     .map { stem, data_map ->
