@@ -166,7 +166,7 @@ def process(project_annotations_path,
                     # (of the selected feature) first.
                     min_max = [int(m) for m in entity_type2feature2min_max_intensity[entity_type][feature]]
                     if feature in entity_type2img_name2feature2max_intensity[entity_type][img_name]:
-                        max_intensity_in_section = entity_type2img_name2feature2max_intensity[entity_type][img_name][feature]
+                        max_intensity_in_section = int(entity_type2img_name2feature2max_intensity[entity_type][img_name][feature])
                     else:
                         max_intensity_in_section = min_max[0]
                     min_max.append(max_intensity_in_section)
