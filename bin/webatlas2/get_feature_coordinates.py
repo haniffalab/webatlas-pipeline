@@ -156,18 +156,26 @@ def process(project_annotations_path,
             for img_name in entity_type2img_name2feature2xy_coords_intensity_list[entity_type]:
                 for feature in entity_type2feature2min_max_intensity[entity_type]:
                     # For a given feature, as the first element of the array of coordinates-intensities
-                    # store the minimum and the maximum intensities (both min and max - across all sections)
-                    # This is so that for a given feature the intensity colours shown across all thumbnails are
-                    # comparable visually
+                    # store a tuple of:
+                    # 1. the minimum intensity across all sections
+                    # 2. the maximum intensity across all sections
+                    # 3. the maximum intensity in the section corresponding to img_name (or 2. if feature is not expressed at all in this section)
+                    # the minimum and the maximum intensities (both min and max - across all sections)
+                    # Storing 1. and 2 is so that a given feature the intensity colours shown across all thumbnails are
+                    # comparable visually. Storing 3. enables thumbnails to be sorted in the UI - by the highest expression
+                    # (of the selected feature) first.
                     min_max = [int(m) for m in entity_type2feature2min_max_intensity[entity_type][feature]]
+                    if feature in entity_type2img_name2feature2max_intensity[entity_type][img_name]:
+                        max_intensity_in_section = entity_type2img_name2feature2max_intensity[entity_type][img_name][feature]
+                    else:
+                        max_intensity_in_section = min_max[0]
+                    min_max.append(max_intensity_in_section)
+
                     if feature in entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name]:
                         if len(entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature]) == 0:
                             # if feature has no expressions above the minimum for a given section, both min and max
                             # should be minimum_intensity cutoff
-                            min_intensity_across_all_sections = min_max[0]
-                            max_intensity_across_all_sections = min_max[0]
-                            max_intensity_in_section = entity_type2img_name2feature2max_intensity[entity_type][img_name][feature]
-                            min_max = [min_intensity_across_all_sections, max_intensity_across_all_sections, max_intensity_in_section]
+                            min_max[1] = min_max[0]
                         entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature].insert(0, min_max)
 
     with open(feature_coordinates_path, 'w') as f:
