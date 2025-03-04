@@ -32,8 +32,12 @@ def process(output_path, project_annotations_path, zarr_anndata_paths):
               " and at least one *-anndata.zarr path (input")
         sys.exit(1)
 
-    categorical_entity_types = \
-        utils.get_project_annotation(project_annotations_path, "categorical_entity_types").split(",")
+    val = utils.get_project_annotation(project_annotations_path, "categorical_entity_types")
+    if val is not None:
+        categorical_entity_types = val.split(",")
+    else:
+        categorical_entity_types = []
+
     for entity_type in categorical_entity_types:
         print("About to retrieve hierarchical entity coordinates for entity_type: {} ..".format(entity_type))
 
