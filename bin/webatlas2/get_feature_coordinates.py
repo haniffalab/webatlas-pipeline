@@ -24,6 +24,7 @@ def process(project_annotations_path,
         sys.exit(1)
 
     entity_type2img_name2feature2xy_coords_intensity_list = {}
+    entity_type2img_name2feature2max_intensity = {}
     image_name2entity_type2visium_intensity_cutoff = {}
     # Read in visium_intensity_cutoffs
     with open(section_annotations_path, 'r') as csvfile:
@@ -68,10 +69,13 @@ def process(project_annotations_path,
                 # Initialise data structure for entity_type - img_name
                 if entity_type not in entity_type2img_name2feature2xy_coords_intensity_list:
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type] = {}
+                    entity_type2img_name2feature2max_intensity[entity_type] = {}
                 if img_name not in entity_type2img_name2feature2xy_coords_intensity_list[entity_type]:
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name] = {}
+                    entity_type2img_name2feature2max_intensity[entity_type][img_name] = {}
                 feature2xy_coords_intensity_list = \
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name]
+                feature2max_intensity = entity_type2img_name2feature2max_intensity[entity_type][img_name]
 
                 feature_type = utils.get_project_annotation(project_annotations_path, entity_type)
                 features = None
@@ -138,7 +142,10 @@ def process(project_annotations_path,
                                 xy = spatial_xy[idx]
                                 x = int(xy[0].astype(object))
                                 y = int(xy[1].astype(object))
-                                feature2xy_coords_intensity_list[feature].append((x, y, round(intensity, 2)))
+                                intensity = round(intensity, 2)
+                                feature2xy_coords_intensity_list[feature].append((x, y, intensity))
+                                if feature not in feature2max_intensity or intensity > feature2max_intensity[feature]:
+                                    feature2max_intensity[feature] = intensity
         except Exception as e:
             print("WARNING: there was an error {} reading zarr {} - skipping".format(e, zarr_dir))
             continue
@@ -157,7 +164,10 @@ def process(project_annotations_path,
                         if len(entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature]) == 0:
                             # if feature has no expressions above the minimum for a given section, both min and max
                             # should be minimum_intensity cutoff
-                            min_max = [min_max[0], min_max[0]]
+                            min_intensity_across_all_sections = min_max[0]
+                            max_intensity_across_all_sections = min_max[0]
+                            max_intensity_in_section = entity_type2img_name2feature2max_intensity[entity_type][img_name][feature]
+                            min_max = [min_intensity_across_all_sections, max_intensity_across_all_sections, max_intensity_in_section]
                         entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature].insert(0, min_max)
 
     with open(feature_coordinates_path, 'w') as f:
