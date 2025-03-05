@@ -66,7 +66,7 @@ Channel.from(params.projects)
 //Handling the raw_img_path defined in args for the data item. If data type is spaceranger - if raw_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
 datasets.data
     .transpose(by:1)
-    .filter { it[1].data_type == 'spaceranger' }  // Ensure data_type is 'spaceranger'
+    .filter { it[1].data_type in ['spaceranger', 'xenium'] }  // Ensure data_type is 'spaceranger'
     .map { item -> 
         def metadata = item[0]
         def dataInfo = item[1]
