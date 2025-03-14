@@ -73,7 +73,7 @@ def generate_webatlas2_data(
             # it needs to be provided manually - after this pipeline has been run.
             # TODO: Review if patient information can be retrieved from zarr file automatically when real data arrives
             row = [thumbnail_fname, section_title, section_description, scaling_factor_x, scaling_factor_y,
-                   min_visium_intensities]
+                   min_visium_intensities,""]
             writer.writerow(row)
 
     if anndata_zarrs:
