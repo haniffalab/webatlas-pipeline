@@ -171,6 +171,9 @@ def process(project_annotations_path,
                     if feature in entity_type2img_name2feature2max_intensity[entity_type][img_name]:
                         max_intensity_in_section = int(entity_type2img_name2feature2max_intensity[entity_type][img_name][feature])
                     else:
+                        if min_max[0] == sys.maxsize:
+                            # Feature is not expressed in any section
+                            min_max[0] = 0
                         max_intensity_in_section = min_max[0]
                     min_max.append(max_intensity_in_section)
 
