@@ -96,7 +96,9 @@ def process(project_annotations_path,
                     # Initialise feature2xy_coords_intensity_list for all features
                     for feature in features:
                         if feature not in entity_type2feature2min_max_intensity[entity_type]:
-                            entity_type2feature2min_max_intensity[entity_type][feature] = [visium_intensity_cutoff, 0]
+                            # sys.maxsize in python3 corresponds to sys.maxint in python2
+                            # see: https://docs.python.org/3/whatsnew/3.0.html#integers
+                            entity_type2feature2min_max_intensity[entity_type][feature] = [sys.maxsize, 0]
                         if feature not in feature2xy_coords_intensity_list:
                             feature2xy_coords_intensity_list[feature] = []
                     # Having recorded all features now apply visium_intensity_cutoff
@@ -130,14 +132,15 @@ def process(project_annotations_path,
                             end = time.time()
                             print("{} {}s so far".format(idx, round(end - start, 0)))
                         for feature in dict[barcode]:
-                            max_intensity = 0
-                            if dict[barcode][feature] > 0:
-                                intensity = dict[barcode][feature]
+                            intensity = dict[barcode][feature]
+                            if intensity > 0:
                                 current_min_intensity = entity_type2feature2min_max_intensity[entity_type][feature][0]
                                 current_max_intensity = entity_type2feature2min_max_intensity[entity_type][feature][1]
                                 if intensity > current_max_intensity:
                                     entity_type2feature2min_max_intensity[entity_type][feature] = [current_min_intensity, intensity]
-                                elif intensity < current_min_intensity:
+                                current_min_intensity = entity_type2feature2min_max_intensity[entity_type][feature][0]
+                                current_max_intensity = entity_type2feature2min_max_intensity[entity_type][feature][1]
+                                if intensity < current_min_intensity:
                                     entity_type2feature2min_max_intensity[entity_type][feature] = [intensity, current_max_intensity]
                                 xy = spatial_xy[idx]
                                 x = int(xy[0].astype(object))
@@ -159,7 +162,7 @@ def process(project_annotations_path,
                     # store a tuple of:
                     # 1. the minimum intensity across all sections
                     # 2. the maximum intensity across all sections
-                    # 3. the maximum intensity in the section corresponding to img_name (or 2. if feature is not expressed at all in this section)
+                    # 3. the maximum intensity in the section corresponding to img_name (or 1. if feature is not expressed at all in this section)
                     # the minimum and the maximum intensities (both min and max - across all sections)
                     # Storing 1. and 2 is so that a given feature the intensity colours shown across all thumbnails are
                     # comparable visually. Storing 3. enables thumbnails to be sorted in the UI - by the highest expression
