@@ -127,6 +127,7 @@ def process(project_annotations_path,
                     dict = df.to_dict()
                     start = time.time()
                     feature2total_intensity = {}
+                    feature2barcode_cnt = {}
                     for barcode in dict:
                         idx = barcodes.index(barcode)
                         if idx % 1000 == 0:
@@ -134,11 +135,13 @@ def process(project_annotations_path,
                             print("{} {}s so far".format(idx, round(end - start, 0)))
                         for feature in dict[barcode]:
                             intensity = dict[barcode][feature]
-                            if feature not in feature2total_intensity:
-                                feature2total_intensity[feature] = intensity
-                            else:
-                                feature2total_intensity[feature] += intensity
                             if intensity > 0:
+                                if feature not in feature2total_intensity:
+                                    feature2total_intensity[feature] = intensity
+                                    feature2barcode_cnt[feature] = 0
+                                else:
+                                    feature2total_intensity[feature] += intensity
+                                    feature2barcode_cnt[feature] += 1
                                 current_min_intensity = entity_type2feature2min_max_intensity[entity_type][feature][0]
                                 current_max_intensity = entity_type2feature2min_max_intensity[entity_type][feature][1]
                                 if intensity > current_max_intensity:
@@ -157,7 +160,7 @@ def process(project_annotations_path,
                                 if 'max' not in feature2stat2intensity[feature] or intensity > feature2stat2intensity[feature]['max']:
                                     feature2stat2intensity[feature]['max'] = intensity
                     for feature in feature2total_intensity:
-                        feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / len(barcodes))
+                        feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / feature2barcode_cnt[feature])
         except Exception as e:
             print("ERROR: there was an error '{}' reading zarr {} - exiting".format(e, zarr_dir))
             sys.exit(1)
