@@ -160,7 +160,10 @@ def process(project_annotations_path,
                                 if 'max' not in feature2stat2intensity[feature] or intensity > feature2stat2intensity[feature]['max']:
                                     feature2stat2intensity[feature]['max'] = intensity
                     for feature in feature2total_intensity:
-                        feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / feature2barcode_cnt[feature])
+                        if feature2barcode_cnt[feature] > 0:
+                            feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / feature2barcode_cnt[feature])
+                        else:
+                            feature2stat2intensity[feature]['avg'] = 0
         except Exception as e:
             print("ERROR: there was an error '{}' reading zarr {} - exiting".format(e, zarr_dir))
             sys.exit(1)
