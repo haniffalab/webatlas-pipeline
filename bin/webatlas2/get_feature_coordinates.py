@@ -152,14 +152,15 @@ def process(project_annotations_path,
                                 y = int(xy[1].astype(object))
                                 intensity = round(intensity, 2)
                                 feature2xy_coords_intensity_list[feature].append((x, y, intensity))
-                                if feature not in feature2stat2intensity or intensity > feature2stat2intensity[feature]['max']:
+                                if feature not in feature2stat2intensity:
+                                    feature2stat2intensity[feature] = {}
+                                if 'max' not in feature2stat2intensity[feature] or intensity > feature2stat2intensity[feature]['max']:
                                     feature2stat2intensity[feature]['max'] = intensity
                     for feature in feature2total_intensity:
                         feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / len(barcodes))
         except Exception as e:
-            print("WARNING: there was an error {} reading zarr {} - skipping".format(e, zarr_dir))
-            continue
-            # sys.exit(1)
+            print("ERROR: there was an error '{}' reading zarr {} - exiting".format(e, zarr_dir))
+            sys.exit(1)
 
     for entity_type in entity_type2feature2min_max_intensity:
         if entity_type in entity_type2img_name2feature2xy_coords_intensity_list:
