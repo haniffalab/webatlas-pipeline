@@ -122,19 +122,22 @@ def process(project_annotations_path,
                         print("ERROR: none of the spatial_xy col name alternatives: {} where found in o.obsm for {}".format(
                               ", ".join(utils.spatialxy_colnames_alternatives), zarr_dir))
                         sys.exit(1)
-                    df = pd.DataFrame(data=filtered_x, index=barcodes, columns=features)
+                    df = pd.DataFrame(data=filtered_x, index=features, columns=barcodes)
                     df = remove_zeros_rows_cols(df)
                     dict = df.to_dict()
                     start = time.time()
-                    for feature in dict:
-                        total_intensity = 0
-                        for barcode in dict[feature]:
-                            idx = barcodes.index(barcode)
-                            if idx % 1000 == 0:
-                                end = time.time()
-                                print("{} {}s so far".format(idx, round(end - start, 0)))
-                            intensity = dict[feature][barcode]
-                            total_intensity += intensity
+                    feature2total_intensity = {}
+                    for barcode in dict:
+                        idx = barcodes.index(barcode)
+                        if idx % 1000 == 0:
+                            end = time.time()
+                            print("{} {}s so far".format(idx, round(end - start, 0)))
+                        for feature in dict[barcode]:
+                            intensity = dict[barcode][feature]
+                            if feature not in feature2total_intensity:
+                                feature2total_intensity[feature] = intensity
+                            else:
+                                feature2total_intensity[feature] += intensity
                             if intensity > 0:
                                 current_min_intensity = entity_type2feature2min_max_intensity[entity_type][feature][0]
                                 current_max_intensity = entity_type2feature2min_max_intensity[entity_type][feature][1]
@@ -151,7 +154,8 @@ def process(project_annotations_path,
                                 feature2xy_coords_intensity_list[feature].append((x, y, intensity))
                                 if feature not in feature2stat2intensity or intensity > feature2stat2intensity[feature]['max']:
                                     feature2stat2intensity[feature]['max'] = intensity
-                        feature2stat2intensity[feature]['avg'] =  int(total_intensity / len(barcodes))
+                    for feature in feature2total_intensity:
+                        feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / len(barcodes))
         except Exception as e:
             print("WARNING: there was an error {} reading zarr {} - skipping".format(e, zarr_dir))
             continue
