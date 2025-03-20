@@ -24,7 +24,7 @@ def process(project_annotations_path,
         sys.exit(1)
 
     entity_type2img_name2feature2xy_coords_intensity_list = {}
-    entity_type2img_name2feature2max_intensity = {}
+    entity_type2img_name2feature2stat2intensity = {}
     image_name2entity_type2visium_intensity_cutoff = {}
     # Read in visium_intensity_cutoffs
     with open(section_annotations_path, 'r') as csvfile:
@@ -69,13 +69,13 @@ def process(project_annotations_path,
                 # Initialise data structure for entity_type - img_name
                 if entity_type not in entity_type2img_name2feature2xy_coords_intensity_list:
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type] = {}
-                    entity_type2img_name2feature2max_intensity[entity_type] = {}
+                    entity_type2img_name2feature2stat2intensity[entity_type] = {}
                 if img_name not in entity_type2img_name2feature2xy_coords_intensity_list[entity_type]:
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name] = {}
-                    entity_type2img_name2feature2max_intensity[entity_type][img_name] = {}
+                    entity_type2img_name2feature2stat2intensity[entity_type][img_name] = {}
                 feature2xy_coords_intensity_list = \
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name]
-                feature2max_intensity = entity_type2img_name2feature2max_intensity[entity_type][img_name]
+                feature2stat2intensity = entity_type2img_name2feature2stat2intensity[entity_type][img_name]
 
                 feature_type = utils.get_project_annotation(project_annotations_path, entity_type)
                 features = None
@@ -122,17 +122,19 @@ def process(project_annotations_path,
                         print("ERROR: none of the spatial_xy col name alternatives: {} where found in o.obsm for {}".format(
                               ", ".join(utils.spatialxy_colnames_alternatives), zarr_dir))
                         sys.exit(1)
-                    df = pd.DataFrame(data=filtered_x, index=features, columns=barcodes)
+                    df = pd.DataFrame(data=filtered_x, index=barcodes, columns=features)
                     df = remove_zeros_rows_cols(df)
                     dict = df.to_dict()
                     start = time.time()
-                    for barcode in dict:
-                        idx = barcodes.index(barcode)
-                        if idx % 1000 == 0:
-                            end = time.time()
-                            print("{} {}s so far".format(idx, round(end - start, 0)))
-                        for feature in dict[barcode]:
-                            intensity = dict[barcode][feature]
+                    for feature in dict:
+                        total_intensity = 0
+                        for barcode in dict[feature]:
+                            idx = barcodes.index(barcode)
+                            if idx % 1000 == 0:
+                                end = time.time()
+                                print("{} {}s so far".format(idx, round(end - start, 0)))
+                            intensity = dict[feature][barcode]
+                            total_intensity += intensity
                             if intensity > 0:
                                 current_min_intensity = entity_type2feature2min_max_intensity[entity_type][feature][0]
                                 current_max_intensity = entity_type2feature2min_max_intensity[entity_type][feature][1]
@@ -147,8 +149,9 @@ def process(project_annotations_path,
                                 y = int(xy[1].astype(object))
                                 intensity = round(intensity, 2)
                                 feature2xy_coords_intensity_list[feature].append((x, y, intensity))
-                                if feature not in feature2max_intensity or intensity > feature2max_intensity[feature]:
-                                    feature2max_intensity[feature] = intensity
+                                if feature not in feature2stat2intensity or intensity > feature2stat2intensity[feature]['max']:
+                                    feature2stat2intensity[feature]['max'] = intensity
+                        feature2stat2intensity[feature]['avg'] =  int(total_intensity / len(barcodes))
         except Exception as e:
             print("WARNING: there was an error {} reading zarr {} - skipping".format(e, zarr_dir))
             continue
@@ -163,26 +166,29 @@ def process(project_annotations_path,
                     # 1. the minimum intensity across all sections
                     # 2. the maximum intensity across all sections
                     # 3. the maximum intensity in the section corresponding to img_name (or 1. if feature is not expressed at all in this section)
-                    # the minimum and the maximum intensities (both min and max - across all sections)
-                    # Storing 1. and 2 is so that a given feature the intensity colours shown across all thumbnails are
-                    # comparable visually. Storing 3. enables thumbnails to be sorted in the UI - by the highest expression
+                    # 4. ditto but with the average intensity
+                    # Storing 1 and 2 is so that a given feature the intensity colours shown across all thumbnails are
+                    # comparable visually. Storing 3 enables thumbnails to be sorted in the UI - by the highest expression
                     # (of the selected feature) first.
+                    # 3 and 4 are shown on a stacked plot when the user selects a feature in the UI
                     min_max = [int(m) for m in entity_type2feature2min_max_intensity[entity_type][feature]]
-                    if feature in entity_type2img_name2feature2max_intensity[entity_type][img_name]:
-                        max_intensity_in_section = int(entity_type2img_name2feature2max_intensity[entity_type][img_name][feature])
+                    if feature in entity_type2img_name2feature2stat2intensity[entity_type][img_name]:
+                        max_intensity_in_section = int(entity_type2img_name2feature2stat2intensity[entity_type][img_name][feature]['max'])
+                        avg_intensity_in_section = int(entity_type2img_name2feature2stat2intensity[entity_type][img_name][feature]['avg'])
                     else:
                         if min_max[0] == sys.maxsize:
                             # Feature is not expressed in any section
                             min_max[0] = 0
                         max_intensity_in_section = min_max[0]
-                    min_max.append(max_intensity_in_section)
+                        avg_intensity_in_section = min_max[0]
+                    stats = min_max + [max_intensity_in_section, avg_intensity_in_section]
 
                     if feature in entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name]:
                         if len(entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature]) == 0:
                             # if feature has no expressions above the minimum for a given section, both min and max
                             # should be minimum_intensity cutoff
-                            min_max[1] = min_max[0]
-                        entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature].insert(0, min_max)
+                            stats[1] = stats[0]
+                        entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature].insert(0, stats)
 
     with open(feature_coordinates_path, 'w') as f:
         f.write(json.dumps(entity_type2img_name2feature2xy_coords_intensity_list))
