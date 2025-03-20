@@ -138,7 +138,7 @@ def process(project_annotations_path,
                             if intensity > 0:
                                 if feature not in feature2total_intensity:
                                     feature2total_intensity[feature] = intensity
-                                    feature2barcode_cnt[feature] = 0
+                                    feature2barcode_cnt[feature] = 1
                                 else:
                                     feature2total_intensity[feature] += intensity
                                     feature2barcode_cnt[feature] += 1
