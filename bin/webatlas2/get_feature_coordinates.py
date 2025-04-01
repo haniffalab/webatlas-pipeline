@@ -23,7 +23,12 @@ def process(project_annotations_path,
               "the output file name for feature coordinates json, and at least one *-anndata.zarr path")
         sys.exit(1)
 
+    # For entity_type-image name/section-feature, this stores a list of (x,y,intensity) tuples but as its first element the list
+    # has the following tuple:
+    # (min intensity across all sections, max intensity across all sections, max intensity in a given section, avg intensity in a given section)
     entity_type2img_name2feature2xy_coords_intensity_list = {}
+    # This is an auxiliary dict that used to collect max and avg intensity in a given section - for a given entity_type-img_name/section-feature
+    # (stat = 'max' or 'avg')
     entity_type2img_name2feature2stat2intensity = {}
     image_name2entity_type2visium_intensity_cutoff = {}
     # Read in visium_intensity_cutoffs
@@ -42,6 +47,7 @@ def process(project_annotations_path,
                     image_name2entity_type2visium_intensity_cutoff[img_name] = {}
                 image_name2entity_type2visium_intensity_cutoff[img_name][entity_type] = float(visium_intensity_cutoff)
 
+    # This stores min/max intensity across all sections - per entity_type-feature
     entity_type2feature2min_max_intensity = {}
 
     continuous_entity_types = \
