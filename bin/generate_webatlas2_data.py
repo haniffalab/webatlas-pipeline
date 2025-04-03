@@ -16,6 +16,7 @@ import shutil
 from webatlas2 import get_scaling_factors
 from webatlas2 import zarr2jpeg
 from webatlas2 import get_feature_coordinates
+from webatlas2 import get_rnaseq_expressions
 from webatlas2 import get_hierarchical_entity_coordinates
 from timeit import default_timer as timer
 
@@ -33,6 +34,7 @@ def generate_webatlas2_data(
     anndata_zarrs = []
     # Output files generate by this script
     feature_coordinates_path = os.path.join(output_dir, "feature_coordinates.json")
+    rnaseq_expressions_path = os.path.join(output_dir, "rnaseq_expressions.json")
     section_annotations_path = os.path.join(output_dir, "section_annotations.tsv")
     # The level in pyramidal tiff used to extract the image for the thumbnails in WebAtlas2.0 UI
     thumbnail_level_in_pyramid = 4
@@ -78,8 +80,11 @@ def generate_webatlas2_data(
 
     if anndata_zarrs:
         print("About to retrieve feature coordinates ..")
-        get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
-        get_hierarchical_entity_coordinates.process(output_dir, project_annotations_path, anndata_zarrs)
+        # get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
+        print("About to retrieve hierarchical_entity_coordinates ..")
+        # get_hierarchical_entity_coordinates.process(output_dir, project_annotations_path, anndata_zarrs)
+    print("About to retrieve rnaseq expressions ..")
+    get_rnaseq_expressions.process(project_annotations_path, rnaseq_expressions_path, zarr_dir)
 
     end = timer()
     print("The pipeline took: {}s to run".format(int(end - start)))
