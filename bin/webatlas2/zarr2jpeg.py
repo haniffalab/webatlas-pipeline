@@ -50,8 +50,8 @@ def process(output_dir, in_zarr_fname, level, project_annotations_path):
                     # features of feature_type are present in o.var
                     hist, bins = np.histogram(o.X.T[o.var[col_name] == feature_type], 100)
                     # DEBUG print(out_fname, hist[0:5], bins[4])
-                    # The Visium intensity cutoff corresponds to >=0.05 chance of encountering it
-                    visium_intensity_cutoff = bins[4]
+                    # The Visium intensity cutoff corresponds to >=0.2 chance of encountering it
+                    visium_intensity_cutoff = bins[19]
                     prefix = ""
                     if visium_intensity_cutoffs != "":
                         prefix = ","

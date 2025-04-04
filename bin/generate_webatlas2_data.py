@@ -80,9 +80,9 @@ def generate_webatlas2_data(
 
     if anndata_zarrs:
         print("About to retrieve feature coordinates ..")
-        # get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
+        get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
         print("About to retrieve hierarchical_entity_coordinates ..")
-        # get_hierarchical_entity_coordinates.process(output_dir, project_annotations_path, anndata_zarrs)
+        get_hierarchical_entity_coordinates.process(output_dir, project_annotations_path, anndata_zarrs)
     print("About to retrieve rnaseq expressions ..")
     get_rnaseq_expressions.process(project_annotations_path, rnaseq_expressions_path, zarr_dir)
 
