@@ -48,18 +48,25 @@ def process(project_annotations_path,
             if len(features) > 0:
                 for annot in rnaseq_plot_entities:
                     print("Processing {} ...".format(annot))
-                    # Filter o.X by feature_type and annot
+                    # Filter o.X (cols: features, rows: cells) by feature_type and annot
                     row_mask = o.obs[rnaseq_plot_entity_type_obs_col] == annot
                     col_mask = o.var['feature_types'] == feature_type
                     filtered_x = o.X[:, col_mask]
                     filtered_x = filtered_x[row_mask, :]
-                    mean_expressions = np.mean(filtered_x, axis=0)
-                    mean_expressions = [round(x, 1) for x in mean_expressions.tolist()]
+                    # Mean across all cells annotated with annot, per feature
+                    annot_mean = np.mean(filtered_x, axis=0)
+                    # min_max normalisation (default for scanpy)
+                    annot_mean = (annot_mean - annot_mean.min())/(annot_mean.max() - annot_mean.min())
+                    mean_expressions = [round(x, 2) for x in annot_mean.tolist()]
+                    # Fraction of cells with expression  > 0
+                    annot_fraction = np.sum(filtered_x > 0, axis=0) / filtered_x.shape[0]
+                    annot_fractions = [round(x, 2) for x in annot_fraction.tolist()]
                     for idx, feature in enumerate(features):
                         expression = mean_expressions[idx]
+                        fraction = annot_fractions[idx]
                         if feature not in entity_type2feature2expressions[entity_type]:
                             entity_type2feature2expressions[entity_type][feature] = []
-                        entity_type2feature2expressions[entity_type][feature].append(expression)
+                        entity_type2feature2expressions[entity_type][feature].append((expression, fraction))
         end = time.time()
         print("Duration: {}s ".format(round(end - start, 0)))
     except Exception as e:
