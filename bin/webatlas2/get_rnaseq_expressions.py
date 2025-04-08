@@ -21,7 +21,9 @@ def process(project_annotations_path,
     rnaseq_plot_entity_type_obs_col = \
         utils.get_project_annotation(project_annotations_path, "{}_obs_col".format(rnaseq_plot_entity_type))
     rnaseq_plot_entities = \
-        utils.get_project_annotation(project_annotations_path, "rnaseq_plot_entities").split(",")
+        utils.get_project_annotation(project_annotations_path, "rnaseq_plot_entities")
+    if rnaseq_plot_entities is not None:
+        rnaseq_plot_entities = rnaseq_plot_entities.split(",")
     scrnaseq_zarr = \
         utils.get_project_annotation(project_annotations_path, "scrnaseq_zarr")
     zarr =  os.path.join(zarr_dir, scrnaseq_zarr)
