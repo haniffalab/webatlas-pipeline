@@ -34,7 +34,7 @@ def process(project_annotations_path,
         start = time.time()
         o = read_zarr(zarr)
         for entity_type in continuous_entity_types:
-            print("Processing {} ...".format(entity_type))
+            print("Processing entity_type: {} ...".format(entity_type))
             if entity_type not in entity_type2feature2expressions:
                 entity_type2feature2expressions[entity_type] = {}
             feature_type = utils.get_project_annotation(project_annotations_path, entity_type)
@@ -47,12 +47,12 @@ def process(project_annotations_path,
             if features is None:
                 print("WARNING: Did not find entity_type in {} - skipping".format(entity_type, zarr))
                 continue
-            if len(features) > 0:
+            if len(features) > 0 and rnaseq_plot_entities is not None:
                 for annot in rnaseq_plot_entities:
-                    print("Processing {} ...".format(annot))
+                    print("Processing annot: {} ...".format(annot))
                     # Filter o.X (cols: features, rows: cells) by feature_type and annot
                     row_mask = o.obs[rnaseq_plot_entity_type_obs_col] == annot
-                    col_mask = o.var['feature_types'] == feature_type
+                    col_mask = o.var[col_name] == feature_type
                     filtered_x = o.X[:, col_mask]
                     filtered_x = filtered_x[row_mask, :]
                     # Mean across all cells annotated with annot, per feature

@@ -4,6 +4,7 @@ import json
 import sys
 import time
 import csv
+import math
 import webatlas2.utils as utils
 
 def remove_zeros_rows_cols(df):
@@ -27,25 +28,13 @@ def process(project_annotations_path,
     # has the following tuple:
     # (min intensity across all sections, max intensity across all sections, max intensity in a given section, avg intensity in a given section)
     entity_type2img_name2feature2xy_coords_intensity_list = {}
+    img_name2scaling_factors = \
+        utils.get_img_name2scaling_factors(section_annotations_path)
+    image_name2entity_type2visium_intensity_cutoff = \
+        utils.get_image_name2entity_type2visium_intensity_cutoff(section_annotations_path)
     # This is an auxiliary dict that used to collect max and avg intensity in a given section - for a given entity_type-img_name/section-feature
     # (stat = 'max' or 'avg')
     entity_type2img_name2feature2stat2intensity = {}
-    image_name2entity_type2visium_intensity_cutoff = {}
-    # Read in visium_intensity_cutoffs
-    with open(section_annotations_path, 'r') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter='\t')
-        # skip header
-        next(csvreader)
-        for row in csvreader:
-            img_name = row[0]
-            visium_intensity_cutoffs = row[5]
-            for token in visium_intensity_cutoffs.split(","):
-                arr = token.split(":")
-                entity_type = arr[0]
-                visium_intensity_cutoff = arr[1]
-                if img_name not in image_name2entity_type2visium_intensity_cutoff:
-                    image_name2entity_type2visium_intensity_cutoff[img_name] = {}
-                image_name2entity_type2visium_intensity_cutoff[img_name][entity_type] = float(visium_intensity_cutoff)
 
     # This stores min/max intensity across all sections - per entity_type-feature
     entity_type2feature2min_max_intensity = {}
@@ -66,6 +55,10 @@ def process(project_annotations_path,
             continue
             # sys.exit(1)
         try:
+            # Retrieve scaling factors
+            sfs = img_name2scaling_factors[img_name]
+            sf_x = sfs[0]
+            sf_y = sfs[1]
             o = read_zarr(zarr_dir)
             for entity_type in continuous_entity_types:
                 if entity_type not in image_name2entity_type2visium_intensity_cutoff[img_name]:
@@ -140,6 +133,7 @@ def process(project_annotations_path,
                             end = time.time()
                             print("{} {}s so far".format(idx, round(end - start, 0)))
                         for feature in dict[barcode]:
+                            xy2intensity = {}
                             intensity = dict[barcode][feature]
                             if intensity > 0:
                                 if feature not in feature2total_intensity:
@@ -160,11 +154,23 @@ def process(project_annotations_path,
                                 x = int(xy[0].astype(object))
                                 y = int(xy[1].astype(object))
                                 intensity = round(intensity, 2)
-                                feature2xy_coords_intensity_list[feature].append((x, y, intensity))
+                                scaled_x = math.floor(x * sf_x)
+                                scaled_y = math.floor(y * sf_y)
+                                scaled_xy = (scaled_x, scaled_y)
+                                if scaled_xy not in xy2intensity or intensity > xy2intensity[scaled_xy]:
+                                    xy2intensity[scaled_xy] = intensity
                                 if feature not in feature2stat2intensity:
                                     feature2stat2intensity[feature] = {}
                                 if 'max' not in feature2stat2intensity[feature] or intensity > feature2stat2intensity[feature]['max']:
                                     feature2stat2intensity[feature]['max'] = intensity
+                            # xy2intensity ensures uniqueness of (scaled_x,scaled_y) in
+                            # feature2xy_coords_intensity_list and that only the highest intensity
+                            # among (scaled_x,scaled_y) duplicates is retained.
+                            for scaled_xy in xy2intensity:
+                                intensity = xy2intensity[scaled_xy]
+                                xyi = (scaled_xy[0], scaled_xy[1], intensity)
+                                feature2xy_coords_intensity_list[feature].append(xyi)
+                            xy2intensity.clear()
                     for feature in feature2total_intensity:
                         if feature2barcode_cnt[feature] > 0:
                             feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / feature2barcode_cnt[feature])
