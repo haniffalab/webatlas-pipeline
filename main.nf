@@ -92,18 +92,23 @@ Channel.from(params.projects) // Create a channel from the projects
     }
     .set {datasets}
 
-//Handling the raw_img_path defined in args for the data item. If data type is spaceranger - if raw_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
+//Handling the raw_img_path defined in args for the data item. If data type is spaceranger or xenium - if raw_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
 datasets.data
     .transpose(by:1)
-    .filter { it[1].data_type in ['spaceranger', 'xenium'] }  // Ensure data_type is 'spaceranger'
+    .filter { it[1].data_type in ['spaceranger', 'xenium'] }
     .map { item -> 
         def metadata = item[0]
         def dataInfo = item[1]
-        def rawImgPath = dataInfo.args?.raw_img_path ?: dataInfo.data_path  // Use raw_img_path if present, otherwise use data_path
+        def rawImgPath = dataInfo.args?.raw_img_path ?: dataInfo.data_path
+        def labelImgPath = dataInfo.args?.label_img_path ?: dataInfo.data_path
 
-        return [ metadata, [ data_type: 'raw_image', data_path: rawImgPath ] ]
+        return [
+            [ metadata, [ data_type: 'raw_image', data_path: rawImgPath ] ],
+            [ metadata, [ data_type: 'label_image', data_path: labelImgPath ] ]
+        ]
     }
-    .set{raw_images_for_spaceranger}
+    .flatten()
+    .set{ raw_and_label_images }
 
 
 // Expected output
@@ -122,7 +127,7 @@ datasets.data
     .set{inputs}
 
 //Ensure images used are both the ones defined in the images branch and the ones identified as data args.
-all_images = inputs.images.mix(raw_images_for_spaceranger)
+all_images = inputs.images.mix(raw_and_label_images)
 
 // If anything is in inputs.other, display error message about unrecognized data_type
 inputs.other
