@@ -22,10 +22,13 @@ def process(project_annotations_path,
         utils.get_project_annotation(project_annotations_path, "{}_obs_col".format(rnaseq_plot_entity_type))
     rnaseq_plot_entities = \
         utils.get_project_annotation(project_annotations_path, "rnaseq_plot_entities")
-    if rnaseq_plot_entities is not None:
-        rnaseq_plot_entities = rnaseq_plot_entities.split(",")
     scrnaseq_zarr = \
         utils.get_project_annotation(project_annotations_path, "scrnaseq_zarr")
+    if scrnaseq_zarr is None:
+        print("No scrnaseq_zarr file found - exiting")
+        sys.exit(0)
+    if rnaseq_plot_entities is not None:
+        rnaseq_plot_entities = rnaseq_plot_entities.split(",")
     zarr =  os.path.join(zarr_dir, scrnaseq_zarr)
     # E.g. entity_type = 'gene', feature = 'A2M', annot = 'Hypoxic'
     entity_type2feature2expressions = {}
