@@ -7,9 +7,24 @@ import tifffile as tiff
 import numpy as np
 from anndata import read_zarr
 import webatlas2.utils as utils
+from pathlib import Path
+import json
+import urllib.request, urllib.parse
 
 RAW_ZARR_REGEX='raw.zarr'
 ANNDATA_ZARR_REGEX='anndata.zarr'
+
+def get_bin(anndata_zarr_fname, section_title):
+    # E.g. GBM-AT9-BRA-4-FO-4_2-anndata.zarr/uns/spatial/AT9-BRA-4-FO-4_2/scalefactors/
+    fpath = os.path.join(anndata_zarr_fname, "uns", "spatial", section_title, "scalefactors")
+    f = Path(fpath)
+    if f.is_dir():
+        # The Visium intensity cutoff corresponds to >=0.02 chance of encountering it
+        return 1
+    else:
+        # The Xenium intensity cutoff corresponds to >=0.05 chance of encountering it
+        # We return fewer intensities for Xenium as it contains lots more than Visium
+        return 3
 
 def process(output_dir, in_zarr_fname, level, project_annotations_path):
 
@@ -39,7 +54,7 @@ def process(output_dir, in_zarr_fname, level, project_annotations_path):
     # Retrieve min Visium intensity from ANNDATA_ZARR_REGEX
     anndata_zarr_fname = in_zarr_fname.replace("-{}".format(RAW_ZARR_REGEX), "-{}".format(ANNDATA_ZARR_REGEX))
     o = read_zarr(anndata_zarr_fname)
-    visium_intensity_cutoffs = ""
+    intensity_cutoffs = ""
     continuous_entity_types = \
         utils.get_project_annotation(project_annotations_path, "continuous_entity_types").split(",")
     for entity_type in continuous_entity_types:
@@ -49,13 +64,13 @@ def process(output_dir, in_zarr_fname, level, project_annotations_path):
                 if o.var[o.var[col_name]== feature_type].shape[0] > 0:
                     # features of feature_type are present in o.var
                     hist, bins = np.histogram(o.X.T[o.var[col_name] == feature_type], 100)
-                    # DEBUG print(out_fname, hist[0:5], bins[3])
-                    # The Visium intensity cutoff corresponds to >=0.02 chance of encountering it
-                    visium_intensity_cutoff = bins[1]
+                    # DEBUG print(out_fname, hist[0:5], bins[idx])
+                    idx = get_bin(anndata_zarr_fname, section_title)
+                    visium_intensity_cutoff = bins[idx]
                     prefix = ""
-                    if visium_intensity_cutoffs != "":
+                    if intensity_cutoffs != "":
                         prefix = ","
-                    visium_intensity_cutoffs = \
-                        visium_intensity_cutoffs + prefix + entity_type + ":" + str(visium_intensity_cutoff)
+                    intensity_cutoffs = \
+                        intensity_cutoffs + prefix + entity_type + ":" + str(visium_intensity_cutoff)
                 break
-    return (section_title, visium_intensity_cutoffs)
+    return (section_title, intensity_cutoffs)
