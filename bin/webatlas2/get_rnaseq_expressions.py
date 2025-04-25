@@ -37,7 +37,7 @@ def process(project_annotations_path,
         start = time.time()
         o = read_zarr(zarr)
         for entity_type in continuous_entity_types:
-            print("Processing entity_type: {} ...".format(entity_type))
+            print("Processing entity_type: {} ...".format(entity_type), flush=True)
             if entity_type not in entity_type2feature2expressions:
                 entity_type2feature2expressions[entity_type] = {}
             feature_type = utils.get_project_annotation(project_annotations_path, entity_type)
@@ -48,7 +48,7 @@ def process(project_annotations_path,
                     features = list(o.var.index[feature_type_series == feature_type])
                     break
             if features is None:
-                print("WARNING: Did not find entity_type in {} - skipping".format(entity_type, zarr))
+                print("WARNING: Did not find entity_type in {} - skipping".format(entity_type, zarr), flush=True)
                 continue
             if len(features) > 0 and rnaseq_plot_entities is not None:
                 for annot in rnaseq_plot_entities:
@@ -73,7 +73,7 @@ def process(project_annotations_path,
                             entity_type2feature2expressions[entity_type][feature] = []
                         entity_type2feature2expressions[entity_type][feature].append((expression, fraction))
         end = time.time()
-        print("Duration: {}s ".format(round(end - start, 0)))
+        print("Duration: {}s ".format(round(end - start, 0)), flush=True)
     except Exception as e:
         print("ERROR: there was an error '{}' reading zarr {} - exiting".format(e, zarr))
         sys.exit(1)
