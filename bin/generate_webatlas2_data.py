@@ -40,7 +40,7 @@ def generate_webatlas2_data(
     thumbnail_level_in_pyramid = 4
 
     os.chdir(zarr_dir)
-    print("About to retrieve thumbnails ..")
+    print("About to retrieve thumbnails ..", flush=True)
     start = timer()
     with open(section_annotations_path, 'w') as f:
         writer = csv.writer(f, delimiter='\t', quoting=csv.QUOTE_NONE, escapechar='\\')
@@ -55,14 +55,14 @@ def generate_webatlas2_data(
                 sys.exit(1)
             thumbnail_fpath = zarr.replace("-" + raw_zarr_regex, ".jpeg")
             thumbnail_fname = Path(thumbnail_fpath).name
-            print("Retrieving scaling factors from {} ..".format(zarr))
+            print("Retrieving scaling factors from {} ..".format(zarr), flush=True)
             (scaling_factor_x, scaling_factor_y) = get_scaling_factors.process(zarr, thumbnail_level_in_pyramid)
             if not scaling_factor_x or not scaling_factor_y:
                 print("ERROR: Failed to retrieve scaling factors from {} - exiting".format(zattrs_path))
-            print("Copying config json to {}".format(output_dir))
+            print("Copying config json to {}".format(output_dir), flush=True)
             anndata_zarr = zarr.replace(raw_zarr_regex, anndata_zarr_regex)
             anndata_zarrs.append(anndata_zarr)
-            print("Retrieving thumbnail from {}".format(zarr))
+            print("Retrieving thumbnail from {}".format(zarr), flush=True)
             (section_title, min_visium_intensities) = zarr2jpeg.process(output_dir, zarr, thumbnail_level_in_pyramid, project_annotations_path)
             # Note that the front-end does not use min_visium_intensities - it is output into
             # section_annotations_path just for reference - to help explain the difference between
@@ -79,15 +79,15 @@ def generate_webatlas2_data(
             writer.writerow(row)
 
     if anndata_zarrs:
-        print("About to retrieve feature coordinates ..")
+        print("About to retrieve feature coordinates ..", flush=True)
         get_feature_coordinates.process(project_annotations_path, section_annotations_path, feature_coordinates_path, anndata_zarrs)
-        print("About to retrieve hierarchical_entity_coordinates ..")
+        print("About to retrieve hierarchical_entity_coordinates ..", flush=True)
         get_hierarchical_entity_coordinates.process(output_dir, project_annotations_path, section_annotations_path, anndata_zarrs)
-    print("About to retrieve rnaseq expressions ..")
+    print("About to retrieve rnaseq expressions ..", flush=True)
     get_rnaseq_expressions.process(project_annotations_path, rnaseq_expressions_path, zarr_dir)
 
     end = timer()
-    print("The pipeline took: {}s to run".format(int(end - start)))
+    print("The pipeline took: {}s to run".format(int(end - start)), flush=True)
 
 if __name__ == "__main__":
     fire.Fire(generate_webatlas2_data)

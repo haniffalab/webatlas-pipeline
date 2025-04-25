@@ -47,7 +47,7 @@ def process(project_annotations_path,
     # Iterate over zarr files, for each applying the corresponding visium_intensity_cutoff in order to
     # obtain coordinates of features to be displayed over the thumbnails
     for zarr_dir in anndata_zarrs:
-        print("Processing {}".format(zarr_dir))
+        print("Processing {}".format(zarr_dir), flush=True)
         zarr_fname = zarr_dir.split("/")[-1]
         img_name = "{}.jpeg".format(zarr_fname.replace("-anndata.zarr",""))
         if img_name not in image_name2entity_type2visium_intensity_cutoff:
@@ -65,6 +65,7 @@ def process(project_annotations_path,
                     print("WARNING: visium_intensity_cutoff missing for section: {} - entity_type: {} - defaulting to 0".format(img_name, entity_type))
                     # It may be that some features are missing in certain sections - if that's the case, defaulting the cutoff to 0 is a no-op
                     image_name2entity_type2visium_intensity_cutoff[img_name][entity_type] = 0
+                print(entity_type, flush=True)
                 # Initialise data structure for entity_type - img_name
                 if entity_type not in entity_type2img_name2feature2xy_coords_intensity_list:
                     entity_type2img_name2feature2xy_coords_intensity_list[entity_type] = {}
@@ -124,14 +125,13 @@ def process(project_annotations_path,
                     df = pd.DataFrame(data=filtered_x, index=features, columns=barcodes)
                     df = remove_zeros_rows_cols(df)
                     dict = df.to_dict()
-                    start = time.time()
                     feature2total_intensity = {}
                     feature2barcode_cnt = {}
+                    cnt = 0
                     for barcode in dict:
                         idx = barcodes.index(barcode)
-                        if idx % 1000 == 0:
-                            end = time.time()
-                            print("{} {}s so far".format(idx, round(end - start, 0)))
+                        if cnt % 1000 == 0:
+                            print(cnt, end=" ", flush=True)
                         for feature in dict[barcode]:
                             xy2intensity = {}
                             intensity = dict[barcode][feature]
@@ -171,6 +171,8 @@ def process(project_annotations_path,
                                 xyi = (scaled_xy[0], scaled_xy[1], intensity)
                                 feature2xy_coords_intensity_list[feature].append(xyi)
                             xy2intensity.clear()
+                        cnt += 1
+                    print("About to calculate average per feature..", flush=True)
                     for feature in feature2total_intensity:
                         if feature2barcode_cnt[feature] > 0:
                             feature2stat2intensity[feature]['avg'] =  int(feature2total_intensity[feature] / feature2barcode_cnt[feature])
@@ -183,6 +185,7 @@ def process(project_annotations_path,
     for entity_type in entity_type2feature2min_max_intensity:
         if entity_type in entity_type2img_name2feature2xy_coords_intensity_list:
             for img_name in entity_type2img_name2feature2xy_coords_intensity_list[entity_type]:
+                print("About to calculate min, max, avg for entity_type: {} and img_name: {}".format(entity_type, img_name), flush=True)
                 for feature in entity_type2feature2min_max_intensity[entity_type]:
                     # For a given feature, as the first element of the array of coordinates-intensities
                     # store a tuple of:
@@ -212,7 +215,8 @@ def process(project_annotations_path,
                             # should be minimum_intensity cutoff
                             stats[1] = stats[0]
                         entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature].insert(0, stats)
-
+    print("About to write out feature_coordinates.json", flush=True)
     with open(feature_coordinates_path, 'w') as f:
         f.write(json.dumps(entity_type2img_name2feature2xy_coords_intensity_list))
+    print("Written out feature_coordinates.json successfully", flush=True)
 
