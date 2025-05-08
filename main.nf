@@ -92,22 +92,71 @@ Channel.from(params.projects) // Create a channel from the projects
     }
     .set {datasets}
 
-//Handling the raw_img_path defined in args for the data item. If data type is spaceranger or xenium - if raw_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
+//Handle data-level args: for raw/label image paths and data (for Spaceranger and Xenium ONLY)
 datasets.data
     .transpose(by:1)
     .filter { it[1].data_type in ['spaceranger', 'xenium'] }
-    .map { item -> 
-        def metadata = item[0]
-        def dataInfo = item[1]
-        def rawImgPath = dataInfo.args?.raw_img_path ?: dataInfo.data_path
-        def labelImgPath = dataInfo.args?.label_img_path ?: dataInfo.data_path
+    .flatMap { metadata, dataInfo -> 
+        def outputs = []
 
-        return [
-            [ metadata, [ data_type: 'raw_image', data_path: rawImgPath ] ],
-            [ metadata, [ data_type: 'label_image', data_path: labelImgPath ] ]
-        ]
+        //1. Handle raw image data (DEFAULT is to use raw_img_path)-> 2 types:
+        //a. raw_img_data -> Data used to create raw image tif file
+        if (dataInfo.args?.raw_img_data) {
+            //If spaceranger data, type of files used to create raw_img will be visium, else xenium
+            def rawFileType = dataInfo.data_type == 'spaceranger' ? 'visium' : 'xenium'
+            outputs << [ metadata, [ 
+                data_type: 'raw_image_data',
+                data_path: dataInfo.data_path,
+                file_type: labelFileType,
+                ref_img: dataInfo.args?.raw_img_data
+                ]]
+        }
+
+        //b. raw_img_path (the default) -> Path to the raw image tif file:
+        else {
+            //if raw_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
+            outputs << [ metadata, [ 
+                data_type: 'raw_image', 
+                data_path: dataInfo.args?.raw_img_path ?: dataInfo.data_path 
+            ] ]
+        }
+
+
+        //2. Handle label image data (DEFAULT is to use label_img_data)-> 2 types:
+        //a. label_img_path -> Path to the label image tif file:
+        if (dataInfo.args?.label_img_path) {
+            //if label_img_path exists store this, if not infer using data_path (assumes only 1 tif in data_path).
+            outputs << [ metadata, [ 
+                data_type: 'label_image', 
+                data_path: dataInfo.args?.label_img_path ?: dataInfo.data_path 
+            ] ]
+        }
+
+        //b. label_img_data (the default) -> Data used to create label image tif file
+        else {
+            //If spaceranger data, label files will be visium, else xenium
+            def labelFileType = dataInfo.data_type == 'spaceranger' ? 'visium' : 'xenium'
+            
+            //Construct the output
+            outputs << [ metadata, [ 
+                data_type: 'label_image_data',
+                data_path: dataInfo.data_path,
+                file_type: labelFileType,
+                ref_img: dataInfo.args?.label_img_data ?: dataInfo.data_path 
+                ]]
+        }
+
+        //For the rest...
+        //Only add information to output if it exists in the input data structure.
+        if (dataInfo.args?.label_img_path) {
+            outputs << [ metadata, [ 
+                data_type: 'label_image',
+                data_path: dataInfo.args.label_img_path 
+            ] ] //Handling the label_img_path defined in args for the data item.
+        }
+
+        return outputs
     }
-    .flatten()
     .set{ raw_and_label_images }
 
 
@@ -160,16 +209,23 @@ params.projects.each{ p ->
     }
 }
 
-// Helper function to access nested map values. just from how groovy maps work
+//////////////////////////////////////////////////////
+
 def getSubMapValues (m, keys) {
+    /*
+    Helper function to access nested map values. just from how groovy maps work
+    */
     m.subMap(keys).values().sum() ?: [:]
 }
 
-// Function used within workflows
-// Merge args from root params file args, then project, then dataset, then data
-// Thus data args take higher priority
-// Use interm_dt to ensure h5ad args also apply to data_types that are first converted to h5ad as above
+//////////////////////////////////////////////////////
+
 def mergeArgs (stem, data_type, args) {
+    /*
+    Function used within workflows
+    Merge args from root params file args, then project, then dataset, then data (Thus data args take higher priority)
+    Use interm_dt to ensure h5ad args also apply to data_types that are first converted to h5ad as above
+    */
     getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
@@ -178,12 +234,60 @@ def mergeArgs (stem, data_type, args) {
 
 //////////////////////////////////////////////////////
 
-// Give warning if -params-file flag is used with no file provided
-// Checks for flag because params can be provided directly on the command line
 def warnParams () {
+    /*
+    Give warning if -params-file flag is used with no file provided
+    Checks for flag because params can be provided directly on the command line
+    */
     if (!workflow.commandLine.contains("-params-file")){
         log.warn "No -params-file provided"
     }
+}
+
+//////////////////////////////////////////////////////
+
+def checkForTiff (filePath) {
+    /*
+    Given a path, check type for tiff file.
+    Where the path is a directory, ensure that there is exactly 1 tiff file present and return this file's path.
+    @param filePath -> path to tiff file OR directory (containing tiff file)
+    @return path to tiff file (if no error thrown)
+    */
+    //throw error if path does not exist
+
+    println "Checking for tiff file in ${filePath}"
+    if (!filePath.exists()) {
+        log.error "File or directory not found: ${filePath}"
+        throw new IllegalStateException("File or directory not found: ${filePath}")
+    }
+
+    if (filePath.isDirectory()) {
+        // Get all .tiff/.tif files in the directory
+        def tiffFiles = filePath.listFiles().findAll { it.name.toLowerCase().endsWith('.tiff') || it.name.toLowerCase().endsWith('.tif') }
+
+        //throw error if no tiff files found in directory path
+        if (tiffFiles.isEmpty()) {
+            log.error "No .tiff files found in directory: ${filePath}"
+            throw new IllegalStateException("No .tiff files found in directory: ${filePath}")
+        }
+
+        //throw error if multiple tiff files found in directory path
+        if (tiffFiles.size() > 1) {
+            log.error "Multiple .tiff files found in directory: ${filePath}. Expected only one."
+            throw new IllegalStateException("Multiple .tiff files found in directory: ${filePath}. Expected only one.")
+        }
+
+        // Use the single .tiff file found
+        return tiffFiles.first()
+    }
+
+    // Finally - ensure the selected file is a .tiff file
+    if (!filePath.name.toLowerCase().endsWith('.tiff') && !filePath.name.toLowerCase().endsWith('.tif')) {
+        log.error "Invalid file format: ${filePath}. Expected .tiff or .tif"
+        throw new IllegalStateException("Invalid file format: ${filePath}. Expected .tiff or .tif")
+    }
+
+    return filePath
 }
 
 //////////////////////////////////////////////////////
@@ -441,41 +545,15 @@ workflow Process_images {
 
     // Map tif inputs to:
     // tuple val(stem), val(prefix), val(img_type), path(image)
-    img_tifs = all_images.filter { stem, data_map ->
-        data_map.data_type in ["raw_image", "label_image"] // only already existing images
+    img_tifs = all_images.filter { meta, data_map ->
+        def (project_id, sample_id) = meta
+        data_map.data_type in ['raw_image', 'label_image']
     }
 
     //Perform checks for the raw/label_image
     .map { stem, data_map -> // structure as image_to_zarr input
         def filePath = file(data_map.data_path)
-
-        if (!filePath.exists()) {
-            log.error "File not found: ${filePath}"
-            throw new IllegalStateException("File not found: ${filePath}")
-        }
-
-        if (filePath.isDirectory()) {
-            // Get all .tiff/.tif files in the directory
-            def tiffFiles = filePath.listFiles().findAll { it.name.toLowerCase().endsWith('.tiff') || it.name.toLowerCase().endsWith('.tif') }
-
-            if (tiffFiles.isEmpty()) {
-                log.error "No .tiff files found in directory: ${filePath}"
-                throw new IllegalStateException("No .tiff files found in directory: ${filePath}")
-            }
-            if (tiffFiles.size() > 1) {
-                log.error "Multiple .tiff files found in directory: ${filePath}. Expected only one."
-                throw new IllegalStateException("Multiple .tiff files found in directory: ${filePath}. Expected only one.")
-            }
-
-            // Use the single .tiff file found
-            filePath = tiffFiles.first()
-        }
-
-        // Ensure the selected path is a .tiff file
-        if (!filePath.name.toLowerCase().endsWith('.tiff') && !filePath.name.toLowerCase().endsWith('.tif')) {
-            log.error "Invalid file format: ${filePath}. Expected .tiff or .tif"
-            throw new IllegalStateException("Invalid file format: ${filePath}. Expected .tiff or .tif")
-        }
+        filePath = checkForTiff(filePath) // check if filePath is a tiff file or return tiff file in directory path.
 
         // If checks pass, return the structured output
         return [
@@ -493,16 +571,23 @@ workflow Process_images {
         data_map.data_type in ["raw_image_data", "label_image_data"] // only data to be used to generate images
     }
     .map { stem, data_map -> // structure as Generate_image input
-        [
+        def filePath = file(data_map.ref_img)
+        filePath = checkForTiff(filePath) // check if filePath is a tiff file or return tiff file in directory path.
+
+        // If checks pass, return the structured output
+        return [
             stem,
             data_map.prefix,
             data_map.data_type.replace("_image_data",""), // make type only `raw` or `label`
             file(data_map.data_path),
             data_map.file_type,
-            file(data_map.ref_img ?: "NO_REF") , // set to NO_REF if no ref_img provided. Must be inside a file() to be recognized as a path
+            filePath ?: "NO_REF" , // set to NO_REF if no ref_img provided. Must be inside a file() to be recognized as a path
             data_map.args ?: [:]
         ]
     }
+
+    img_data
+        .view { "Image data: ${it}" } // Print the image data for debugging
 
     Generate_image(img_data)
 
