@@ -14,8 +14,8 @@ def process(project_annotations_path,
         print("Please provide the output file name for RNASeq expressions json, and the directory containing the RNAseq anndata.zarr")
         sys.exit(1)
 
-    continuous_entity_types = \
-        utils.get_project_annotation(project_annotations_path, "continuous_entity_types").split(",")
+    dot_plot_entity_types = \
+        utils.get_project_annotation(project_annotations_path, "dot_plot_entity_types").split(",")
     rnaseq_plot_entity_type = \
         utils.get_project_annotation(project_annotations_path, "rnaseq_plot_entity_type")
     rnaseq_plot_entity_type_obs_col = \
@@ -36,7 +36,7 @@ def process(project_annotations_path,
     try:
         start = time.time()
         o = read_zarr(zarr)
-        for entity_type in continuous_entity_types:
+        for entity_type in dot_plot_entity_types:
             print("Processing entity_type: {} ...".format(entity_type), flush=True)
             if entity_type not in entity_type2feature2expressions:
                 entity_type2feature2expressions[entity_type] = {}
