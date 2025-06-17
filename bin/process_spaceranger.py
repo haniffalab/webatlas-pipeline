@@ -192,16 +192,17 @@ def visium_label(
             )
     else:
         for spId, (y, x) in zip(adata.obs.index, spot_coords):
-            label_img[
-                disk(
-                    (
-                        int(x),
-                        int(y),
-                    ),
-                    spot_diameter_fullres / 2,
-                    shape=shape,
-                )
-            ] = int(spId)
+            if np.isnan(x) == False and np.isnan(y) == False:
+                label_img[
+                    disk(
+                        (
+                            int(x),
+                            int(y),
+                        ),
+                        spot_diameter_fullres / 2,
+                        shape=shape,
+                    )
+                ] = int(spId)
 
     tf.imwrite(f"{stem}-label.tif", label_img)
 
