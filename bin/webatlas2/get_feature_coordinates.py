@@ -205,15 +205,12 @@ def process(project_annotations_path,
                         if min_max[0] == sys.maxsize:
                             # Feature is not expressed in any section
                             min_max[0] = 0
+                        # Feature not expressed in this section
                         max_intensity_in_section = min_max[0]
                         avg_intensity_in_section = min_max[0]
                     stats = min_max + [max_intensity_in_section, avg_intensity_in_section]
 
                     if feature in entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name]:
-                        if len(entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature]) == 0:
-                            # if feature has no expressions above the minimum for a given section, both min and max
-                            # should be minimum_intensity cutoff
-                            stats[1] = stats[0]
                         entity_type2img_name2feature2xy_coords_intensity_list[entity_type][img_name][feature].insert(0, stats)
     print("About to write out feature_coordinates.json", flush=True)
     with open(feature_coordinates_path, 'w') as f:
