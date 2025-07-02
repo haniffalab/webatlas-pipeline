@@ -5,7 +5,7 @@ import groovy.json.*
 nextflow.enable.dsl=2
 
 verbose_log = true
-version = "0.5.3"
+version = "webatlas2.0"
 
 //////////////////////////////////////////////////////
 
@@ -62,6 +62,11 @@ Channel.from(params.projects)
             ]
     }
     .set {datasets}
+
+// Get project annotations
+Channel.from(params.projects)
+    .map { p -> [p.project, p.webatlas2_annotations_path] }
+    .set {webatlas2_projects}
 
 datasets.data
     .transpose(by:1)
@@ -273,7 +278,21 @@ process Generate_image {
     """
 }
 
+process Process_for_webatlas2 {
+    tag "${project}, ${webatlas2_annotations_path}"
+    input:
+    tuple val(project), val(webatlas2_annotations_path)
+    script:
+    """
+    generate_webatlas2_data.py ${outdir_with_version} ${project} ${webatlas2_annotations_path}
+    """
+}
+
 //////////////////////////////////////////////////////
+
+workflow Generate_webatlas2_data {
+    Process_for_webatlas2(webatlas2_projects)
+}
 
 workflow Full_pipeline {
 
@@ -287,14 +306,13 @@ workflow Full_pipeline {
         Process_files.out.file_paths,
         Process_images.out.img_zarrs
     )
-        
+
     if (params.write_spatialdata) {
         Output_to_spatialdata(
             Process_files.out.anndata_files,
             Process_images.out.img_tifs
         )
     }
-    
 }
 
 
