@@ -239,7 +239,17 @@ def xenium_label(
         pols = z["polygon_vertices"][1]
     else:
         pols = z["polygon_sets"][1]["vertices"]
-    label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
+    
+    print(shape)
+    if len(shape)>2:
+        # i remove the axis with smalles size, assuming it channels
+        min_idx = np.argmin(shape)
+        shape = np.delete(shape, min_idx)
+        print(shape)
+        label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
+    else:
+        label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
+    print(label_img.shape)
     for idd in ids:
         pol = pols[idd-1]
         pol = pol / resolution
