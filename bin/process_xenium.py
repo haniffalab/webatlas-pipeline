@@ -17,15 +17,25 @@ import tifffile as tf
 from pathlib import Path
 from skimage.draw import polygon
 from process_h5ad import h5ad_to_zarr, subset_anndata
+from add_var_xenium import add_factors_to_adata_by_position as add_var_to_adata
 
 
-def add_csv_to_adata_obs(adata_obs, annotations_path, annotations_column_index):
+def add_csv_to_adata_obs(adata_obs, annotations_path, annotations_column_index, annotation_rename_column):
     annot_df = pd.read_csv(annotations_path)
+    if annotation_rename_column!=[]:
+        for pair_rename in annotation_rename_column:
+            annot_df = annot_df.rename(columns={pair_rename[0]: pair_rename[1]})
     if annotations_column_index in annot_df.columns:
         annot_df.set_index(annotations_column_index, inplace=True)
+        # Check if index columnn in csv simply numbers - then I assume that number and order of rows
+        # in adata.obs and csv file is the same !!!!
+        if pd.api.types.is_integer_dtype(annot_df.index):
+            # Replace index of df1 with index of df2
+            annot_df.index = adata_obs.index
     else:
         #using simply first column if none were specified
         annot_df.set_index(annot_df.columns[0], inplace=True)
+    
     #adata_obs.set_index('cell_id', inplace=True)
     adata_obs = pd.merge(adata_obs, annot_df, left_index=True, right_index=True, how='left')
     return adata_obs
@@ -40,6 +50,7 @@ def xenium_to_anndata(
     load_embeddings: bool = True,
     annotations: str = None,
     annotations_column_index: str = None,
+    annotations_rename_col: list = [],
     obs_subset: tuple[int, T.Any] = None,
 ) -> sc.AnnData:
     """Function to create an AnnData object from Xenium output.
@@ -53,6 +64,7 @@ def xenium_to_anndata(
             AnnData object. Defaults to True.
         load_embeddings (bool, optional): If embedding coordinates files should be included
             in the AnnData object. Defaults to True.
+        annotations_rename_col: list of lists with pairs of column names: [[col_old_name_1, col_new_name_1], [col_old_name_2, col_new_name_2]]
 
     Returns:
         AnnData: AnnData object created from the xenium output data
@@ -112,7 +124,7 @@ def xenium_to_anndata(
       # starting on v1.3 cell_id looks like "aaabinlp-1"
 
     if annotations:
-        adata.obs = add_csv_to_adata_obs(adata.obs, annotations, annotations_column_index)
+        adata.obs = add_csv_to_adata_obs(adata.obs, annotations, annotations_column_index, annotations_rename_col)
     
     # starting on v1.3 cell_id looks like "aaabinlp-1"
     # pd.Categorical.codes converts them to int this is done manually at this step
@@ -145,6 +157,9 @@ def xenium_to_zarr(
     annotations: str = None,
     annotations_column_index: str = None,
     obs_subset: tuple[int, T.Any] = None,
+    var_path_matrix: str = None,
+    var_path_factors: str = None,
+    var_path_obs: str = None,
     **kwargs,
 ) -> str:
     """Function to write to Zarr an AnnData object created from xenium output data
@@ -165,6 +180,10 @@ def xenium_to_zarr(
     """
     
     adata = xenium_to_anndata(path, spatial_as_pixel = spatial_as_pixel, resolution = resolution, annotations = annotations, annotations_column_index = annotations_column_index, obs_subset = obs_subset)
+    
+    if var_path_matrix:
+        adata = add_var_to_adata(adata, factors_pkl = var_path_factors, obs_ids_pkl = var_path_obs, matrix_pkl = var_path_matrix)
+    
     if save_h5ad:
         adata.write_h5ad(f"tmp-{stem}.h5ad")
     
@@ -182,6 +201,9 @@ def xenium_label(
     var_subset: tuple[str, T.Any] = None,
     annotations: str = None,
     annotations_column_index: str = None,
+    var_path_matrix: str = None,
+    var_path_factors: str = None,
+    var_path_obs: str = None,
 ) -> None:
     """This function writes a label image tif file with drawn labels according to
     cell segmentation polygons from Xenium output cells.zarr.zip file
@@ -204,8 +226,8 @@ def xenium_label(
 
     with open(os.path.join(path, "experiment.xenium")) as f:
         experiment = json.load(f)
-    sw_version = float(experiment["analysis_sw_version"][7:10])
-    
+    #sw_version = float(experiment["analysis_sw_version"][7:10])
+    sw_version = 2 #because of XR rerunned for the new segmentation
     if obs_subset:
         #firstly prepare dict of cell numbers (new) correponding to (old)
         cells_file = os.path.join(path, "cells.csv.gz")
@@ -235,6 +257,8 @@ def xenium_label(
     #we keep the same ids as in original dataset
     ids = np.array(ids).astype('uint32')
     # starting on v2.0 vertices change location
+    print(sw_version)
+    print(list(z.keys()))
     if sw_version < 2.0:
         pols = z["polygon_vertices"][1]
     else:
