@@ -6,21 +6,19 @@ Generates a Vitessce View config
 """
 
 from __future__ import annotations
-from itertools import zip_longest
-import typing as T
-import os
-import fire
+
 import json
-from vitessce import (
-    VitessceConfig,
-    DataType as dt,
-    FileType as ft,
-    CoordinationType as ct,
-    ViewType as vt,
-    hconcat,
-    vconcat,
-)
+import os
+import typing as T
+from itertools import zip_longest
+
+import fire
 from constants.suffixes import ANNDATA_ZARR_SUFFIX, MOLECULES_JSON_SUFFIX
+from vitessce import CoordinationType as ct
+from vitessce import DataType as dt
+from vitessce import FileType as ft
+from vitessce import ViewType as vt
+from vitessce import VitessceConfig, hconcat, vconcat
 
 
 def write_json(
@@ -122,7 +120,8 @@ def write_json(
         for file_path in dataset["file_paths"]:
             if ANNDATA_ZARR_SUFFIX in file_path:
                 # if 1 featureType (e.g. genes) then 1 OBS_FEATURE_MATRIX_ANNDATA_ZARR
-                # if 2+ featureTypes (e.g. genes + celltypes) then 1 + n * OBS_FEATURE_MATRIX_ANNDATA_ZARR
+                # if 2+ featureTypes (e.g. genes + celltypes) then
+                #   1 + n * OBS_FEATURE_MATRIX_ANNDATA_ZARR
                 if has_multiple_features:
                     # Add 'combined' matrix
                     config_dataset.add_file(
@@ -188,10 +187,10 @@ def write_json(
                         .upper()
                     )
                     if dataset_embedding_type not in embeddings_coordination:
-                        (
-                            embeddings_coordination[dataset_embedding_type]
-                        ) = config.add_coordination(ct.EMBEDDING_TYPE)[0].set_value(
-                            dataset_embedding_type
+                        (embeddings_coordination[dataset_embedding_type]) = (
+                            config.add_coordination(ct.EMBEDDING_TYPE)[0].set_value(
+                                dataset_embedding_type
+                            )
                         )
 
                     config_views.append(
@@ -200,9 +199,11 @@ def write_json(
                         ).use_coordination(
                             embeddings_coordination[dataset_embedding_type],
                             obs_coordination[dataset_obs_type],
-                            multi_ftype
-                            if has_multiple_features
-                            else features["gene"]["ftype"],
+                            (
+                                multi_ftype
+                                if has_multiple_features
+                                else features["gene"]["ftype"]
+                            ),
                         )
                     )
 
@@ -224,9 +225,9 @@ def write_json(
                 options=build_raster_options(dataset["images"], url=url),
                 coordination_values={
                     ct.OBS_TYPE.value: dataset_obs_type,
-                    ct.FEATURE_TYPE.value: "combined"
-                    if has_multiple_features
-                    else "expression",
+                    ct.FEATURE_TYPE.value: (
+                        "combined" if has_multiple_features else "expression"
+                    ),
                 },
             )
 
@@ -321,7 +322,7 @@ def build_anndatazarr_options(
             options.setdefault(dt.OBS_LABELS.value, []).append(label)
     if "sets" in file_options:
         for obs_set in file_options["sets"]:
-            if type(obs_set) != dict:
+            if obs_set is not dict:
                 obs_set = {"name": obs_set}
             obs_set_options = {
                 "name": "".join(

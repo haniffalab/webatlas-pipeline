@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 
-import fire
-import os
-import tifffile as tf
-import numpy as np
 import logging
-from ome_zarr.reader import Reader
-from ome_zarr.io import parse_url
+import os
 import shutil
-from ome_zarr.writer import write_multiscale
+
+import fire
+import numpy as np
+import tifffile as tf
 import zarr
+from ome_zarr.io import parse_url
+from ome_zarr.reader import Reader
+from ome_zarr.writer import write_multiscale
 
 
 def add_offset(label, offset: int):
@@ -37,11 +38,21 @@ def reindex_label_zarr(label_image_path: str, offset: int, out_filename: str) ->
     nodes = list(reader())
     labels = nodes[0].data
     reindexed_labels = [add_offset(x, offset) for x in labels]
-    os.makedirs(f"{out_filename}/OME", exist_ok=True)
+
+    zarr_format = (
+        3 if os.path.exists(os.path.join(label_image_path, "zarr.json")) else 2
+    )
+
     store = parse_url(out_filename, mode="w").store
-    tmp_group = zarr.group(store=store)
-    write_multiscale(reindexed_labels, tmp_group, compute=True)
+    tmp_group = zarr.open_group(store=store, mode="w", zarr_format=zarr_format)
+    write_multiscale(
+        reindexed_labels,
+        tmp_group,
+        compute=True,
+        storage_options=dict(dimension_separator="/"),
+    )
     zarr.consolidate_metadata(out_filename)
+    os.makedirs(f"{out_filename}/OME", exist_ok=True)
     shutil.copy(
         label_image_path + "/OME/METADATA.ome.xml",
         f"{out_filename}/OME/METADATA.ome.xml",

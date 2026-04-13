@@ -6,28 +6,28 @@ Generates a Vitessce View config
 """
 
 from __future__ import annotations
-import typing as T
-from collections import defaultdict
-import os
-import fire
+
 import json
 import logging
+import os
+import typing as T
+from collections import defaultdict
 from itertools import chain, cycle
+
+import fire
 import regex
-from vitessce import (
-    VitessceConfig,
-    DataType as dt,
-    FileType as ft,
-    CoordinationType as ct,
-    Component as cm,
-)
 from constants.constants import (
-    DATA_TYPES,
-    DEFAULT_OPTIONS,
-    DEFAULT_LAYOUTS,
     COMPONENTS_COORDINATION_TYPES,
     COMPONENTS_DATA_TYPES,
+    DATA_TYPES,
+    DEFAULT_LAYOUTS,
+    DEFAULT_OPTIONS,
 )
+from vitessce import Component as cm
+from vitessce import CoordinationType as ct
+from vitessce import DataType as dt
+from vitessce import FileType as ft
+from vitessce import VitessceConfig
 
 
 def build_options(
@@ -42,8 +42,8 @@ def build_options(
         file_type (str): Type of file supported by Vitessce.
         file_path (str): Path to file.
         file_options (dict[str, T.Any]): Dictionary defining the options.
-        check_exist (bool, optional): Whether to check the given path to confirm the file exists.
-            Defaults to False.
+        check_exist (bool, optional): Whether to check the given path to confirm
+            the file exists. Defaults to False.
 
     Returns:
         T.Any: Options dictionary for View config file
@@ -83,7 +83,7 @@ def build_options(
 
         if "sets" in file_options:
             for obs_set in file_options["sets"]:
-                if type(obs_set) != dict:
+                if obs_set is not dict:
                     obs_set = {"name": obs_set}
                 if check_exist:
                     if not os.path.exists(os.path.join(file_path, obs_set["name"])) or (
@@ -119,9 +119,10 @@ def build_raster_options(
     """Function that creates the View config's options for image files
 
     Args:
-        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for each image type key (raw and label)
-            a list of dictionaries (one per image of that type) with the corresponding path and metadata for that image.
-            Defaults to {}.
+        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for
+            each image type key (raw and label) a list of dictionaries
+            (one per image of that type) with the corresponding path and metadata
+            for that image. Defaults to {}.
         url (str): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files
 
@@ -187,22 +188,28 @@ def write_json(
     Args:
         project (str, optional): Project name. Defaults to "".
         dataset (str, optional): Dataset name. Defaults to "".
-        file_paths (list[str], optional): Paths to files that will be included in the config file. Defaults to [].
-        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for each image type key (raw and label)
-            a list of dictionaries (one per image of that type) with the corresponding path and metadata for that image.
-            Defaults to {}.
+        file_paths (list[str], optional): Paths to files that will be included in the
+            config file. Defaults to [].
+        images (dict[str, list[dict[str, T.Any]]], optional): Dictionary containing for
+            each image type key (raw and label) a list of dictionaries
+            (one per image of that type) with the corresponding path and metadata
+            for that image. Defaults to {}.
         url (str, optional): URL to prepend to each file in the config file.
             The URL to the local or remote server that will serve the files.
             Defaults to "".
-        options (dict[str, T.Any], optional): Dictionary with Vitessce config file `options`. Defaults to None.
+        options (dict[str, T.Any], optional): Dictionary with Vitessce config
+            file `options`. Defaults to None.
         layout (str, optional): Type of predefined layout to use. Defaults to "minimal".
-        custom_layout (str, optional): String defining a Vitessce layout following its alternative syntax.
+        custom_layout (str, optional): String defining a Vitessce layout following
+            its alternative syntax.
             https://vitessce.github.io/vitessce-python/api_config.html#vitessce.config.VitessceConfig.layout
             https://github.com/vitessce/vitessce-python/blob/1e100e4f3f6b2389a899552dffe90716ffafc6d5/vitessce/config.py#L855
             Defaults to None.
         title (str, optional): Data title to show in the visualization. Defaults to "".
-        config_filename_suffix (str, optional): Config filename suffix. Defaults to "config.json".
-        outdir (str, optional): Directory in which the config file will be written to. Defaults to "./".
+        config_filename_suffix (str, optional): Config filename suffix.
+            Defaults to "config.json".
+        outdir (str, optional): Directory in which the config file will be written to.
+            Defaults to "./".
 
     Raises:
         SystemExit: If no valid files have been input
@@ -311,9 +318,8 @@ def write_json(
                     view.use_coordination(next(coordination_types[coordination_type]))
                 except StopIteration:
                     logging.warning(
-                        "No coordination scope with coordination type {} for component {}".format(
-                            coordination_type, component
-                        )
+                        "No coordination scope with coordination type {}"
+                        " for component {}".format(coordination_type, component)
                     )
                     has_ctype = False
                     break
@@ -345,9 +351,9 @@ def write_json(
 
     # Make sure views' grid coordinates are integers
     config_json = config.to_dict()
-    for l in config_json["layout"]:
+    for layout_item in config_json["layout"]:
         for k in ("x", "y", "w", "h"):
-            l[k] = round(l[k])
+            layout_item[k] = round(layout_item[k])
 
     if outdir and not os.path.isdir(outdir):
         os.mkdir(outdir)

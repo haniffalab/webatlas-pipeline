@@ -5,9 +5,10 @@ process_molecules.py
 Processes molecules files
 """
 
-import os
 import csv
 import json
+import os
+
 import fire
 from constants.suffixes import MOLECULES_JSON_SUFFIX
 
@@ -37,22 +38,36 @@ def tsv_to_json(
     Args:
         path (str): Path to tsv/csv file
         stem (str): Prefix for output JSON file
-        has_header (bool, optional): If input file contains a header row. Defaults to True.
-        gene_col_name (str, optional): Column header name where gene names are stored. Defaults to "Name".
-        x_col_name (str, optional): Column header name where `X` coordinates are stored. Defaults to "x_int".
-        y_col_name (str, optional): Column header name where `Y` coordinates are stored. Defaults to "y_int".
+        has_header (bool, optional): If input file contains a header row.
+           Defaults to True.
+        gene_col_name (str, optional): Column header name where gene names are stored.
+           Defaults to "Name".
+        x_col_name (str, optional): Column header name where `X` coordinates are stored.
+           Defaults to "x_int".
+        y_col_name (str, optional): Column header name where `Y` coordinates are stored.
+           Defaults to "y_int".
         delimiter (str, optional): Input file delimiter. Defaults to "\t".
-        x_scale (float, optional): Scale to multiply `X` coordinates by. Defaults to 1.0.
-        y_scale (float, optional): Scale to multiply `Y` coordinates by. Defaults to 1.0.
-        x_offset (float, optional): Offset to add to `X` coordinates. Defaults to 0.0.
-        y_offset (float, optional): Offset to add to `Y` coordinates. Defaults to 0.0.
-        gene_col_idx (int, optional): Column index where gene names are stored if header is not present. Defaults to None.
-        x_col_idx (int, optional): Column index where `X` coordinates are stored if header is not present. Defaults to None.
-        y_col_idx (int, optional): Column index where `Y` coordinates are stored if header is not present. Defaults to None.
-        filter_col_name (str, optional): Column header name storing values to filter data. Defaults to None.
-        filter_col_idx (int, optional): Column index storing values to filter data if header is not present. Defaults to None.
+        x_scale (float, optional): Scale to multiply `X` coordinates by.
+            Defaults to 1.0.
+        y_scale (float, optional): Scale to multiply `Y` coordinates by.
+            Defaults to 1.0.
+        x_offset (float, optional): Offset to add to `X` coordinates.
+            Defaults to 0.0.
+        y_offset (float, optional): Offset to add to `Y` coordinates.
+            Defaults to 0.0.
+        gene_col_idx (int, optional): Column index where gene names are stored
+            if header is not present. Defaults to None.
+        x_col_idx (int, optional): Column index where `X` coordinates are stored
+            if header is not present. Defaults to None.
+        y_col_idx (int, optional): Column index where `Y` coordinates are stored
+            if header is not present. Defaults to None.
+        filter_col_name (str, optional): Column header name storing values to
+            filter data. Defaults to None.
+        filter_col_idx (int, optional): Column index storing values to filter data
+            if header is not present. Defaults to None.
         filter_col_value (str, optional): Value expected in filter column.
-            If a row has a different value it will not be written to output file. Defaults to None.
+            If a row has a different value it will not be written to output file.
+            Defaults to None.
 
     Raises:
         SystemExit: If any column header name is not in the header row.
@@ -75,9 +90,10 @@ def tsv_to_json(
                     y_col_idx = header.index(y_col_name)
                 if filter_col_name is not None:
                     filter_col_idx = header.index(filter_col_name)
-            except ValueError as e:
+            except ValueError:
                 raise SystemExit(
-                    f"Column name(s), ({gene_col_name}, {x_col_name}, {y_col_name}) not in header"
+                    f"Column name(s), ({gene_col_name}, {x_col_name}, "
+                    f"{y_col_name}) not in header"
                 )
 
         molecules_json = {}

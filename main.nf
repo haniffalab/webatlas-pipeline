@@ -102,6 +102,7 @@ def mergeArgs (stem, data_type, args) {
     getSubMapValues(params.args, [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(project_args[stem[0]], [data_type, *interm_dt[data_type]]) + 
     getSubMapValues(dataset_args[stem], [data_type, *interm_dt[data_type]]) + 
+    (dataset_args[stem]?.rotate ?: [:]) + // rotate: {rotate_degrees: 90, spatial_shape: [width, height]}
     (args ?: [:])
 }
 
@@ -115,6 +116,7 @@ def warnParams () {
 
 //////////////////////////////////////////////////////
 
+// @TODO: move rotation to separate process and run with all_tifs
 process image_to_zarr {
     tag "${image}"
     debug verbose_log
@@ -122,7 +124,7 @@ process image_to_zarr {
     publishDir outdir_with_version, mode: "copy"
 
     input:
-    tuple val(stem), val(prefix), val(img_type), path(image), val(keep_filename)
+    tuple val(stem), val(prefix), val(img_type), path(image), val(keep_filename), val(rotate_degrees)
 
     output:
     tuple val(stem), val(img_type), path("${filename}.zarr"), emit: img_zarr
@@ -130,19 +132,33 @@ process image_to_zarr {
 
     script:
     filename = keep_filename ? image.baseName : ([*stem, prefix, img_type] - null - "").join("-")
+    tmp_uncompressed_image = "tmp-uncompressed-${filename}.tif"
+    tmp_image = "tmp-${filename}.tif"
     """
     if tiffinfo ${image} | grep "Compression Scheme:" | grep -wq "JPEG"
     then
         if od -h -j2 -N2 ${image} | head -n1 | sed 's/[0-9]*  *//' | grep -q -E '002b|2b00'
         then
-            tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+            tiffcp -c none -m 0 -8 ${image} ${tmp_uncompressed_image}
         else
-            tiffcp -c none -m 0 ${image} uncompressed.tif || tiffcp -c none -m 0 -8 ${image} uncompressed.tif
+            tiffcp -c none -m 0 ${image} ${tmp_uncompressed_image} || tiffcp -c none -m 0 -8 ${image} ${tmp_uncompressed_image}
         fi
-        bioformats2raw --no-hcs uncompressed.tif ${filename}.zarr
     else
-        bioformats2raw --no-hcs ${image} ${filename}.zarr
+        ln -s ${image} ${tmp_uncompressed_image}
     fi
+    if [[ ${rotate_degrees} != "NO_ROT" ]]
+    then
+        if [[ ${rotate_degrees} != 90 && ${rotate_degrees} != 180 && ${rotate_degrees} != 270 ]]
+        then
+            echo "Invalid rotation value: ${rotate_degrees}"
+            exit 1
+        else
+            rotate_image.py ${tmp_uncompressed_image} ${tmp_image} ${rotate_degrees}
+        fi
+    else
+        ln -s ${tmp_uncompressed_image} ${tmp_image}
+    fi
+    bioformats2raw --no-hcs ${tmp_image} ${filename}.zarr
     consolidate_md.py ${filename}.zarr
     """
 }
@@ -181,7 +197,7 @@ process route_file {
 
     script:
     stem_str = ([*stem, prefix] - null - "").join("-")
-    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
+    args_str = args ? "--args-json '" + new JsonBuilder(args).toString() + "'" : ""
     """
     router.py --file_type ${type} --path ${file} --stem ${stem_str} ${args_str}
     """
@@ -262,7 +278,7 @@ process Generate_image {
     script:
     stem_str = ([*stem, prefix] - null - "").join("-")
     ref_img_str = ref_img.name != "NO_REF" ? "--ref_img ${ref_img}" : ""
-    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
+    args_str = args ? "--args-json '" + new JsonBuilder(args).toString() + "'" : ""
     """
     generate_image.py \
         --stem ${stem_str} \
@@ -283,17 +299,17 @@ workflow Full_pipeline {
 
     Process_images()
 
-    Output_to_config(
-        Process_files.out.file_paths,
-        Process_images.out.img_zarrs
-    )
+    // Output_to_config(
+    //     Process_files.out.file_paths,
+    //     Process_images.out.img_zarrs
+    // )
         
-    if (params.write_spatialdata) {
-        Output_to_spatialdata(
-            Process_files.out.anndata_files,
-            Process_images.out.img_tifs
-        )
-    }
+    // if (params.write_spatialdata) {
+    //     Output_to_spatialdata(
+    //         Process_files.out.anndata_files,
+    //         Process_images.out.img_tifs
+    //     )
+    // }
     
 }
 
@@ -351,7 +367,8 @@ workflow Process_images {
             data_map.prefix,
             data_map.data_type.replace("_image",""),
             file(data_map.data_path),
-            false // keep_filename
+            false, // keep_filename
+            dataset_args[stem]?.rotate?.rotate_degrees ?: "NO_ROT" // rotate
         ]
     }
 
@@ -381,7 +398,8 @@ workflow Process_images {
                 prefix,
                 type,
                 [paths].flatten(),
-                true // keep_filename
+                true, // keep_filename
+                dataset_args[stem]?.rotate?.rotate_degrees ?: "NO_ROT" // rotate
             ]
         }
         .transpose(by: 3)
@@ -450,34 +468,38 @@ workflow Output_to_config {
 }
 
 
-workflow Output_to_spatialdata {
-    take: 
-    anndata_files
-    img_tifs
+// workflow Output_to_spatialdata {
+//     take: 
+//     anndata_files
+//     img_tifs
     
-    main:
-        img_tifs
-            .map { stem, prefix, type, img, k -> 
-                [stem, [type: type, img: img]]
-            }
-            .branch { stem, data ->
-                raw: data.type == "raw"
-                label: data.type == "label"
-            }
-        .set{tif_files}
+//     main:
+//         img_tifs
+//             .map { stem, prefix, type, img, k -> 
+//                 [stem, [type: type, img: img]]
+//             }
+//             .branch { stem, data ->
+//                 raw: data.type == "raw"
+//                 label: data.type == "label"
+//             }
+//         .set{tif_files}
 
-        anndata_files
-            .join(tif_files.raw, remainder: true)
-            .join(tif_files.label, remainder: true)
-            .map { stem, anndata, raw_tif, label_tif -> [
-                stem, anndata,
-                raw_tif ? raw_tif.img : [],
-                label_tif ? label_tif.img : []
-            ]}
-            .set{data_for_sd}
+//         anndata_files
+//             .join(tif_files.raw, remainder: true)
+//             .join(tif_files.label, remainder: true)
+//             .map { stem, anndata, raw_tif, label_tif -> [
+//                 stem, anndata,
+//                 raw_tif ? raw_tif.img : [],
+//                 label_tif ? label_tif.img : []
+//             ]}
+//             .set{data_for_sd}
 
-        write_spatialdata(
-            data_for_sd
-        )
+//         write_spatialdata(
+//             data_for_sd
+//         )
         
+// }
+
+workflow {
+    Full_pipeline()
 }

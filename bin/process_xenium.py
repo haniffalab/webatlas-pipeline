@@ -6,17 +6,19 @@ Processes Xenium output
 """
 
 from __future__ import annotations
-import os
-import fire
+
 import json
-import zarr
-import numpy as np
-import scanpy as sc
-import pandas as pd
-import tifffile as tf
+import os
 from pathlib import Path
-from skimage.draw import polygon
+
+import fire
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import tifffile as tf
+import zarr
 from process_h5ad import h5ad_to_zarr
+from skimage.draw import polygon
 
 
 def xenium_to_anndata(
@@ -30,13 +32,13 @@ def xenium_to_anndata(
 
     Args:
         path (str): Path to a xenium output directory
-        spatial_as_pixel (bool, optional): Boolean indicating whether spatial coordinates should be
-        converted to pixels. Defaults to True.
+        spatial_as_pixel (bool, optional): Boolean indicating whether spatial
+        coordinates should be converted to pixels. Defaults to True.
         resolution (float, optional): Pixel resolution. Defaults to 0.2125.
         load_clusters (bool, optional): If cluster files should be included in the
             AnnData object. Defaults to True.
-        load_embeddings (bool, optional): If embedding coordinates files should be included
-            in the AnnData object. Defaults to True.
+        load_embeddings (bool, optional): If embedding coordinates files should
+            be included in the AnnData object. Defaults to True.
 
     Returns:
         AnnData: AnnData object created from the xenium output data
@@ -115,10 +117,11 @@ def xenium_to_zarr(
     Args:
         path (str): Path to a xenium output directory
         stem (str): Prefix for the output Zarr filename
-        spatial_as_pixel (bool, optional): Boolean indicating whether spatial coordinates should be
-        converted to pixels. Defaults to True.
+        spatial_as_pixel (bool, optional): Boolean indicating whether spatial
+            coordinates should be converted to pixels. Defaults to True.
         resolution (float, optional): Pixel resolution. Defaults to 0.2125.
-        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.
+        save_h5ad (bool, optional): If the AnnData object should also be written to
+            an h5ad file. Defaults to False.
 
     Returns:
         str: Output Zarr filename
@@ -149,14 +152,15 @@ def xenium_label(
     else:
         cells_file = path
 
-    z = zarr.open(cells_file, "r")
+    store = zarr.storage.ZipStore(cells_file, mode="r")
+    z = zarr.open(store, mode="r")
 
     with open(os.path.join(path, "experiment.xenium")) as f:
         experiment = json.load(f)
     sw_version = float(experiment["analysis_sw_version"][7:10])
 
     if sw_version < 1.3:
-        ids = z["cell_id"]
+        ids = z["cell_id"][:]
     else:
         ids = z["cell_id"][:, 0]
 
@@ -167,9 +171,9 @@ def xenium_label(
 
     # starting on v2.0 vertices change location
     if sw_version < 2.0:
-        pols = z["polygon_vertices"][1]
+        pols = z["polygon_vertices"]["1"]
     else:
-        pols = z["polygon_sets"][1]["vertices"]
+        pols = z["polygon_sets"]["1"]["vertices"]
 
     label_img = np.zeros((shape[0], shape[1]), dtype=np.min_scalar_type(max(ids)))
 

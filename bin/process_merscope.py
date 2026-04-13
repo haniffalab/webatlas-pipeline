@@ -6,17 +6,19 @@ Processes MERSCOPE output
 """
 
 from __future__ import annotations
-import os
-import fire
+
 import logging
+import os
+
+import fire
 import h5py
-import pyvips
-import scanpy as sc
 import numpy as np
 import pandas as pd
+import pyvips
+import scanpy as sc
 import tifffile as tf
-from skimage.draw import polygon
 from process_h5ad import h5ad_to_zarr
+from skimage.draw import polygon
 
 
 def merscope_to_anndata(path: str, filter_prefix: str = "Blank-") -> sc.AnnData:
@@ -24,7 +26,8 @@ def merscope_to_anndata(path: str, filter_prefix: str = "Blank-") -> sc.AnnData:
 
     Args:
         path (str): Path to a MERSCOPE output directory
-        filter_prefix (str, optional): Prefix to filter out of the data. Defaults to `Blank-`
+        filter_prefix (str, optional): Prefix to filter out of the data.
+            Defaults to `Blank-`
 
     Returns:
         AnnData: AnnData object created from the MERSCOPE output data
@@ -79,8 +82,10 @@ def merscope_to_zarr(
     Args:
         path (str): Path to a MERSCOPE output directory
         stem (str): Prefix for the output Zarr filename
-        filter_prefix (str, optional): Prefix to filter out of the data. Defaults to `Blank-`
-        save_h5ad (bool, optional): If the AnnData object should also be written to an h5ad file. Defaults to False.
+        filter_prefix (str, optional): Prefix to filter out of the data.
+            Defaults to `Blank-`
+        save_h5ad (bool, optional): If the AnnData object should also be written to an
+            h5ad file. Defaults to False.
 
     Returns:
         str: Output Zarr filename
@@ -181,19 +186,21 @@ def merscope_raw(stem: str, path: str, z_index: list[int] = [0]) -> None:
 
         xml_channels = "".join(
             [
-                f"""<Channel ID="Channel:0:{x}" SamplesPerPixel="1" Name="{c}"><LightPath/></Channel>"""
+                f'<Channel ID="Channel:0:{x}" SamplesPerPixel="1" '
+                f'Name="{c}"><LightPath/></Channel>'
                 for x, c in enumerate(channels)
             ]
         )
 
+        ome_schema = "http://www.openmicroscopy.org/Schemas/OME/2016-06"
         z_img.set_type(
             pyvips.GValue.gstr_type,
             "image-description",
             " ".join(
                 f"""<?xml version="1.0" encoding="UTF-8"?>
-            <OME xmlns="http://www.openmicroscopy.org/Schemas/OME/2016-06"
+            <OME xmlns="{ome_schema}"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.openmicroscopy.org/Schemas/OME/2016-06 http://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd">
+                xsi:schemaLocation="{ome_schema} {ome_schema}/ome.xsd">
                 <Image ID="Image:0">
                     <Pixels DimensionOrder="XYCZT"
                             ID="Pixels:0"

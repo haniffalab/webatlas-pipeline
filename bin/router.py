@@ -6,17 +6,26 @@ Calls file processing functions
 """
 
 from __future__ import annotations
-import fire
-import typing as T
 
+import json
+
+import fire
+from fire.decorators import SetParseFns
 from process_h5ad import h5ad_to_zarr
+from process_merscope import merscope_to_zarr
 from process_molecules import tsv_to_json
 from process_spaceranger import spaceranger_to_zarr
-from process_merscope import merscope_to_zarr
 from process_xenium import xenium_to_zarr
 
 
-def process(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -> str:
+@SetParseFns(args_json=str)
+def process(
+    file_type: str,
+    path: str,
+    stem: str,
+    args_json: str = "{}",
+    **kwargs,
+) -> str:
     """Function that calls the appropriate processing function
     for the input file according to its type
 
@@ -24,13 +33,15 @@ def process(file_type: str, path: str, stem: str, args: dict[str, T.Any] = {}) -
         file_type (str): Type of file to process
         path (str): Path to file to process
         stem (str): Prefix for output files
-        args (dict[str,T.Any], optional): Args to be passed to the appropriate processing function.
-            Defaults to {}.
+        args_json (str, optional): JSON string of args to be passed to the appropriate
+            processing function. Defaults to "{}".
 
     Returns:
         str: Output filename
     """
     out_file = None
+
+    args = {**json.loads(args_json), **kwargs}
 
     func_dict = {
         "spaceranger": spaceranger_to_zarr,
