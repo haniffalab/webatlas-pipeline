@@ -204,6 +204,7 @@ def concat_matrix_from_cell2location(
 
     if c2l_file.endswith(".csv"):
         df = pd.read_csv(c2l_file, index_col=0)
+        df.index = df.index.astype(str)
         c2l_adata = ad.AnnData(obs=df.index.to_frame(), obsm={q: df})
     else:
         with h5py.File(c2l_file) as f:
