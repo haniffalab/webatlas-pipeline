@@ -5,9 +5,10 @@ process_molecules.py
 Processes molecules files
 """
 
-import os
 import csv
 import json
+import os
+
 import fire
 from constants.suffixes import MOLECULES_JSON_SUFFIX
 

@@ -6,28 +6,28 @@ Generates a Vitessce View config
 """
 
 from __future__ import annotations
-import typing as T
-from collections import defaultdict
-import os
-import fire
+
 import json
 import logging
+import os
+import typing as T
+from collections import defaultdict
 from itertools import chain, cycle
+
+import fire
 import regex
-from vitessce import (
-    VitessceConfig,
-    DataType as dt,
-    FileType as ft,
-    CoordinationType as ct,
-    Component as cm,
-)
 from constants.constants import (
-    DATA_TYPES,
-    DEFAULT_OPTIONS,
-    DEFAULT_LAYOUTS,
     COMPONENTS_COORDINATION_TYPES,
     COMPONENTS_DATA_TYPES,
+    DATA_TYPES,
+    DEFAULT_LAYOUTS,
+    DEFAULT_OPTIONS,
 )
+from vitessce import Component as cm
+from vitessce import CoordinationType as ct
+from vitessce import DataType as dt
+from vitessce import FileType as ft
+from vitessce import VitessceConfig
 
 
 def build_options(

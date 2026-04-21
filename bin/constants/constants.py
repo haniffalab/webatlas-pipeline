@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-from vitessce import (
-    DataType as dt,
-    FileType as ft,
-    Component as cm,
-    CoordinationType as ct,
-)
+from vitessce import Component as cm
+from vitessce import CoordinationType as ct
+from vitessce import DataType as dt
+from vitessce import FileType as ft
 
 SINGLE_ZARR = "anndata.zarr"
 OBS = "obs"

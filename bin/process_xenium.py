@@ -6,17 +6,19 @@ Processes Xenium output
 """
 
 from __future__ import annotations
-import os
-import fire
+
 import json
-import zarr
-import numpy as np
-import scanpy as sc
-import pandas as pd
-import tifffile as tf
+import os
 from pathlib import Path
-from skimage.draw import polygon
+
+import fire
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import tifffile as tf
+import zarr
 from process_h5ad import h5ad_to_zarr
+from skimage.draw import polygon
 
 
 def xenium_to_anndata(

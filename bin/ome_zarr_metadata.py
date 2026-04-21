@@ -6,8 +6,9 @@ Gets OME XML basic metadata
 """
 
 import json
-import fire
 from xml.etree import ElementTree as ET
+
+import fire
 
 
 def get_metadata(xml_path: str) -> str:

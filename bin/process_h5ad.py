@@ -6,19 +6,22 @@ Processes H5AD files into AnnData-Zarr
 """
 
 from __future__ import annotations
-import typing as T
-import os
-import fire
-import scanpy as sc
-import anndata as ad
-import pandas as pd
-import numpy as np
-import h5py
-import zarr
+
 import logging
+import os
+import typing as T
 import warnings
-from scipy.sparse import spmatrix, csr_matrix, csc_matrix
+
+import anndata as ad
+import fire
+import h5py
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import zarr
 from constants.suffixes import ANNDATA_ZARR_SUFFIX
+from scipy.sparse import csc_matrix, csr_matrix, spmatrix
+
 from utils import visium_image_size
 
 warnings.filterwarnings("ignore")
@@ -211,9 +214,9 @@ def rescale_spatial(adata: ad.AnnData, factor: float) -> ad.AnnData:
     """
     Rescale spatial coordinates in an AnnData object
     """
-    
+
     logging.info(f"Rescaling spatial coordinates by {factor}")
-    
+
     for spatial_key in ["spatial", "X_spatial"]:
         if spatial_key in adata.obsm:
             adata.obsm[spatial_key] = adata.obsm[spatial_key] * factor
@@ -252,7 +255,7 @@ def preprocess_anndata(
     adata = subset_anndata(
         adata, obs_subset=obs_subset, var_subset=var_subset, sample=sample
     )
-    
+
     if rescale_factor:
         adata = rescale_spatial(adata, rescale_factor)
 
@@ -263,7 +266,7 @@ def preprocess_anndata(
             except:
                 raise SystemError("Must provide spatial shape to rotate spatial data.")
         adata = rotate_anndata(adata, spatial_shape, rotate_degrees)
-    
+
     # reindex var with a specified column
     if var_index and var_index in adata.var:
         try:

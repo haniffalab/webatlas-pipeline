@@ -6,17 +6,19 @@ Processes MERSCOPE output
 """
 
 from __future__ import annotations
-import os
-import fire
+
 import logging
+import os
+
+import fire
 import h5py
-import pyvips
-import scanpy as sc
 import numpy as np
 import pandas as pd
+import pyvips
+import scanpy as sc
 import tifffile as tf
-from skimage.draw import polygon
 from process_h5ad import h5ad_to_zarr
+from skimage.draw import polygon
 
 
 def merscope_to_anndata(path: str, filter_prefix: str = "Blank-") -> sc.AnnData:

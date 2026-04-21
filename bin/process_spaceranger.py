@@ -6,17 +6,20 @@ Processes SpaceRanger output
 """
 
 from __future__ import annotations
+
 import os
-import fire
 import shutil
 import typing as T
-import numpy as np
-import scanpy as sc
-import pandas as pd
-import tifffile as tf
 from pathlib import Path
-from skimage.draw import disk
+
+import fire
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import tifffile as tf
 from process_h5ad import h5ad_to_zarr, reindex_anndata_obs, subset_anndata
+from skimage.draw import disk
+
 from utils import visium_image_size
 
 

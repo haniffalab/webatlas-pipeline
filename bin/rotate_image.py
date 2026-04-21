@@ -6,11 +6,13 @@ Rotate tif images
 """
 
 from __future__ import annotations
-import fire
+
 import logging
-import pyvips
-from typing import T
 import xml.etree.ElementTree as ET
+from typing import T
+
+import fire
+import pyvips
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -63,7 +65,9 @@ def rotate_image(
             pixels = root.find("./*/ome:Pixels", NS)
             if pixels is not None:
                 pixels.set("SizeX", str(rotated_image.width))
-                pixels.set("SizeY", str(rotated_image.height // rotated_image.get_n_pages()))
+                pixels.set(
+                    "SizeY", str(rotated_image.height // rotated_image.get_n_pages())
+                )
             rotated_image.set_type(
                 pyvips.GValue.gstr_type,
                 "image-description",

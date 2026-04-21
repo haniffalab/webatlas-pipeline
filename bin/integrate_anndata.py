@@ -1,34 +1,43 @@
 #!/usr/bin/env python3
 
-from typing import Union
-import typing as T
-import os
 import gc
-import fire
-import zarr
-import h5py
+import json
 import logging
+import os
+from pathlib import Path
+from typing import Union
+
+import anndata as ad
+import fire
+import h5py
 import numpy as np
 import pandas as pd
-import anndata as ad
-from scipy.sparse import spmatrix, hstack, csr_matrix, csc_matrix
+import zarr
+from fire.decorators import SetParseFns
 from process_h5ad import h5ad_to_zarr
-from pathlib import Path
+from scipy.sparse import csc_matrix, csr_matrix, hstack, spmatrix
 
 
+@SetParseFns(args_json=str)
 def reindex_and_concat(
-    path: str, offset: int, features: str = None, args: dict[str, T.Any] = {}, **kwargs
+    path: str,
+    offset: int = 0,
+    features: str = None,
+    args_json: str = "{}",
+    **kwargs,
 ):
+    args = {**json.loads(args_json), **kwargs}
+
     adata = read_anndata(path)
 
-    adata = reindex_anndata(adata, offset, **args, **kwargs)
+    adata = reindex_anndata(adata, offset, **args)
     if features:
-        adata = concat_features(adata, features, **args, **kwargs)
+        adata = concat_features(adata, features, **args)
 
     out_filename = "reindexed-concat-{}".format(
         os.path.splitext(os.path.basename(path))[0]
     )
-    write_anndata(adata, out_filename, **args, **kwargs)
+    write_anndata(adata, out_filename, **args)
 
     return
 

@@ -6,21 +6,19 @@ Generates a Vitessce View config
 """
 
 from __future__ import annotations
-from itertools import zip_longest
-import typing as T
-import os
-import fire
+
 import json
-from vitessce import (
-    VitessceConfig,
-    DataType as dt,
-    FileType as ft,
-    CoordinationType as ct,
-    ViewType as vt,
-    hconcat,
-    vconcat,
-)
+import os
+import typing as T
+from itertools import zip_longest
+
+import fire
 from constants.suffixes import ANNDATA_ZARR_SUFFIX, MOLECULES_JSON_SUFFIX
+from vitessce import CoordinationType as ct
+from vitessce import DataType as dt
+from vitessce import FileType as ft
+from vitessce import ViewType as vt
+from vitessce import VitessceConfig, hconcat, vconcat
 
 
 def write_json(
@@ -200,9 +198,11 @@ def write_json(
                         ).use_coordination(
                             embeddings_coordination[dataset_embedding_type],
                             obs_coordination[dataset_obs_type],
-                            multi_ftype
-                            if has_multiple_features
-                            else features["gene"]["ftype"],
+                            (
+                                multi_ftype
+                                if has_multiple_features
+                                else features["gene"]["ftype"]
+                            ),
                         )
                     )
 
@@ -224,9 +224,9 @@ def write_json(
                 options=build_raster_options(dataset["images"], url=url),
                 coordination_values={
                     ct.OBS_TYPE.value: dataset_obs_type,
-                    ct.FEATURE_TYPE.value: "combined"
-                    if has_multiple_features
-                    else "expression",
+                    ct.FEATURE_TYPE.value: (
+                        "combined" if has_multiple_features else "expression"
+                    ),
                 },
             )
 

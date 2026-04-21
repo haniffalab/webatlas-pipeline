@@ -197,7 +197,7 @@ process route_file {
 
     script:
     stem_str = ([*stem, prefix] - null - "").join("-")
-    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
+    args_str = args ? "--args-json '" + new JsonBuilder(args).toString() + "'" : ""
     """
     router.py --file_type ${type} --path ${file} --stem ${stem_str} ${args_str}
     """
@@ -278,7 +278,7 @@ process Generate_image {
     script:
     stem_str = ([*stem, prefix] - null - "").join("-")
     ref_img_str = ref_img.name != "NO_REF" ? "--ref_img ${ref_img}" : ""
-    args_str = args ? "--args '" + new JsonBuilder(args).toString() + "'" : "--args {}"
+    args_str = args ? "--args-json '" + new JsonBuilder(args).toString() + "'" : ""
     """
     generate_image.py \
         --stem ${stem_str} \
