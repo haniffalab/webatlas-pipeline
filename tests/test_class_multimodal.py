@@ -53,7 +53,7 @@ class TestClass:
 
     def test_concat_matrix_from_obs(self, monkeypatch, anndata_with_celltype_obs):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obs))
-        adata = ad.read(anndata_with_celltype_obs)
+        adata = ad.read_h5ad(anndata_with_celltype_obs)
         adata_concat = concat_matrix_from_obs(adata, "obs1")
         assert adata_concat.X.shape == (3, 7)
         assert np.array_equal(
@@ -72,7 +72,7 @@ class TestClass:
 
     def test_concat_features_from_obs(self, monkeypatch, anndata_with_celltype_obs):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obs))
-        adata = ad.read(anndata_with_celltype_obs)
+        adata = ad.read_h5ad(anndata_with_celltype_obs)
         adata_concat_1 = concat_matrix_from_obs(adata, "obs1")
         adata_concat_2 = concat_features(adata, "obs/obs1")
         pd.testing.assert_frame_equal(adata_concat_1.obs, adata_concat_2.obs)
@@ -84,7 +84,7 @@ class TestClass:
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obs))
         CONCAT_FEATURE_NAME = "celltype"
-        adata = ad.read(anndata_with_celltype_obs)
+        adata = ad.read_h5ad(anndata_with_celltype_obs)
         adata_concat = concat_matrix_from_obs(
             adata, "obs1", concat_feature_name=CONCAT_FEATURE_NAME
         )
@@ -119,7 +119,7 @@ class TestClass:
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obs))
         CONCAT_FEATURE_NAME = "celltype"
-        adata = ad.read(anndata_with_celltype_obs)
+        adata = ad.read_h5ad(anndata_with_celltype_obs)
         adata_concat_1 = concat_matrix_from_obs(
             adata, "obs1", concat_feature_name=CONCAT_FEATURE_NAME
         )
@@ -132,7 +132,7 @@ class TestClass:
 
     def test_concat_matrix_from_obsm(self, monkeypatch, anndata_with_celltype_obsm):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obsm))
-        adata = ad.read(anndata_with_celltype_obsm)
+        adata = ad.read_h5ad(anndata_with_celltype_obsm)
         adata_concat = concat_matrix_from_obsm(adata, "obsm1")
         assert adata_concat.X.shape == (3, 7)
         assert np.array_equal(
@@ -152,7 +152,7 @@ class TestClass:
 
     def test_concat_features_from_obsm(self, monkeypatch, anndata_with_celltype_obsm):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obsm))
-        adata = ad.read(anndata_with_celltype_obsm)
+        adata = ad.read_h5ad(anndata_with_celltype_obsm)
         adata_concat_1 = concat_matrix_from_obsm(adata, "obsm1")
         adata_concat_2 = concat_features(adata, "obsm/obsm1")
         pd.testing.assert_frame_equal(adata_concat_1.obs, adata_concat_2.obs)
@@ -164,7 +164,7 @@ class TestClass:
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obsm))
         CONCAT_FEATURE_NAME = "celltype"
-        adata = ad.read(anndata_with_celltype_obsm)
+        adata = ad.read_h5ad(anndata_with_celltype_obsm)
         adata_concat = concat_matrix_from_obsm(
             adata, "obsm1", concat_feature_name=CONCAT_FEATURE_NAME
         )
@@ -200,7 +200,7 @@ class TestClass:
     ):
         monkeypatch.chdir(os.path.dirname(anndata_with_celltype_obsm))
         CONCAT_FEATURE_NAME = "celltype"
-        adata = ad.read(anndata_with_celltype_obsm)
+        adata = ad.read_h5ad(anndata_with_celltype_obsm)
         adata_concat_1 = concat_matrix_from_obsm(
             adata, "obsm1", concat_feature_name=CONCAT_FEATURE_NAME
         )

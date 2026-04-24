@@ -52,7 +52,7 @@ def write_spatialdata(
         str: Output SpatialData filename
     """
     if anndata_path.endswith(".h5ad"):
-        adata = ad.read(anndata_path, backed=True)
+        adata = ad.read_h5ad(anndata_path, backed=True)
     elif anndata_path.endswith(".zarr"):
         adata = ad.read_zarr(anndata_path)
     else:
