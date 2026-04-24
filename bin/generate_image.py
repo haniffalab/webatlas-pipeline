@@ -6,21 +6,27 @@ Generates raw/label images from spatial data
 """
 
 from __future__ import annotations
+
+import json
+
 import fire
-import typing as T
-import tifffile as tf
+from fire.decorators import SetParseFns
+from process_merscope import merscope_label, merscope_raw
 from process_spaceranger import visium_label
 from process_xenium import xenium_label
-from process_merscope import merscope_label, merscope_raw
+
+from utils import tiff_image_size
 
 
+@SetParseFns(args_json=str)
 def create_img(
     stem: str,
     img_type: str,
     file_type: str,
     file_path: str,
     ref_img: str = None,
-    args: dict[str, T.Any] = {},
+    args_json: str = "{}",
+    **kwargs,
 ) -> None:
     """This function calls the corresponding function
     to write a label image given the metadata provided.
@@ -33,13 +39,14 @@ def create_img(
         file_path (str): Path to the metadata file.
         ref_img (str, optional): Path to reference image from which to get the
             shape for the label image. Defaults to None.
-        args (dict[str,T.Any], optional): Args to be passed to the appropriate processing function.
-            Defaults to {}.
+        args_json (str, optional): JSON string of args to be passed to the appropriate
+            processing function. Defaults to "{}".
     """
 
+    args = {**json.loads(args_json), **kwargs}
+
     if ref_img:
-        tif_img = tf.TiffFile(ref_img)
-        args["shape"] = tif_img.pages[0].shape[:2]
+        args["shape"] = tiff_image_size(ref_img)
 
     if img_type == "label":
         if file_type == "visium":

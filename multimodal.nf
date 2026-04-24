@@ -101,7 +101,7 @@ process process_anndata {
         ? "--concat_feature_name ${config_map.extend_feature_name}"
         : ""
     args_str = features_file.name != 'NO_FT' && features_args
-        ? "--args '" + new JsonBuilder(features_args).toString() + "'" : ""
+        ? "--args-json '" + new JsonBuilder(features_args).toString() + "'" : ""
     """
     integrate_anndata.py reindex_and_concat \
         --path ${anndata} \

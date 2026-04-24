@@ -6,9 +6,10 @@ Consolidates Zarr metadata
 """
 
 import logging
+from pathlib import Path
+
 import fire
 from zarr import consolidate_metadata
-from pathlib import Path
 
 
 def consolidate(file_in: str) -> None:

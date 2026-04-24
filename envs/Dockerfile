@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 ARG BIOFORMATS2RAW="0.4.0"
 
 COPY ./requirements.txt /requirements.txt

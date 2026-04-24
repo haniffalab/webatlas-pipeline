@@ -6,14 +6,16 @@ Processes H5AD and images into SpatialData
 """
 
 from __future__ import annotations
-from typing import Union
+
 import logging
 import warnings
-import fire
-import tifffile as tf
+from typing import Union
+
 import anndata as ad
-import xarray as xr
+import fire
 import spatialdata as sd
+import tifffile as tf
+import xarray as xr
 from dask_image.imread import imread
 
 warnings.filterwarnings("ignore")
@@ -22,10 +24,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 def read_image(path: str, is_label: bool = False):
     tif = tf.TiffFile(path)
-    dims = list(tif.series[0].axes.lower()
-                .replace("s", "c")
-                .replace("i", "c")
-               )
+    dims = list(tif.series[0].axes.lower().replace("s", "c").replace("i", "c"))
     image = imread(path).squeeze()
     imarray = xr.DataArray(image, dims=dims).chunk(chunks="auto")
     if is_label:
@@ -53,7 +52,7 @@ def write_spatialdata(
         str: Output SpatialData filename
     """
     if anndata_path.endswith(".h5ad"):
-        adata = ad.read(anndata_path, backed=True)
+        adata = ad.read_h5ad(anndata_path, backed=True)
     elif anndata_path.endswith(".zarr"):
         adata = ad.read_zarr(anndata_path)
     else:

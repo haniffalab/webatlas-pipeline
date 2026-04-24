@@ -250,14 +250,14 @@ class TestClass:
     def test_route_h5ad(self, monkeypatch, anndata_h5ad_file):
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
-        out_file = process("h5ad", anndata_h5ad_file, stem, {})
+        out_file = process("h5ad", anndata_h5ad_file, stem)
         assert os.path.exists(out_file)
         assert out_file == stem + "-anndata.zarr"
 
     def test_route_molecules(self, monkeypatch, molecules_tsv_file):
         monkeypatch.chdir(os.path.dirname(molecules_tsv_file))
         stem = "test"
-        out_file = process("molecules", molecules_tsv_file, stem, {})
+        out_file = process("molecules", molecules_tsv_file, stem)
         assert os.path.exists(out_file)
         assert out_file == stem + "-molecules.json"
 
@@ -279,7 +279,7 @@ class TestClass:
         monkeypatch.chdir(os.path.dirname(anndata_h5ad_file))
         stem = "test"
         args = {"shape": [100, 100]}
-        create_img(stem, "label", "visium", anndata_h5ad_file, args=args)
+        create_img(stem, "label", "visium", anndata_h5ad_file, **args)
         assert os.path.exists(stem + "-label.tif")
 
     # def test_build_config(self, request, tmp_path_factory):

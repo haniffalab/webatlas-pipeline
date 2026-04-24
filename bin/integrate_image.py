@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 
-import fire
-import os
-import tifffile as tf
-import numpy as np
 import logging
-from ome_zarr.reader import Reader
-from ome_zarr.io import parse_url
+import os
 import shutil
-from ome_zarr.writer import write_multiscale
+
+import fire
+import numpy as np
+import tifffile as tf
 import zarr
+from ome_zarr.io import parse_url
+from ome_zarr.reader import Reader
+from ome_zarr.writer import write_multiscale
 
 
 def add_offset(label, offset: int):
